@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -18,10 +17,6 @@ export default function Connexion() {
         password: ""
     });
 
-
-    const router = useRouter()
-
-
     const handleInputChange = (field: keyof FormState, value: string) => {
         setFormData(prev => ({
             ...prev,
@@ -32,7 +27,6 @@ export default function Connexion() {
     const handleSubmit = () => {
         console.log("Connexion avec:", formData);
         router.push('admin/dashboard')
-        // Ajoutez ici votre logique de connexion
     };
 
     const containerStyle: React.CSSProperties = {
