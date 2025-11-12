@@ -5,10 +5,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
-      <body>
+      <div style={{ margin: 0, padding: 0 }}>
         {children}
-      </body>
-    </html>
+      </div>
   );
 }
