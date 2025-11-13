@@ -11,9 +11,9 @@ module.exports = {
       colors: {
 
         primary: "#50789B",
-
-        secondary: "#E65A46",
-
+        secondary: {
+            DEFAULT: "#E65A46",
+        },
         bluepure:"#0B1F34",
         borderInput:'#0B1F34',
         inputTextColor:"#000000"

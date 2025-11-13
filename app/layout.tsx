@@ -6,7 +6,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body>
+      <body style={{ margin: 0, padding: 0 }}>
         {children}
       </body>
     </html>
