@@ -6,7 +6,7 @@ export default function ComponenteFormulaire() {
 
   const container: React.CSSProperties = {
     backgroundColor: '#50789B',
-    height: 'auto',
+    height: '750px',
     width: '362px',
     padding: '20px',
     fontFamily: 'Arial, sans-serif',
@@ -70,10 +70,14 @@ export default function ComponenteFormulaire() {
     marginBottom: '30px',
   };
 
+  const formUlaire : React.CSSProperties = {
+    height:'100%'
+  }
+
   return (
     <div style={container}>
       <h2 style={titleStyle}>Ajouter une newsletter </h2>
-      <Form action="/admin/dashboard/newsletters">
+      <Form action="/admin/dashboard/newsletters" style={formUlaire}>
         <div>
           <label htmlFor="titre" style={labelStyle}>Titre de l&apos;article</label>
           <input
