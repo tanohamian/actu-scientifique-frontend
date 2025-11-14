@@ -69,7 +69,6 @@ export default function Utilisateurs() {
     );
 
     const pageContainerStyle: CSSProperties = {
-        backgroundColor: '#5f8fb4',
         minHeight: '100vh',
         padding: isMobile ? '1rem' : isTablet ? '1.5rem' : '2rem',
         fontFamily: 'sans-serif',
