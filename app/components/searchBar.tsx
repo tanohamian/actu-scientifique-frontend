@@ -43,6 +43,7 @@ export default function SearchBarComponent({placeholder, inputValue, setInputVal
         margin: isMobile ? '10px 0' : '20px auto',
         backdropFilter: 'blur(10px)',
         boxSizing: 'border-box',
+        fontFamily: 'sans-serif',
     };
 
     const inputStyle: CSSProperties = {

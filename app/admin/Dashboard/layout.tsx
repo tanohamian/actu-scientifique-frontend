@@ -85,7 +85,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const mainStyle: React.CSSProperties = {
         flexGrow: 1,
         marginLeft: isMobile ? '0' : `${SIDEBAR_WIDTH}px`,
-        backgroundColor: '#648db0',
+        backgroundColor: '#5A8FAC',
         minHeight: '100vh',
     };
 
@@ -119,22 +119,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     return (
         <div style={containerStyle}>
-            {/* Sidebar Desktop */}
             <aside style={sidebarDesktopStyle}>
                 <SidebarComponent isMobile={false} />
             </aside>
 
-            {/* Overlay Mobile */}
             <div style={overlayStyle} onClick={() => setIsMobileMenuOpen(false)} />
 
-            {/* Sidebar Mobile */}
             <aside style={sidebarMobileStyle}>
                 <SidebarComponent onClose={() => setIsMobileMenuOpen(false)} isMobile={true} />
             </aside>
 
-            {/* Contenu Principal */}
             <main style={mainStyle}>
-                {/* Header Mobile */}
                 <header style={mobileHeaderStyle}>
                     <button
                         onClick={() => setIsMobileMenuOpen(true)}

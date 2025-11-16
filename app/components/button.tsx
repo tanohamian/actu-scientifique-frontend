@@ -45,7 +45,7 @@ export default function ButtonComponent({
             },
             medium: {
                 mobile: { padding: '6px 14px', fontSize: '0.875rem' },
-                tablet: { padding: '7px 16px', fontSize: '0.9375rem' },
+                tablet: { padding: '7px 40px', fontSize: '0.9375rem' },
                 desktop: { padding: '8px 18px', fontSize: '1rem' },
             },
             large: {
@@ -64,20 +64,23 @@ export default function ButtonComponent({
 
     
 
-    const buttonStyle: CSSProperties = {
-        backgroundColor: "#E65A46",
-        padding: sizeStyles.padding,
-        borderRadius: isMobile ? '0.375rem' : '0.5rem',
-        border: 'none',
-        fontSize: sizeStyles.fontSize,
-        fontWeight: '500',
-        transition: 'all 0.2s ease-in-out',
-        fontFamily: 'sans-serif',
-        width: '20%',
-        boxShadow:isHovered ? '0 4px 6px rgba(0, 0, 0, 0.1)' : 'none',
-        minHeight: isMobile ? '36px' : '40px',
-        color:'white'
-    };
+   const buttonStyle: CSSProperties = {
+    backgroundColor: "#E65A46",
+    padding: sizeStyles.padding,
+    borderRadius: isMobile ? '0.375rem' : '0.5rem',
+    border: 'none',
+    fontSize: sizeStyles.fontSize,
+    fontWeight: '500',
+    transition: 'all 0.2s ease-in-out',
+    fontFamily: 'sans-serif',
+    boxShadow: isHovered ? '0 4px 6px rgba(0, 0, 0, 0.1)' : 'none',
+    minHeight: isMobile ? '36px' : '40px',
+    color: 'white',
+    whiteSpace: 'nowrap', 
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+};
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         if ( onclick) {
