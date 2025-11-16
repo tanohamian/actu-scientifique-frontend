@@ -1,8 +1,13 @@
 import React from 'react'
 import ComponenteFormulaire from './components/ComponenteFormulaire';
-import Affichage from './components/Affichage';
+import Affichage, { Newsletter } from './components/Affichage';
 
 export default function page() {
+  const newsletters: Newsletter[] = [
+      { id: 1, titre: "Utilisation de l'IA dans le journalisme", categorie: 'Technologie', publication: '14/10/2025' },
+      { id: 2, titre: "Utilisation de l'IA dans le journalisme", categorie: 'Une seule santé', publication: '14/10/2025' },
+      { id: 3, titre: "Utilisation de l'IA dans le journalisme", categorie: 'Technologie', publication: '14/10/2025' }
+    ];
   const container: React.CSSProperties = {
       backgroundColor: '#6B94AD',
       minHeight: '100vh',
@@ -36,7 +41,9 @@ export default function page() {
     <div style={container}>
       <div style={leftSection}>
         <h1 style={title}>Gestion des Newsletters</h1>
-        <Affichage/>
+        <Affichage
+         items={newsletters}
+        />
       </div>
       <div style={rightSection}>
         <ComponenteFormulaire/>

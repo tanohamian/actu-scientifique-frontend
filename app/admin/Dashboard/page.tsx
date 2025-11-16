@@ -39,6 +39,8 @@ export default function Page() {
         { text: "Concours de couverture locale", date: today },
     ])
 
+    const [tendance] = useState<string>("Vous verrez ici un aperçu de tout ce qui se passe sur l'app")
+
     return (
         <main style={{ padding: '20px' }}>
             <h1>Dashboard</h1>
@@ -55,7 +57,7 @@ export default function Page() {
             
             {/* Section aperçu (Tendance) */}
             <section className={styles.tendance}>
-                <p>Vous verrez ici un aperçu de tout ce qui se passe sur l'app</p>
+                <p>{tendance}</p>
             </section>
             
             {/* Grille 2x2 des Publications Cards */}

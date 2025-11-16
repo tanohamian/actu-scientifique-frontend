@@ -1,35 +1,58 @@
-import React from 'react'
+"use client"
+import React, { useState } from 'react'
 import { Search, Pencil, Trash2 } from 'lucide-react';
+import Filter, { IFilter } from '@/app/components/filter';
 
-interface Newsletter {
+export interface Newsletter {
   id: number;
   titre: string;
   categorie: string;
   publication: string;
 }
 
-export default function Affichage() {
+export interface Article{
+  id: number;
+  title: string;
+  content: string;
+  rubrique: string;
+}
+interface AffichageProps{
+  hasFilter? : boolean
+  filters ?: IFilter[]
+  isArticle ?: boolean
+  items : Newsletter[] | Article[]
+}
+export default function Affichage({items, isArticle = false, hasFilter=false, filters=[]}: AffichageProps) {
 
-  const newsletters: Newsletter[] = [
-    { id: 1, titre: "Utilisation de l'IA dans le journalisme", categorie: 'Technologie', publication: '14/10/2025' },
-    { id: 2, titre: "Utilisation de l'IA dans le journalisme", categorie: 'Une seule santé', publication: '14/10/2025' },
-    { id: 3, titre: "Utilisation de l'IA dans le journalisme", categorie: 'Technologie', publication: '14/10/2025' }
-  ];
+  const [activeFilter, setActiveFilter] = useState<string>("all");
+  const handleNewFilter = (filterValue: string) => {
+    setActiveFilter(filterValue);
+    console.log("Nouveau filtre sélectionné:", filterValue);
+  };
 
   const container: React.CSSProperties = {
       backgroundColor: '#50789B',
-      height:'468px',
+      height:'50%',
       width:'809px',
       padding: '40px',
       fontFamily: 'Arial, sans-serif',
       borderRadius:'20px',
+      // Pour debug, assurez-vous que la hauteur s'adapte au contenu si besoin:
+      //height: 'auto', 
+      minHeight: '468px',
     };
 
   const searchWrapper: React.CSSProperties = {
       position: 'relative',
-      width: '100%',
-      alignItems:'center'
+      alignItems:'center',
+      display: 'flex', 
+      gap: '20px', 
     };
+
+    const searchInputContainer: React.CSSProperties = {
+        position: 'relative',
+        flexGrow: 1, 
+    }
 
     const searchIcon: React.CSSProperties = {
       position: 'absolute',
@@ -40,7 +63,7 @@ export default function Affichage() {
     };
     const searchInput: React.CSSProperties = {
         backgroundColor: 'rgba(255, 255, 255, 0.2)',
-        border: '1px solid rgba(255, 255, 255, 0.3)',
+        border: '1px solid #ffffff4d',
         borderRadius: '8px',
         padding: '14px 15px',
         paddingLeft: '45px',
@@ -50,7 +73,7 @@ export default function Affichage() {
         width: '80%'
       };
       const tableSection: React.CSSProperties = {
-          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+          //backgroundColor: 'rgba(255, 255, 255, 0.15)',
           borderRadius: '12px',
           padding: '25px',
           flex: '1'
@@ -62,9 +85,9 @@ export default function Affichage() {
         };
 
           const searchSection: React.CSSProperties = {
-            backgroundColor: 'rgba(255, 255, 255, 0.15)',
+            //backgroundColor: 'rgba(255, 255, 255, 0.15)',
             borderRadius: '12px',
-            padding: '25px',
+            //padding: '25px',
             marginBottom : '25px'
           };
       
@@ -105,33 +128,68 @@ export default function Affichage() {
           transition: 'opacity 0.3s'
         };
 
+  const filteredItems = items.filter(item => {
+    if (activeFilter === 'all') {
+      return true;
+    }
+    
+    if (isArticle) {
+        return (item as Article).rubrique === activeFilter;
+    } 
+    return (item as Newsletter).categorie === activeFilter;
+  });
+
+
   return (
       <div style={container}>
         <div style={searchSection}>
-          <div style={searchWrapper}>
-          <Search size={20} style={searchIcon} />
-            <input
-              type="text"
-              placeholder="Rechercher par titre....."
-             style={searchInput}/>
+          
+          <div style={searchWrapper}> 
+            
+            <div style={searchInputContainer}>
+              <Search size={20} style={searchIcon} />
+              <input
+                type="text"
+                placeholder="Rechercher par titre....."
+                style={searchInput}
+              />
+            </div>
+
+            {
+                hasFilter ? <Filter 
+                              filters={filters}
+                              onFilterChange={handleNewFilter}
+                            /> : null 
+            }
+          </div>
         </div>
-        </div>
+            
         <div style={tableSection}>
           <table style={table}>
             <thead style={tableHeader}>
               <tr>
-                <th style={th}>Titres</th>
-                <th style={th}>Categories</th>
-                <th style={th}>Publications</th>
+                <th style={th}>{isArticle ? 'Titre de l\'Article' : 'Titre de la Newsletter'}</th>
+                <th style={th}>{isArticle ? 'Rubrique' : 'Catégorie'}</th>
+                <th style={th}>{isArticle ? 'Contenu (Début)' : 'Publication'}</th>
                 <th style={th}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {newsletters.map((newsletter) => (
-                <tr key={newsletter.id}>
-                  <td style={td}>{newsletter.titre}</td>
-                  <td style={td}>{newsletter.categorie}</td>
-                  <td style={td}>{newsletter.publication}</td>
+              {filteredItems.map((item) => (
+                <tr key={item.id}>
+                  {isArticle ? (
+                    <>
+                      <td style={td}>{(item as Article).title.substring(0, 35)}...</td>
+                      <td style={td}>{(item as Article).rubrique}</td>
+                      <td style={td}>{(item as Article).content.substring(0, 35)}...</td>
+                    </>
+                  ) : (
+                    <>
+                      <td style={td}>{(item as Newsletter).titre}</td>
+                      <td style={td}>{(item as Newsletter).categorie}</td>
+                      <td style={td}>{(item as Newsletter).publication}</td>
+                    </>
+                  )}
                   <td style={td}>
                     <div style={actionButtons}>
                       <button

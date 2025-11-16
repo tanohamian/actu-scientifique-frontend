@@ -1,9 +1,17 @@
+"use client"
 import Form from "next/form"
-import React from 'react';
+import React, { useRef } from 'react';
+import styles from "@styles/Formulaire.module.scss"
+import FileUpload from "./FileUpload";
 // import { ChevronUp } from 'lucide-react';
+interface FormPropos{
+  isArticle: boolean
+}
+export default function ComponenteFormulaire( {isArticle=false}: FormPropos) {
 
-export default function ComponenteFormulaire() {
-
+  const endpoint = isArticle? "articles" : "newsletters"
+  const title = isArticle? "Ajouter un Article" : "Formulaire de News Letters"
+  const label = isArticle? "Titre de l'article" : "Titre de la News Letter"
   const container: React.CSSProperties = {
     backgroundColor: '#50789B',
     height: '750px',
@@ -76,10 +84,10 @@ export default function ComponenteFormulaire() {
 
   return (
     <div style={container}>
-      <h2 style={titleStyle}>Ajouter une newsletter </h2>
-      <Form action="/admin/dashboard/newsletters" style={formUlaire}>
+      <h2 style={titleStyle}>{title}</h2>
+      <Form action={`/admin/dashboard/${endpoint}`} style={formUlaire}>
         <div>
-          <label htmlFor="titre" style={labelStyle}>Titre de l&apos;article</label>
+          <label htmlFor="titre" style={labelStyle}>{label}</label>
           <input
             type="text"
             id="titre"
@@ -98,6 +106,7 @@ export default function ComponenteFormulaire() {
             rows={8}
           />
         </div>
+        {isArticle? (<FileUpload />): null}
         <div>
           <label htmlFor="categorie" style={labelStyle}>Catégorie</label>
           <div style={{ position: 'relative' }}>
