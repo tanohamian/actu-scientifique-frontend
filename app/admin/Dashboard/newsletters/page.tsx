@@ -9,7 +9,7 @@ export default function page() {
       { id: 3, titre: "Utilisation de l'IA dans le journalisme", categorie: 'Technologie', publication: '14/10/2025' }
     ];
   const container: React.CSSProperties = {
-      backgroundColor: '#6B94AD',
+      //backgroundColor: '#6B94AD',
       minHeight: '100vh',
       padding: '40px',
       fontFamily: 'Arial, sans-serif',
@@ -46,7 +46,7 @@ export default function page() {
         />
       </div>
       <div style={rightSection}>
-        <ComponenteFormulaire/>
+        <ComponenteFormulaire isArticle={false}/>
       </div>
     </div>
   )

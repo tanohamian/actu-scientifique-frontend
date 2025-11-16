@@ -27,7 +27,7 @@ export default function Page() {
     },
   ])
   const container: React.CSSProperties = {
-      backgroundColor: '#6B94AD',
+      //backgroundColor: '#6B94AD',
       minHeight: '100vh',
       padding: '40px',
       fontFamily: 'Arial, sans-serif',
