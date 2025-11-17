@@ -4,9 +4,9 @@ import Affichage, { Newsletter } from './components/Affichage';
 
 export default function page() {
   const newsletters: Newsletter[] = [
-      { id: 1, titre: "Utilisation de l'IA dans le journalisme", categorie: 'Technologie', publication: '14/10/2025' },
-      { id: 2, titre: "Utilisation de l'IA dans le journalisme", categorie: 'Une seule santé', publication: '14/10/2025' },
-      { id: 3, titre: "Utilisation de l'IA dans le journalisme", categorie: 'Technologie', publication: '14/10/2025' }
+      { id: 1, title: "Utilisation de l'IA dans le journalisme", category: 'Technologie', publication: '14/10/2025' },
+      { id: 2, title: "Utilisation de l'IA dans le journalisme", category: 'Une seule santé', publication: '14/10/2025' },
+      { id: 3, title: "Utilisation de l'IA dans le journalisme", category: 'Technologie', publication: '14/10/2025' }
     ];
   const container: React.CSSProperties = {
       //backgroundColor: '#6B94AD',
