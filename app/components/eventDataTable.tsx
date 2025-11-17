@@ -17,6 +17,7 @@ interface EventDataTableProps {
     tableTitle: string;
     data: TableData[];
     columnHeaders: { key: string; label: string; flexBasis: string }[];
+    handleEditEvent?: (item: TableData) => void;
 }
 
 const iconButtonStyle: CSSProperties = {
@@ -33,11 +34,7 @@ const iconButtonStyle: CSSProperties = {
 
 
 
-const EditIcon = () => (
-    <button style={iconButtonStyle}>
-        <Pencil size={20} />
-    </button> 
-);
+
 const DeleteIcon = () => (
     <button style={iconButtonStyle}>
         <Trash2 size={20} />
@@ -54,7 +51,7 @@ const getStatusStyle = (status: TableData['status']): CSSProperties => {
     }
 };
 
-export default function EventDataTable({ tableTitle, data, columnHeaders }: EventDataTableProps) {
+export default function EventDataTable({ tableTitle, data, columnHeaders,handleEditEvent }: EventDataTableProps) {
     const [windowWidth, setWindowWidth] = useState(1200);
     const MOBILE_BREAKPOINT = 768; 
 
@@ -124,7 +121,9 @@ export default function EventDataTable({ tableTitle, data, columnHeaders }: Even
                         if (header.key === 'actions') {
                             content = (
                                 <div style={{ display: 'flex', gap: '10px' }}>
-                                    <EditIcon />
+                                    <button style={iconButtonStyle} onClick={handleEditEvent ? () => handleEditEvent(item) : undefined} >
+                                        <Pencil size={20} />
+                                    </button> 
                                     <DeleteIcon/>
                                 </div>
                             );

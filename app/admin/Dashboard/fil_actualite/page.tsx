@@ -4,9 +4,9 @@ import InputAndTitleComponent from '@/app/components/inputvalueAndTitle';
 import SearchBarComponent from '@/app/components/searchBar';
 import React, { CSSProperties, useState, useEffect } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
+import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 
 
-// ... (Interface FormData et Hooks useState/useEffect/handleChange inchangés)
 
 interface FormData {
     title: string;
@@ -15,6 +15,18 @@ interface FormData {
     type: string;
 }
 
+const filActuFiels : FormFieldConfig[] = [
+    { name: 'title', label: 'Titre', type: 'text', placeholder: 'Ecrivez le titre', required: true },
+    { name: 'url', label: 'Lien', type: 'text', placeholder: 'http:exemple.com', required: true },
+    { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une brève description', required: false },
+    { name: 'type', label: 'Type', type: 'select', options: [
+        { value: 'facebook', label: 'Facebook' },
+        { value: 'twitter', label: 'Twitter' },
+        { value: 'youtube', label: 'Youtube' }
+    ], required: true
+    }
+
+]
 
 
 
@@ -28,6 +40,11 @@ export default function FilActualite(){
       description: '',
       type:''
     })
+
+    const [editActu, setEditActu] = useState(false);
+    const [selectedActu, setSelectedActu] = useState<any>(null);
+
+    
 
     const MOBILE_BREAKPOINT = 768;
     const TABLET_BREAKPOINT = 1024;
@@ -93,10 +110,14 @@ export default function FilActualite(){
     
 
 
-    const data = {
-        title: 'Bourse du meilleur journaliste',
-        date: '14/01/2027',
-    };
+    const data = [
+        { title: 'les consequences de  la deforestation',url: 'https://www.example.com/meningite'},
+        { title: 'les consequences de  la deforestation',url: 'https://www.example.com/meningite'},
+        { title: 'les consequences de  la deforestation',url: 'https://www.example.com/meningite'},
+        { title: 'les consequences de  la deforestation',url: 'https://www.example.com/meningite'},
+        { title: 'les consequences de  la deforestation',url: 'https://www.example.com/meningite'},
+        { title: 'les consequences de  la deforestation',url: 'https://www.example.com/meningite'}
+    ]
 
     const listActuStyle: CSSProperties = {
         padding: '40px',
@@ -108,8 +129,8 @@ export default function FilActualite(){
     
     
 
-    const headerCellStyle: CSSProperties = {
-        display: 'flex',
+   const headerCellStyle: CSSProperties = {
+        display: isMobile ? 'none' : 'flex', 
         padding: '10px 0',
         borderBottom: '1px solid rgba(255, 255, 255, 0.4)',
         fontWeight: 'bold',
@@ -119,30 +140,37 @@ export default function FilActualite(){
 
     const rowStyle: CSSProperties = {
         display: 'flex',
-        padding: '15px 0',
+        flexDirection: isMobile ? 'column' : 'row', 
+        padding: isMobile ? '10px 0' : '15px 0',
         borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
-        alignItems: 'center',
+        alignItems: isMobile ? 'flex-start' : 'center',
     };
 
-    const titleColumnStyle: CSSProperties = {
-        flexBasis: '50%', 
+   const titleColumnStyle: CSSProperties = {
+        flexBasis: isMobile ? '100%' : '50%', 
+        wordBreak: 'break-word', 
     };
     
     const dateColumnStyle: CSSProperties = {
-        flexBasis: '30%', 
+        flexBasis: isMobile ? '100%' : '30%', 
+        wordBreak: 'break-all', 
+        fontSize: isMobile ? '0.75rem' : '0.9rem', 
+        opacity: isMobile ? 0.8 : 1,
     };
     
     const actionsColumnStyle: CSSProperties = {
-        flexBasis: '20%', 
+        flexBasis: isMobile ? '100%' : '20%', 
         display: 'flex',
-        gap: '15px',
-        justifyContent: 'flex-start', 
+        gap: isMobile ? '20px' : '15px',
+        justifyContent: isMobile ? 'flex-end' : 'flex-start', 
+        marginTop: isMobile ? '10px' : '0', 
     };
-
     const iconStyle: CSSProperties = {
         cursor: 'pointer',
         opacity: 0.8,
         transition: 'opacity 0.2s',
+        height: isMobile ? '16px' : '20px',
+        width: isMobile ? '16px' : '20px',
     };
 
     const headerFileActuStyle: CSSProperties = {
@@ -169,6 +197,43 @@ export default function FilActualite(){
             transition: 'transform 0.2s ease-in-out',
             color: 'white',
         };
+
+    const selectTypeStyle: CSSProperties = {
+        width: '100%',
+        padding: isMobile ? '0.75rem' : '0.8rem',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: '#D1D5DB', 
+        backgroundColor: '#5A8FAC', 
+        borderRadius: isMobile ? '0.375rem' : '0.5rem',
+        color: 'white',
+        fontSize: isMobile ? '0.875rem' : '1rem',
+        outline: 'none',
+        fontFamily: 'sans-serif',
+        boxSizing: 'border-box',
+    }
+
+
+    const handleEditActu = (data:any) => {
+        setSelectedActu(data);
+        setEditActu(true);
+    }
+
+    const handleDeleteActu = (data:any) => {
+    }
+
+    const handleSubmitEditFilActu = ()=>{
+        setEditActu(false);
+    }
+
+    let initialData = {}
+
+    if (selectedActu) {
+        initialData = {
+            title: selectedActu.title,
+            url: selectedActu.url,
+         }
+    }
 
     return (
         <div style={containerStyle}>
@@ -199,15 +264,16 @@ export default function FilActualite(){
 
 
               <div style={footerInputStyle}>
-                
+                    
                 <div style={typeInputWrapperStyle}>
-                    <InputAndTitleComponent 
-                      titleInput='Type' 
-                      typeInput='text' 
-                      placeholderInput='Facebook, Twitter, Youtube' 
-                      inputValue={formData.type} 
-                      setInputValue={(newValue)=>handleChange('type',newValue)} 
-                    />
+                    <select style={selectTypeStyle} 
+                        onChange={e=>handleChange('type', e.target.value)}
+                        >
+                        <option value="" disabled selected>Type</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="youtube">Youtube</option>
+                    </select>
                 </div>
                 
                 <div style={buttonStyle}>
@@ -235,25 +301,50 @@ export default function FilActualite(){
             
             <div style={headerCellStyle}>
                 <div style={titleColumnStyle}>Titres</div>
-                <div style={dateColumnStyle}>Dates</div>
+                <div style={dateColumnStyle}>Urls</div>
                 <div style={actionsColumnStyle}>Actions</div>
             </div>
 
-            <div style={rowStyle}>
-                <div style={titleColumnStyle}>{data.title}</div>
-                <div style={dateColumnStyle}>{data.date}</div>
-                <div style={actionsColumnStyle}>
-                  <button style={iconButtonStyle}>
-                    <Pencil style={iconStyle} />
-                  </button>
-                    <button style={iconButtonStyle}>
-                    <Trash2 style={iconStyle} />
-                  </button>
+               {
+                data.map((data, index) => (
+                    <div key={index} style={rowStyle}>
+                        <div style={titleColumnStyle}>
+                            {data.title}
+                        </div>
+                        
+                    <div style={dateColumnStyle}>
+                        {isMobile && <span style={{ fontWeight: 'bold', marginRight: '5px' }}>URLS:</span>}
+                        <a href={data.url} target="_blank" rel="noopener noreferrer" style={{color: 'inherit', textDecoration: 'none'}}>
+                            {data.url}
+                        </a>
+                    </div>
+                
+                    <div style={actionsColumnStyle}>
+                        <button style={iconButtonStyle} onClick={()=>handleEditActu(data)}>
+                            <Pencil style={iconStyle} />
+                        </button>
+                        <button style={iconButtonStyle} onClick={()=>handleDeleteActu(data)}>
+                            <Trash2 style={iconStyle} />
+                        </button>
+                    </div>
                 </div>
-            </div>
+            ))
+        }
+                
+                
 
 
         </div>
+
+        <AddElementModal 
+            isOpen={editActu} 
+            onClose={() => setEditActu(false)}
+            onSubmit={handleSubmitEditFilActu}
+            titleComponent="Modifier Informations"
+            buttonTitle="Modifier"
+            fields={filActuFiels}
+            initialData={initialData}
+        />
             
         </div>
     )

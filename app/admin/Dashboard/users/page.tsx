@@ -3,8 +3,7 @@ import ButtonComponent from "@/app/components/button";
 import SearchBarComponent from "@/app/components/searchBar";
 import React, { CSSProperties, useState, useEffect } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
-import AddUserModal from "@/app/components/addUser";
-
+import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 
 interface User {
     id: number;
@@ -13,13 +12,26 @@ interface User {
     role: string;
 }
 
+const userFields : FormFieldConfig[] = [
+    { name: 'name', label: 'Nom complet', type: 'text', placeholder: 'Entrez les noms', required: true },
+    { name: 'email', label: 'Email', type: 'email', placeholder: 'Entrez l\'email', required: true },
+    { name: 'role', label: 'Rôle', type: 'select', options: [
+        { value: 'Administrateur', label: 'Administrateur' },
+        { value: 'Utilisateur', label: 'Utilisateur' },
+    ], required: true },
+    { name: 'password', label: 'Mot de passe', type: 'password', placeholder: 'Entrez le mot de passe', required: true },
+]
+
 export default function Utilisateurs() {
     const [inputValue, setInputValue] = useState('');
     const [windowWidth, setWindowWidth] = useState(1200);
     const [addUser, setAddUser] = useState(false);
+    const [editUser,setEditUser] = useState(false)
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
     const [users, setUsers] = useState<User[]>([
         { id: 1, name: 'Adou johan', email: 'joka@gmail.com', role: 'Administrateur' },
-        { id: 2, name: 'Marie Kouassi', email: 'marie.k@gmail.com', role: 'Éditeur' },
+        { id: 2, name: 'Marie Kouassi', email: 'marie.k@gmail.com', role: 'Administrateur' },
         { id: 3, name: 'Jean Yao', email: 'jean.yao@gmail.com', role: 'Utilisateur' },
     ]);
 
@@ -53,9 +65,17 @@ export default function Utilisateurs() {
       setAddUser(false);
     }
 
+  
+
     const handleEdit = (user: User) => {
-        alert(`Éditer ${user.name}`);
+        setSelectedUser(user);
+        setEditUser(true);
     };
+
+
+    const handleSubmitEditUser = (formData:any)=>{
+        setEditUser(false);
+    }
 
     const handleDelete = (userId: number) => {
         if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
@@ -81,6 +101,7 @@ export default function Utilisateurs() {
         alignItems: isMobile ? 'flex-start' : 'center',
         marginBottom: isMobile ? '1rem' : '1.5rem',
         gap: isMobile ? '1rem' : '0',
+        width: '100%',
     };
 
     const titleStyle: CSSProperties = {
@@ -91,11 +112,12 @@ export default function Utilisateurs() {
     };
 
     const searchContainerStyle: CSSProperties = {
-        marginBottom: isMobile ? '1rem' : '1.5rem',
+        marginBottom: isMobile ? '1rem' : '1.8rem',
+        width: isMobile ? '100%' : isTablet ? '50%' : '50%',
     };
 
     const tableContainerStyle: CSSProperties = {
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        backgroundColor: '#325470ff',
         borderRadius: '0.75rem',
         overflow: 'hidden',
         backdropFilter: 'blur(10px)',
@@ -148,7 +170,7 @@ export default function Utilisateurs() {
         const [isDeleteHovered, setIsDeleteHovered] = useState(false);
 
         const cardStyle: CSSProperties = {
-            backgroundColor: '#50789B',
+            backgroundColor: '#22415bff',
             borderRadius: '0.5rem',
             padding: '1rem',
             marginBottom: '1rem',
@@ -258,6 +280,13 @@ export default function Utilisateurs() {
         );
     };
 
+    let initialData = {};
+    if (selectedUser) {
+        initialData = {
+            name: selectedUser.name,
+            email: selectedUser.email,
+         }
+    }
     return (
         <div style={pageContainerStyle}>
             <div style={headerStyle}>
@@ -321,10 +350,24 @@ export default function Utilisateurs() {
                 </div>
             )}
 
-            <AddUserModal 
+            <AddElementModal 
                 isOpen={addUser} 
                 onClose={() => setAddUser(false)}
                 onSubmit={handleSubmitUser}
+                titleComponent="Ajout utilisateur"
+                buttonTitle="Inscrire"
+                fields={userFields}
+                initialData={{name:'kouassi jean',email:'jean@gmailcom'}}
+            />
+
+            <AddElementModal 
+                isOpen={editUser} 
+                onClose={() => setEditUser(false)}
+                onSubmit={handleSubmitEditUser}
+                titleComponent="Modifier Informations"
+                buttonTitle="Modifier"
+                fields={userFields}
+                initialData={initialData}
             />
         </div>
     );

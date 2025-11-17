@@ -1,17 +1,50 @@
 'use client'
 import ButtonComponent from "@/app/components/button";
-import React, { CSSProperties, useState, useEffect } from 'react';
+import React, { CSSProperties, useState, useEffect,useMemo } from 'react';
 import { Pencil, Trash2, X, ChevronDown } from 'lucide-react';
 
 
-export default function AddUserModal  ({ isOpen, onClose, onSubmit }: any)  {
+
+
+export interface FormFieldConfig {
+    name: string; 
+    label: string; 
+    type: 'text' | 'email' | 'password' | 'select' | 'textarea'; 
+    placeholder?: string; 
+    required?: boolean; 
+    options?: { value: string; label: string }[]; 
+}
+
+interface AddElementModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSubmit: (data: any) => void;
+    titleComponent: string;
+    buttonTitle: string;
+    fields: FormFieldConfig[];
+    initialData?: { [key: string]: string };
+}
+
+
+
+export default function AddElementModal  ({ isOpen, onClose, onSubmit,titleComponent,buttonTitle,fields,initialData={} }: AddElementModalProps)  {
     const [windowWidth, setWindowWidth] = useState(1200);
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        role: '',
-        password: ''
-    });
+
+    const initialFormData = () => {
+        return fields.reduce((acc, field) => {
+            acc[field.name] = initialData[field.name] || '';
+            return acc;
+        }, {} as { [key: string]: string });
+    };
+    const initialFormDataMemo = useMemo(initialFormData, [fields, initialData]);
+
+    const [formData, setFormData] = useState(initialFormDataMemo);
+
+    useEffect(() => {
+        
+        setFormData(initialFormDataMemo);
+    }, [initialFormDataMemo,isOpen]);
+
 
     useEffect(() => {
         setWindowWidth(window.innerWidth);
@@ -38,7 +71,7 @@ export default function AddUserModal  ({ isOpen, onClose, onSubmit }: any)  {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSubmit(formData);
-        setFormData({ name: '', email: '', role: '', password: '' });
+        setFormData(initialFormDataMemo);
     };
 
     const overlayStyle: CSSProperties = {
@@ -56,16 +89,14 @@ export default function AddUserModal  ({ isOpen, onClose, onSubmit }: any)  {
     };
 
     const modalStyle: CSSProperties = {
-        backgroundColor: '#5f8fb4',
+        backgroundColor: '#5A8FAC',
         borderRadius: '1rem',
         padding: isMobile ? '1.5rem' : '2rem',
         width: '100%',
-        maxWidth: isMobile ? '100%' : '450px',
+        maxWidth: isMobile ? '100%' : '300px',
         maxHeight: '90vh',
         overflowY: 'auto',
         position: 'relative',
-        border: '2px solid #E65A46',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
     };
 
     const headerStyle: CSSProperties = {
@@ -109,7 +140,7 @@ export default function AddUserModal  ({ isOpen, onClose, onSubmit }: any)  {
 
     const inputStyle: CSSProperties = {
         width: '100%',
-        padding: isMobile ? '0.75rem' : '1rem',
+        padding: isMobile ? '0.75rem' : '0.8rem',
         borderRadius: '0.5rem',
         border: 'none',
         backgroundColor: '#2d4f6b',
@@ -128,8 +159,13 @@ export default function AddUserModal  ({ isOpen, onClose, onSubmit }: any)  {
     const selectStyle: CSSProperties = {
         ...inputStyle,
         appearance: 'none',
-        paddingRight: '2.5rem',
         cursor: 'pointer',
+    };
+
+   const  labelInputStyle : CSSProperties = {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.2rem',
     };
 
     const selectIconStyle: CSSProperties = {
@@ -141,72 +177,70 @@ export default function AddUserModal  ({ isOpen, onClose, onSubmit }: any)  {
         color: 'white',
     };
 
+    const handleChange = (name: string, value: string) => {
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+
+    const renderField = (field: FormFieldConfig) => {
+        switch (field.type) {
+            case 'select':
+                return (
+                    <div key={field.name} style={labelInputStyle}>
+                        <label style={labelStyle}>{field.label}</label>
+                        <div style={selectContainerStyle}>
+                            <select
+                                style={selectStyle}
+                                value={formData[field.name] || ''}
+                                onChange={(e) => handleChange(field.name, e.target.value)}
+                                required={field.required}
+                            >
+                                <option value="">Sélectionner {field.label.toLowerCase()}</option>
+                                {field.options?.map(option => (
+                                    <option key={option.value} value={option.value}>{option.label}</option>
+                                ))}
+                            </select>
+                            <ChevronDown style={selectIconStyle} size={20} />
+                        </div>
+                    </div>
+                );
+            case 'text':
+            case 'email':
+            case 'password':
+            default:
+                return (
+                    <div key={field.name} style={labelInputStyle}>
+                        <label style={labelStyle}>{field.label}</label>
+                        <input
+                            type={field.type}
+                            style={inputStyle}
+                            placeholder={field.placeholder || ''}
+                            value={formData[field.name] || ''}
+                            onChange={(e) => handleChange(field.name, e.target.value)}
+                            required={field.required}
+                        />
+                    </div>
+                );
+        }
+    };
+
     return (
         <div style={overlayStyle} onClick={onClose}>
             <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
                 <div style={headerStyle}>
-                    <h2 style={titleStyle}>Ajout utilisateur</h2>
+                    <h2 style={titleStyle}>{titleComponent}</h2>
                     <button style={closeButtonStyle} onClick={onClose} aria-label="Fermer">
                         <X size={24} />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} style={formStyle}>
-                    <div>
-                        <label style={labelStyle}>Nom complet</label>
-                        <input
-                            type="text"
-                            style={inputStyle}
-                            placeholder="josua karma"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <label style={labelStyle}>E-mail</label>
-                        <input
-                            type="email"
-                            style={inputStyle}
-                            placeholder="jokia@gmail.com"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <label style={labelStyle}>Role</label>
-                        <div style={selectContainerStyle}>
-                            <select
-                                style={selectStyle}
-                                value={formData.role}
-                                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                                required
-                            >
-                                <option value="">Sélectionner un rôle</option>
-                                <option value="Administrateur">Administrateur</option>
-                                <option value="Utilisateur">Utilisateur</option>
-                            </select>
-                            <ChevronDown style={selectIconStyle} size={20} />
-                        </div>
-                    </div>
-
-                    <div>
-                        <label style={labelStyle}>Mot de passe</label>
-                        <input
-                            type="password"
-                            style={inputStyle}
-                            placeholder="••••••••"
-                            value={formData.password}
-                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            required
-                        />
-                    </div>
-
+                    {fields.map(field => renderField(field))}
                     <div style={{ marginTop: '1rem' , justifyContent: 'center', display: 'flex' }}>
-                        <ButtonComponent textButton="Inscrire" size="small"/>
+                        <ButtonComponent textButton={buttonTitle} size="medium"/>
                     </div>
                 </form>
             </div>

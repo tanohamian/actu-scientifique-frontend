@@ -3,12 +3,25 @@ import ButtonComponent from '@/app/components/button';
 import SearchBarComponent from '@/app/components/searchBar';
 import EventDataTable, { TableData } from '@/app/components/eventDataTable';
 import React,{CSSProperties,useState,useEffect} from 'react'
+import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
+import { useRouter } from 'next/navigation';
+import CalendarComponent from '@/app/components/calendarComponent';
+import Calendar from '@/app/components/calendarCompenetWithFullCalendar';
 
 
 const mainEventData : TableData[] = [
     { title: 'IA dans le journalisme', lieu: 'Dakar', status: 'pas en direct', date: '14/10/2025', heure: '10:00' },
     { title: 'IA dans le journalisme', lieu: 'Bouaké', status: 'pas en direct', date: '14/10/2025', heure: '10:00' },
 ];
+
+
+const EventFields : FormFieldConfig[] = [
+    { name: 'title', label: 'Titre de l\'évènement', type: 'text', placeholder: 'Entrez le titre de l\'évènement', required: true },
+    { name: 'lieu', label: 'Lieu', type: 'text', placeholder: 'Entrez le lieu de l\'évènement', required: true },
+    { name: 'date', label: 'Date', type: 'text', placeholder: 'Entrez la date de l\'évènement', required: true },
+    { name: 'heure', label: 'Heure', type: 'text', placeholder: 'Entrez l\'heure de l\'évènement', required: true },
+    { name: 'status', label: 'Statut', type: 'select', options: [ { value: 'live', label: 'En direct' }, { value: 'not_live', label: 'Pas en direct' } ], required: true },
+]
 
 const mainHeaders = [
     { key: 'title', label: 'Titre de l\'evenement', flexBasis: '25%' },
@@ -35,9 +48,12 @@ export default function EventPage(){
     
     const [inputValue, setInputValue] = useState('');
     const [windowWidth, setWindowWidth] = useState(1200);
-
+    const [isOpen,setIsOpen] = useState(false);
+    const [editEvent,setEditEvent] = useState(false)
+    const [selectedEvent,setSelectedEvent] = useState<TableData | null>(null);
     const MOBILE_BREAKPOINT = 768;
     const TABLET_BREAKPOINT = 1024;
+    const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
     
     
     
@@ -51,12 +67,13 @@ export default function EventPage(){
         const isMobile = windowWidth < MOBILE_BREAKPOINT;
         const isTablet = windowWidth >= MOBILE_BREAKPOINT && windowWidth < TABLET_BREAKPOINT;
 
+        const router = useRouter()
     const headerStyle: CSSProperties = {
         display: 'flex',
         flexDirection: isMobile ? 'column' : 'row',
         justifyContent: 'space-between',
         alignItems: isMobile ? 'flex-start' : 'center',
-        marginBottom: isMobile ? '1rem' : '1.5rem',
+        marginBottom: isMobile ? '1rem' : '0.5rem',
         gap: isMobile ? '1rem' : '0',
         padding: isMobile ? '20px' : '40px', 
     }
@@ -114,6 +131,46 @@ export default function EventPage(){
       color: 'white', 
       borderRadius: '6px', 
     };
+
+    const handleEvent = ()=>{
+        setIsOpen(true);
+    }
+    const handleSubmitEvent = () =>{
+
+    }
+
+    let initialData = {
+        title: '',
+        lieu: '',
+        date: '',
+        heure: '',
+        status: '',
+    };
+
+    const handleEditEvent = (item:TableData) =>{
+       console.log('Editing event:', item);
+        setSelectedEvent(item);
+        setEditEvent(true)
+    }
+
+    const handleSubmitEditEvent = () =>{
+        setEditEvent(false)
+    }
+
+    if(selectedEvent){
+        initialData = {
+            title: selectedEvent.title as string || '', 
+            lieu: selectedEvent.lieu as string || '',
+            date: selectedEvent.date as string || '',
+            heure: selectedEvent.heure as string || '',
+            status: selectedEvent.status as string || '',
+        }
+    }
+
+    const handleTabClick = (mode: 'list' | 'calendar') => {
+        setViewMode(mode);
+    }
+
     return (
         <div style={pageContainerStyle}>
             <div style={headerStyle}>
@@ -121,7 +178,7 @@ export default function EventPage(){
                     <h1 style={textStyle}>Gestion des Evènements</h1> 
                     <h3 style={{color:'white', fontSize: isMobile ? '0.9rem' : '1rem' }}>Ajouter, modifier et supprimer des évènements</h3>
                 </div>
-                <ButtonComponent textButton='Ajouter un évènement' size={isMobile ? 'medium' : 'large'} onclick={()=>{}} />
+                <ButtonComponent textButton='Ajouter un évènement' size={isMobile ? 'medium' : 'large'} onclick={handleEvent} />
             </div>
 
             <div style={contentContainerStyle}>
@@ -137,30 +194,70 @@ export default function EventPage(){
                             backgroundColor: TABS_ACTIVE_COLOR, 
                             color: 'white',
                             boxShadow: '0 2px 5px rgba(0, 0, 0, 0.4)', 
-                        }}>Liste</button>
+                        }}  onClick={()=>{handleTabClick('list');router.push('/admin/dashboard/event')}} >
+                            
+                            Liste</button>
     
                         <button style={{
                             ...tabButtonStyle,
                             backgroundColor: 'transparent', 
                             color: 'white',
-                        }}>Calendrier</button>
+                        }}
+                        onClick={()=>handleTabClick('calendar')}
+                        >Calendrier</button>
                     </div>
                 </div>
 
 
-                <EventDataTable 
-                    tableTitle=""
-                    data={mainEventData}
-                    columnHeaders={mainHeaders}
-                />
-                
-                <EventDataTable 
-                    tableTitle="Evènements en direct"
-                    data={liveEventData}
-                    columnHeaders={liveHeaders}
-                />
+               {
+                    viewMode === 'list' ? (
+                        <>
+                             <EventDataTable 
+                                tableTitle=""
+                                data={mainEventData}
+                                columnHeaders={mainHeaders}
+                                handleEditEvent={handleEditEvent}
+                            />
+                    
+                            <EventDataTable 
+                                tableTitle="Evènements en direct"
+                                data={liveEventData}
+                                columnHeaders={liveHeaders}
+                            />
+                        
+                        </>
+                    ) : (
+                        <>
+                          <Calendar/>
+                        </>
+                    )
+            
+            
+                }
 
             </div>
+
+            <AddElementModal 
+                isOpen={isOpen} 
+                onClose={() => setIsOpen(false)}
+                onSubmit={handleSubmitEvent}
+                titleComponent="Ajouter un évènement"
+                buttonTitle="Ajouter"
+                fields={EventFields}
+                initialData={initialData}
+            />
+            
+             <AddElementModal 
+                isOpen={editEvent} 
+                onClose={() => setEditEvent(false)}
+                onSubmit={handleSubmitEditEvent}
+                titleComponent="Modifier un évènement"
+                buttonTitle="Modifier"
+                fields={EventFields}
+                initialData={initialData}
+            />
+
+
         </div>
     )
 }

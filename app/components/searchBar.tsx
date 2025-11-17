@@ -34,7 +34,6 @@ export default function SearchBarComponent({placeholder, inputValue, setInputVal
 
     const containerStyle: CSSProperties = {
         display: 'flex', 
-        alignItems: 'center',
         width: isMobile ? '100%' : '100%',
         maxWidth: isMobile ? '100%' : isTablet ? '500px' : '600px',
         padding: isMobile ? '8px 15px' : '10px 20px',
