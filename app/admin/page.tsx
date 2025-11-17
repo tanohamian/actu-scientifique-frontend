@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 interface FormState {
     email: string;
@@ -9,6 +9,24 @@ interface FormState {
 }
 
 export default function Connexion() {
+
+    const [windowWidth, setWindowWidth] = useState(1200);
+
+    const MOBILE_BREAKPOINT = 768;
+    const TABLET_BREAKPOINT = 1024;
+    
+    
+    
+    useEffect(() => {
+        setWindowWidth(window.innerWidth);
+        const handleResize = () => setWindowWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+    
+    const isMobile = windowWidth < MOBILE_BREAKPOINT;
+    const isTablet = windowWidth >= MOBILE_BREAKPOINT && windowWidth < TABLET_BREAKPOINT;
+
     const [formData, setFormData] = useState<FormState>({
         email: "",
         password: ""
@@ -28,7 +46,6 @@ export default function Connexion() {
     const handleSubmit = () => {
         console.log("Connexion avec:", formData);
         router.push('admin/dashboard')
-        // Ajoutez ici votre logique de connexion
     };
 
     const containerStyle: React.CSSProperties = {
@@ -37,21 +54,22 @@ export default function Connexion() {
         justifyContent: "center",
         alignItems: "center",
         background: "linear-gradient(135deg, #588DA9 0%, #4a7390 100%)",
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        padding: isMobile ? "20px" : "0", 
     };
 
     const formContainerStyle: React.CSSProperties = {
         backgroundColor: "#ffffff",
         borderRadius: "12px",
         boxShadow: "0 10px 40px rgba(0, 0, 0, 0.2)",
-        padding: "50px 40px",
+        padding: isMobile ? "30px 20px" : "50px 40px", 
         width: "100%",
         maxWidth: "420px"
     };
 
     const titleStyle: React.CSSProperties = {
         color: "#588DA9",
-        fontSize: "32px",
+        fontSize: isMobile ? "24px" : "32px",
         fontWeight: "600",
         marginBottom: "10px",
         textAlign: "center"
@@ -59,7 +77,7 @@ export default function Connexion() {
 
     const subtitleStyle: React.CSSProperties = {
         color: "#6b7280",
-        fontSize: "14px",
+        fontSize: isMobile ? "12px" : "14px",
         marginBottom: "35px",
         textAlign: "center"
     };

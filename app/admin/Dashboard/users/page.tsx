@@ -148,7 +148,7 @@ export default function Utilisateurs() {
         const [isDeleteHovered, setIsDeleteHovered] = useState(false);
 
         const cardStyle: CSSProperties = {
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            backgroundColor: '#50789B',
             borderRadius: '0.5rem',
             padding: '1rem',
             marginBottom: '1rem',
