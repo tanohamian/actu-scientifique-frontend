@@ -3,7 +3,9 @@ import React, { useRef, useState } from 'react';
 // 1. IMPORTER LE MODULE SCSS
 import styles from "@styles/FileUpload.module.scss" 
 
-const FileUpload = () => {
+import image from "@public/assets/Picture.svg"
+import Image from 'next/image';
+const FileUpload = (): React => {
     const fileInputRef = useRef<HTMLButtonElement>(null);
     const [fileName, setFileName] = useState(null); 
 
@@ -36,8 +38,8 @@ const FileUpload = () => {
                 className={styles.iconContainer}
                 title="Cliquer pour téléverser une image"
             >
-                <img 
-                    src="../../public/assets/Picture.svg"
+                <Image 
+                    src={image}
                     alt="Icône Téléverser une image" 
                     // Utilisation de styles.uploadIcon
                     className={styles.uploadIcon}

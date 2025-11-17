@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react'
 import ComponenteFormulaire from '../newsletters/components/ComponenteFormulaire';
-import Affichage, { Article } from '../newsletters/components/Affichage';
+import Affichage, { AffichageType, Article } from '../newsletters/components/Affichage';
 import { IFilter } from '@/app/components/filter';
 
 export default function Page() {
@@ -60,7 +60,7 @@ export default function Page() {
       <div style={leftSection}>
         <h1 style={title}>Gestion des Articles</h1>
         <Affichage 
-          isArticle = {true}
+          type = {AffichageType.ARTICLE}
           items={artilces}
           hasFilter={true}
           filters={filters}
