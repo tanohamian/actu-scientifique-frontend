@@ -15,8 +15,13 @@
     "lucide-react": "^0.553.0",
     "next": "16.0.1",
     "react": "19.2.0",
+<<<<<<< HEAD
     "react-calendar": "^6.0.0",
     "react-dom": "19.2.0"
+=======
+    "react-dom": "19.2.0",
+    "sass": "^1.94.0"
+>>>>>>> 83497cf8e8428709984ab46b045e18e7f5ebe167
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

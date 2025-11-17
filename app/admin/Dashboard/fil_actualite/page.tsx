@@ -269,7 +269,7 @@ export default function FilActualite(){
                     <select style={selectTypeStyle} 
                         onChange={e=>handleChange('type', e.target.value)}
                         >
-                        <option value="" disabled selected>Type</option>
+                        <option value="" selected>Type</option>
                         <option value="facebook">Facebook</option>
                         <option value="twitter">Twitter</option>
                         <option value="youtube">Youtube</option>

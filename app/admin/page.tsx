@@ -1,7 +1,12 @@
 "use client"
 
+<<<<<<< HEAD
 import { useRouter } from "next/navigation";
 import { useState,useEffect } from "react";
+=======
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+>>>>>>> 83497cf8e8428709984ab46b045e18e7f5ebe167
 
 interface FormState {
     email: string;
@@ -10,6 +15,7 @@ interface FormState {
 
 export default function Connexion() {
 
+<<<<<<< HEAD
     const [windowWidth, setWindowWidth] = useState(1200);
 
     const MOBILE_BREAKPOINT = 768;
@@ -26,15 +32,14 @@ export default function Connexion() {
     
     const isMobile = windowWidth < MOBILE_BREAKPOINT;
     const isTablet = windowWidth >= MOBILE_BREAKPOINT && windowWidth < TABLET_BREAKPOINT;
+=======
+    const router = useRouter()
+>>>>>>> 83497cf8e8428709984ab46b045e18e7f5ebe167
 
     const [formData, setFormData] = useState<FormState>({
         email: "",
         password: ""
     });
-
-
-    const router = useRouter()
-
 
     const handleInputChange = (field: keyof FormState, value: string) => {
         setFormData(prev => ({
