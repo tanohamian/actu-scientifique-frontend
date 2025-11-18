@@ -1,5 +1,260 @@
+'use client';
+import ButtonComponent from '@/app/components/button';
+import InputAndTitleComponent from '@/app/components/inputvalueAndTitle';
+import SearchBarComponent from '@/app/components/searchBar';
+import React, { CSSProperties, useState, useEffect } from 'react';
+import { Pencil, Trash2 } from 'lucide-react';
+
+
+// ... (Interface FormData et Hooks useState/useEffect/handleChange inchangés)
+
+interface FormData {
+    title: string;
+    url: string;
+    description: string;
+    type: string;
+}
+
+
+
+
 export default function FilActualite(){
+
+    const [windowWidth, setWindowWidth] = useState(1200);
+    const [inputValue, setInputValue] = useState<string>('');
+    const [formData, setFormData] = useState<FormData>({
+      title: '',
+      url: '',
+      description: '',
+      type:''
+    })
+
+    const MOBILE_BREAKPOINT = 768;
+    const TABLET_BREAKPOINT = 1024;
+
+    useEffect(() => {
+        setWindowWidth(window.innerWidth);
+        const handleResize = () => setWindowWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+        
+    const isMobile = windowWidth < MOBILE_BREAKPOINT;
+    const isTablet = windowWidth >= MOBILE_BREAKPOINT && windowWidth < TABLET_BREAKPOINT;
+
+    const handleChange = (field: keyof FormData, value: string) => {
+        setFormData(prevData => ({
+            ...prevData, 
+            [field]: value 
+        }));
+    };
+
+    const containerStyle : CSSProperties = {
+        margin: '0',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: isMobile ? '20px' : '40px', 
+        fontFamily: 'sans-serif',
+    }
+
+    const firstInputStyle : CSSProperties = {
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        gap: isMobile ? '10px' : '20px',
+        marginTop: '20px',
+    }
+
+    const inputWrapperStyle : CSSProperties = {
+        flex: isMobile ? 'none' : 1, 
+    }
+
+    const footerInputStyle : CSSProperties = {
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        gap: isMobile ? '10px' : '20px',
+        marginTop: '20px',
+        alignItems: 'flex-end',
+        justifyContent: 'flex-start', 
+    }
+    
+    const typeInputWrapperStyle: CSSProperties = {
+        width: isMobile ? '100%' : '50%',
+        flexShrink: 0
+    }
+
+    
+    const buttonStyle: CSSProperties = {
+        width: isMobile ? '100%' : '40%', 
+    }
+
+    
+
+
+    
+
+
+    const data = {
+        title: 'Bourse du meilleur journaliste',
+        date: '14/01/2027',
+    };
+
+    const listActuStyle: CSSProperties = {
+        padding: '40px',
+        backgroundColor: '#5A8FAC', 
+        color: 'white',
+        minHeight: '100vh',
+    };
+
+    
+    
+
+    const headerCellStyle: CSSProperties = {
+        display: 'flex',
+        padding: '10px 0',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.4)',
+        fontWeight: 'bold',
+        fontSize: '0.9rem',
+        textTransform: 'uppercase',
+    };
+
+    const rowStyle: CSSProperties = {
+        display: 'flex',
+        padding: '15px 0',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+        alignItems: 'center',
+    };
+
+    const titleColumnStyle: CSSProperties = {
+        flexBasis: '50%', 
+    };
+    
+    const dateColumnStyle: CSSProperties = {
+        flexBasis: '30%', 
+    };
+    
+    const actionsColumnStyle: CSSProperties = {
+        flexBasis: '20%', 
+        display: 'flex',
+        gap: '15px',
+        justifyContent: 'flex-start', 
+    };
+
+    const iconStyle: CSSProperties = {
+        cursor: 'pointer',
+        opacity: 0.8,
+        transition: 'opacity 0.2s',
+    };
+
+    const headerFileActuStyle: CSSProperties = {
+    display: 'flex',
+    flexWrap: isMobile ? 'wrap' : 'nowrap', 
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '40px',
+    gap: isMobile ? '15px' : '0', 
+};
+    
+    const titleContainerStyle: CSSProperties = {
+        display: 'flex',
+        flexDirection: 'column',
+    };
+    const iconButtonStyle: CSSProperties = {
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '0.25rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'transform 0.2s ease-in-out',
+            color: 'white',
+        };
+
     return (
-    <div><h1>FilActualite</h1> </div>
-  )
+        <div style={containerStyle}>
+            
+            <div style={{color: 'white', marginBottom: '20px'}}>
+              <h1>Gestion du fil d'actualité</h1>
+              <h3>Gérer vos fils d'actualité</h3>
+            </div>
+
+            <div>
+              <div style={firstInputStyle}>
+                  <div style={inputWrapperStyle}>
+                    <InputAndTitleComponent titleInput='Titre' typeInput='text' placeholderInput='Ecrivez le titre' inputValue={formData.title} setInputValue={(newValue)=>handleChange('title',newValue)}/>
+                  </div>
+                  <div style={inputWrapperStyle}>
+                    <InputAndTitleComponent titleInput='Lien' typeInput='text' placeholderInput='http:exemple.com' inputValue={formData.url} setInputValue={(newValue)=>handleChange('url',newValue)}/>
+                  </div>
+              </div>
+              
+              <div style={{marginTop: '20px'}}>
+                  <InputAndTitleComponent 
+                    titleInput='Description' 
+                    typeInput='textarea' 
+                    placeholderInput='Entrez une brève description' 
+                    inputValue={formData.description} 
+                    setInputValue={(newValue)=>handleChange('description',newValue)}/>
+              </div>
+
+
+              <div style={footerInputStyle}>
+                
+                <div style={typeInputWrapperStyle}>
+                    <InputAndTitleComponent 
+                      titleInput='Type' 
+                      typeInput='text' 
+                      placeholderInput='Facebook, Twitter, Youtube' 
+                      inputValue={formData.type} 
+                      setInputValue={(newValue)=>handleChange('type',newValue)} 
+                    />
+                </div>
+                
+                <div style={buttonStyle}>
+                    <ButtonComponent textButton='Ajouter' size={isMobile ? 'small' : 'medium'} onclick={() => { }} />
+                </div>
+              </div>
+
+            </div>
+
+        <div style={listActuStyle}>
+            
+               <div style={headerFileActuStyle}>
+                <div style={isMobile ? { width: '100%' } : titleContainerStyle}>
+                    <h3 style={{ margin: 0, fontSize: isMobile ? '1.5rem' : '1.8rem' }}>fil d'actualité</h3>
+                </div>
+                <div style={{ width: isMobile ? '100%' : '50%'}}> 
+                    <SearchBarComponent 
+                        placeholder="Rechercher par titre....." 
+                        inputValue={inputValue} 
+                        setInputValue={setInputValue} 
+                    />
+                </div>
+            </div>
+
+            
+            <div style={headerCellStyle}>
+                <div style={titleColumnStyle}>Titres</div>
+                <div style={dateColumnStyle}>Dates</div>
+                <div style={actionsColumnStyle}>Actions</div>
+            </div>
+
+            <div style={rowStyle}>
+                <div style={titleColumnStyle}>{data.title}</div>
+                <div style={dateColumnStyle}>{data.date}</div>
+                <div style={actionsColumnStyle}>
+                  <button style={iconButtonStyle}>
+                    <Pencil style={iconStyle} />
+                  </button>
+                    <button style={iconButtonStyle}>
+                    <Trash2 style={iconStyle} />
+                  </button>
+                </div>
+            </div>
+
+
+        </div>
+            
+        </div>
+    )
 }

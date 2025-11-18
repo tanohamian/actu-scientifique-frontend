@@ -1,146 +1,136 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
-// Les imports d'images restent inchangés
-import dashboardIcon from '@public/icones/dashboard.png';
-import articleIcon from '@public/icones/article.png';
-import mediaIcon from '@public/icones/media.png';
-import formationIcon from '@public/icones/formation.png';
-import newslettersIcon from '@public/icones/newsletters.png';
-import produitIcon from '@public/icones/produit.png';
-import usersIcon from '@public/icones/Users.png';
-import actualiteIcon from '@public/icones/actualite.png';
-import eventIcon from '@public/icones/event.png';
-import deconnexionIcon from '@public/icones/deconnexion.png';
+import { Menu, X } from 'lucide-react';
+import IconComponent from '@components/Icons';
 
 interface NavItems{
     name: string,
     path: string,
-    icon: StaticImageData 
+    icon: React.ReactElement
 }
 
-export default function SidebarComponent(){
-    const [isMobile, setIsMobile] = useState(false);
-    const sidebarWidth = isMobile ? '80px' : '256px';
+export default function SidebarComponent({ onClose, isMobile }: { onClose?: () => void; isMobile: boolean }){
+    const sidebarWidth = '256px';
 
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-
-        if (typeof window !== 'undefined') {
-            window.addEventListener('resize', handleResize);
-            handleResize();
-        }
-
-        return () => {
-            if (typeof window !== 'undefined') {
-                window.removeEventListener('resize', handleResize);
-            }
-        };
-    }, []);
-
-
+    const iconStyle: React.CSSProperties = {
+    color: 'white', 
+    width: '20px', 
+    height: '20px',
+    };
 
     const navItems : NavItems[] = [
-        {name:"Tableau de bord", path:"/admin/dashboard", icon: dashboardIcon},
-        {name:"Gestion des articles", path:"/admin/dashboard/gestion_article", icon: articleIcon},
-        {name:"Medias", path:"/admin/dashboard/medias", icon: mediaIcon},
-        {name:"Formations & Bourses", path:"/admin/dashboard/formations_bourses", icon: formationIcon},
-        {name:"Newsletters", path:"/admin/dashboard/newsletters", icon: newslettersIcon},
-        {name:"Produit & Commandes", path:"/admin/dashboard/produit_commandes", icon: produitIcon},
-        {name:"Utilisateurs", path:"/admin/dashboard/users", icon: usersIcon},
-        {name:"Fil d'actualité", path:"/admin/dashboard/fil_actualite", icon: actualiteIcon},
-        {name:"Evènements", path:"/admin/dashboard/event", icon: eventIcon}
+        {name:"Tableau de bord", path:"/admin/dashboard", icon: <IconComponent  name='ControlPanel' style={iconStyle} />},
+        {name:"Gestion des articles", path:"/admin/dashboard/gestion_article", icon: <IconComponent  name='List' style={iconStyle} />},
+        {name:"Medias", path:"/admin/dashboard/medias", icon: <IconComponent  name='Video' style={iconStyle} />},
+        {name:"Formations & Bourses", path:"/admin/dashboard/formations_bourses", icon: <IconComponent  name='Feed' style={iconStyle} />},
+        {name:"Newsletters", path:"/admin/dashboard/newsletters", icon: <IconComponent  name='Envelope' style={iconStyle} />},
+        {name:"Produit & Commandes", path:"/admin/dashboard/produit_commandes", icon: <IconComponent  name='Product' style={iconStyle} />},
+        {name:"Utilisateurs", path:"/admin/dashboard/users", icon: <IconComponent  name='UsersOnline' style={iconStyle} />},
+        {name:"Fil d'actualité", path:"/admin/dashboard/fil_actualite", icon: <IconComponent  name='Rss' style={iconStyle} />},
+        {name:"Evènements", path:"/admin/dashboard/event", icon: <IconComponent  name='Schedule' style={iconStyle} />}
     ]
 
-    const sidebarContainerStyle: React.CSSProperties = {
-        width: sidebarWidth, 
-        backgroundColor: '#50789B', 
-        color: '#FFFFFF', 
+
+const sidebarContainerStyle: React.CSSProperties = {
+        width: sidebarWidth,
+        backgroundColor: '#50789B',
+        color: '#FFFFFF',
         display: 'flex',
-        flexDirection: 'column', 
-        height: '100vh', 
-        position: 'fixed', 
-        top: 0,
-        left: 0,
-        transition: 'width 0.3s ease-in-out', 
-        zIndex: 10, 
+        flexDirection: 'column',
+        height: '100vh',
+        position: 'relative',
     };
 
     const headerStyle: React.CSSProperties = {
-        padding: '1rem', 
-        display: 'flex', 
-        alignItems: 'center', 
-        borderBottom: '1px solid white',
+        padding: '1rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+    };
+
+    const userInfoStyle: React.CSSProperties = {
+        display: 'flex',
+        alignItems: 'center',
     };
 
     const avatarCircleStyle: React.CSSProperties = {
         borderRadius: '50%',
-        backgroundColor: '#50789B', 
+        backgroundColor: '#3d6080',
         width: '40px',
         height: '40px',
         display: 'flex',
-        alignItems: 'center', 
-        justifyContent: 'center', 
+        alignItems: 'center',
+        justifyContent: 'center',
         marginRight: '0.75rem',
         flexShrink: 0,
+        fontSize: '1.25rem',
+        fontWeight: 'bold',
     };
 
     const avatarTextStyle: React.CSSProperties = {
-        fontSize: '0.875rem', 
-        fontWeight: '500', 
+        fontSize: '0.875rem',
+        fontWeight: '500',
         lineHeight: '1.25',
-        display: isMobile ? 'none' : 'block', 
-        transition: 'opacity 0.3s ease-in-out',
-        fontFamily:"sans-serif"
+        fontFamily: 'sans-serif',
+    };
+
+    const closeButtonStyle: React.CSSProperties = {
+        background: 'none',
+        border: 'none',
+        color: 'white',
+        cursor: 'pointer',
+        padding: '0.5rem',
+        display: 'flex',
+        alignItems: 'center',
     };
 
     const navStyle: React.CSSProperties = {
-        flexGrow: 1, 
-        padding: '0.5rem', 
-        overflowY: 'auto', 
+        flexGrow: 1,
+        padding: '0.5rem',
+        overflowY: 'auto',
     };
 
     const linkStyle: React.CSSProperties = {
-        display: 'flex', 
-        alignItems: 'center', 
+        display: 'flex',
+        alignItems: 'center',
         padding: '0.75rem',
-        marginTop: '0.25rem', 
-        marginBottom: '0.25rem', 
-        borderRadius: '0.5rem', 
+        marginTop: '0.25rem',
+        marginBottom: '0.25rem',
+        borderRadius: '0.5rem',
         transition: 'background-color 0.15s ease-in-out',
-
+        textDecoration: 'none',
+        color: 'white',
     };
 
     const iconWrapperStyle: React.CSSProperties = {
-        marginRight: '0.75rem', 
-        display: 'flex', 
+        marginRight: '0.75rem',
+        display: 'flex',
         alignItems: 'center',
-       
+        width: '24px',
+        height: '24px',
+        justifyContent: 'center',
     };
 
     const linkTextStyle: React.CSSProperties = {
-        display: isMobile ? 'none' : 'block',
         whiteSpace: 'nowrap',
         overflow: 'hidden',
-        color:'white',
         textOverflow: 'ellipsis',
-        textDecoration: 'none',
-        fontFamily:"sans-serif"
+        fontFamily: 'sans-serif',
+        fontSize: '0.95rem',
     };
 
     const footerStyle: React.CSSProperties = {
-        padding: '1rem', 
-        borderTop: '1px solid white'
+        padding: '1rem',
+        borderTop: '1px solid rgba(255, 255, 255, 0.2)',
     };
 
     const buttonStyle: React.CSSProperties = {
         display: 'flex',
-        alignItems: 'center', 
-        padding: '0.75rem', 
+        alignItems: 'center',
+        padding: '0.75rem',
         width: '100%',
         borderRadius: '0.5rem',
         backgroundColor: 'transparent',
@@ -148,7 +138,6 @@ export default function SidebarComponent(){
         color: 'inherit',
         cursor: 'pointer',
         transition: 'background-color 0.15s ease-in-out',
-        justifyContent: isMobile ? 'center' : 'flex-start',
     };
 
     const NavLinkItem = ({ item }: { item: NavItems }) => {
@@ -156,24 +145,23 @@ export default function SidebarComponent(){
 
         const activeLinkStyle: React.CSSProperties = {
             ...linkStyle,
-            backgroundColor: isHovered ? '#E65A46' : 'transparent',
-            textDecoration:'none'
+            backgroundColor: isHovered ? '#d78376ff' : 'transparent',
         };
 
         return (
-            <Link 
+            <Link
                 href={item.path}
                 style={activeLinkStyle}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
+                onClick={isMobile ? onClose : undefined}
             >
                 <span style={iconWrapperStyle}>
-                    <Image 
-                        src={item.icon} 
-                        alt={`${item.name} icône`} 
-                        width={17}
-                        height={28}
-                    />
+                    {item.icon ? (
+                        item.icon
+                    ) : (
+                        <span style={{ width: '20px', height: '20px', backgroundColor: '#fff', borderRadius: '4px' }} />
+                    )}
                 </span>
                 <span style={linkTextStyle}>{item.name}</span>
             </Link>
@@ -185,7 +173,7 @@ export default function SidebarComponent(){
 
         const activeButtonStyle: React.CSSProperties = {
             ...buttonStyle,
-            backgroundColor: isHovered ? '#374151' : 'transparent'
+            backgroundColor: isHovered ? '#d78376ff' : 'transparent',
         };
 
         return (
@@ -195,41 +183,41 @@ export default function SidebarComponent(){
                 onMouseLeave={() => setIsHovered(false)}
             >
                 <span style={iconWrapperStyle}>
-                    <Image 
-                        src={deconnexionIcon} 
-                        alt="Déconnexion icône" 
-                        width={20} 
-                        height={20}
-                    />
+                    <IconComponent  name='LogOut' style={iconStyle} />
                 </span>
                 <span style={linkTextStyle}>Déconnexion</span>
             </button>
         );
     };
 
-
-    return(
-        <div style={sidebarContainerStyle}> 
-        
-          <div style={headerStyle}>
-            <div style={avatarCircleStyle}>
-              <span style={{ fontSize: '1.25rem' }}></span>
+    return (
+        <div style={sidebarContainerStyle}>
+            <div style={headerStyle}>
+                <div style={userInfoStyle}>
+                    <div style={avatarCircleStyle}>
+                        <span>ED</span>
+                    </div>
+                    <div style={avatarTextStyle}>
+                        Administrateur<br />
+                        Emmanuel Dabo
+                    </div>
+                </div>
+                {isMobile && onClose && (
+                    <button onClick={onClose} style={closeButtonStyle} aria-label="Fermer le menu">
+                       <X size={24} />
+                    </button>
+                )}
             </div>
-            <div style={avatarTextStyle}>
-              Administrateur<br />
-              Emmanuel Dabo
-            </div>
-          </div>
-          
-          <nav style={navStyle}> 
-            {navItems.map((item) => (
-              <NavLinkItem key={item.path} item={item} />
-            ))}
-          </nav>
 
-          <div style={footerStyle}>
-            <DisconnectButton />
-          </div>
+            <nav style={navStyle}>
+                {navItems.map((item) => (
+                    <NavLinkItem key={item.path} item={item} />
+                ))}
+            </nav>
+
+            <div style={footerStyle}>
+                <DisconnectButton />
+            </div>
         </div>
     );
 }
