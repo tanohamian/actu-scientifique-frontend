@@ -1,7 +1,7 @@
 'use client'
 import ButtonComponent from "@/app/components/button";
 import SearchBarComponent from "@/app/components/searchBar";
-import React, { CSSProperties, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 
@@ -24,7 +24,6 @@ const userFields : FormFieldConfig[] = [
 
 export default function Utilisateurs() {
     const [inputValue, setInputValue] = useState('');
-    const [windowWidth, setWindowWidth] = useState(1200);
     const [addUser, setAddUser] = useState(false);
     const [editUser,setEditUser] = useState(false)
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -35,43 +34,26 @@ export default function Utilisateurs() {
         { id: 3, name: 'Jean Yao', email: 'jean.yao@gmail.com', role: 'Utilisateur' },
     ]);
 
-    const MOBILE_BREAKPOINT = 768;
-    const TABLET_BREAKPOINT = 1024;
-
-
-
-    useEffect(() => {
-        setWindowWidth(window.innerWidth);
-        const handleResize = () => setWindowWidth(window.innerWidth);
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    const isMobile = windowWidth < MOBILE_BREAKPOINT;
-    const isTablet = windowWidth >= MOBILE_BREAKPOINT && windowWidth < TABLET_BREAKPOINT;
 
     const handleAddUser = () => {
        setAddUser(true);
     };
 
-  const handleSubmitUser = (formData:any)=>{
-      const newUser: User = {
-        id:users.length + 1,
-        name: formData.name,
-        email: formData.email,
-        role: formData.role
-      }
-      setUsers([...users, newUser]);
-      setAddUser(false);
+    const handleSubmitUser = (formData:any)=>{
+        const newUser: User = {
+            id:users.length + 1,
+            name: formData.name,
+            email: formData.email,
+            role: formData.role
+        }
+        setUsers([...users, newUser]);
+        setAddUser(false);
     }
-
-  
 
     const handleEdit = (user: User) => {
         setSelectedUser(user);
         setEditUser(true);
     };
-
 
     const handleSubmitEditUser = (formData:any)=>{
         setEditUser(false);
@@ -88,155 +70,32 @@ export default function Utilisateurs() {
         user.email.toLowerCase().includes(inputValue.toLowerCase())
     );
 
-    const pageContainerStyle: CSSProperties = {
-        minHeight: '100vh',
-        padding: isMobile ? '1rem' : isTablet ? '1.5rem' : '2rem',
-        fontFamily: 'sans-serif',
-    };
-
-    const headerStyle: CSSProperties = {
-        display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row',
-        justifyContent: 'space-between',
-        alignItems: isMobile ? 'flex-start' : 'center',
-        marginBottom: isMobile ? '1rem' : '1.5rem',
-        gap: isMobile ? '1rem' : '0',
-        width: '100%',
-    };
-
-    const titleStyle: CSSProperties = {
-        fontSize: isMobile ? '1.5rem' : isTablet ? '1.75rem' : '2rem',
-        fontWeight: 'bold',
-        color: 'white',
-        margin: 0,
-    };
-
-    const searchContainerStyle: CSSProperties = {
-        marginBottom: isMobile ? '1rem' : '1.8rem',
-        width: isMobile ? '100%' : isTablet ? '50%' : '50%',
-    };
-
-    const tableContainerStyle: CSSProperties = {
-        backgroundColor: '#325470ff',
-        borderRadius: '0.75rem',
-        overflow: 'hidden',
-        backdropFilter: 'blur(10px)',
-    };
-
-    const tableStyle: CSSProperties = {
-        width: '100%',
-        borderCollapse: 'collapse',
-        color: 'white',
-    };
-
-    const thStyle: CSSProperties = {
-        textAlign: 'left',
-        padding: isMobile ? '0.75rem 0.5rem' : '1rem',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.3)',
-        fontSize: isMobile ? '0.875rem' : '1rem',
-        fontWeight: '600',
-        backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    };
-
-    const tdStyle: CSSProperties = {
-        padding: isMobile ? '0.75rem 0.5rem' : '1rem',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
-        fontSize: isMobile ? '0.875rem' : '1rem',
-    };
-
-    const actionsCellStyle: CSSProperties = {
-        ...tdStyle,
-        display: 'flex',
-        gap: '0.5rem',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        borderBottom: 'none',
-    };
-
-    const iconButtonStyle: CSSProperties = {
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        padding: '0.25rem',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        transition: 'transform 0.2s ease-in-out',
-        color: 'white',
-    };
-
     const MobileUserCard = ({ user }: { user: User }) => {
-        const [isEditHovered, setIsEditHovered] = useState(false);
-        const [isDeleteHovered, setIsDeleteHovered] = useState(false);
-
-        const cardStyle: CSSProperties = {
-            backgroundColor: '#22415bff',
-            borderRadius: '0.5rem',
-            padding: '1rem',
-            marginBottom: '1rem',
-            backdropFilter: 'blur(10px)',
-        };
-
-        const cardRowStyle: CSSProperties = {
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: '0.5rem',
-            fontSize: '0.875rem',
-        };
-
-        const labelStyle: CSSProperties = {
-            fontWeight: '600',
-            color: 'rgba(255, 255, 255, 0.7)',
-        };
-
-        const valueStyle: CSSProperties = {
-            color: 'white',
-        };
-
-        const actionsRowStyle: CSSProperties = {
-            display: 'flex',
-            gap: '0.75rem',
-            justifyContent: 'flex-end',
-            marginTop: '1rem',
-            paddingTop: '1rem',
-            borderTop: '1px solid rgba(255, 255, 255, 0.2)',
-        };
-
         return (
-            <div style={cardStyle}>
-                <div style={cardRowStyle}>
-                    <span style={labelStyle}>Noms :</span>
-                    <span style={valueStyle}>{user.name}</span>
+            <div className="bg-[#22415bff] rounded-lg p-4 mb-4 backdrop-blur-sm text-white md:hidden">
+                <div className="flex justify-between mb-2 text-sm">
+                    <span className="font-semibold text-white/70">Noms :</span>
+                    <span className="text-white">{user.name}</span>
                 </div>
-                <div style={cardRowStyle}>
-                    <span style={labelStyle}>Email :</span>
-                    <span style={valueStyle}>{user.email}</span>
+                <div className="flex justify-between mb-2 text-sm">
+                    <span className="font-semibold text-white/70">Email :</span>
+                    <span className="text-white">{user.email}</span>
                 </div>
-                <div style={cardRowStyle}>
-                    <span style={labelStyle}>Role :</span>
-                    <span style={valueStyle}>{user.role}</span>
+                <div className="flex justify-between text-sm">
+                    <span className="font-semibold text-white/70">Role :</span>
+                    <span className="text-white">{user.role}</span>
                 </div>
-                <div style={actionsRowStyle}>
+                <div className="flex gap-3 justify-end mt-4 pt-4 border-t border-white/20">
                     <button
-                        style={{
-                            ...iconButtonStyle,
-                            color: isEditHovered ? '#60A5FA' : 'white',
-                        }}
+                        className="p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-blue-400"
                         onClick={() => handleEdit(user)}
-                        onMouseEnter={() => setIsEditHovered(true)}
-                        onMouseLeave={() => setIsEditHovered(false)}
                         aria-label="Éditer"
                     >
                         <Pencil size={18} />
                     </button>
                     <button
-                        style={{
-                            ...iconButtonStyle,
-                            color: isDeleteHovered ? '#EF4444' : 'white',
-                        }}
+                        className="p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
                         onClick={() => handleDelete(user.id)}
-                        onMouseEnter={() => setIsDeleteHovered(true)}
-                        onMouseLeave={() => setIsDeleteHovered(false)}
                         aria-label="Supprimer"
                     >
                         <Trash2 size={18} />
@@ -247,31 +106,18 @@ export default function Utilisateurs() {
     };
 
     const ActionButtons = ({ user }: { user: User }) => {
-        const [isEditHovered, setIsEditHovered] = useState(false);
-        const [isDeleteHovered, setIsDeleteHovered] = useState(false);
-
         return (
             <>
                 <button
-                    style={{
-                        ...iconButtonStyle,
-                        color: isEditHovered ? '#60A5FA' : 'white',
-                    }}
+                    className="p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-blue-400"
                     onClick={() => handleEdit(user)}
-                    onMouseEnter={() => setIsEditHovered(true)}
-                    onMouseLeave={() => setIsEditHovered(false)}
                     aria-label="Éditer"
                 >
                     <Pencil size={20} />
                 </button>
                 <button
-                    style={{
-                        ...iconButtonStyle,
-                        color: isDeleteHovered ? '#EF4444' : 'white',
-                    }}
+                    className="p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
                     onClick={() => handleDelete(user.id)}
-                    onMouseEnter={() => setIsDeleteHovered(true)}
-                    onMouseLeave={() => setIsDeleteHovered(false)}
                     aria-label="Supprimer"
                 >
                     <Trash2 size={20} />
@@ -285,16 +131,18 @@ export default function Utilisateurs() {
         initialData = {
             name: selectedUser.name,
             email: selectedUser.email,
-         }
+        }
     }
+    
     return (
-        <div style={pageContainerStyle}>
-            <div style={headerStyle}>
-                <h1 style={titleStyle}>Gestion des utilisateurs</h1>
+        <div className="min-h-screen font-sans p-4 md:p-6 lg:p-8"> 
+            
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-6 gap-4 w-full">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-light text-white m-0">Gestion des utilisateurs</h1>
                 <ButtonComponent textButton="Ajouter un utilisateur" onclick={handleAddUser} />
             </div>
-
-            <div style={searchContainerStyle}>
+            
+            <div className="mb-4 md:mb-6 w-full md:w-1/2">
                 <SearchBarComponent
                     placeholder="Rechercher par nom ou email....."
                     inputValue={inputValue}
@@ -302,53 +150,53 @@ export default function Utilisateurs() {
                 />
             </div>
 
-            {isMobile ? (
-                <div>
-                    {filteredUsers.length > 0 ? (
-                        filteredUsers.map((user) => (
-                            <MobileUserCard key={user.id} user={user} />
-                        ))
-                    ) : (
-                        <div style={{ color: 'white', textAlign: 'center', padding: '2rem' }}>
-                            Aucun utilisateur trouvé
-                        </div>
-                    )}
-                </div>
-            ) : (
-                
-                <div style={tableContainerStyle}>
-                    <table style={tableStyle}>
-                        <thead>
-                            <tr>
-                                <th style={thStyle}>Noms</th>
-                                <th style={thStyle}>Email</th>
-                                <th style={thStyle}>Role</th>
-                                <th style={{ ...thStyle, textAlign: 'right' }}>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredUsers.length > 0 ? (
-                                filteredUsers.map((user) => (
-                                    <tr key={user.id}>
-                                        <td style={tdStyle}>{user.name}</td>
-                                        <td style={tdStyle}>{user.email}</td>
-                                        <td style={tdStyle}>{user.role}</td>
-                                        <td style={actionsCellStyle}>
-                                            <ActionButtons user={user} />
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan={4} style={{ ...tdStyle, textAlign: 'center', padding: '2rem' }}>
-                                        Aucun utilisateur trouvé
+           
+            <div className="md:hidden">
+                {filteredUsers.length > 0 ? (
+                    filteredUsers.map((user) => (
+                        <MobileUserCard key={user.id} user={user} />
+                    ))
+                ) : (
+                    <div className="text-white text-center p-8">
+                        Aucun utilisateur trouvé
+                    </div>
+                )}
+            </div>
+
+
+           
+            <div className="hidden md:block bg-[#325470ff] rounded-xl overflow-hidden backdrop-blur-sm shadow-xl">
+                <table className="w-full border-collapse text-white">
+                    <thead>
+                        <tr>
+                            <th className="text-left py-4 px-4 text-base font-semibold bg-black/10 border-b border-white/30">Noms</th>
+                            <th className="text-left py-4 px-4 text-base font-semibold bg-black/10 border-b border-white/30">Email</th>
+                            <th className="text-left py-4 px-4 text-base font-semibold bg-black/10 border-b border-white/30">Role</th>
+                            <th className="text-right py-4 px-4 text-base font-semibold bg-black/10 border-b border-white/30">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredUsers.length > 0 ? (
+                            filteredUsers.map((user) => (
+                                <tr key={user.id} className="hover:bg-white/10 transition duration-150 ease-in-out">
+                                    <td className="py-4 px-4 text-base border-b border-white/20">{user.name}</td>
+                                    <td className="py-4 px-4 text-base border-b border-white/20">{user.email}</td>
+                                    <td className="py-4 px-4 text-base border-b border-white/20">{user.role}</td>
+                                    <td className="flex gap-2 justify-end items-center py-4 px-4 border-b border-white/20">
+                                        <ActionButtons user={user} />
                                     </td>
                                 </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={4} className="py-8 px-4 text-center text-base">
+                                    Aucun utilisateur trouvé
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
 
             <AddElementModal 
                 isOpen={addUser} 

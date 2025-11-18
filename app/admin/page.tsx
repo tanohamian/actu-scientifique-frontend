@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
 import { useRouter } from "next/navigation";
-import { useState,useEffect } from "react";
+import { useState } from "react";
 
 interface FormState {
     email: string;
@@ -9,23 +9,7 @@ interface FormState {
 }
 
 export default function Connexion() {
-
-    const [windowWidth, setWindowWidth] = useState(1200);
-
-    const MOBILE_BREAKPOINT = 768;
-    const TABLET_BREAKPOINT = 1024;
-    
     const router = useRouter();
-    
-    useEffect(() => {
-        setWindowWidth(window.innerWidth);
-        const handleResize = () => setWindowWidth(window.innerWidth);
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-    
-    const isMobile = windowWidth < MOBILE_BREAKPOINT;
-    const isTablet = windowWidth >= MOBILE_BREAKPOINT && windowWidth < TABLET_BREAKPOINT;
 
     const [formData, setFormData] = useState<FormState>({
         email: "",
@@ -41,102 +25,107 @@ export default function Connexion() {
 
     const handleSubmit = () => {
         console.log("Connexion avec:", formData);
-        router.push('admin/dashboard')
+        router.push('/admin/dashboard');
     };
 
-    const containerStyle: React.CSSProperties = {
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "linear-gradient(135deg, #588DA9 0%, #4a7390 100%)",
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-        padding: isMobile ? "20px" : "0", 
-    };
 
-    const formContainerStyle: React.CSSProperties = {
-        backgroundColor: "#ffffff",
-        borderRadius: "12px",
-        boxShadow: "0 10px 40px rgba(0, 0, 0, 0.2)",
-        padding: isMobile ? "30px 20px" : "50px 40px", 
-        width: "100%",
-        maxWidth: "420px"
-    };
+    const containerClasses = `
+        min-h-screen 
+        flex 
+        justify-center 
+        items-center 
+        bg-gradient-to-br 
+        from-[#588DA9] 
+        to-[#4a7390] 
+        font-sans 
+        p-5 
+        md:p-0
+    `;
 
-    const titleStyle: React.CSSProperties = {
-        color: "#588DA9",
-        fontSize: isMobile ? "24px" : "32px",
-        fontWeight: "600",
-        marginBottom: "10px",
-        textAlign: "center"
-    };
+    const formContainerClasses = `
+        bg-white 
+        rounded-xl 
+        shadow-2xl 
+        p-8 
+        md:p-12 
+        w-full 
+        max-w-md
+    `;
 
-    const subtitleStyle: React.CSSProperties = {
-        color: "#6b7280",
-        fontSize: isMobile ? "12px" : "14px",
-        marginBottom: "35px",
-        textAlign: "center"
-    };
+    
+    const titleClasses = `
+        text-[#588DA9] 
+        text-2xl 
+        md:text-3xl 
+        font-semibold 
+        mb-2 
+        text-center
+    `;
 
-    const inputGroupStyle: React.CSSProperties = {
-        marginBottom: "25px"
-    };
+    const subtitleClasses = `
+        text-gray-500 
+        text-xs 
+        md:text-sm 
+        mb-8 
+        text-center
+    `;
 
-    const labelStyle: React.CSSProperties = {
-        display: "block",
-        color: "#374151",
-        fontSize: "14px",
-        fontWeight: "500",
-        marginBottom: "8px"
-    };
+  
+    const inputClasses = `
+        w-full 
+        p-3 
+        md:p-4 
+        text-base 
+        border-2 
+        border-gray-200 
+        rounded-lg 
+        outline-none 
+        transition-all 
+        duration-300 
+        focus:border-[#588DA9]
+    `;
 
-    const inputStyle: React.CSSProperties = {
-        width: "100%",
-        padding: "14px 16px",
-        fontSize: "15px",
-        border: "2px solid #e5e7eb",
-        borderRadius: "8px",
-        outline: "none",
-        transition: "all 0.3s ease",
-        boxSizing: "border-box"
-    };
+  
+    const buttonClasses = `
+        w-full 
+        p-3 
+        md:p-4 
+        bg-[#588DA9] 
+        text-white 
+        text-base 
+        font-semibold 
+        border-none 
+        rounded-lg 
+        cursor-pointer 
+        transition-all 
+        duration-300 
+        mt-3 
+        shadow-md 
+        hover:bg-[#4a7390]
+    `;
+    
+    const inputGroupClasses = "mb-6";
+    const labelClasses = "block text-gray-700 text-sm font-medium mb-2";
+    const linkContainerClasses = "text-center mt-6";
+    const linkClasses = `
+        text-[#588DA9] 
+        text-sm 
+        font-medium 
+        cursor-pointer 
+        hover:underline 
+        transition-colors
+    `;
 
-    const buttonStyle: React.CSSProperties = {
-        width: "100%",
-        padding: "15px",
-        backgroundColor: "#588DA9",
-        color: "#ffffff",
-        fontSize: "16px",
-        fontWeight: "600",
-        border: "none",
-        borderRadius: "8px",
-        cursor: "pointer",
-        transition: "all 0.3s ease",
-        marginTop: "10px"
-    };
-
-    const linkContainerStyle: React.CSSProperties = {
-        textAlign: "center",
-        marginTop: "25px"
-    };
-
-    const linkStyle: React.CSSProperties = {
-        color: "#588DA9",
-        fontSize: "14px",
-        textDecoration: "none",
-        fontWeight: "500",
-        cursor: "pointer"
-    };
 
     return (
-        <div style={containerStyle}>
-            <div style={formContainerStyle}>
-                <h1 style={titleStyle}>Connexion</h1>
-                <p style={subtitleStyle}>Accédez à votre tableau de bord</p>
+        <div className={containerClasses}>
+            <div className={formContainerClasses}>
+                <h1 className={titleClasses}>Connexion</h1>
+                <p className={subtitleClasses}>Accédez à votre tableau de bord</p>
 
                 <div>
-                    <div style={inputGroupStyle}>
-                        <label style={labelStyle} htmlFor="email">
+                    <div className={inputGroupClasses}>
+                        <label className={labelClasses} htmlFor="email">
                             Adresse e-mail
                         </label>
                         <input
@@ -145,14 +134,12 @@ export default function Connexion() {
                             placeholder="exemple@email.com"
                             value={formData.email}
                             onChange={(e) => handleInputChange('email', e.target.value)}
-                            style={inputStyle}
-                            onFocus={(e) => e.target.style.borderColor = "#588DA9"}
-                            onBlur={(e) => e.target.style.borderColor = "#e5e7eb"}
+                            className={inputClasses}
                         />
                     </div>
 
-                    <div style={inputGroupStyle}>
-                        <label style={labelStyle} htmlFor="password">
+                    <div className={inputGroupClasses}>
+                        <label className={labelClasses} htmlFor="password">
                             Mot de passe
                         </label>
                         <input
@@ -161,24 +148,20 @@ export default function Connexion() {
                             placeholder="••••••••"
                             value={formData.password}
                             onChange={(e) => handleInputChange('password', e.target.value)}
-                            style={inputStyle}
-                            onFocus={(e) => e.target.style.borderColor = "#588DA9"}
-                            onBlur={(e) => e.target.style.borderColor = "#e5e7eb"}
+                            className={inputClasses}
                         />
                     </div>
 
                     <button
                         onClick={handleSubmit}
-                        style={buttonStyle}
-                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#4a7390"}
-                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#588DA9"}
+                        className={buttonClasses}
                     >
                         Se connecter
                     </button>
                 </div>
 
-                <div style={linkContainerStyle}>
-                    <span style={linkStyle}>
+                <div className={linkContainerClasses}>
+                    <span className={linkClasses}>
                         Mot de passe oublié ?
                     </span>
                 </div>

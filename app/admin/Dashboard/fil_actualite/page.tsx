@@ -2,11 +2,9 @@
 import ButtonComponent from '@/app/components/button';
 import InputAndTitleComponent from '@/app/components/inputvalueAndTitle';
 import SearchBarComponent from '@/app/components/searchBar';
-import React, { CSSProperties, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
-
-
 
 interface FormData {
     title: string;
@@ -15,337 +13,360 @@ interface FormData {
     type: string;
 }
 
-const filActuFiels : FormFieldConfig[] = [
+const filActuFiels: FormFieldConfig[] = [
     { name: 'title', label: 'Titre', type: 'text', placeholder: 'Ecrivez le titre', required: true },
     { name: 'url', label: 'Lien', type: 'text', placeholder: 'http:exemple.com', required: true },
     { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une brève description', required: false },
-    { name: 'type', label: 'Type', type: 'select', options: [
-        { value: 'facebook', label: 'Facebook' },
-        { value: 'twitter', label: 'Twitter' },
-        { value: 'youtube', label: 'Youtube' }
-    ], required: true
+    {
+        name: 'type', label: 'Type', type: 'select', options: [
+            { value: 'facebook', label: 'Facebook' },
+            { value: 'twitter', label: 'Twitter' },
+            { value: 'youtube', label: 'Youtube' }
+        ], required: true
     }
 
-]
+];
 
-
-
-export default function FilActualite(){
-
-    const [windowWidth, setWindowWidth] = useState(1200);
+export default function FilActualite() {
+    // Suppression de windowWidth et de la logique de breakpoint React
     const [inputValue, setInputValue] = useState<string>('');
     const [formData, setFormData] = useState<FormData>({
-      title: '',
-      url: '',
-      description: '',
-      type:''
-    })
+        title: '',
+        url: '',
+        description: '',
+        type: ''
+    });
 
     const [editActu, setEditActu] = useState(false);
     const [selectedActu, setSelectedActu] = useState<any>(null);
 
-    
-
-    const MOBILE_BREAKPOINT = 768;
-    const TABLET_BREAKPOINT = 1024;
-
-    useEffect(() => {
-        setWindowWidth(window.innerWidth);
-        const handleResize = () => setWindowWidth(window.innerWidth);
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-        
-    const isMobile = windowWidth < MOBILE_BREAKPOINT;
-    const isTablet = windowWidth >= MOBILE_BREAKPOINT && windowWidth < TABLET_BREAKPOINT;
-
     const handleChange = (field: keyof FormData, value: string) => {
         setFormData(prevData => ({
-            ...prevData, 
-            [field]: value 
+            ...prevData,
+            [field]: value
         }));
     };
 
-    const containerStyle : CSSProperties = {
-        margin: '0',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: isMobile ? '20px' : '40px', 
-        fontFamily: 'sans-serif',
-    }
-
-    const firstInputStyle : CSSProperties = {
-        display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row',
-        gap: isMobile ? '10px' : '20px',
-        marginTop: '20px',
-    }
-
-    const inputWrapperStyle : CSSProperties = {
-        flex: isMobile ? 'none' : 1, 
-    }
-
-    const footerInputStyle : CSSProperties = {
-        display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row',
-        gap: isMobile ? '10px' : '20px',
-        marginTop: '20px',
-        alignItems: 'flex-end',
-        justifyContent: 'flex-start', 
-    }
-    
-    const typeInputWrapperStyle: CSSProperties = {
-        width: isMobile ? '100%' : '50%',
-        flexShrink: 0
-    }
-
-    
-    const buttonStyle: CSSProperties = {
-        width: isMobile ? '100%' : '40%', 
-    }
-
-    
-
-
-    
-
-
     const data = [
-        { title: 'les consequences de  la deforestation',url: 'https://www.example.com/meningite'},
-        { title: 'les consequences de  la deforestation',url: 'https://www.example.com/meningite'},
-        { title: 'les consequences de  la deforestation',url: 'https://www.example.com/meningite'},
-        { title: 'les consequences de  la deforestation',url: 'https://www.example.com/meningite'},
-        { title: 'les consequences de  la deforestation',url: 'https://www.example.com/meningite'},
-        { title: 'les consequences de  la deforestation',url: 'https://www.example.com/meningite'}
-    ]
+        { title: 'les consequences de la deforestation', url: 'https://www.example.com/meningite' },
+        { title: 'les consequences de la deforestation', url: 'https://www.example.com/meningite' },
+        { title: 'les consequences de la deforestation', url: 'https://www.example.com/meningite' },
+        { title: 'les consequences de la deforestation', url: 'https://www.example.com/meningite' },
+        { title: 'les consequences de la deforestation', url: 'https://www.example.com/meningite' },
+        { title: 'les consequences de la deforestation', url: 'https://www.example.com/meningite' }
+    ];
 
-    const listActuStyle: CSSProperties = {
-        padding: '40px',
-        backgroundColor: '#5A8FAC', 
-        color: 'white',
-        minHeight: '100vh',
-    };
-
-    
-    
-
-   const headerCellStyle: CSSProperties = {
-        display: isMobile ? 'none' : 'flex', 
-        padding: '10px 0',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.4)',
-        fontWeight: 'bold',
-        fontSize: '0.9rem',
-        textTransform: 'uppercase',
-    };
-
-    const rowStyle: CSSProperties = {
-        display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row', 
-        padding: isMobile ? '10px 0' : '15px 0',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
-        alignItems: isMobile ? 'flex-start' : 'center',
-    };
-
-   const titleColumnStyle: CSSProperties = {
-        flexBasis: isMobile ? '100%' : '50%', 
-        wordBreak: 'break-word', 
-    };
-    
-    const dateColumnStyle: CSSProperties = {
-        flexBasis: isMobile ? '100%' : '30%', 
-        wordBreak: 'break-all', 
-        fontSize: isMobile ? '0.75rem' : '0.9rem', 
-        opacity: isMobile ? 0.8 : 1,
-    };
-    
-    const actionsColumnStyle: CSSProperties = {
-        flexBasis: isMobile ? '100%' : '20%', 
-        display: 'flex',
-        gap: isMobile ? '20px' : '15px',
-        justifyContent: isMobile ? 'flex-end' : 'flex-start', 
-        marginTop: isMobile ? '10px' : '0', 
-    };
-    const iconStyle: CSSProperties = {
-        cursor: 'pointer',
-        opacity: 0.8,
-        transition: 'opacity 0.2s',
-        height: isMobile ? '16px' : '20px',
-        width: isMobile ? '16px' : '20px',
-    };
-
-    const headerFileActuStyle: CSSProperties = {
-    display: 'flex',
-    flexWrap: isMobile ? 'wrap' : 'nowrap', 
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '40px',
-    gap: isMobile ? '15px' : '0', 
-};
-    
-    const titleContainerStyle: CSSProperties = {
-        display: 'flex',
-        flexDirection: 'column',
-    };
-    const iconButtonStyle: CSSProperties = {
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '0.25rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'transform 0.2s ease-in-out',
-            color: 'white',
-        };
-
-    const selectTypeStyle: CSSProperties = {
-        width: '100%',
-        padding: isMobile ? '0.75rem' : '0.8rem',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        borderColor: '#D1D5DB', 
-        backgroundColor: '#5A8FAC', 
-        borderRadius: isMobile ? '0.375rem' : '0.5rem',
-        color: 'white',
-        fontSize: isMobile ? '0.875rem' : '1rem',
-        outline: 'none',
-        fontFamily: 'sans-serif',
-        boxSizing: 'border-box',
-    }
-
-
-    const handleEditActu = (data:any) => {
+    const handleEditActu = (data: any) => {
         setSelectedActu(data);
         setEditActu(true);
-    }
+    };
 
-    const handleDeleteActu = (data:any) => {
-    }
+    const handleDeleteActu = (data: any) => {
+        // Logique de suppression ici
+        console.log("Supprimer:", data);
+    };
 
-    const handleSubmitEditFilActu = ()=>{
+    const handleSubmitEditFilActu = () => {
         setEditActu(false);
-    }
+    };
 
-    let initialData = {}
+    let initialData = {};
 
     if (selectedActu) {
         initialData = {
             title: selectedActu.title,
             url: selectedActu.url,
-         }
+        };
     }
 
+    const containerClasses = `
+        m-0 
+        flex 
+        flex-col 
+        p-5 
+        md:p-10 
+        lg:p-16 
+        font-sans
+    `;
+
+    const firstInputClasses = `
+        flex 
+        flex-col 
+        md:flex-row 
+        gap-3 
+        md:gap-5 
+        mt-5
+    `;
+
+    const inputWrapperClasses = `
+        flex-1 
+        w-full 
+        md:w-auto
+    `;
+
+    const footerInputClasses = `
+        flex 
+        flex-col 
+        md:flex-row 
+        gap-3 
+        md:gap-5 
+        mt-5 
+        items-start 
+        md:items-end 
+        justify-start
+    `;
+
+    const typeInputWrapperClasses = `
+        w-full 
+        md:w-1/2 
+        flex-shrink-0
+    `;
+
+    const buttonClasses = `
+        w-full 
+        md:w-2/5 
+        lg:w-40
+    `;
+    
+    const listActuClasses = `
+        p-5 
+        md:p-10 
+        bg-[#5A8FAC] 
+        text-white 
+        min-h-screen 
+        mt-10 
+        rounded-xl
+    `;
+
+    const headerFileActuClasses = `
+        flex 
+        flex-wrap 
+        md:flex-nowrap 
+        justify-between 
+        items-center 
+        mb-8 
+        gap-4 
+        md:gap-0
+    `;
+
+    const headerCellClasses = `
+        hidden 
+        md:flex 
+        py-2 
+        border-b 
+        border-white/40 
+        font-bold 
+        text-sm 
+        lg:text-base 
+        uppercase
+    `;
+    
+    const rowClasses = `
+        flex 
+        flex-col 
+        md:flex-row 
+        py-3 
+        md:py-4 
+        border-b 
+        border-white/20 
+        items-start 
+        md:items-center
+    `;
+
+    const titleColumnClasses = `
+        basis-full 
+        md:basis-1/2 
+        break-words 
+        text-sm 
+        md:text-base
+    `;
+
+    const urlColumnClasses = `
+        basis-full 
+        md:basis-2/5 
+        break-all 
+        text-xs 
+        md:text-sm 
+        opacity-80 
+        md:opacity-100 
+        mt-1 
+        md:mt-0 
+        hover:underline
+    `;
+
+    const actionsColumnClasses = `
+        basis-full 
+        md:basis-1/10 
+        flex 
+        gap-4 
+        md:gap-3 
+        justify-end 
+        md:justify-start 
+        mt-2 
+        md:mt-0
+    `;
+
+    const iconButtonClasses = `
+        bg-transparent 
+        border-none 
+        cursor-pointer 
+        p-1 
+        flex 
+        items-center 
+        justify-center 
+        transition-transform 
+        duration-200 
+        text-white 
+        hover:scale-110
+    `;
+
+    const iconClasses = `
+        h-4 
+        w-4 
+        md:h-5 
+        md:w-5 
+        opacity-80
+    `;
+
+    const selectTypeClasses = `
+        w-full 
+        p-3 
+        md:p-3.5 
+        border 
+        border-gray-300 
+        bg-[#5A8FAC] 
+        rounded-md 
+        md:rounded-lg 
+        text-white 
+        text-sm 
+        md:text-base 
+        outline-none 
+        box-border
+    `;
+    
+    // Classes de titre
+    const mainTitleClasses = `text-2xl md:text-3xl font-light`;
+    const subTitleClasses = `text-lg md:text-xl font-light`;
+    
     return (
-        <div style={containerStyle}>
+        <div className={containerClasses}>
             
-            <div style={{color: 'white', marginBottom: '20px'}}>
-              <h1>Gestion du fil d'actualité</h1>
-              <h3>Gérer vos fils d'actualité</h3>
+            <div className='text-white mb-5 md:mb-8'>
+                <h1 className={mainTitleClasses}>Gestion du fil d'actualité</h1>
+                <h3 className={subTitleClasses}>Gérer vos fils d'actualité</h3>
             </div>
 
+            {/* Section Ajout d'actualité */}
             <div>
-              <div style={firstInputStyle}>
-                  <div style={inputWrapperStyle}>
-                    <InputAndTitleComponent titleInput='Titre' typeInput='text' placeholderInput='Ecrivez le titre' inputValue={formData.title} setInputValue={(newValue)=>handleChange('title',newValue)}/>
-                  </div>
-                  <div style={inputWrapperStyle}>
-                    <InputAndTitleComponent titleInput='Lien' typeInput='text' placeholderInput='http:exemple.com' inputValue={formData.url} setInputValue={(newValue)=>handleChange('url',newValue)}/>
-                  </div>
-              </div>
-              
-              <div style={{marginTop: '20px'}}>
-                  <InputAndTitleComponent 
-                    titleInput='Description' 
-                    typeInput='textarea' 
-                    placeholderInput='Entrez une brève description' 
-                    inputValue={formData.description} 
-                    setInputValue={(newValue)=>handleChange('description',newValue)}/>
-              </div>
-
-
-              <div style={footerInputStyle}>
-                    
-                <div style={typeInputWrapperStyle}>
-                    <select style={selectTypeStyle} 
-                        onChange={e=>handleChange('type', e.target.value)}
-                        >
-                        <option value="" selected>Type</option>
-                        <option value="facebook">Facebook</option>
-                        <option value="twitter">Twitter</option>
-                        <option value="youtube">Youtube</option>
-                    </select>
+                <div className={firstInputClasses}>
+                    <div className={inputWrapperClasses}>
+                        <InputAndTitleComponent 
+                            titleInput='Titre' 
+                            typeInput='text' 
+                            placeholderInput='Ecrivez le titre' 
+                            inputValue={formData.title} 
+                            setInputValue={(newValue)=>handleChange('title',newValue)}
+                        />
+                    </div>
+                    <div className={inputWrapperClasses}>
+                        <InputAndTitleComponent 
+                            titleInput='Lien' 
+                            typeInput='text' 
+                            placeholderInput='http:exemple.com' 
+                            inputValue={formData.url} 
+                            setInputValue={(newValue)=>handleChange('url',newValue)}
+                        />
+                    </div>
                 </div>
                 
-                <div style={buttonStyle}>
-                    <ButtonComponent textButton='Ajouter' size={isMobile ? 'small' : 'medium'} onclick={() => { }} />
-                </div>
-              </div>
-
-            </div>
-
-        <div style={listActuStyle}>
-            
-               <div style={headerFileActuStyle}>
-                <div style={isMobile ? { width: '100%' } : titleContainerStyle}>
-                    <h3 style={{ margin: 0, fontSize: isMobile ? '1.5rem' : '1.8rem' }}>fil d'actualité</h3>
-                </div>
-                <div style={{ width: isMobile ? '100%' : '50%'}}> 
-                    <SearchBarComponent 
-                        placeholder="Rechercher par titre....." 
-                        inputValue={inputValue} 
-                        setInputValue={setInputValue} 
+                <div className='mt-5'>
+                    <InputAndTitleComponent 
+                        titleInput='Description' 
+                        typeInput='textarea' 
+                        placeholderInput='Entrez une brève description' 
+                        inputValue={formData.description} 
+                        setInputValue={(newValue)=>handleChange('description',newValue)}
                     />
                 </div>
-            </div>
 
-            
-            <div style={headerCellStyle}>
-                <div style={titleColumnStyle}>Titres</div>
-                <div style={dateColumnStyle}>Urls</div>
-                <div style={actionsColumnStyle}>Actions</div>
-            </div>
-
-               {
-                data.map((data, index) => (
-                    <div key={index} style={rowStyle}>
-                        <div style={titleColumnStyle}>
-                            {data.title}
-                        </div>
-                        
-                    <div style={dateColumnStyle}>
-                        {isMobile && <span style={{ fontWeight: 'bold', marginRight: '5px' }}>URLS:</span>}
-                        <a href={data.url} target="_blank" rel="noopener noreferrer" style={{color: 'inherit', textDecoration: 'none'}}>
-                            {data.url}
-                        </a>
+                <div className={footerInputClasses}>
+                    <div className={typeInputWrapperClasses}>
+                        <h3 className="text-white mb-2 text-base md:text-lg">Type</h3>
+                        <select 
+                            className={selectTypeClasses} 
+                            onChange={e=>handleChange('type', e.target.value)}
+                            value={formData.type}
+                            >
+                            <option value="" disabled>Sélectionner un type</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="twitter">Twitter</option>
+                            <option value="youtube">Youtube</option>
+                        </select>
                     </div>
-                
-                    <div style={actionsColumnStyle}>
-                        <button style={iconButtonStyle} onClick={()=>handleEditActu(data)}>
-                            <Pencil style={iconStyle} />
-                        </button>
-                        <button style={iconButtonStyle} onClick={()=>handleDeleteActu(data)}>
-                            <Trash2 style={iconStyle} />
-                        </button>
+                    
+                    <div className={buttonClasses}>
+                        <ButtonComponent textButton='Ajouter' size='medium' onclick={() => { }} />
                     </div>
                 </div>
-            ))
-        }
-                
-                
-
-
-        </div>
-
-        <AddElementModal 
-            isOpen={editActu} 
-            onClose={() => setEditActu(false)}
-            onSubmit={handleSubmitEditFilActu}
-            titleComponent="Modifier Informations"
-            buttonTitle="Modifier"
-            fields={filActuFiels}
-            initialData={initialData}
-        />
+            </div>
             
+            <div className={listActuClasses}>
+                
+                <div className={headerFileActuClasses}>
+                    <div className="flex flex-col w-full md:w-auto">
+                        <h3 className="m-0 text-xl md:text-2xl font-semibold">fil d'actualité</h3>
+                    </div>
+                    <div className="w-full md:w-1/2"> 
+                        <SearchBarComponent 
+                            placeholder="Rechercher par titre....." 
+                            inputValue={inputValue} 
+                            setInputValue={setInputValue} 
+                        />
+                    </div>
+                </div>
+
+                <div className={headerCellClasses}>
+                    <div className="w-1/2">Titres</div>
+                    <div className="w-2/5">Urls</div>
+                    <div className="w-1/10 pl-3">Actions</div> 
+                </div>
+
+                {
+                    data.map((item, index) => (
+                        <div key={index} className={rowClasses}>
+                            <div className={titleColumnClasses}>
+                                {item.title}
+                            </div>
+                            
+                            <div className={urlColumnClasses}>
+                                <span className="md:hidden font-bold mr-1">URL:</span>
+                                <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-white no-underline">
+                                    {item.url}
+                                </a>
+                            </div>
+                        
+                            <div className={actionsColumnClasses}>
+                                <button className={iconButtonClasses} onClick={() => handleEditActu(item)}>
+                                    <Pencil className={iconClasses} />
+                                </button>
+                                <button className={iconButtonClasses} onClick={() => handleDeleteActu(item)}>
+                                    <Trash2 className={iconClasses} />
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
+
+            <AddElementModal 
+                isOpen={editActu} 
+                onClose={() => setEditActu(false)}
+                onSubmit={handleSubmitEditFilActu}
+                titleComponent="Modifier Informations"
+                buttonTitle="Modifier"
+                fields={filActuFiels}
+                initialData={initialData}
+            />
         </div>
-    )
+    );
 }

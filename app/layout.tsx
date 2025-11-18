@@ -1,14 +1,27 @@
+'use client';
+import './globals.css'
 
 export default function RootLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="fr">
-      <body style={{ margin: 0, padding: 0 }}>
-        {children}
-      </body>
-    </html>
-  );
+
+   
+    
+    return (
+        <html lang="fr">
+            <body>
+            <header>
+
+            </header>
+            <main>
+                 {children}
+            </main>
+            <footer>
+                
+            </footer>
+            </body>  
+        </html>
+    );
 }

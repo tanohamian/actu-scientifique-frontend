@@ -1,5 +1,5 @@
 'use client';
-import React, { CSSProperties, useState, useEffect } from 'react';
+import React from 'react';
 
 interface inputAndTitleProps {
     titleInput: string;
@@ -9,63 +9,59 @@ interface inputAndTitleProps {
     setInputValue: (value: string) => void;
 }
 
+// Styles pour cibler le placeholder (non possible avec Tailwind direct)
+const placeholderStyle = `
+    .custom-input::placeholder {
+        color: rgba(255, 255, 255, 0.8);
+    }
+`;
+
 
 export default function InputAndTitleComponent({ titleInput, typeInput, placeholderInput, inputValue, setInputValue }: inputAndTitleProps) {
-    const [windowWidth, setWindowWidth] = useState(1200);
-    const [isFocused, setIsFocused] = useState(false);
-
-    const MOBILE_BREAKPOINT = 768;
-    const TABLET_BREAKPOINT = 1024;
     
-    useEffect(() => {
-        setWindowWidth(window.innerWidth);
-        const handleResize = () => setWindowWidth(window.innerWidth);
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-    
-    const isMobile = windowWidth < MOBILE_BREAKPOINT;
-    const isTablet = windowWidth >= MOBILE_BREAKPOINT && windowWidth < TABLET_BREAKPOINT;
+    // Suppression de windowWidth, useEffect, isFocused, et de la logique de breakpoint.
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setInputValue(e.target.value);
     };
 
-    const baseInputStyle: CSSProperties = { 
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        borderColor: isFocused ? '#3B82F6' : '#D1D5DB', 
-        backgroundColor: 'transparent', 
-        color: 'white', 
-        padding: isMobile ? '0.625rem 0.75rem' : isTablet ? '0.625rem 0.875rem' : '0.75rem 1rem',
-        borderRadius: isMobile ? '0.375rem' : '0.5rem',
-        width: '100%',
-        boxSizing: 'border-box',
-        resize: 'none',
-        fontFamily: 'sans-serif',
-    };
+    const baseInputClasses = [
+        'custom-input', 
+        'border', 
+        'border-gray-300', 
+        'bg-transparent', 
+        'text-white', 
+        'w-full', 
+        'box-border', 
+        'font-sans',
 
-    const textAreaStyle: CSSProperties = {
-        ...baseInputStyle,
-        minHeight: '120px', 
-        lineHeight: '1.5',
-    };
+        'p-2.5', 
+        'rounded-md', 
+        'md:p-3', 
+        'md:rounded-lg', 
 
-    const containerStyle : CSSProperties = {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: isMobile ? '0.5rem' : '0.75rem',
-        width: '100%',
-    };
+        'focus:border-blue-500', 
+        'focus:ring-2',
+        'focus:ring-blue-blue-500/30',
+        'outline-none',
+        'transition-all',
+        'duration-200',
+    ].join(' ');
+
+    const textAreaClasses = [
+        'min-h-[120px]', 
+        'leading-relaxed', 
+        'resize-none', 
+    ].join(' ');
+
+    const containerClasses = "flex flex-col w-full gap-2 md:gap-3";
 
     const InputElement = typeInput === 'textarea' ? (
         <textarea
             placeholder={placeholderInput} 
             value={inputValue} 
             onChange={handleChange}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            style={textAreaStyle} 
+            className={`${baseInputClasses} ${textAreaClasses}`}
         />
     ) : (
         <input 
@@ -73,22 +69,16 @@ export default function InputAndTitleComponent({ titleInput, typeInput, placehol
             placeholder={placeholderInput} 
             value={inputValue} 
             onChange={handleChange}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            style={baseInputStyle} 
+            className={baseInputClasses} 
         />
     );
 
 
     return(
-        <div style={containerStyle}>
-            <style>{`
-                ::placeholder {
-                    color: rgba(255, 255, 255, 0.8);
-                }
-            `}</style>
+        <div className={containerClasses}>
+            <style jsx global>{placeholderStyle}</style>
             
-            <h3 style={{color:"white"}}>{titleInput}</h3>
+            <h3 className="text-white text-base md:text-lg font-medium">{titleInput}</h3>
             
             {InputElement}
 

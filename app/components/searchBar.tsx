@@ -1,5 +1,5 @@
 'use client'
-import React, { CSSProperties, useState, useEffect } from 'react';
+import React from 'react';
 import { Search } from 'lucide-react';
 
 interface SearchBar {
@@ -8,79 +8,74 @@ interface SearchBar {
     setInputValue: (value: string) => void
 }
 
+const placeholderStyle = `
+    .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
+`;
+
 export default function SearchBarComponent({placeholder, inputValue, setInputValue}: SearchBar) {
-    const [windowWidth, setWindowWidth] = useState(1200);
-    
-    const MOBILE_BREAKPOINT = 768;
-    const TABLET_BREAKPOINT = 1024;
-
-    useEffect(() => {
-        setWindowWidth(window.innerWidth);
-
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    const isMobile = windowWidth < MOBILE_BREAKPOINT;
-    const isTablet = windowWidth >= MOBILE_BREAKPOINT && windowWidth < TABLET_BREAKPOINT;
+  
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
     };
 
-    const containerStyle: CSSProperties = {
-        display: 'flex', 
-        width: isMobile ? '100%' : '100%',
-        maxWidth: isMobile ? '100%' : isTablet ? '500px' : '600px',
-        padding: isMobile ? '8px 15px' : '10px 20px',
-        borderRadius: isMobile ? '8px' : '12px',
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
-        margin: isMobile ? '10px 0' : '20px auto',
-        backdropFilter: 'blur(10px)',
-        boxSizing: 'border-box',
-        fontFamily: 'sans-serif',
-    };
+    const containerClasses = [
+        'flex', 
+        'w-full', 
+        'items-center', 
+        'bg-white/20', 
+        'backdrop-blur-sm', 
+        'font-sans',
 
-    const inputStyle: CSSProperties = {
-        flexGrow: 1, 
-        border: 'none', 
-        backgroundColor: 'transparent', 
-        color: 'white', 
-        fontSize: isMobile ? '0.875rem' : '1rem',
-        marginLeft: isMobile ? '8px' : '10px',
-        outline: 'none',
-        width: '100%',
-    };
+        'p-2',
+        'rounded-lg', 
+        'md:p-3', 
+        'md:rounded-xl', 
 
-    const iconStyle: CSSProperties = {
-        color: 'white', 
-        width: isMobile ? '18px' : '20px',
-        height: isMobile ? '18px' : '20px',
-        flexShrink: 0,
-    };
+        'max-w-full', 
+        'md:max-w-lg', 
+        'lg:max-w-xl', 
+
+        'my-2.5', 
+        'md:my-5', 
+        'md:mx-auto' 
+    ].join(' ');
+
+    const inputClasses = [
+        'search-input', 
+        'flex-grow', 
+        'border-none',
+        'bg-transparent', 
+        'text-white', 
+        'text-sm', 
+        'md:text-base', 
+        'ml-2', 
+        'md:ml-2.5', 
+        'outline-none', 
+        'w-full' 
+    ].join(' ');
+
+    const iconClasses = "text-white flex-shrink-0";
+
 
     return(
-        <div style={containerStyle}>
-            <style>{`
-                input::placeholder {
-                    color: rgba(255, 255, 255, 0.7);
-                }
-            `}</style>
-            <Search size={isMobile ? 18 : 20} style={iconStyle} />
+        <div className={containerClasses}>
+            <style jsx global>{placeholderStyle}</style>
+            
+            <Search 
+                size={20} 
+                className={iconClasses} 
+            />
             
             <input 
                 type="text" 
                 placeholder={placeholder} 
                 value={inputValue} 
                 onChange={handleChange} 
-                style={inputStyle} 
+                className={inputClasses} 
             />
         </div>
     );
 }
-
-
