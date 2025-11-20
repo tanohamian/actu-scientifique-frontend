@@ -8,19 +8,19 @@ import CommandesTable from './components/CommandesListing';
 export default function page() {
 
   const container: React.CSSProperties = {
-      backgroundColor: '#6B94AD',
       minHeight: '100vh',
       padding: '40px',
       fontFamily: 'Arial, sans-serif',
       display: 'flex',
       gap: '30px'
     };
-     const leftSection: React.CSSProperties = {
-        flex: '1',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '30px'
-      };
+
+    const leftSection: React.CSSProperties = {
+      flex: '1',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '30px'
+    };
     
       const rightSection: React.CSSProperties = {
         width: '350px',
@@ -36,6 +36,7 @@ export default function page() {
           fontWeight: 'bold',
           marginBottom: '1px'
         };
+        
         const Soustitre: React.CSSProperties = {
           color: 'white',
           fontSize: '20px',
