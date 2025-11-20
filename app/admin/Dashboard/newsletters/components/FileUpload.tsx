@@ -40,13 +40,15 @@ const FileUpload = (): React => {
                 className={styles.iconContainer}
                 title="Cliquer pour téléverser une image"
             >
-                <Image 
+                <image  className={styles.uploadIcon}  />
+                {/*<Image 
                     src={image}
                     alt="Icône Téléverser une image" 
                     // Utilisation de styles.uploadIcon
-                    className={styles.uploadIcon}
                     
-                />
+                    
+                />*/}
+                
             </div>
             
             <span className={styles.fileName}>

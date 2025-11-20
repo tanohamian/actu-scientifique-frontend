@@ -4,7 +4,7 @@ import React from 'react';
 export type IconName = 
     'Search' | 'Settings' | 'Plus' | 'Feed' | 
     'List' | 'Video' | 'Envelope' | 'Group' | 'Rss' | 'Chat' |
-    'ControlPanel' | 'Playlist' | 'Movie' | 'Schedule' | 'UsersOnline' | 'Product' | 'LogOut' | 'InstagramIcon' | 'FacebookIcon' | 'WhatsAppIcon' | 'YouTubeIcon' | 'Localisation' | 'Phone';
+    'ControlPanel' | 'Playlist' | 'Movie' | 'Schedule' | 'UsersOnline' | 'Product' | 'LogOut' | 'InstagramIcon' | 'FacebookIcon' | 'WhatsAppIcon' | 'YouTubeIcon' | 'Localisation' | 'Phone' | 'LinkedIn';
 
 interface IconProps {
     className?: string; 
@@ -388,7 +388,18 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
         >
             <path d="M6.62 10.79a15.053 15.053 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V21a1 1 0 0 1-1 1C10.07 22 2 13.93 2 3a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.58a1 1 0 0 1-.24 1.01l-2.21 2.2z"/>
         </svg>
-    )
+    ),
+    LinkedIn:({className}) => (
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        viewBox="0 0 24 24" 
+        fill="currentColor"
+        stroke="none"
+        className={className}
+    >
+        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.235-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+    </svg>
+)
 };
 
 

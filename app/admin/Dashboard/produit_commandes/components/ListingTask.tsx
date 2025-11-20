@@ -29,7 +29,7 @@ const styles = {
         marginBottom: '20px',
     } as React.CSSProperties,
     searchSection: {
-        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+        //backgroundColor: 'rgba(255, 255, 255, 0.15)',
         borderRadius: '12px',
         padding: '10px 25px',
         marginBottom: '25px',
