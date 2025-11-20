@@ -5,21 +5,19 @@ import styles from "@styles/FileUpload.module.scss"
 
 import image from "@public/assets/Picture.svg"
 import Image from 'next/image';
-const FileUpload = (): React => {
-    const fileInputRef = useRef<HTMLButtonElement>(null);
-    const [fileName, setFileName] = useState(null); 
+export function FileUpload () {
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const [fileName, setFileName] = useState<string | null>(null); 
 
     const handleButtonClick = () => {
-        // Déclenche l'ouverture de la boîte de dialogue de sélection de fichiers
         fileInputRef.current?.click();
     };
     
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
         
         if (file) {
             setFileName(file.name);
-            // Logique d'upload ici...
         }
     };
     
@@ -54,4 +52,3 @@ const FileUpload = (): React => {
     );
 };
 
-export default FileUpload;

@@ -1,8 +1,7 @@
 "use client"
 import Form from "next/form"
-import React, { useRef } from 'react';
-import styles from "@styles/Formulaire.module.scss"
-import FileUpload from "./FileUpload";
+import React from 'react';
+import { FileUpload } from "../../produit_commandes/components/FileUpload";
 // import { ChevronUp } from 'lucide-react';
 interface FormPropos{
   isArticle: boolean
