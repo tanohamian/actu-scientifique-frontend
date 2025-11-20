@@ -1,12 +1,11 @@
 "use client"
 import React, { useState } from 'react'
-import ComponenteFormulaire from '../newsletters/components/ComponenteFormulaire';
-import Affichage, { AffichageType, Article, Media } from '../newsletters/components/Affichage';
+import Affichage, { AffichageType, Media } from '../newsletters/components/Affichage';
 import { IFilter } from '@/app/components/filter';
 const now = Date.now().toString()
 export default function Page() {
   const [filters] = useState<IFilter[]>([])
-const [medias, setMedias] = useState<Media[]>([
+const [medias] = useState<Media[]>([
   {
     id: 1,
     publicationDate: now,
@@ -45,13 +44,6 @@ const [medias, setMedias] = useState<Media[]>([
         gap: '30px',
     
       };
-    
-      const rightSection: React.CSSProperties = {
-        width: '350px',
-        height: 'fit-content',
-        alignItems:'flex-start',
-        padding:"27px"
-      };
       const title: React.CSSProperties = {
           color: 'white',
           fontSize: '36px',
@@ -68,9 +60,6 @@ const [medias, setMedias] = useState<Media[]>([
           hasFilter={true}
           filters={filters}
         />
-      </div>
-      <div style={rightSection}>
-        <ComponenteFormulaire isArticle={true}/>
       </div>
     </div>
   )

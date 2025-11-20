@@ -5,16 +5,13 @@ import Filter, { IFilter } from '@/app/components/filter';
 const formatDate = (timestamp: string): string => {
     try {
         const date = new Date(Number(timestamp));
-        // Option 1: Format simple
-        // return date.toLocaleDateString(); 
-
-        // Option 2: Format plus détaillé (meilleure lisibilité)
         return date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' });
     } catch (e) {
-        return "Date invalide"; // Gérer le cas où la conversion échoue
+      console.log(e)
+      return "Date invalide"; 
     }
 };
-// --- Interfaces et Enums (laissé intact) ---
+
 export enum AffichageType{
   ARTICLE  = "article",
   NEWSLETTER= "newsletters",
@@ -97,12 +94,11 @@ const styles = {
         color: 'white',
         fontSize: '14px',
         outline: 'none',
-        width: '80%', // Utiliser 100% pour remplir le conteneur flex
+        width: '80%',
     },
     tableSection: {
-        // Enlève le padding du tableSection pour ne laisser que le padding du conteneur parent
         flex: '1', 
-        overflowY: 'auto' as const, // Ajouté pour gérer les débordements si la liste est longue
+        overflowY: 'auto' as const, 
     },
     table: {
         width: '100%',
@@ -141,20 +137,18 @@ const styles = {
         transition: 'opacity 0.3s'
     }
 }
-// --- Fin Styles ---
 
 
 export default function Affichage({items, type = AffichageType.NEWSLETTER, hasFilter=false, filters=[]}: AffichageProps) {
 
   const [activeFilter, setActiveFilter] = useState<string>("all");
-  const [searchTerm, setSearchTerm] = useState<string>(""); // Ajout de l'état pour la recherche
+  const [searchTerm, setSearchTerm] = useState<string>(""); 
 
   const handleNewFilter = (filterValue: string) => {
     setActiveFilter(filterValue);
     console.log("Nouveau filtre sélectionné:", filterValue);
   };
 
-  // 1. Filtrage et Recherche Combinés (Optimisé avec useMemo)
   const filteredItems = useMemo(() => {
     return items.filter(item => {
       // Filtrage par catégorie/rubrique
@@ -170,15 +164,13 @@ export default function Affichage({items, type = AffichageType.NEWSLETTER, hasFi
       }
       if (!filterMatch) return false;
 
-      // Recherche par titre
-      const currentTitle = (item as any).title || (item as any).titre || '';
+      const currentTitle = (item as {title: string}).title || '';
       return currentTitle.toLowerCase().includes(searchTerm.toLowerCase());
 
     });
   }, [items, activeFilter, searchTerm, type]);
 
 
-  // 2. Fonctions d'aide pour le rendu
   const renderItemContent = (item: ItemType) => {
     switch (type) {
       case AffichageType.ARTICLE:
