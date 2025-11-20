@@ -16,9 +16,9 @@ const formatDate = (timestamp: string): string => {
 };
 // --- Interfaces et Enums (laissé intact) ---
 export enum AffichageType{
-  ARTICLE   = "article",
+  ARTICLE  = "article",
   NEWSLETTER= "newsletters",
-  MEDIAS    = "medias"
+  MEDIAS = "medias"
 }
 
 export interface Newsletter {

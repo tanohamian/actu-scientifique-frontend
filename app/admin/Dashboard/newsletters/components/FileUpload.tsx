@@ -3,8 +3,10 @@ import React, { useRef, useState } from 'react';
 // 1. IMPORTER LE MODULE SCSS
 import styles from "@styles/FileUpload.module.scss" 
 
-import image from "@public/assets/Picture.svg"
+import image from "@public/images/Picture.svg"
 import Image from 'next/image';
+
+
 const FileUpload = (): React => {
     const fileInputRef = useRef<HTMLButtonElement>(null);
     const [fileName, setFileName] = useState(null); 
