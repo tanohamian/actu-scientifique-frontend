@@ -145,6 +145,10 @@ export default function Affichage({items, type = AffichageType.NEWSLETTER, hasFi
   const [searchTerm, setSearchTerm] = useState<string>(""); 
 
   const handleNewFilter = (filterValue: string) => {
+    if (filterValue == '') {
+      setActiveFilter("all")
+      return
+    }
     setActiveFilter(filterValue);
     console.log("Nouveau filtre sélectionné:", filterValue);
   };
@@ -244,7 +248,6 @@ export default function Affichage({items, type = AffichageType.NEWSLETTER, hasFi
               <th style={styles.th}>{type === AffichageType.ARTICLE ? 'Titre de l\'Article' : type === AffichageType.MEDIAS ? 'Titre' : "Titre de la Newsletter"}</th>
               <th style={styles.th}>{type === AffichageType.ARTICLE ? 'Rubrique' : type === AffichageType.MEDIAS ? 'Type' : 'Catégorie'}</th>
               <th style={styles.th}>{type === AffichageType.ARTICLE ? 'Contenu (Début)' : type === AffichageType.MEDIAS ? "Date d'ajout" : 'Publication'}</th>
-              {/* Le header 'Catégorie' pour MEDIAS doit être inclus ici */}
               {type === AffichageType.MEDIAS ? (<th style={styles.th}>Catégorie</th>) : null} 
 
               <th style={styles.th}>Actions</th>
@@ -253,20 +256,17 @@ export default function Affichage({items, type = AffichageType.NEWSLETTER, hasFi
           <tbody>
             {filteredItems.map((item) => (
               <tr key={item.id}>
-                {/* Utilisation de la fonction d'aide pour un rendu propre */}
                 {renderItemContent(item)}
                 
                 <td style={styles.td}>
                   <div style={styles.actionButtons}>
                     <button
                       style={styles.iconButton}
-                      // AJOUTER DES HANDLERS DE CLIC ICI (ex: onClick={() => handleEdit(item.id)})
                     >
                       <Pencil size={18} />
                     </button>
                     <button
                       style={styles.iconButton}
-                      // AJOUTER DES HANDLERS DE CLIC ICI (ex: onClick={() => handleDelete(item.id)})
                     >
                       <Trash2 size={18} />
                     </button>
