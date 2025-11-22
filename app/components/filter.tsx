@@ -75,7 +75,7 @@ export default function Filter({
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Age</InputLabel>
+        <InputLabel id="demo-simple-select-label">Trier par</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -83,11 +83,11 @@ export default function Filter({
           label="Age"
           onChange={handleChange}
         >
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
-          {filters.map((filter, index) =>(
-            <MenuItem key={filter.value} value={index}>{filter.label}</MenuItem>
+          {/* <MenuItem value={10}>Ten</MenuItem> */}
+          {/* <MenuItem value={20}>Twenty</MenuItem> */}
+          {/* <MenuItem value={30}>Thirty</MenuItem> */}
+          {filters.map((filter) =>(
+            <MenuItem key={filter.value} value={filter.value}>{filter.label}</MenuItem>
           ))}
         </Select>
           
