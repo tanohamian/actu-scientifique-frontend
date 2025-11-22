@@ -5,7 +5,11 @@ import Affichage, { AffichageType, Article } from '../newsletters/components/Aff
 import { IFilter } from '@/app/components/filter';
 
 export default function Page() {
-  const [filters] = useState<IFilter[]>([])
+  const [filters] = useState<IFilter[]>([
+    {value: "Technologie", label: 'Technologie' },
+    {value: "Matériel", label: 'Matériel' },
+    {value: "UX/UI Design", label: 'UX/UI Design' },
+  ])
   const [artilces, setArticles] = useState<Article[]>([
     {
       id: 1,
@@ -26,35 +30,37 @@ export default function Page() {
       rubrique: "UX/UI Design"
     },
   ])
+  
+
   const container: React.CSSProperties = {
-      //backgroundColor: '#6B94AD',
-      minHeight: '100vh',
-      padding: '40px',
-      fontFamily: 'Arial, sans-serif',
-      display: 'flex',
-      gap: '30px'
-      
+    //backgroundColor: '#6B94AD',
+    minHeight: '100vh',
+    padding: '40px',
+    fontFamily: 'Arial, sans-serif',
+    display: 'flex',
+    gap: '30px'
+    
+  };
+  const leftSection: React.CSSProperties = {
+    flex: '1',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '30px',
+
     };
-    const leftSection: React.CSSProperties = {
-        flex: '1',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '30px',
-    
-      };
-    
-      const rightSection: React.CSSProperties = {
-        width: '350px',
-        height: 'fit-content',
-        alignItems:'flex-start',
-        padding:"27px"
-      };
-      const title: React.CSSProperties = {
-          color: 'white',
-          fontSize: '36px',
-          fontWeight: 'bold',
-          marginBottom: '30px'
-        };
+  
+  const rightSection: React.CSSProperties = {
+    width: '350px',
+    height: 'fit-content',
+    alignItems:'flex-start',
+    padding:"27px"
+  };
+  const title: React.CSSProperties = {
+    color: 'white',
+    fontSize: '36px',
+    fontWeight: 'bold',
+    marginBottom: '30px'
+  };
   return (
     <div style={container}>
       <div style={leftSection}>

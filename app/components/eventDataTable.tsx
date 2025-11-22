@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
+import { Media } from '../admin/dashboard/newsletters/components/Affichage';
 
 export interface TableData {
     title: string;
@@ -13,7 +14,7 @@ export interface TableData {
 
 interface EventDataTableProps {
     tableTitle: string;
-    data: TableData[];
+    data: TableData[]| Media[];
     columnHeaders: { key: string; label: string; flexBasis: string }[];
     handleEditEvent?: (item: TableData) => void;
 }
@@ -78,7 +79,7 @@ export default function EventDataTable({ tableTitle, data, columnHeaders, handle
 
                             if (header.key === 'status') {
                                 content = (
-                                    <span className={getStatusClasses(item.status)}>{item.status}</span>
+                                    <span className={getStatusClasses((item as TableData).status)}>{(item as TableData).status}</span>
                                 );
                             }
                             
@@ -87,7 +88,7 @@ export default function EventDataTable({ tableTitle, data, columnHeaders, handle
                                     <div className="flex gap-2">
                                         <button 
                                             className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-blue-400"
-                                            onClick={handleEditEvent ? () => handleEditEvent(item) : undefined} 
+                                            onClick={handleEditEvent ? () => handleEditEvent(item as TableData) : undefined} 
                                         >
                                             <Pencil size={20} />
                                         </button> 

@@ -28,8 +28,10 @@ export interface Media {
   id: number;
   title: string;
   category: string;
+  date?: string,
+  hour?: string,
   type: string
-  publicationDate: string;
+  publicationDate?: string;
 }
 
 export interface Article{
@@ -38,19 +40,15 @@ export interface Article{
   content: string;
   rubrique: string;
 }
-// Utilisation d'un type union générique pour simplifier les types d'éléments
-type ItemType = Newsletter | Article | Media;
+type ItemType = Newsletter | Article;
 
 interface AffichageProps{
   hasFilter? : boolean
   filters ?: IFilter[]
   type ?: AffichageType
-  // Le type `items` est maintenant basé sur ItemType
   items : ItemType[]
 }
-// --- Fin Interfaces et Enums ---
 
-// --- Styles (laissé intact pour la compatibilité avec votre code) ---
 const styles = {
     container: {
         backgroundColor: '#50789B',
@@ -155,15 +153,12 @@ export default function Affichage({items, type = AffichageType.NEWSLETTER, hasFi
 
   const filteredItems = useMemo(() => {
     return items.filter(item => {
-      // Filtrage par catégorie/rubrique
       let filterMatch = true;
-      if (activeFilter !== 'all') {
+      if (activeFilter !== 'all' && activeFilter !== '') {
         if (type === AffichageType.ARTICLE) {
           filterMatch = (item as Article).rubrique === activeFilter;
         } else if (type === AffichageType.NEWSLETTER) {
           filterMatch = (item as Newsletter).category === activeFilter;
-        } else if (type === AffichageType.MEDIAS) {
-          filterMatch = (item as Media).category === activeFilter;
         }
       }
       if (!filterMatch) return false;
@@ -184,16 +179,6 @@ export default function Affichage({items, type = AffichageType.NEWSLETTER, hasFi
             <td style={styles.td}>{article.title.substring(0, 35)}...</td>
             <td style={styles.td}>{article.rubrique}</td>
             <td style={styles.td}>{article.content.substring(0, 35)}...</td>
-          </>
-        );
-      case AffichageType.MEDIAS:
-        const media = item as Media;
-        return (
-          <>
-            <td style={styles.td}>{media.title}</td>
-            <td style={styles.td}>{media.type}</td>
-            <td style={styles.td}>{formatDate(media.publicationDate)}</td>
-            <td style={styles.td}>{media.category}</td>
           </>
         );
       case AffichageType.NEWSLETTER:
