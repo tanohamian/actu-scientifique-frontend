@@ -7,10 +7,11 @@
         margin-left: 20px;
         cursor: pointer;
         font-size: 14px;
-        & option {
-            background-color: #2a5174; 
-            color: #fff;
-            border-radius: 2em
-            }
+        
         //appearance: none
     }
+.option {
+    background-color: #2a5174; 
+    color: #fff;
+    border-radius: 2em
+}
