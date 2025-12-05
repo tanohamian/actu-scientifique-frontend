@@ -24,11 +24,11 @@ export default function RootLayout({
     'Accueil',
     'Une seule santé',
     'Tech',
-    'Opportunités',
-    'Eco-humanité',
     'Agenda',
+    'Eco-humanité',
     'Portraits & découvertes',
-    'A propos'
+    'Opportunités',
+    'À propos'
   ];
 
   return (
@@ -38,7 +38,7 @@ export default function RootLayout({
           <div className='flex flex-row items-center gap-3'>
             <Logo className="w-30 h-30 flex-shrink-0" />
             <h3 className='text-white text-sm lg:text-base w-30'>
-              Parce que la science est proche de nous
+              Parce que la science est proche de tous
             </h3>
           </div>
 
@@ -125,7 +125,7 @@ export default function RootLayout({
           </div>
 
           <div className='flex flex-col'>
-            <h2 className='text-white text-2xl font-bold mb-4'>A propos</h2>
+            <h2 className='text-white text-2xl font-bold mb-4'>À propos</h2>
             <a href="#about" className='text-white hover:underline mb-2 text-sm lg:text-base'>Notre mission</a>
             <a href="#team" className='text-white hover:underline text-sm lg:text-base'>L'équipe</a>
           </div>

@@ -94,10 +94,10 @@ export default function SwitchSection() {
                 title: 'Ajouter une nouvelle formation', secondFieldLabel: 'Lien ou vidéo', secondFieldPlaceholder: 'http://example.com',
                 listTitle: 'Formations', sampleData: { title: 'Importance du journaliste dans la société', date: '14/01/2027' }, showReward: false
             };
-        case 'jeux du meilleur journaliste':
+        case 'Reportages':
             return {
-                title: 'Ajouter un jeu', secondFieldLabel: 'Récompense', secondFieldPlaceholder: '200.000 ou un ticket pour la conférence des journalistes',
-                listTitle: 'Jeux', sampleData: { title: 'Importance du journaliste dans la société', date: '14/01/2027' }, showReward: true
+                title: 'Ajouter un reportage', secondFieldLabel: 'Récompense', secondFieldPlaceholder: '200.000 ou un ticket pour la conférence des journalistes',
+                listTitle: 'Reportages', sampleData: { title: 'Importance du journaliste dans la société', date: '14/01/2027' }, showReward: true
             };
         default:
             return {
@@ -183,7 +183,7 @@ export default function SwitchSection() {
   return (
     <div style={containerStyle}>
       <div style={tabContainer}>
-        {['Bourses', 'Formations', 'jeux du meilleur journaliste'].map((tabName) => (
+        {['Bourses', 'Formations', 'Reportages'].map((tabName) => (
           <button
             key={tabName}
             style={{ ...tabStyle, ...(activeTab === tabName ? activeTabStyle : {}) }}

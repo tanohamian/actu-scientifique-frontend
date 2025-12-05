@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
+import baseUrl from '../../baseUrl'
+import { json } from "stream/consumers";
 interface FormState {
     email: string;
     password: string;
@@ -11,10 +12,14 @@ interface FormState {
 export default function Connexion() {
     const router = useRouter();
 
+
+
     const [formData, setFormData] = useState<FormState>({
         email: "",
         password: ""
     });
+    const [loading,setLoading]=useState(false)
+    const [message,setMessage] = useState('')
 
     const handleInputChange = (field: keyof FormState, value: string) => {
         setFormData(prev => ({
@@ -23,9 +28,28 @@ export default function Connexion() {
         }));
     };
 
-    const handleSubmit = () => {
-        console.log("Connexion avec:", formData);
-        router.push('/admin/dashboard');
+    const handleSubmit = async () => {
+        setLoading(true)
+        setMessage('')
+        try{
+            const response = await fetch(`${baseUrl}/auth/login`,{
+                method:'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify({email : formData.email,password :formData.password})
+            })
+            if(response.ok){
+                console.log("Connexion avec:", formData);
+                router.push('/admin/dashboard');
+            }
+            
+        }catch(err){
+            console.log("erreur lors de l'inscription : ", err),
+            setMessage((err as any).message)
+        }finally{
+            setLoading(false)
+        }
     };
 
 
@@ -156,7 +180,7 @@ export default function Connexion() {
                         onClick={handleSubmit}
                         className={buttonClasses}
                     >
-                        Se connecter
+                        {loading ? <p>••••••</p> :<p>Se connecter</p>}
                     </button>
                 </div>
 
@@ -165,6 +189,8 @@ export default function Connexion() {
                         Mot de passe oublié ?
                     </span>
                 </div>
+
+                {message && <p>{message}</p>}
             </div>
         </div>
     );

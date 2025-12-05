@@ -4,7 +4,7 @@ import React from 'react';
 interface ButtonText {
     textButton: string;
     onclick?: () => void;
-    size?: 'small' | 'medium' | 'large';
+    size?: 'small' | 'medium' | 'large' | 'big';
 }
 
 export default function ButtonComponent({ 

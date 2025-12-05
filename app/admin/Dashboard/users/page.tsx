@@ -165,14 +165,14 @@ export default function Utilisateurs() {
 
 
            
-            <div className="hidden md:block bg-[#325470ff] rounded-xl overflow-hidden backdrop-blur-sm shadow-xl">
+            <div className="hidden md:block bg-[#50789B] rounded-xl overflow-hidden backdrop-blur-sm shadow-xl">
                 <table className="w-full border-collapse text-white">
                     <thead>
                         <tr>
-                            <th className="text-left py-4 px-4 text-base font-semibold bg-black/10 border-b border-white/30">Noms</th>
-                            <th className="text-left py-4 px-4 text-base font-semibold bg-black/10 border-b border-white/30">Email</th>
-                            <th className="text-left py-4 px-4 text-base font-semibold bg-black/10 border-b border-white/30">Role</th>
-                            <th className="text-right py-4 px-4 text-base font-semibold bg-black/10 border-b border-white/30">Actions</th>
+                            <th className="text-left py-4 px-4 text-base font-semibold  border-b border-white/30">Noms</th>
+                            <th className="text-left py-4 px-4 text-base font-semibold  border-b border-white/30">Email</th>
+                            <th className="text-left py-4 px-4 text-base font-semibold  border-b border-white/30">Role</th>
+                            <th className="text-right py-4 px-4 text-base font-semibold border-b border-white/30">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
