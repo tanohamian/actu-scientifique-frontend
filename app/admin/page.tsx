@@ -1,15 +1,13 @@
 'use client'
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import baseUrl from '../../baseUrl'
-interface FormState {
+import LoginUser from "@app/actions/loginUser"
+export interface FormState {
     email: string;
     password: string;
 }
 
 export default function Connexion() {
-    const router = useRouter();
 
 
 
@@ -17,7 +15,7 @@ export default function Connexion() {
         email: "",
         password: ""
     });
-    const [loading,setLoading]=useState(false)
+    const [loading,setLoading] = useState(false)
     const [message,setMessage] = useState('')
 
     const handleInputChange = (field: keyof FormState, value: string) => {
@@ -27,7 +25,7 @@ export default function Connexion() {
         }));
     };
 
-    const handleSubmit = async () => {
+    /*const handleSubmit = async () => {
         setLoading(true)
         setMessage('')
         try{
@@ -49,7 +47,7 @@ export default function Connexion() {
         }finally{
             setLoading(false)
         }
-    };
+    };*/
 
 
     const containerClasses = `
@@ -176,7 +174,7 @@ export default function Connexion() {
                     </div>
 
                     <button
-                        onClick={handleSubmit}
+                        onClick={()=>LoginUser(formData)}
                         className={buttonClasses}
                     >
                         {loading ? <p>••••••</p> :<p>Se connecter</p>}
