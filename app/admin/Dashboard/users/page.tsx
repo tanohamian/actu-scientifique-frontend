@@ -1,9 +1,10 @@
 'use client'
 import ButtonComponent from "@/app/components/button";
 import SearchBarComponent from "@/app/components/searchBar";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
+import baseUrl from "../../../../baseUrl"
 
 interface User {
     id: number;
@@ -27,6 +28,7 @@ export default function Utilisateurs() {
     const [addUser, setAddUser] = useState(false);
     const [editUser,setEditUser] = useState(false)
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [loading,setLoading] = useState(false)
 
     const [users, setUsers] = useState<User[]>([
         { id: 1, name: 'Adou johan', email: 'joka@gmail.com', role: 'Administrateur' },
@@ -34,6 +36,25 @@ export default function Utilisateurs() {
         { id: 3, name: 'Jean Yao', email: 'jean.yao@gmail.com', role: 'Utilisateur' },
     ]);
 
+
+    const getUsers = async ()=>{
+        //setLoading(true)
+        try{
+            const response = await fetch(`${baseUrl}/users/all`,{
+                method:'GET',
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            if (response.ok){
+               const userData =  await response.json()
+               console.log("userData : ", userData)
+            }
+        }catch(err){
+            console.log("erreur lors de la recuperation des utilisateurs : ", err)
+        }
+    }
 
     const handleAddUser = () => {
        setAddUser(true);
@@ -134,6 +155,12 @@ export default function Utilisateurs() {
         }
     }
     
+    useEffect(()=>{
+        getUsers()
+    },[])
+
+
+
     return (
         <div className="min-h-screen font-sans p-4 md:p-6 lg:p-8"> 
             
