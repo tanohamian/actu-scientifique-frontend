@@ -15,8 +15,8 @@ export default function Connexion() {
         email: "",
         password: ""
     });
-    const [loading,setLoading] = useState(false)
-    const [message,setMessage] = useState('')
+    const [loading,setLoading] = useState<boolean>(false)
+    const [message,setMessage] = useState<string>('')
 
     const handleInputChange = (field: keyof FormState, value: string) => {
         setFormData(prev => ({
