@@ -20,6 +20,7 @@
     ],
     "paths": {
       "@/*": ["./*"],
+      "@config/*" : ["./app/config/*"],
       "@styles/*":["./app/styles/*"],
       "@components/*":["./app/components/*"],
       "@public/*":["./public/*"],
