@@ -35,7 +35,7 @@ export interface Media {
 }
 
 export interface Article{
-  id: number;
+  id?: number;
   title: string;
   content: string;
   rubrique: string;

@@ -1,54 +1,53 @@
 'use server'
-import baseUrl from "@/baseUrl"
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { FormState } from "../admin/page"
+import {env} from '@/app/config/env'
+import { cookies } from 'next/headers'
 
 
-function extractAuthToken(setCookieHeader: string | null): string | null {
-    if (!setCookieHeader) return null;
-    
-    
-    const parts = setCookieHeader.split(';');
-    for (const part of parts) {
-        const trimmedPart = part.trim();
-        if (trimmedPart.startsWith('authToken=')) {
-            return trimmedPart.substring('authToken='.length);
-        }
-    }
-    return null;
-}
+
+
 
 export default async function LoginUser(formData:FormState) {
 
     const email = formData.email
     const password = formData.password
     let loginSuccessful = false;
-    let authTokenValue: string | null = null; 
+    let authTokenValue: RegExpMatchArray  | null = null; 
 
     try {
-        const response = await fetch(`${baseUrl}/auth/login`,{
+        const response = await fetch(`${env.baseUrl}/auth/login`,{
             method:'POST',
             headers: {
                 'Content-Type': 'application/json' 
             },
             body:JSON.stringify({email:email,password:password})
         })
-
+        console.log(response)
         if (!response.ok) {
             throw new Error(`Échec de la connexion : ${response.status}`);
         }
 
         const setCookieHeader = response.headers.get('set-cookie');
+
         
         if (setCookieHeader) {
-            authTokenValue = extractAuthToken(setCookieHeader);
-            console.log("Token extrait :", authTokenValue);
+            authTokenValue = setCookieHeader.match(/authToken=([^;]*)/);
+
+        if (authTokenValue && authTokenValue[1]) {
+                (await cookies()).set('authToken', authTokenValue[1], {
+                    httpOnly: true,
+                    maxAge: 3600,
+                    path: '/',
+                    sameSite: 'lax'
+                });
+            }
         }
 
 
         if (authTokenValue) {
-            const res = await fetch(`${baseUrl}/auth/admin`, {
+            const res = await fetch(`${env.baseUrl}/auth/admin`, {
                 headers: {
                     'Cookie': `authToken=${authTokenValue}`
                 }
