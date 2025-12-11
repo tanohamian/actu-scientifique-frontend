@@ -7,20 +7,18 @@ import { cookies } from 'next/headers'
 
 
 
-
-
 export default async function LoginUser(formData:FormState) {
 
     const email = formData.email
     const password = formData.password
     let loginSuccessful = false;
-    let authTokenValue: RegExpMatchArray  | null = null; 
+    let authTokenValue: RegExpMatchArray  | null = null;
 
     try {
         const response = await fetch(`${env.baseUrl}/auth/login`,{
             method:'POST',
             headers: {
-                'Content-Type': 'application/json' 
+                'Content-Type': 'application/json'
             },
             body:JSON.stringify({email:email,password:password})
         })
