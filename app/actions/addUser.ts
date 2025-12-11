@@ -1,0 +1,37 @@
+'use server'
+import { env } from '@/app/config/env'
+import { redirect } from 'next/navigation'
+import { UserInterface } from '../admin/dashboard/users/page'
+import { cookies } from 'next/headers'
+import { refresh, revalidatePath } from 'next/cache'
+
+export default async function AddUser(formData:UserInterface) {
+    const authToken = (await cookies()).get('authToken')?.value;
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin'); 
+    }
+    try{
+        const response = await fetch(`${env.baseUrl}/auth/register`,{
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            
+            body:JSON.stringify({first_name:formData.firstName,last_name:formData.lastName,roles:formData.role == "Administrateur" ? 'ROLE_ADMIN' : 'ROLE_VIEWER',email:formData.email,password:formData.password,username:formData.username})
+        })
+        if(!response.ok){
+            console.log(response)
+            throw new Error(`Echec de creation utilisateur : ${response}`)
+        }
+        const responseJson = await response.json()
+        console.log(responseJson)
+        revalidatePath('/admin/dashboard/users')
+        
+    }catch(err){
+        console.log("erreur lors de la creation d'un utilisateur : ", err)
+        return
+    }
+    redirect('/admin/dashboard/users')
+   
+}

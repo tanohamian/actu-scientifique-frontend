@@ -4,17 +4,22 @@ import SearchBarComponent from "@/app/components/searchBar";
 import React, { useEffect, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
-import baseUrl from "../../../../baseUrl"
+import AddUser from "@/app/actions/addUser";
 
-interface User {
-    id: number;
-    name: string;
+export interface UserInterface {
+    id?:string
+    username?:string;
+    firstName: string;
+    lastName:string;
     email: string;
     role: string;
+    password?:string
 }
 
 const userFields : FormFieldConfig[] = [
-    { name: 'name', label: 'Nom complet', type: 'text', placeholder: 'Entrez les noms', required: true },
+    { name: 'username', label: 'Username', type: 'text', placeholder: 'Entrez votre nom d\'utilisateur', required: true },
+    { name: 'firstName', label: 'Nom', type: 'text', placeholder: 'Entrez votre nom', required: true },
+    { name: 'lastName', label: 'Prénoms', type: 'text', placeholder: 'Entrez vos prénoms', required: true },
     { name: 'email', label: 'Email', type: 'email', placeholder: 'Entrez l\'email', required: true },
     { name: 'role', label: 'Rôle', type: 'select', options: [
         { value: 'Administrateur', label: 'Administrateur' },
@@ -27,51 +32,25 @@ export default function Utilisateurs() {
     const [inputValue, setInputValue] = useState('');
     const [addUser, setAddUser] = useState(false);
     const [editUser,setEditUser] = useState(false)
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [selectedUser, setSelectedUser] = useState<UserInterface | null>(null);
     const [loading,setLoading] = useState(false)
 
-    const [users, setUsers] = useState<User[]>([
-        { id: 1, name: 'Adou johan', email: 'joka@gmail.com', role: 'Administrateur' },
-        { id: 2, name: 'Marie Kouassi', email: 'marie.k@gmail.com', role: 'Administrateur' },
-        { id: 3, name: 'Jean Yao', email: 'jean.yao@gmail.com', role: 'Utilisateur' },
-    ]);
+    const [users, setUsers] = useState<UserInterface[]>([]);
 
 
-    const getUsers = async ()=>{
-        //setLoading(true)
-        try{
-            const response = await fetch(`${baseUrl}/users/all`,{
-                method:'GET',
-                headers:{
-                    'Content-Type': 'application/json'
-                }
-            })
-
-            if (response.ok){
-               const userData =  await response.json()
-               console.log("userData : ", userData)
-            }
-        }catch(err){
-            console.log("erreur lors de la recuperation des utilisateurs : ", err)
-        }
-    }
 
     const handleAddUser = () => {
        setAddUser(true);
     };
 
-    const handleSubmitUser = (formData:any)=>{
-        const newUser: User = {
-            id:users.length + 1,
-            name: formData.name,
-            email: formData.email,
-            role: formData.role
-        }
-        setUsers([...users, newUser]);
-        setAddUser(false);
+    const handleSubmitUser = (formData:UserInterface)=>{
+        const newUser = AddUser(formData)
+        console.log(newUser)
+        //setUsers([...users,newUser])
+        setAddUser(false)
     }
 
-    const handleEdit = (user: User) => {
+    const handleEdit = (user: UserInterface) => {
         setSelectedUser(user);
         setEditUser(true);
     };
@@ -80,18 +59,19 @@ export default function Utilisateurs() {
         setEditUser(false);
     }
 
-    const handleDelete = (userId: number) => {
+    const handleDelete = () => {
         if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
-            setUsers(users.filter(u => u.id !== userId));
+            //setUsers(users.filter(u => u.id !== userId));
         }
     };
 
     const filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-        user.email.toLowerCase().includes(inputValue.toLowerCase())
+        user.firstName.toLowerCase().includes(inputValue.toLowerCase()) ||
+        user.email.toLowerCase().includes(inputValue.toLowerCase()) || 
+        user.lastName.toLowerCase().includes(inputValue.toLowerCase())
     );
 
-    const MobileUserCard = ({ user }: { user: User }) => {
+    const MobileUserCard = ({ user }: { user: UserInterface }) => {
         return (
             <div className="bg-[#22415bff] rounded-lg p-4 mb-4 backdrop-blur-sm text-white md:hidden">
                 <div className="flex justify-between mb-2 text-sm">
@@ -126,7 +106,7 @@ export default function Utilisateurs() {
         );
     };
 
-    const ActionButtons = ({ user }: { user: User }) => {
+    const ActionButtons = ({ user }: { user: UserInterface }) => {
         return (
             <>
                 <button
@@ -138,7 +118,7 @@ export default function Utilisateurs() {
                 </button>
                 <button
                     className="p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
-                    onClick={() => handleDelete(user.id)}
+                    onClick={() => handleDelete()}
                     aria-label="Supprimer"
                 >
                     <Trash2 size={20} />
@@ -150,14 +130,12 @@ export default function Utilisateurs() {
     let initialData = {};
     if (selectedUser) {
         initialData = {
-            name: selectedUser.name,
+            name: selectedUser.username,
             email: selectedUser.email,
         }
     }
     
-    useEffect(()=>{
-        getUsers()
-    },[])
+    
 
 
 
@@ -206,7 +184,7 @@ export default function Utilisateurs() {
                         {filteredUsers.length > 0 ? (
                             filteredUsers.map((user) => (
                                 <tr key={user.id} className="hover:bg-white/10 transition duration-150 ease-in-out">
-                                    <td className="py-4 px-4 text-base border-b border-white/20">{user.name}</td>
+                                    <td className="py-4 px-4 text-base border-b border-white/20">{`${user.firstName} ${user.lastName}`}</td>
                                     <td className="py-4 px-4 text-base border-b border-white/20">{user.email}</td>
                                     <td className="py-4 px-4 text-base border-b border-white/20">{user.role}</td>
                                     <td className="flex gap-2 justify-end items-center py-4 px-4 border-b border-white/20">
@@ -232,7 +210,7 @@ export default function Utilisateurs() {
                 titleComponent="Ajout utilisateur"
                 buttonTitle="Inscrire"
                 fields={userFields}
-                initialData={{name:'kouassi jean',email:'jean@gmailcom'}}
+                initialData={{name:'',email:''}}
             />
 
             <AddElementModal 
