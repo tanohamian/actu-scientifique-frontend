@@ -1,0 +1,55 @@
+/* FileUpload.module.scss */
+
+.fileUploadContainer {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 15px;
+    padding: 10px; // Pour un peu d'espace autour
+}
+
+.fileInput {
+    /* Cache l'input natif de manière très fiable */
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.iconContainer {
+    width: 100%;
+    height: 180px;
+    cursor: pointer;
+    border: 2px dashed #999; /* Une bordure en pointillés pour un look "upload" */
+    border-radius: 8px;
+    padding: 10px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    transition: border-color 0.2s, background-color 0.2s;
+    
+    &:hover {
+        border-color: #007bff;
+        background-color: #f0f8ff;
+    }
+}
+
+.uploadIcon {
+    /* Style pour l'image ou l'icône à l'intérieur du conteneur */
+    width: 40px;
+    height: 40px;
+    display: block; // Assure que l'image est traitée comme un bloc
+}
+
+.fileName {
+    /* Style pour le nom du fichier */
+    font-size: 1em;
+    color: #555;
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px; /* Empêche un nom de fichier trop long d'étirer la mise en page */
+}

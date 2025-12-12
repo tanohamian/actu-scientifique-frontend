@@ -1,8 +1,8 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+'use client'
+import React from 'react';
 import Link from "next/link";
-import { Menu, X } from 'lucide-react';
+import { usePathname } from 'next/navigation'; 
+import { X } from 'lucide-react';
 import IconComponent from '@components/Icons';
 
 interface NavItems{
@@ -11,211 +11,135 @@ interface NavItems{
     icon: React.ReactElement
 }
 
-export default function SidebarComponent({ onClose, isMobile }: { onClose?: () => void; isMobile: boolean }){
-    const sidebarWidth = '256px';
+const iconSize = 'w-5 h-5'; 
 
-    const iconStyle: React.CSSProperties = {
-    color: 'white', 
-    width: '20px', 
-    height: '20px',
-    };
+const ACTIVE_BG_COLOR = 'bg-[#E65A46]';
+
+export default function SidebarComponent({ onClose, isMobile }: { onClose?: () => void; isMobile: boolean }){
+    
+    const pathname = usePathname(); 
+
+    const iconBaseProps = { className: `text-white ${iconSize}` };
 
     const navItems : NavItems[] = [
-        {name:"Tableau de bord", path:"/admin/dashboard", icon: <IconComponent  name='ControlPanel' style={iconStyle} />},
-        {name:"Gestion des articles", path:"/admin/dashboard/gestion_article", icon: <IconComponent  name='List' style={iconStyle} />},
-        {name:"Medias", path:"/admin/dashboard/medias", icon: <IconComponent  name='Video' style={iconStyle} />},
-        {name:"Formations & Bourses", path:"/admin/dashboard/formations_bourses", icon: <IconComponent  name='Feed' style={iconStyle} />},
-        {name:"Newsletters", path:"/admin/dashboard/newsletters", icon: <IconComponent  name='Envelope' style={iconStyle} />},
-        {name:"Produit & Commandes", path:"/admin/dashboard/produit_commandes", icon: <IconComponent  name='Product' style={iconStyle} />},
-        {name:"Utilisateurs", path:"/admin/dashboard/users", icon: <IconComponent  name='UsersOnline' style={iconStyle} />},
-        {name:"Fil d'actualité", path:"/admin/dashboard/fil_actualite", icon: <IconComponent  name='Rss' style={iconStyle} />},
-        {name:"Evènements", path:"/admin/dashboard/event", icon: <IconComponent  name='Schedule' style={iconStyle} />}
-    ]
-
-
-const sidebarContainerStyle: React.CSSProperties = {
-        width: sidebarWidth,
-        backgroundColor: '#50789B',
-        color: '#FFFFFF',
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100vh',
-        position: 'relative',
-    };
-
-    const headerStyle: React.CSSProperties = {
-        padding: '1rem',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
-    };
-
-    const userInfoStyle: React.CSSProperties = {
-        display: 'flex',
-        alignItems: 'center',
-    };
-
-    const avatarCircleStyle: React.CSSProperties = {
-        borderRadius: '50%',
-        backgroundColor: '#3d6080',
-        width: '40px',
-        height: '40px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginRight: '0.75rem',
-        flexShrink: 0,
-        fontSize: '1.25rem',
-        fontWeight: 'bold',
-    };
-
-    const avatarTextStyle: React.CSSProperties = {
-        fontSize: '0.875rem',
-        fontWeight: '500',
-        lineHeight: '1.25',
-        fontFamily: 'sans-serif',
-    };
-
-    const closeButtonStyle: React.CSSProperties = {
-        background: 'none',
-        border: 'none',
-        color: 'white',
-        cursor: 'pointer',
-        padding: '0.5rem',
-        display: 'flex',
-        alignItems: 'center',
-    };
-
-    const navStyle: React.CSSProperties = {
-        flexGrow: 1,
-        padding: '0.5rem',
-        overflowY: 'auto',
-    };
-
-    const linkStyle: React.CSSProperties = {
-        display: 'flex',
-        alignItems: 'center',
-        padding: '0.75rem',
-        marginTop: '0.25rem',
-        marginBottom: '0.25rem',
-        borderRadius: '0.5rem',
-        transition: 'background-color 0.15s ease-in-out',
-        textDecoration: 'none',
-        color: 'white',
-    };
-
-    const iconWrapperStyle: React.CSSProperties = {
-        marginRight: '0.75rem',
-        display: 'flex',
-        alignItems: 'center',
-        width: '24px',
-        height: '24px',
-        justifyContent: 'center',
-    };
-
-    const linkTextStyle: React.CSSProperties = {
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        fontFamily: 'sans-serif',
-        fontSize: '0.95rem',
-    };
-
-    const footerStyle: React.CSSProperties = {
-        padding: '1rem',
-        borderTop: '1px solid rgba(255, 255, 255, 0.2)',
-    };
-
-    const buttonStyle: React.CSSProperties = {
-        display: 'flex',
-        alignItems: 'center',
-        padding: '0.75rem',
-        width: '100%',
-        borderRadius: '0.5rem',
-        backgroundColor: 'transparent',
-        border: 'none',
-        color: 'inherit',
-        cursor: 'pointer',
-        transition: 'background-color 0.15s ease-in-out',
-    };
+        {name:"Tableau de bord", path:"/admin/dashboard", icon: <IconComponent name='ControlPanel' {...iconBaseProps} />},
+        {name:"Gestion des articles", path:"/admin/dashboard/gestion_article", icon: <IconComponent name='List' {...iconBaseProps} />},
+        {name:"Medias (Vidéos,Podcasts)", path:"/admin/dashboard/medias", icon: <IconComponent name='Video' {...iconBaseProps} />},
+        {name:"Opportunités", path:"/admin/dashboard/formations_bourses", icon: <IconComponent name='Feed' {...iconBaseProps} />},
+        {name:"Newsletters", path:"/admin/dashboard/newsletters", icon: <IconComponent name='Envelope' {...iconBaseProps} />},
+        {name:"Boutiques", path:"/admin/dashboard/produit_commandes", icon: <IconComponent name='Product' {...iconBaseProps} />},
+        {name:"Utilisateurs", path:"/admin/dashboard/users", icon: <IconComponent name='UsersOnline' {...iconBaseProps} />},
+        {name:"Fil d'actualité", path:"/admin/dashboard/fil_actualite", icon: <IconComponent name='Rss' {...iconBaseProps} />},
+        {name:"Agenda", path:"/admin/dashboard/event", icon: <IconComponent name='Schedule' {...iconBaseProps} />}
+    ];
 
     const NavLinkItem = ({ item }: { item: NavItems }) => {
-        const [isHovered, setIsHovered] = useState(false);
+        
+        const isActive = pathname === item.path; 
 
-        const activeLinkStyle: React.CSSProperties = {
-            ...linkStyle,
-            backgroundColor: isHovered ? '#d78376ff' : 'transparent',
-        };
+        const baseClasses = `
+            flex items-center p-3 my-1 rounded-lg transition-colors duration-150
+            text-white focus:outline-none focus:ring-2 focus:ring-white/50
+        `;
+        
+        const inactiveHoverClasses = `
+            hover:bg-white/10 hover:shadow-lg
+        `;
+        
+        const activeClasses = `${ACTIVE_BG_COLOR} shadow-xl`; 
+
+        const linkClasses = `${baseClasses} ${isActive ? activeClasses : inactiveHoverClasses}`;
+
+        const iconWrapperClasses = "mr-3 flex items-center justify-center w-6 h-6 flex-shrink-0";
+        const linkTextClasses = "whitespace-nowrap overflow-hidden text-ellipsis font-sans text-[1rem] font-light";
 
         return (
             <Link
                 href={item.path}
-                style={activeLinkStyle}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+                className={linkClasses}
                 onClick={isMobile ? onClose : undefined}
             >
-                <span style={iconWrapperStyle}>
+                <span className={iconWrapperClasses}>
                     {item.icon ? (
                         item.icon
                     ) : (
-                        <span style={{ width: '20px', height: '20px', backgroundColor: '#fff', borderRadius: '4px' }} />
+                        <span className="w-5 h-5 bg-white rounded-md" />
                     )}
                 </span>
-                <span style={linkTextStyle}>{item.name}</span>
+                <span className={linkTextClasses}>{item.name}</span>
             </Link>
         );
     };
 
     const DisconnectButton = () => {
-        const [isHovered, setIsHovered] = useState(false);
-
-        const activeButtonStyle: React.CSSProperties = {
-            ...buttonStyle,
-            backgroundColor: isHovered ? '#d78376ff' : 'transparent',
-        };
+        const buttonClasses = `
+            flex items-center p-3 w-full rounded-lg transition-colors duration-150
+            bg-transparent border-none text-white cursor-pointer
+            hover:bg-white/10 hover:shadow-lg
+            focus:outline-none focus:ring-2 focus:ring-white/50
+        `;
+        const iconWrapperClasses = "mr-3 flex items-center justify-center w-6 h-6 flex-shrink-0";
+        const linkTextClasses = "whitespace-nowrap overflow-hidden text-ellipsis font-sans text-[0.95rem] font-medium";
 
         return (
             <button
-                style={activeButtonStyle}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+                className={buttonClasses}
             >
-                <span style={iconWrapperStyle}>
-                    <IconComponent  name='LogOut' style={iconStyle} />
+                <span className={iconWrapperClasses}>
+                    <IconComponent name='LogOut' className={`text-white ${iconSize}`} />
                 </span>
-                <span style={linkTextStyle}>Déconnexion</span>
+                <span className={linkTextClasses}>Déconnexion</span>
             </button>
         );
     };
 
+    const sidebarContainerClasses = `
+        w-64 // sidebarWidth: 256px
+        bg-[#50789B] 
+        text-white 
+        flex 
+        flex-col 
+        h-screen // height: 100vh
+        relative 
+        shadow-2xl
+    `;
+
+    const headerClasses = "p-4 flex items-center justify-between border-b border-white/20";
+
+    const userInfoClasses = "flex items-center";
+    const avatarCircleClasses = "rounded-full bg-[#3d6080] w-10 h-10 flex items-center justify-center mr-3 flex-shrink-0 text-xl font-bold";
+    const avatarTextClasses = "text-sm font-light leading-tight font-sans";
+
+    const closeButtonClasses = "bg-transparent border-none text-white cursor-pointer p-2 flex items-center hover:text-red-300 transition-colors duration-200";
+    
+    const navClasses = "flex-grow p-2 overflow-y-auto";
+
+    const footerClasses = "p-4 border-t border-white/20";
+
     return (
-        <div style={sidebarContainerStyle}>
-            <div style={headerStyle}>
-                <div style={userInfoStyle}>
-                    <div style={avatarCircleStyle}>
+        <div className={sidebarContainerClasses}>
+            <div className={headerClasses}>
+                <div className={userInfoClasses}>
+                    <div className={avatarCircleClasses}>
                         <span>ED</span>
                     </div>
-                    <div style={avatarTextStyle}>
+                    <div className={avatarTextClasses}>
                         Administrateur<br />
                         Emmanuel Dabo
                     </div>
                 </div>
                 {isMobile && onClose && (
-                    <button onClick={onClose} style={closeButtonStyle} aria-label="Fermer le menu">
+                    <button onClick={onClose} className={closeButtonClasses} aria-label="Fermer le menu">
                        <X size={24} />
                     </button>
                 )}
             </div>
-
-            <nav style={navStyle}>
+            <nav className={navClasses}>
                 {navItems.map((item) => (
                     <NavLinkItem key={item.path} item={item} />
                 ))}
             </nav>
-
-            <div style={footerStyle}>
+            <div className={footerClasses}>
                 <DisconnectButton />
             </div>
         </div>
