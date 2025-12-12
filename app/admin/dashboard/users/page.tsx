@@ -6,57 +6,60 @@ import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import AddUser from "@/app/actions/addUser";
 import FetchUsers from "@/app/actions/fetchUsers";
+import DeleteUser from "@/app/actions/deleteUser";
 
 export interface UserInterface {
-    id?:string
-    username?:string;
+    id?: string
+    username?: string;
     first_name: string;
-    last_name:string;
+    last_name: string;
     email: string;
     roles: string;
-    password?:string
+    password?: string
 }
 
-const userFields : FormFieldConfig[] = [
+const userFields: FormFieldConfig[] = [
     { name: 'username', label: 'Username', type: 'text', placeholder: 'Entrez votre nom d\'utilisateur', required: true },
     { name: 'first_name', label: 'Nom', type: 'text', placeholder: 'Entrez votre nom', required: true },
     { name: 'last_name', label: 'Prénoms', type: 'text', placeholder: 'Entrez vos prénoms', required: true },
     { name: 'email', label: 'Email', type: 'email', placeholder: 'Entrez l\'email', required: true },
-    { name: 'roles', label: 'Rôle', type: 'select', options: [
-        { value: 'Administrateur', label: 'Administrateur' },
-        { value: 'Utilisateur', label: 'Utilisateur' },
-    ], required: true },
+    {
+        name: 'roles', label: 'Rôle', type: 'select', options: [
+            { value: 'Administrateur', label: 'Administrateur' },
+            { value: 'Utilisateur', label: 'Utilisateur' },
+        ], required: true
+    },
     { name: 'password', label: 'Mot de passe', type: 'password', placeholder: 'Entrez le mot de passe', required: true },
 ]
 
 export default function Utilisateurs() {
     const [inputValue, setInputValue] = useState('');
     const [addUser, setAddUser] = useState(false);
-    const [editUser,setEditUser] = useState(false)
+    const [editUser, setEditUser] = useState(false)
     const [selectedUser, setSelectedUser] = useState<UserInterface | null>(null);
-    const [loading,setLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const [users, setUsers] = useState<UserInterface[]>([]);
 
 
 
     const handleAddUser = () => {
-       setAddUser(true);
+        setAddUser(true);
     };
 
-    const handleSubmitUser = async (formData:UserInterface)=>{
-       try{
+    const handleSubmitUser = async (formData: UserInterface) => {
+        try {
             const newUser = await AddUser(formData)
-            if(newUser && 'id' in newUser){
+            if (newUser && 'id' in newUser) {
                 console.log("nouvel utilisateur : ", newUser)
-                setUsers((prevUsers)=>[...prevUsers,newUser as UserInterface])
+                setUsers((prevUsers) => [...prevUsers, newUser as UserInterface])
                 setAddUser(false)
             }
 
-       }catch(err){
+        } catch (err) {
             console.log("erreur lors de l'appel addUser : ", err)
-       }
-        
+        }
+
     }
 
     const handleEdit = (user: UserInterface) => {
@@ -68,13 +71,19 @@ export default function Utilisateurs() {
         setEditUser(false);
     }
 
-    const handleDelete = () => {
-        if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
-            //setUsers(users.filter(u => u.id !== userId));
+    const handleDelete = async (userId: string | undefined) => {
+        try {
+            const deletedUser = await DeleteUser(userId)
+            if (deletedUser) {
+                console.log("utilisateur supprimé : ", deletedUser)
+                setUsers((prevUsers) => prevUsers.filter(u => u.id !== userId))
+            }
+        } catch (err) {
+            console.log("erreur lors de l'appel deleteUser : ", err)
         }
     };
 
-    
+
 
 
 
@@ -106,7 +115,7 @@ export default function Utilisateurs() {
                     </button>
                     <button
                         className="p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
-                        onClick={() => handleDelete()}
+                        onClick={() => handleDelete(user.id)}
                         aria-label="Supprimer"
                     >
                         <Trash2 size={18} />
@@ -128,7 +137,7 @@ export default function Utilisateurs() {
                 </button>
                 <button
                     className="p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
-                    onClick={() => handleDelete()}
+                    onClick={() => handleDelete(user.id)}
                     aria-label="Supprimer"
                 >
                     <Trash2 size={20} />
@@ -140,46 +149,46 @@ export default function Utilisateurs() {
     let initialData = {};
     if (selectedUser) {
         initialData = {
-            username:selectedUser.username,
+            username: selectedUser.username,
             first_name: selectedUser.username,
-            last_name:selectedUser.last_name,
+            last_name: selectedUser.last_name,
             email: selectedUser.email,
-            roles:selectedUser.password
+            roles: selectedUser.password
         }
     }
-    
-    
 
-    useEffect(()=>{
-        const fetchUser = async ()=>{
-            try{
+
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
                 const response = await FetchUsers()
                 console.log(response)
-                if(response){
-                    setUsers((prevUsers)=>[...prevUsers,...response])
+                if (response) {
+                    setUsers((prevUsers) => [...prevUsers, ...response])
                 }
 
-            }catch(err){
+            } catch (err) {
                 console.log("erreur lors de la recuperations des utilisateurs : ", err)
             }
         }
         fetchUser()
-    },[])
+    }, [])
 
 
     const filteredUsers = users.filter(user =>
-       user && (user.first_name.toLowerCase().includes(inputValue.toLowerCase()) ||
-        user.email.toLowerCase().includes(inputValue.toLowerCase()) || 
-        user.last_name.toLowerCase().includes(inputValue.toLowerCase()))
+        user && (user.first_name.toLowerCase().includes(inputValue.toLowerCase()) ||
+            user.email.toLowerCase().includes(inputValue.toLowerCase()) ||
+            user.last_name.toLowerCase().includes(inputValue.toLowerCase()))
     );
     return (
-        <div className="min-h-screen font-sans p-4 md:p-6 lg:p-8"> 
-            
+        <div className="min-h-screen font-sans p-4 md:p-6 lg:p-8">
+
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-6 gap-4 w-full">
                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-light text-white m-0">Gestion des utilisateurs</h1>
                 <ButtonComponent textButton="Ajouter un utilisateur" onclick={handleAddUser} />
             </div>
-            
+
             <div className="mb-4 md:mb-6 w-full md:w-1/2">
                 <SearchBarComponent
                     placeholder="Rechercher par nom ou email....."
@@ -188,7 +197,7 @@ export default function Utilisateurs() {
                 />
             </div>
 
-           
+
             <div className="md:hidden">
                 {filteredUsers.length > 0 ? (
                     filteredUsers.map((user) => (
@@ -202,7 +211,7 @@ export default function Utilisateurs() {
             </div>
 
 
-           
+
             <div className="hidden md:block bg-[#50789B] rounded-xl overflow-hidden backdrop-blur-sm shadow-xl">
                 <table className="w-full border-collapse text-white">
                     <thead>
@@ -236,18 +245,18 @@ export default function Utilisateurs() {
                 </table>
             </div>
 
-            <AddElementModal 
-                isOpen={addUser} 
+            <AddElementModal
+                isOpen={addUser}
                 onClose={() => setAddUser(false)}
                 onSubmit={handleSubmitUser}
                 titleComponent="Ajout utilisateur"
                 buttonTitle="Inscrire"
                 fields={userFields}
-                initialData={{username:'',email:'',first_name:'',last_name:'', roles:''}}
+                initialData={{ username: '', email: '', first_name: '', last_name: '', roles: '' }}
             />
 
-            <AddElementModal 
-                isOpen={editUser} 
+            <AddElementModal
+                isOpen={editUser}
                 onClose={() => setEditUser(false)}
                 onSubmit={handleSubmitEditUser}
                 titleComponent="Modifier Informations"
