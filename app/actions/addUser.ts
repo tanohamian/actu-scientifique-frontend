@@ -25,13 +25,12 @@ export default async function AddUser(formData:UserInterface) {
             throw new Error(`Echec de creation utilisateur : ${response}`)
         }
         const responseJson = await response.json()
-        console.log(responseJson)
         revalidatePath('/admin/dashboard/users')
+        return responseJson.user
         
     }catch(err){
         console.log("erreur lors de la creation d'un utilisateur : ", err)
         return
     }
-    redirect('/admin/dashboard/users')
    
 }

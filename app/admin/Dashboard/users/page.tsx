@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import AddUser from "@/app/actions/addUser";
+import FetchUsers from "@/app/actions/fetchUsers";
 
 export interface UserInterface {
     id?:string
@@ -43,11 +44,19 @@ export default function Utilisateurs() {
        setAddUser(true);
     };
 
-    const handleSubmitUser = (formData:UserInterface)=>{
-        const newUser = AddUser(formData)
-        console.log(newUser)
-        //setUsers([...users,newUser])
-        setAddUser(false)
+    const handleSubmitUser = async (formData:UserInterface)=>{
+       try{
+            const newUser = await AddUser(formData)
+            if(newUser && 'id' in newUser){
+                console.log("nouvel utilisateur : ", newUser)
+                setUsers((prevUsers)=>[...prevUsers,newUser as UserInterface])
+                setAddUser(false)
+            }
+
+       }catch(err){
+            console.log("erreur lors de l'appel addUser : ", err)
+       }
+        
     }
 
     const handleEdit = (user: UserInterface) => {
@@ -66,17 +75,22 @@ export default function Utilisateurs() {
     };
 
     const filteredUsers = users.filter(user =>
-        user.firstName.toLowerCase().includes(inputValue.toLowerCase()) ||
+       user && (user.firstName.toLowerCase().includes(inputValue.toLowerCase()) ||
         user.email.toLowerCase().includes(inputValue.toLowerCase()) || 
-        user.lastName.toLowerCase().includes(inputValue.toLowerCase())
+        user.lastName.toLowerCase().includes(inputValue.toLowerCase()))
     );
+
+
+
+
+
 
     const MobileUserCard = ({ user }: { user: UserInterface }) => {
         return (
             <div className="bg-[#22415bff] rounded-lg p-4 mb-4 backdrop-blur-sm text-white md:hidden">
                 <div className="flex justify-between mb-2 text-sm">
                     <span className="font-semibold text-white/70">Noms :</span>
-                    <span className="text-white">{user.name}</span>
+                    <span className="text-white">{`${user.firstName} ${user.lastName}`}</span>
                 </div>
                 <div className="flex justify-between mb-2 text-sm">
                     <span className="font-semibold text-white/70">Email :</span>
@@ -96,7 +110,7 @@ export default function Utilisateurs() {
                     </button>
                     <button
                         className="p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
-                        onClick={() => handleDelete(user.id)}
+                        onClick={() => handleDelete()}
                         aria-label="Supprimer"
                     >
                         <Trash2 size={18} />
@@ -130,12 +144,31 @@ export default function Utilisateurs() {
     let initialData = {};
     if (selectedUser) {
         initialData = {
-            name: selectedUser.username,
+            username:selectedUser.username,
+            firstName: selectedUser.username,
+            lastName:selectedUser.lastName,
             email: selectedUser.email,
+            role:selectedUser.password
         }
     }
     
     
+
+    useEffect(()=>{
+        const fetchUser = async ()=>{
+            try{
+                const response = await FetchUsers()
+                console.log(response)
+                if(response){
+                    setUsers((prevUsers)=>[...prevUsers,response])
+                }
+
+            }catch(err){
+                console.log("erreur lors de la recuperations des utilisateurs : ", err)
+            }
+        }
+        fetchUser()
+    },[])
 
 
 
@@ -210,7 +243,7 @@ export default function Utilisateurs() {
                 titleComponent="Ajout utilisateur"
                 buttonTitle="Inscrire"
                 fields={userFields}
-                initialData={{name:'',email:''}}
+                initialData={{username:'',email:'',firstName:'',lastName:'', role:''}}
             />
 
             <AddElementModal 

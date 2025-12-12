@@ -24,7 +24,6 @@ export default async function LoginUser(formData:FormState) {
             },
             body:JSON.stringify({email:email,password:password})
         })
-        //console.log(response)
         if (!response.ok) {
             throw new Error(`Échec de la connexion : ${response.status}`);
         }
@@ -34,7 +33,6 @@ export default async function LoginUser(formData:FormState) {
         
         if (setCookieHeader) {
             authTokenValue = setCookieHeader.match(/authToken=([^;]*)/);
-            console.log(authTokenValue)
 
         if (authTokenValue && authTokenValue[1]) {
                 (await cookies()).set('authToken', authTokenValue[1], {
@@ -48,14 +46,12 @@ export default async function LoginUser(formData:FormState) {
 
 
         if (authTokenValue && authTokenValue[1]) {
-            console.log("auth1",authTokenValue[1])
             const res = await fetch(`${env.baseUrl}/auth/admin`, {
                 headers: {
                     'Cookie': `authToken=${authTokenValue[1]}`
                 }
             })
 
-            console.log("responseAdmin status : ", res.status)
             if (res.status === 200) {
                 loginSuccessful = true
                 revalidatePath('/admin/dashboard')
