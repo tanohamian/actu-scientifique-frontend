@@ -4,7 +4,7 @@
 
 import ButtonComponent from '@/app/components/button';
 import SearchBarComponent from '@/app/components/searchBar';
-import EventDataTable, { TableData } from '@/app/components/eventDataTable';
+import DataTable, { TableData } from '@/app/components/eventDataTable';
 import React, { useState } from 'react'
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
@@ -152,6 +152,7 @@ export default function ArticlePage() {
         w-full 
         lg:w-1/3 
         h-fit 
+        ml-auto
         flex-shrink-0 
         mt-8 
         lg:mt-0 
@@ -199,7 +200,7 @@ export default function ArticlePage() {
             <div className={headerClasses}>
                 <div>
                     <h1 className={textClasses}>Gestion des Articles</h1>
-                    <h3 className={subTextClasses}>Gérer les posdcasts et les videos depuis cette interface</h3>
+                    <h3 className={subTextClasses}>Gérer les articles depuis cette interface</h3>
                 </div>
                 <ButtonComponent textButton='Ajouter un article' size='large' onclick={handleEvent} />
             </div>
@@ -218,7 +219,7 @@ export default function ArticlePage() {
                   {
                     viewMode === 'list' ? (
                         <>
-                            <EventDataTable
+                            <DataTable
                                 tableTitle=""
                                 data={medias}
                                 columnHeaders={mainHeaders}

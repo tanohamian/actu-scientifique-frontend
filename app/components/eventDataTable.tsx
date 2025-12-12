@@ -37,11 +37,11 @@ const getStatusClasses = (status: TableData['status']): string => {
     }
 };
 
-export default function EventDataTable({ tableTitle, data, columnHeaders, handleEditEvent }: EventDataTableProps) {
+export default function DataTable({ tableTitle, data, columnHeaders, handleEditEvent }: EventDataTableProps) {
     
 
     return (
-        <div className="bg-[#50789B] p-5 rounded-lg mt-5 shadow-xl font-sans">
+        <div className="bg-[#50789B] p-5 rounded-lg mt-5 shadow-xl font-sans w-200">
             <h2 className="text-white text-xl mb-5 font-bold">{tableTitle}</h2>
 
             {/* En-tête (Desktop) */}

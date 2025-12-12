@@ -213,7 +213,7 @@ export default function EventPage() {
             <div className={headerClasses}>
                 <div>
                     <h1 className={textClasses}>Gestion des Médias</h1>
-                    <h3 className={subTextClasses}>Gérer les posdcasts et les videos depuis cette interface</h3>
+                    <h3 className={subTextClasses}>Gérer les podcasts et les videos depuis cette interface</h3>
                 </div>
                 <ButtonComponent textButton='Ajouter un media' size='large' onclick={handleEvent} />
             </div>

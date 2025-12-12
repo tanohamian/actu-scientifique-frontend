@@ -64,7 +64,7 @@ export default function Utilisateurs() {
         setEditUser(true);
     };
 
-    const handleSubmitEditUser = (formData:any)=>{
+    const handleSubmitEditUser = ()=>{
         setEditUser(false);
     }
 
