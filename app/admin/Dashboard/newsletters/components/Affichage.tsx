@@ -39,6 +39,7 @@ export interface Article{
   title: string;
   content: string;
   rubrique: string;
+  createdAt ?: Date | string
 }
 type ItemType = Newsletter | Article;
 

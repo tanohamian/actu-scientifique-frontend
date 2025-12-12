@@ -116,7 +116,7 @@ export default function RootLayout({
             <h2 className='text-white text-2xl font-bold mb-4'>Contacts & Localisations</h2>
             <div className={footerElement + ' mb-3'}>
               <IconComponent name='Localisation' className={`text-white w-6 h-6 flex-shrink-0`}/>
-              <span className='text-white ml-3 text-sm lg:text-base'>Adresse de l'entreprise</span> 
+              <span className='text-white ml-3 text-sm lg:text-base'>Adresse de {"l'entreprise"}</span> 
             </div>
             <div className={footerElement}>
               <IconComponent name='Phone' className={`text-white w-6 h-6 flex-shrink-0`}/>
@@ -127,7 +127,7 @@ export default function RootLayout({
           <div className='flex flex-col'>
             <h2 className='text-white text-2xl font-bold mb-4'>À propos</h2>
             <a href="#about" className='text-white hover:underline mb-2 text-sm lg:text-base'>Notre mission</a>
-            <a href="#team" className='text-white hover:underline text-sm lg:text-base'>L'équipe</a>
+            <a href="#team" className='text-white hover:underline text-sm lg:text-base'>{"L'équpe"}</a>
           </div>
 
           <div className='flex flex-col'>
