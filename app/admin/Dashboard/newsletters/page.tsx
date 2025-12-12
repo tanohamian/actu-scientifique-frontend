@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import ComponenteFormulaire from './components/ComponenteFormulaire';
 import Affichage, { Newsletter } from './components/Affichage';
-
+import { env } from '@/env';
+console.log(env)
 export default function Page() {
     const MOBILE_BREAKPOINT = 768;
     const [isMobile, setIsMobile] = useState(false);

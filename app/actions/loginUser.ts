@@ -2,7 +2,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { FormState } from "../admin/page"
-import {env} from '@/app/config/env'
+import { env } from '@/env'
 import { cookies } from 'next/headers'
 
 
@@ -49,7 +49,7 @@ export default async function LoginUser(formData:FormState) {
         if (authTokenValue) {
             const res = await fetch(`${env.baseUrl}/auth/admin`, {
                 headers: {
-                    'Cookie': `authToken=${authTokenValue}`
+                    'Cookie': `authToken=${authTokenValue[1]}`
                 }
             })
 

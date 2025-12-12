@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
-import { Media } from '../admin/dashboard/newsletters/components/Affichage';
+import { Article, Media } from '../admin/dashboard/newsletters/components/Affichage';
 
 export interface TableData {
     title: string;
@@ -14,7 +14,7 @@ export interface TableData {
 
 interface EventDataTableProps {
     tableTitle: string;
-    data: TableData[]| Media[];
+    data: TableData[] | Media[] | Article[];
     columnHeaders: { key: string; label: string; flexBasis: string }[];
     handleEditEvent?: (item: TableData) => void;
 }

@@ -2,8 +2,8 @@
 import Form from "next/form"
 import React, { FormEvent, useState } from 'react';
 import { FileUpload } from "../../produit_commandes/components/FileUpload";
-import AddArticle from "@/app/actions/addArticle";
 import { Article } from "./Affichage";
+import { AddArticle } from "@/app/actions/ArticleManager";
 // import { ChevronUp } from 'lucide-react';
 export enum Rubriques{
     HEALTH = "une seule santé",
