@@ -10,19 +10,19 @@ import FetchUsers from "@/app/actions/fetchUsers";
 export interface UserInterface {
     id?:string
     username?:string;
-    firstName: string;
-    lastName:string;
+    first_name: string;
+    last_name:string;
     email: string;
-    role: string;
+    roles: string;
     password?:string
 }
 
 const userFields : FormFieldConfig[] = [
     { name: 'username', label: 'Username', type: 'text', placeholder: 'Entrez votre nom d\'utilisateur', required: true },
-    { name: 'firstName', label: 'Nom', type: 'text', placeholder: 'Entrez votre nom', required: true },
-    { name: 'lastName', label: 'Prénoms', type: 'text', placeholder: 'Entrez vos prénoms', required: true },
+    { name: 'first_name', label: 'Nom', type: 'text', placeholder: 'Entrez votre nom', required: true },
+    { name: 'last_name', label: 'Prénoms', type: 'text', placeholder: 'Entrez vos prénoms', required: true },
     { name: 'email', label: 'Email', type: 'email', placeholder: 'Entrez l\'email', required: true },
-    { name: 'role', label: 'Rôle', type: 'select', options: [
+    { name: 'roles', label: 'Rôle', type: 'select', options: [
         { value: 'Administrateur', label: 'Administrateur' },
         { value: 'Utilisateur', label: 'Utilisateur' },
     ], required: true },
@@ -34,7 +34,7 @@ export default function Utilisateurs() {
     const [addUser, setAddUser] = useState(false);
     const [editUser,setEditUser] = useState(false)
     const [selectedUser, setSelectedUser] = useState<UserInterface | null>(null);
-    //const [loading,setLoading] = useState(false)
+    const [loading,setLoading] = useState(false)
 
     const [users, setUsers] = useState<UserInterface[]>([]);
 
@@ -64,7 +64,7 @@ export default function Utilisateurs() {
         setEditUser(true);
     };
 
-    const handleSubmitEditUser = ()=>{
+    const handleSubmitEditUser = (formData:any)=>{
         setEditUser(false);
     }
 
@@ -73,26 +73,8 @@ export default function Utilisateurs() {
             //setUsers(users.filter(u => u.id !== userId));
         }
     };
-    useEffect(()=>{
-        const fetchUser = async ()=>{
-            try{
-                const response = await FetchUsers() as UserInterface[]
-                console.log(response)
-                if(response){
-                    setUsers((prevUsers)=>[...prevUsers,...response])
-                }
 
-            }catch(err){
-                console.log("erreur lors de la recuperations des utilisateurs : ", err)
-            }
-        }
-        fetchUser()
-    },[])
-    const filteredUsers = users.filter((user : UserInterface)  =>
-       user && (user.firstName.toLowerCase().includes(inputValue.toLowerCase()) ||
-        user.email.toLowerCase().includes(inputValue.toLowerCase()) || 
-        user.lastName.toLowerCase().includes(inputValue.toLowerCase()))
-    );
+    
 
 
 
@@ -104,7 +86,7 @@ export default function Utilisateurs() {
             <div className="bg-[#22415bff] rounded-lg p-4 mb-4 backdrop-blur-sm text-white md:hidden">
                 <div className="flex justify-between mb-2 text-sm">
                     <span className="font-semibold text-white/70">Noms :</span>
-                    <span className="text-white">{`${user.firstName} ${user.lastName}`}</span>
+                    <span className="text-white">{`${user.first_name} ${user.last_name}`}</span>
                 </div>
                 <div className="flex justify-between mb-2 text-sm">
                     <span className="font-semibold text-white/70">Email :</span>
@@ -112,7 +94,7 @@ export default function Utilisateurs() {
                 </div>
                 <div className="flex justify-between text-sm">
                     <span className="font-semibold text-white/70">Role :</span>
-                    <span className="text-white">{user.role}</span>
+                    <span className="text-white">{user.roles}</span>
                 </div>
                 <div className="flex gap-3 justify-end mt-4 pt-4 border-t border-white/20">
                     <button
@@ -159,19 +141,37 @@ export default function Utilisateurs() {
     if (selectedUser) {
         initialData = {
             username:selectedUser.username,
-            firstName: selectedUser.username,
-            lastName:selectedUser.lastName,
+            first_name: selectedUser.username,
+            last_name:selectedUser.last_name,
             email: selectedUser.email,
-            role:selectedUser.password
+            roles:selectedUser.password
         }
     }
     
     
 
+    useEffect(()=>{
+        const fetchUser = async ()=>{
+            try{
+                const response = await FetchUsers()
+                console.log(response)
+                if(response){
+                    setUsers((prevUsers)=>[...prevUsers,...response])
+                }
+
+            }catch(err){
+                console.log("erreur lors de la recuperations des utilisateurs : ", err)
+            }
+        }
+        fetchUser()
+    },[])
 
 
-
-
+    const filteredUsers = users.filter(user =>
+       user && (user.first_name.toLowerCase().includes(inputValue.toLowerCase()) ||
+        user.email.toLowerCase().includes(inputValue.toLowerCase()) || 
+        user.last_name.toLowerCase().includes(inputValue.toLowerCase()))
+    );
     return (
         <div className="min-h-screen font-sans p-4 md:p-6 lg:p-8"> 
             
@@ -191,7 +191,7 @@ export default function Utilisateurs() {
            
             <div className="md:hidden">
                 {filteredUsers.length > 0 ? (
-                    filteredUsers.map((user : UserInterface) => (
+                    filteredUsers.map((user) => (
                         <MobileUserCard key={user.id} user={user} />
                     ))
                 ) : (
@@ -215,11 +215,11 @@ export default function Utilisateurs() {
                     </thead>
                     <tbody>
                         {filteredUsers.length > 0 ? (
-                            filteredUsers.map((user: UserInterface) => (
+                            filteredUsers.map((user) => (
                                 <tr key={user.id} className="hover:bg-white/10 transition duration-150 ease-in-out">
-                                    <td className="py-4 px-4 text-base border-b border-white/20">{`${user.firstName} ${user.lastName}`}</td>
+                                    <td className="py-4 px-4 text-base border-b border-white/20">{`${user.first_name} ${user.last_name}`}</td>
                                     <td className="py-4 px-4 text-base border-b border-white/20">{user.email}</td>
-                                    <td className="py-4 px-4 text-base border-b border-white/20">{user.role}</td>
+                                    <td className="py-4 px-4 text-base border-b border-white/20">{user.roles}</td>
                                     <td className="flex gap-2 justify-end items-center py-4 px-4 border-b border-white/20">
                                         <ActionButtons user={user} />
                                     </td>
@@ -243,7 +243,7 @@ export default function Utilisateurs() {
                 titleComponent="Ajout utilisateur"
                 buttonTitle="Inscrire"
                 fields={userFields}
-                initialData={{username:'',email:'',firstName:'',lastName:'', role:''}}
+                initialData={{username:'',email:'',first_name:'',last_name:'', roles:''}}
             />
 
             <AddElementModal 

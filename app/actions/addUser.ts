@@ -18,7 +18,7 @@ export default async function AddUser(formData:UserInterface) {
                 'Content-Type': 'application/json',
             },
             
-            body:JSON.stringify({first_name:formData.firstName,last_name:formData.lastName,roles:formData.role == "Administrateur" ? 'ROLE_ADMIN' : 'ROLE_VIEWER',email:formData.email,password:formData.password,username:formData.username})
+            body:JSON.stringify({first_name:formData.first_name,last_name:formData.first_name,roles:formData.roles == "Administrateur" ? 'ROLE_ADMIN' : 'ROLE_VIEWER',email:formData.email,password:formData.password,username:formData.username})
         })
         if(!response.ok){
             console.log(response)

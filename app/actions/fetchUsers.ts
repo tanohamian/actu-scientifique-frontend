@@ -23,7 +23,7 @@ export default async function FetchUsers() {
 
        if(response.ok){
          const responseData = await response.json()
-         //console.log(responseData)
+         console.log(responseData)
          revalidatePath('/admin/dashboard/users')
          return responseData as UserInterface[]
        }
