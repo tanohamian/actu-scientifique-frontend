@@ -27,13 +27,13 @@ export default async function AddArticle(formData:Article) {
 
         if (!response.ok) {
             console.log(response)
-            throw new Error(`Échec de la connexion : ${response}`);
+            throw new Error(`Échec de la récupération des articles : ${response}`);
         }
 
 
         
     } catch (error) {
-        console.error("Erreur lors de la connexion : ")
+        console.error("Erreur lors de la récupération des articles : ")
         console.log(error)
     }
 

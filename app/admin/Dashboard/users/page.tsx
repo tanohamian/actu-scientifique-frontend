@@ -73,7 +73,21 @@ export default function Utilisateurs() {
             //setUsers(users.filter(u => u.id !== userId));
         }
     };
+    useEffect(()=>{
+        const fetchUser = async ()=>{
+            try{
+                const response = await FetchUsers() as UserInterface[]
+                console.log(response)
+                if(response){
+                    setUsers((prevUsers)=>[...prevUsers,...response])
+                }
 
+            }catch(err){
+                console.log("erreur lors de la recuperations des utilisateurs : ", err)
+            }
+        }
+        fetchUser()
+    },[])
     const filteredUsers = users.filter((user : UserInterface)  =>
        user && (user.firstName.toLowerCase().includes(inputValue.toLowerCase()) ||
         user.email.toLowerCase().includes(inputValue.toLowerCase()) || 
@@ -154,21 +168,7 @@ export default function Utilisateurs() {
     
     
 
-    useEffect(()=>{
-        const fetchUser = async ()=>{
-            try{
-                const response = await FetchUsers() as UserInterface[]
-                console.log(response)
-                if(response){
-                    setUsers((prevUsers)=>[...prevUsers,...response])
-                }
 
-            }catch(err){
-                console.log("erreur lors de la recuperations des utilisateurs : ", err)
-            }
-        }
-        fetchUser()
-    },[])
 
 
 
