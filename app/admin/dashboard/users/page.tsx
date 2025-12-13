@@ -4,99 +4,98 @@ import SearchBarComponent from "@/app/components/searchBar";
 import React, { useEffect, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
-import baseUrl from "../../../../baseUrl"
+import AddUser from "@/app/actions/addUser";
+import FetchUsers from "@/app/actions/fetchUsers";
+import DeleteUser from "@/app/actions/deleteUser";
 
-interface User {
-    id: number;
-    name: string;
+export interface UserInterface {
+    id?: string
+    username?: string;
+    first_name: string;
+    last_name: string;
     email: string;
-    role: string;
+    roles: string;
+    password?: string
 }
 
-const userFields : FormFieldConfig[] = [
-    { name: 'name', label: 'Nom complet', type: 'text', placeholder: 'Entrez les noms', required: true },
+const userFields: FormFieldConfig[] = [
+    { name: 'username', label: 'Username', type: 'text', placeholder: 'Entrez votre nom d\'utilisateur', required: true },
+    { name: 'first_name', label: 'Nom', type: 'text', placeholder: 'Entrez votre nom', required: true },
+    { name: 'last_name', label: 'Prénoms', type: 'text', placeholder: 'Entrez vos prénoms', required: true },
     { name: 'email', label: 'Email', type: 'email', placeholder: 'Entrez l\'email', required: true },
-    { name: 'role', label: 'Rôle', type: 'select', options: [
-        { value: 'Administrateur', label: 'Administrateur' },
-        { value: 'Utilisateur', label: 'Utilisateur' },
-    ], required: true },
+    {
+        name: 'roles', label: 'Rôle', type: 'select', options: [
+            { value: 'Administrateur', label: 'Administrateur' },
+            { value: 'Utilisateur', label: 'Utilisateur' },
+        ], required: true
+    },
     { name: 'password', label: 'Mot de passe', type: 'password', placeholder: 'Entrez le mot de passe', required: true },
 ]
 
 export default function Utilisateurs() {
     const [inputValue, setInputValue] = useState('');
     const [addUser, setAddUser] = useState(false);
-    const [editUser,setEditUser] = useState(false)
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
-    const [loading,setLoading] = useState(false)
+    const [editUser, setEditUser] = useState(false)
+    const [selectedUser, setSelectedUser] = useState<UserInterface | null>(null);
+    const [loading, setLoading] = useState(false)
 
-    const [users, setUsers] = useState<User[]>([
-        { id: 1, name: 'Adou johan', email: 'joka@gmail.com', role: 'Administrateur' },
-        { id: 2, name: 'Marie Kouassi', email: 'marie.k@gmail.com', role: 'Administrateur' },
-        { id: 3, name: 'Jean Yao', email: 'jean.yao@gmail.com', role: 'Utilisateur' },
-    ]);
+    const [users, setUsers] = useState<UserInterface[]>([]);
 
 
-    const getUsers = async ()=>{
-        //setLoading(true)
-        try{
-            const response = await fetch(`${baseUrl}/users/all`,{
-                method:'GET',
-                headers:{
-                    'Content-Type': 'application/json'
-                }
-            })
-
-            if (response.ok){
-               const userData =  await response.json()
-               console.log("userData : ", userData)
-            }
-        }catch(err){
-            console.log("erreur lors de la recuperation des utilisateurs : ", err)
-        }
-    }
 
     const handleAddUser = () => {
-       setAddUser(true);
+        setAddUser(true);
     };
 
-    const handleSubmitUser = (formData:any)=>{
-        const newUser: User = {
-            id:users.length + 1,
-            name: formData.name,
-            email: formData.email,
-            role: formData.role
+    const handleSubmitUser = async (formData: UserInterface) => {
+        try {
+            const newUser = await AddUser(formData)
+            if (newUser && 'id' in newUser) {
+                console.log("nouvel utilisateur : ", newUser)
+                setUsers((prevUsers) => [...prevUsers, newUser as UserInterface])
+                setAddUser(false)
+            }
+
+        } catch (err) {
+            console.log("erreur lors de l'appel addUser : ", err)
         }
-        setUsers([...users, newUser]);
-        setAddUser(false);
+
     }
 
-    const handleEdit = (user: User) => {
+    const handleEdit = (user: UserInterface) => {
         setSelectedUser(user);
         setEditUser(true);
     };
 
-    const handleSubmitEditUser = (formData:any)=>{
+    const handleSubmitEditUser = (formData: any) => {
         setEditUser(false);
     }
 
-    const handleDelete = (userId: number) => {
-        if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
-            setUsers(users.filter(u => u.id !== userId));
+    const handleDelete = async (userId: string | undefined) => {
+        try {
+            const deletedUser = await DeleteUser(userId)
+            if (deletedUser) {
+                console.log("utilisateur supprimé : ", deletedUser)
+                setUsers((prevUsers) => prevUsers.filter(u => u.id !== userId))
+            }
+        } catch (err) {
+            console.log("erreur lors de l'appel deleteUser : ", err)
         }
     };
 
-    const filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-        user.email.toLowerCase().includes(inputValue.toLowerCase())
-    );
 
-    const MobileUserCard = ({ user }: { user: User }) => {
+
+
+
+
+
+
+    const MobileUserCard = ({ user }: { user: UserInterface }) => {
         return (
             <div className="bg-[#22415bff] rounded-lg p-4 mb-4 backdrop-blur-sm text-white md:hidden">
                 <div className="flex justify-between mb-2 text-sm">
                     <span className="font-semibold text-white/70">Noms :</span>
-                    <span className="text-white">{user.name}</span>
+                    <span className="text-white">{`${user.first_name} ${user.last_name}`}</span>
                 </div>
                 <div className="flex justify-between mb-2 text-sm">
                     <span className="font-semibold text-white/70">Email :</span>
@@ -104,7 +103,7 @@ export default function Utilisateurs() {
                 </div>
                 <div className="flex justify-between text-sm">
                     <span className="font-semibold text-white/70">Role :</span>
-                    <span className="text-white">{user.role}</span>
+                    <span className="text-white">{user.roles}</span>
                 </div>
                 <div className="flex gap-3 justify-end mt-4 pt-4 border-t border-white/20">
                     <button
@@ -126,7 +125,7 @@ export default function Utilisateurs() {
         );
     };
 
-    const ActionButtons = ({ user }: { user: User }) => {
+    const ActionButtons = ({ user }: { user: UserInterface }) => {
         return (
             <>
                 <button
@@ -150,25 +149,46 @@ export default function Utilisateurs() {
     let initialData = {};
     if (selectedUser) {
         initialData = {
-            name: selectedUser.name,
+            username: selectedUser.username,
+            first_name: selectedUser.username,
+            last_name: selectedUser.last_name,
             email: selectedUser.email,
+            roles: selectedUser.password
         }
     }
-    
-    useEffect(()=>{
-        getUsers()
-    },[])
 
 
 
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await FetchUsers()
+                console.log(response)
+                if (response) {
+                    setUsers((prevUsers) => [...prevUsers, ...response])
+                }
+
+            } catch (err) {
+                console.log("erreur lors de la recuperations des utilisateurs : ", err)
+            }
+        }
+        fetchUser()
+    }, [])
+
+
+    const filteredUsers = users.filter(user =>
+        user && (user.first_name.toLowerCase().includes(inputValue.toLowerCase()) ||
+            user.email.toLowerCase().includes(inputValue.toLowerCase()) ||
+            user.last_name.toLowerCase().includes(inputValue.toLowerCase()))
+    );
     return (
-        <div className="min-h-screen font-sans p-4 md:p-6 lg:p-8"> 
-            
+        <div className="min-h-screen font-sans p-4 md:p-6 lg:p-8">
+
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-6 gap-4 w-full">
                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-light text-white m-0">Gestion des utilisateurs</h1>
                 <ButtonComponent textButton="Ajouter un utilisateur" onclick={handleAddUser} />
             </div>
-            
+
             <div className="mb-4 md:mb-6 w-full md:w-1/2">
                 <SearchBarComponent
                     placeholder="Rechercher par nom ou email....."
@@ -177,7 +197,7 @@ export default function Utilisateurs() {
                 />
             </div>
 
-           
+
             <div className="md:hidden">
                 {filteredUsers.length > 0 ? (
                     filteredUsers.map((user) => (
@@ -191,7 +211,7 @@ export default function Utilisateurs() {
             </div>
 
 
-           
+
             <div className="hidden md:block bg-[#50789B] rounded-xl overflow-hidden backdrop-blur-sm shadow-xl">
                 <table className="w-full border-collapse text-white">
                     <thead>
@@ -206,9 +226,9 @@ export default function Utilisateurs() {
                         {filteredUsers.length > 0 ? (
                             filteredUsers.map((user) => (
                                 <tr key={user.id} className="hover:bg-white/10 transition duration-150 ease-in-out">
-                                    <td className="py-4 px-4 text-base border-b border-white/20">{user.name}</td>
+                                    <td className="py-4 px-4 text-base border-b border-white/20">{`${user.first_name} ${user.last_name}`}</td>
                                     <td className="py-4 px-4 text-base border-b border-white/20">{user.email}</td>
-                                    <td className="py-4 px-4 text-base border-b border-white/20">{user.role}</td>
+                                    <td className="py-4 px-4 text-base border-b border-white/20">{user.roles}</td>
                                     <td className="flex gap-2 justify-end items-center py-4 px-4 border-b border-white/20">
                                         <ActionButtons user={user} />
                                     </td>
@@ -225,18 +245,18 @@ export default function Utilisateurs() {
                 </table>
             </div>
 
-            <AddElementModal 
-                isOpen={addUser} 
+            <AddElementModal
+                isOpen={addUser}
                 onClose={() => setAddUser(false)}
                 onSubmit={handleSubmitUser}
                 titleComponent="Ajout utilisateur"
                 buttonTitle="Inscrire"
                 fields={userFields}
-                initialData={{name:'kouassi jean',email:'jean@gmailcom'}}
+                initialData={{ username: '', email: '', first_name: '', last_name: '', roles: '' }}
             />
 
-            <AddElementModal 
-                isOpen={editUser} 
+            <AddElementModal
+                isOpen={editUser}
                 onClose={() => setEditUser(false)}
                 onSubmit={handleSubmitEditUser}
                 titleComponent="Modifier Informations"
