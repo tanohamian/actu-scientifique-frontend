@@ -4,6 +4,7 @@ import React, { FormEvent, useState } from 'react';
 import { FileUpload } from "../../produit_commandes/components/FileUpload";
 import AddArticle from "@/app/actions/addArticle";
 import { Article, Media } from "./Affichage";
+import AddMedia from "@/app/actions/addMedia";
 // import { ChevronUp } from 'lucide-react';
 export enum Rubriques{
     HEALTH = "une seule santé",
@@ -44,7 +45,7 @@ export default function ComponenteFormulaire( {isArticle=false, isMedia=false}: 
         e.preventDefault(); 
 
         try {
-            if (isArticle) {
+          if (isArticle) {
             const newArticle: Article = {
               title: formData.title,
               content: formData.contenu,
@@ -64,6 +65,9 @@ export default function ComponenteFormulaire( {isArticle=false, isMedia=false}: 
               file: formData.file,
               type: formData.type
             }
+            console.log("Objet Article à Soumettre:", newMedia);
+            AddMedia(newMedia)
+            console.log("media soumis")
           }
           else {
             console.log("Données Newsletter à Soumettre:", formData);
