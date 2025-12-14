@@ -12,7 +12,7 @@ import Filter, { IFilter } from '@/app/components/filter';
 import { DbMedia, Media, MimeTypes } from '../newsletters/components/Affichage';
 import AddMedia from '@/app/actions/addMedia';
 import FetchMedias from '@/app/actions/fetchMedias';
-import ComponenteFormulaire from '../newsletters/components/ComponenteFormulaire';
+import ComponenteFormulaire, { Rubriques } from '../newsletters/components/ComponenteFormulaire';
 
 const formatTimestampToDate = (timestamp: string): string => {
   const createdAt = new Date(parseInt(timestamp, 10)); // Convertir la chaîne en nombre puis en objet Date
@@ -34,7 +34,7 @@ const now = Date.now().toString()
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', type: 'text', placeholder: 'Entrez le titre du media', required: true },
     { name: 'type', label: 'Type', type: 'select', options: [{ value: 'photo', label: 'Photo' }, { value: 'video', label: 'Vidéo' }, { value: 'podcast', label: 'Podcast' }], required: true },
-    { name: 'rubrique', label: 'Catégorie', type: 'select', options: [{ value: 'Technologie', label: 'Technologie' }, { value: 'Matériel', label: 'Matériel' }], required: true },
+    { name: 'rubrique', label: 'Catégorie', type: 'select', options: [{ value: Rubriques.TECHNOLOGY, label: 'Technologie' }, { value: 'Matériel', label: 'Matériel' }], required: true },
 ];
 
 const mainHeaders = [
@@ -59,39 +59,7 @@ export default function EventPage() {
     const [filters] = useState<IFilter[]>(mainHeaders.map((header, index)=>{
       return {value: header.key, label: header.label}
     }))
-    const [medias, setMedias] = useState<DbMedia[]>([
-      {
-        id: 1,
-        title: "L'Avenir du Développement Front-end",
-        name: "",
-        type: "Photo",
-        url: "",
-        mimeType: MimeTypes.MP3,
-        category: "Technologie",
-        createdAt: formattedDatedNow, 
-      },
-      {
-        id: 2,
-        url: "",
-        title: "Les Avantages Mécano-Quantiques des Puces M3",
-        mimeType: MimeTypes.JPEG,
-        name: "",
-        type: "Video",
-        category: "Matériel",
-        createdAt: ""
-      },
-      {
-        id: 3,
-        url: "",
-        mimeType: MimeTypes.PNG,
-        name: "Le Design System : Un Investissement Essentiel",
-        title: "Le Design System : Un Investissement Essentiel",
-        type: "Photo",
-        category: "UX/UI Design",
-        createdAt: ""
-      },
-    ])
-    const router = useRouter();
+    const [medias, setMedias] = useState<DbMedia[]>([])
     
     const pageContainerClasses = `
         min-h-screen 
@@ -261,7 +229,7 @@ export default function EventPage() {
                 />
 
                 <article className={rightSectionClasses}>
-                <ComponenteFormulaire isArticle={true}/>
+                <ComponenteFormulaire isMedia={true} setMedias={setMedias}/>
                 </article>
             </article>
 

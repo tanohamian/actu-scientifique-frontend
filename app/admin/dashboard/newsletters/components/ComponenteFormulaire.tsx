@@ -3,9 +3,11 @@ import Form from "next/form"
 import React, { FormEvent, useState } from 'react';
 import { FileUpload } from "../../produit_commandes/components/FileUpload";
 import AddArticle from "@/app/actions/addArticle";
-import { Article, Media } from "./Affichage";
+import { Article, DbMedia, Media } from "./Affichage";
+import AddMedia from "@/app/actions/addMedia";
+import FetchMedias from "@/app/actions/fetchMedias";
 // import { ChevronUp } from 'lucide-react';
-export enum Rubriques {
+export enum ArticleRubriques {
   HEALTH = "une seule santé",
   TECHNOLOGY = "tech",
   ECOHUMANITY = "éco-humanité",
@@ -13,23 +15,34 @@ export enum Rubriques {
   CALENDAR = "agenda",
   PORTRAITSDISCOVERIES = "portraits et découvertes"
 }
-interface FormPropos {
-  isArticle: boolean
-  isMedia?: boolean
-}
-export default function ComponenteFormulaire({ isArticle = false, isMedia = false }: FormPropos) {
-  const rubriques = Object.values(Rubriques) as string[]; // Forcer le type à string[] pour le mapping
-  const endpoint = isArticle ? "articles" : "newsletters"
-  const titleText = isArticle ? "Ajouter un Article" : "Formulaire de News Letters"
-  const label = isArticle ? "Titre de l'article" : "Titre de la News Letter"
 
+export enum Rubriques{
+    TECHNOLOGY ="technology",
+    ONE_HEALTH ="health",
+    SCIENCE = "science",
+    ART = "art"
+} 
+
+interface FormPropos {
+  isArticle?: boolean
+  isMedia?: boolean
+  setMedias ?: (medias : DbMedia[])=> void
+}
+export default function ComponenteFormulaire({ isArticle = false, isMedia = false, setMedias=undefined }: FormPropos) {
+  const articleRubriques = Object.values(ArticleRubriques) as string[]; 
+  const rubriques = Object.values(Rubriques) as string[];
+
+  const endpoint = isArticle ? "articles" : "newsletters"
+  const titleText = isArticle ? "Ajouter un Article" : isMedia ? "Ajouter un média" : "Formulaire de News Letters"
+  const label = isArticle ? "Titre de l'article" : "Titre de la News Letter"
+  const [rubrique, setRubrique] = useState()
   // 1. État pour les données du formulaire
   const [formData, setFormData] = useState({
     title: "futur du journalisme",
     type: "",
     file: undefined,
     contenu: "le contenu................",
-    categorie: isArticle ? rubriques[0] : "Technologie", // Défaut basé sur l'état
+    categorie: isArticle ? articleRubriques[0] : isMedia ? rubriques[0] : "technology", // Défaut basé sur l'état
   });
 
   // 2. Gestionnaire pour mettre à jour l'état
@@ -40,7 +53,7 @@ export default function ComponenteFormulaire({ isArticle = false, isMedia = fals
     });
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
@@ -57,13 +70,27 @@ export default function ComponenteFormulaire({ isArticle = false, isMedia = fals
         alert(`Article soumis ! Titre : ${newArticle.title} / Rubrique : ${newArticle.rubrique}`);
 
       } else if (isMedia) {
+        if (!file) {
+          alert("Veuillez sélectionner un fichier");
+          return;
+        }
         const newMedia: Media = {
           title: formData.title,
           name: formData.type,
-          category: formData.categorie,
-          file: formData.file,
+          rubrique: formData.categorie,
+          file,
           type: formData.type
         }
+        const mediaFormData = new FormData()
+        mediaFormData.append('file', file as File )
+        mediaFormData.append("rubrique", formData.categorie)
+        console.log("Objet Media à Soumettre:", newMedia);
+        AddMedia(mediaFormData)
+        if (setMedias) {
+          const newMedias : DbMedia[] = (await FetchMedias()) as DbMedia[]
+          setMedias(newMedias)
+        }
+        
       }
       else {
         console.log("Données Newsletter à Soumettre:", formData);
@@ -178,7 +205,7 @@ export default function ComponenteFormulaire({ isArticle = false, isMedia = fals
             onChange={handleChange}
           />
         </div>
-        {isArticle ? (<FileUpload setFile={setFile} />) : null}
+        {isArticle || isMedia ? (<FileUpload setFile={setFile} />) : null}
         <div>
           <label htmlFor="categorie" style={labelStyle}>Catégorie</label>
           <div style={{ position: 'relative' }}>
@@ -191,9 +218,19 @@ export default function ComponenteFormulaire({ isArticle = false, isMedia = fals
                   value={formData.categorie}
                   onChange={handleChange}
                 >
-                  {rubriques.map((rubrique) => <option key={rubrique} value={rubrique}>{rubrique}</option>)}
+                  {articleRubriques.map((rubrique) => <option key={rubrique} value={rubrique}>{rubrique}</option>)}
                 </select>
                 :
+                isMedia ? 
+                <select
+                  id="categorie"
+                  name="categorie"
+                  style={selectStyle}
+                  value={formData.categorie}
+                  onChange={handleChange}
+                >
+                  {rubriques.map((rubrique) => <option key={rubrique} value={rubrique}>{rubrique}</option>)}
+                </select> :
                 <select
                   id="categorie"
                   name="categorie"
@@ -201,7 +238,7 @@ export default function ComponenteFormulaire({ isArticle = false, isMedia = fals
                   value={formData.categorie} // 👈 Value lié à l'état
                   onChange={handleChange} // 👈 Gestion du changement
                 >
-                  <option value="Technologie"> Technologie </option>
+                  <option value={Rubriques.TECHNOLOGY}> Technologie </option>
                   <option value="Politique"> Politique </option>
                   <option value="Économie"> Économie </option>
                 </select>}
