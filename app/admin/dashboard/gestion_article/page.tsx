@@ -4,13 +4,13 @@
 
 import ButtonComponent from '@/app/components/button';
 import SearchBarComponent from '@/app/components/searchBar';
-import EventDataTable, { TableData } from '@/app/components/eventDataTable';
-import React, { useState } from 'react'
+import DataTable, { TableData } from '@/app/components/eventDataTable';
+import React, { useEffect, useState } from 'react'
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
-//import Calendar from '@/app/components/calendarCompenetWithFullCalendar';
 import Filter, { IFilter } from '@/app/components/filter';
-import { Media } from '../newsletters/components/Affichage';
+import { DbArticle } from '../newsletters/components/Affichage';
 import ComponenteFormulaire from '../newsletters/components/ComponenteFormulaire';
+import FetchArticles from '@/app/actions/fetchArticles';
 
 const formatTimestampToDate = (timestamp: string): string => {
   const date = new Date(parseInt(timestamp, 10)); // Convertir la chaîne en nombre puis en objet Date
@@ -46,20 +46,20 @@ const ArticleFields: FormFieldConfig[] = [
             { label: "Portraits et découverte", value: "portraits et découvertes"}
         ],
         required: true },
+
 ];
 
 const mainHeaders = [
     { key: 'title', label: 'Titre', flexBasis: '38%' },
-    { key: 'type', label: 'Type', flexBasis: '12%' },
-    { key: 'category', label: 'Categorie', flexBasis: '15%' },
-    { key: 'date', label: 'Date de publication', flexBasis: '20%' },
+    { key: 'rubrique', label: 'Rubrique', flexBasis: '15%' },
+    { key: 'createdAt', label: 'Date de publication', flexBasis: '20%' },
     { key: 'actions', label: 'Actions', flexBasis: '15%' },
 ];
 
 
 //const TABS_INACTIVE_COLOR = '#5A8FAC'; 
 
-export default function MediaPage() {
+export default function ArticlePage() {
   const formattedDatedNow = formatTimestampToDate(now)
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
@@ -69,27 +69,28 @@ export default function MediaPage() {
     const [filters] = useState<IFilter[]>(mainHeaders.map((header)=>{
       return {value: header.key, label: header.label}
     }))
-    const [medias] = useState<Media[]>([
+    const [articles, setArticles] = useState<DbArticle[]>([])  
+    const staticArtcles = [
       {
         id: 1,
         title: "L'Avenir du Développement Front-end",
-        type: "Photo",
-        category: "Technologie",
-        date: formattedDatedNow, 
+        content: "Photo",
+        rubrique: "Technologie",
+        createdAt : formattedDatedNow, 
       },
       {
         id: 2,
         title: "Les Avantages Mécano-Quantiques des Puces M3",
-        type: "Video",
-        category: "Matériel"
+        content: "Video",
+        rubrique: "Matériel"
       },
       {
         id: 3,
         title: "Le Design System : Un Investissement Essentiel",
-        type: "Photo",
-        category: "UX/UI Design"
+        content: "Photo",
+        rubrique: "UX/UI Design"
       },
-    ])    
+    ]  
     const pageContainerClasses = `
         min-h-screen 
         font-sans
@@ -153,12 +154,13 @@ export default function MediaPage() {
         w-full 
         lg:w-1/3 
         h-fit 
+        ml-auto
         flex-shrink-0 
         mt-8 
         lg:mt-0 
     `;
 
-
+    //setArticles(staticArtcles)
     const handleEvent = () => {
         setIsOpen(true);
     };
@@ -195,12 +197,33 @@ export default function MediaPage() {
         };
     }
 
+    useEffect(() => {
+        const fetchArtcicles = async () => {
+            try {
+                const response = await FetchArticles() as DbArticle[]
+                console.log({response})
+                if (response) {
+                    setArticles(response.map(article =>{
+                        const createdAt  = new Date(article.createdAt)
+                        article.createdAt = createdAt.toLocaleString("fr")
+                            console.log("date de création : ", article.createdAt)
+                        return article}))
+                }
+
+            } catch (err) {
+                console.log("erreur lors de la recuperations des utilisateurs : ", err)
+            }
+        }
+        
+        fetchArtcicles()
+    }, [])
+
     return (
         <div className={pageContainerClasses}>
             <div className={headerClasses}>
                 <div>
                     <h1 className={textClasses}>Gestion des Articles</h1>
-                    <h3 className={subTextClasses}>Gérer les posdcasts et les videos depuis cette interface</h3>
+                    <h3 className={subTextClasses}>Gérer les articles depuis cette interface</h3>
                 </div>
                 <ButtonComponent textButton='Ajouter un article' size='large' onclick={handleEvent} />
             </div>
@@ -219,9 +242,9 @@ export default function MediaPage() {
                   {
                     viewMode === 'list' ? (
                         <>
-                            <EventDataTable
+                            <DataTable
                                 tableTitle=""
-                                data={medias}
+                                data={articles}
                                 columnHeaders={mainHeaders}
                                 handleEditEvent={handleEditEvent}
                             />

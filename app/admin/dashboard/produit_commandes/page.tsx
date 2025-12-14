@@ -8,11 +8,11 @@ import CommandesTable from './components/CommandesListing';
 
 export default function Page() {
     const MOBILE_BREAKPOINT = 768;
-    const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(() => 
+        typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT
+    );
 
     useEffect(() => {
-        setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-
         const handleResize = () => {
             setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
         };
