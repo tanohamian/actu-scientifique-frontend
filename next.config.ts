@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+    experimental: {
+        serverActions: {
+            bodySizeLimit: '5mb',
+        },
+    },
+     
   /* config options here */
   webpack(config) {
     config.module.rules.push({
@@ -28,5 +34,7 @@ const nextConfig: NextConfig = {
         return config;
   }
 };
+
+
 
 export default nextConfig;

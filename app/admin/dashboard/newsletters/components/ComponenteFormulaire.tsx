@@ -3,82 +3,105 @@ import Form from "next/form"
 import React, { FormEvent, useState } from 'react';
 import { FileUpload } from "../../produit_commandes/components/FileUpload";
 import AddArticle from "@/app/actions/addArticle";
-import { Article, Media } from "./Affichage";
+import { Article, DbMedia, Media } from "./Affichage";
 import AddMedia from "@/app/actions/addMedia";
+import FetchMedias from "@/app/actions/fetchMedias";
 // import { ChevronUp } from 'lucide-react';
+export enum ArticleRubriques {
+  HEALTH = "une seule santé",
+  TECHNOLOGY = "tech",
+  ECOHUMANITY = "éco-humanité",
+  OPPORTUNITY = "opportunité",
+  CALENDAR = "agenda",
+  PORTRAITSDISCOVERIES = "portraits et découvertes"
+}
+
 export enum Rubriques{
-    HEALTH = "une seule santé",
-    TECHNOLOGY = "tech",
-    ECOHUMANITY ="éco-humanité",
-    OPPORTUNITY="opportunité",
-    CALENDAR="agenda",
-    PORTRAITSDISCOVERIES="portraits et découvertes"
+    TECHNOLOGY ="technology",
+    ONE_HEALTH ="health",
+    SCIENCE = "science",
+    ART = "art"
+} 
+
+interface FormPropos {
+  isArticle?: boolean
+  isMedia?: boolean
+  setMedias ?: (medias : DbMedia[])=> void
 }
-interface FormPropos{
-  isArticle: boolean
-  isMedia ?: boolean
-}
-export default function ComponenteFormulaire( {isArticle=false, isMedia=false}: FormPropos) {
-  const rubriques = Object.values(Rubriques) as string[]; // Forcer le type à string[] pour le mapping
-  const endpoint = isArticle? "articles" : "newsletters"
-  const titleText = isArticle? "Ajouter un Article" : "Formulaire de News Letters"
-  const label = isArticle? "Titre de l'article" : "Titre de la News Letter"
-  
-  // 1. État pour les données du formulaire
-  const [formData, setFormData] = useState({
-        title: "futur du journalisme",
-        type : "",
-        file: undefined,
-        contenu: "le contenu................",
-        categorie:  isArticle ? rubriques[0] : "Technologie", // Défaut basé sur l'état
+export default function ComponenteFormulaire({ isArticle = false, isMedia = false, setMedias=undefined }: FormPropos) {
+  const articleRubriques = Object.values(ArticleRubriques) as string[]; 
+  const rubriques = Object.values(Rubriques) as string[];
+
+  const endpoint = isArticle ? "articles" : "newsletters"
+  const titleText = isArticle ? "Ajouter un Article" : isMedia ? "Ajouter un média" : "Formulaire de News Letters"
+  const label = isArticle ? "Titre de l'article" : "Titre de la News Letter"
+  const [rubrique, setRubrique] = useState()
+  // 1. État pour les données du formulaire
+  const [formData, setFormData] = useState({
+    title: "futur du journalisme",
+    type: "",
+    file: undefined,
+    contenu: "le contenu................",
+    categorie: isArticle ? articleRubriques[0] : isMedia ? rubriques[0] : "technology", // Défaut basé sur l'état
+  });
+
+  // 2. Gestionnaire pour mettre à jour l'état
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
     });
+  };
 
-  // 2. Gestionnaire pour mettre à jour l'état
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-    
-  const handleSubmit = (e: FormEvent) => {
-        e.preventDefault(); 
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
 
-        try {
-          if (isArticle) {
-            const newArticle: Article = {
-              title: formData.title,
-              content: formData.contenu,
-              rubrique: formData.categorie,
-            };
-            
-            console.log("Objet Article à Soumettre:", newArticle);
-            
-            AddArticle(newArticle)
-            alert(`Article soumis ! Titre : ${newArticle.title} / Rubrique : ${newArticle.rubrique}`);
+    try {
+      if (isArticle) {
+        const newArticle: Article = {
+          title: formData.title,
+          content: formData.contenu,
+          rubrique: formData.categorie,
+        };
 
-          } else if (isMedia) {
-            const newMedia : Media = {
-              title : formData.title,
-              name: formData.type,
-              category: formData.categorie,
-              file: formData.file,
-              type: formData.type
-            }
-            console.log("Objet Article à Soumettre:", newMedia);
-            AddMedia(newMedia)
-            console.log("media soumis")
-          }
-          else {
-            console.log("Données Newsletter à Soumettre:", formData);
-            alert(`Newsletter soumise ! Titre : ${formData.title}`);
-          }
-        } catch (error) {
-          console.log((error as {message: string}).message)
+        console.log("Objet Article à Soumettre:", newArticle);
+
+        AddArticle(newArticle)
+        alert(`Article soumis ! Titre : ${newArticle.title} / Rubrique : ${newArticle.rubrique}`);
+
+      } else if (isMedia) {
+        if (!file) {
+          alert("Veuillez sélectionner un fichier");
+          return;
+        }
+        const newMedia: Media = {
+          title: formData.title,
+          name: formData.type,
+          rubrique: formData.categorie,
+          file,
+          type: formData.type
+        }
+        const mediaFormData = new FormData()
+        mediaFormData.append('file', file as File )
+        mediaFormData.append("rubrique", formData.categorie)
+        console.log("Objet Media à Soumettre:", newMedia);
+        AddMedia(mediaFormData)
+        if (setMedias) {
+          const newMedias : DbMedia[] = (await FetchMedias()) as DbMedia[]
+          setMedias(newMedias)
         }
         
-        
-    };
+      }
+      else {
+        console.log("Données Newsletter à Soumettre:", formData);
+        alert(`Newsletter soumise ! Titre : ${formData.title}`);
+      }
+    } catch (error) {
+      console.log((error as { message: string }).message)
+    }
+
+
+  };
   // Rendre le conteneur responsive
   const container: React.CSSProperties = {
     backgroundColor: '#50789B',
@@ -120,7 +143,7 @@ export default function ComponenteFormulaire( {isArticle=false, isMedia=false}: 
     whiteSpace: 'pre-wrap',
   };
 
-  
+
   const selectStyle: React.CSSProperties = {
     ...inputBaseStyle,
     appearance: 'none',
@@ -149,71 +172,83 @@ export default function ComponenteFormulaire( {isArticle=false, isMedia=false}: 
     textAlign: 'center', // Ajout pour un meilleur centrage visuel
   };
 
-  const formUlaire : React.CSSProperties = {
-    height:'100%'
+  const formUlaire: React.CSSProperties = {
+    height: '100%'
   }
+  const [file, setFile] = useState<File | undefined>(undefined);
+
 
   return (
     <div style={container}>
       <h2 style={titleStyle}>{titleText}</h2>
       <Form action={`/admin/dashboard/${endpoint}`} onSubmit={handleSubmit} style={formUlaire}>
         <div>
-          <label htmlFor="titre" style={labelStyle}>{label}</label>
-          <input
-            type="text"
-            id="titre"
-            name="titre"
-            style={inputBaseStyle}
-            value={formData.title} 
-            onChange={handleChange} 
-          />
-        </div>
-        <div>
-          <label htmlFor="contenu" style={labelStyle}>Contenu</label>
-          <textarea
-            id="contenu"
-            name="contenu"
-            style={textareaStyle}
-            placeholder="le contenu................"
-            rows={8}
-            value={formData.contenu} 
-            onChange={handleChange} 
-          />
-        </div>
-        {isArticle? (<FileUpload />): null}
-        <div>
-          <label htmlFor="categorie" style={labelStyle}>Catégorie</label>
-          <div style={{ position: 'relative' }}>
-            {
-            isArticle ? 
-            <select
-              id="categorie"
-              name="categorie"
-              style={selectStyle}
-              value={formData.categorie} 
-              onChange={handleChange} 
-            >
-              {rubriques.map((rubrique)=> <option key={rubrique} value={rubrique}>{rubrique}</option>)}
-            </select> 
-            : 
-            <select
-              id="categorie"
-              name="categorie"
-              style={selectStyle}
-              value={formData.categorie} // 👈 Value lié à l'état
-              onChange={handleChange} // 👈 Gestion du changement
-            >
-              <option value="Technologie"> Technologie </option>
-              <option value="Politique"> Politique </option>
-              <option value="Économie"> Économie </option>
-            </select> }
-          </div>
-        </div>
+          <label htmlFor="titre" style={labelStyle}>{label}</label>
+          <input
+            type="text"
+            id="titre"
+            name="titre"
+            style={inputBaseStyle}
+            value={formData.title}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label htmlFor="contenu" style={labelStyle}>Contenu</label>
+          <textarea
+            id="contenu"
+            name="contenu"
+            style={textareaStyle}
+            placeholder="le contenu................"
+            rows={8}
+            value={formData.contenu}
+            onChange={handleChange}
+          />
+        </div>
+        {isArticle || isMedia ? (<FileUpload setFile={setFile} />) : null}
+        <div>
+          <label htmlFor="categorie" style={labelStyle}>Catégorie</label>
+          <div style={{ position: 'relative' }}>
+            {
+              isArticle ?
+                <select
+                  id="categorie"
+                  name="categorie"
+                  style={selectStyle}
+                  value={formData.categorie}
+                  onChange={handleChange}
+                >
+                  {articleRubriques.map((rubrique) => <option key={rubrique} value={rubrique}>{rubrique}</option>)}
+                </select>
+                :
+                isMedia ? 
+                <select
+                  id="categorie"
+                  name="categorie"
+                  style={selectStyle}
+                  value={formData.categorie}
+                  onChange={handleChange}
+                >
+                  {rubriques.map((rubrique) => <option key={rubrique} value={rubrique}>{rubrique}</option>)}
+                </select> :
+                <select
+                  id="categorie"
+                  name="categorie"
+                  style={selectStyle}
+                  value={formData.categorie} // 👈 Value lié à l'état
+                  onChange={handleChange} // 👈 Gestion du changement
+                >
+                  <option value={Rubriques.TECHNOLOGY}> Technologie </option>
+                  <option value="Politique"> Politique </option>
+                  <option value="Économie"> Économie </option>
+                </select>}
+          </div>
+        </div>
 
-        <button type="submit" style={buttonStyle}>
-          Publier
-        </button>
-        
+        <button type="submit" style={buttonStyle}>
+          Publier
+        </button>
+
       </Form>
     </div>
   )

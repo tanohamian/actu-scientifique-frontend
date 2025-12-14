@@ -33,8 +33,8 @@ export interface Newsletter {
 export interface Media {
   title: string
   name: string;
-  file?: Buffer
-  category: string;
+  file?: File 
+  rubrique ?: string
   type: string
   publicationDate?: string;
 }
@@ -43,7 +43,7 @@ export interface DbMedia{
   id: number;
   title: string,
   name: string
-  category: string;
+  rubrique : string
   mimeType: MimeTypes
   url: string
   createdAt: Date|string,

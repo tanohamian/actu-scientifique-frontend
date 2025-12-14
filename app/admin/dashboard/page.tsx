@@ -43,7 +43,7 @@ export default function Page() {
 
     return (
         <main style={{ padding: '20px' }}>
-            <h1 className='text-white text-xl'>Tableau de bord</h1>
+            <h1>Dashboard</h1>
             
             <section className={styles.firstline}>
                 {cards.map((card) => (
@@ -71,11 +71,11 @@ export default function Page() {
                     items={realizedEvents}
                 />
                 <PublicationCard 
-                    cardTitle="Dernières Opportunités"
+                    cardTitle="Bourses et formations"
                     items={scholarshipsAndTraining}
                 />
                 <PublicationCard 
-                    cardTitle="Reportages"
+                    cardTitle="Jeux du meilleur journaliste"
                     items={games}
                 />
             </section>
