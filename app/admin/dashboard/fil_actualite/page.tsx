@@ -38,7 +38,7 @@ export default function FilActualite() {
     });
 
     const [editActu, setEditActu] = useState(false);
-    const [selectedActu, setSelectedActu] = useState<{title: string, url: string} | null>(null);
+    const [selectedActu, setSelectedActu] = useState<any>(null);
 
     const handleChange = (field: keyof FormData, value: string) => {
         setFormData(prevData => ({
@@ -56,12 +56,12 @@ export default function FilActualite() {
         { title: 'les consequences de la deforestation', url: 'https://www.example.com/meningite' }
     ];
 
-    const handleEditActu = (data: {title: string, url: string}) => {
+    const handleEditActu = (data: any) => {
         setSelectedActu(data);
         setEditActu(true);
     };
 
-    const handleDeleteActu = (data: {title: string, url: string}) => {
+    const handleDeleteActu = (data: any) => {
         // Logique de suppression ici
         console.log("Supprimer:", data);
     };
@@ -252,8 +252,8 @@ export default function FilActualite() {
         <div className={containerClasses}>
             
             <div className='text-white mb-5 md:mb-8'>
-                <h1 className={mainTitleClasses}>{"Gestion du fil d'actualité"}</h1>
-                <h3 className={subTitleClasses}>{"Gérer vos fils d'actualité"}</h3>
+                <h1 className={mainTitleClasses}>Gestion du fil d'actualité</h1>
+                <h3 className={subTitleClasses}>Gérer vos fils d'actualité</h3>
             </div>
 
             {/* Section Ajout d'actualité */}
@@ -314,7 +314,7 @@ export default function FilActualite() {
                 
                 <div className={headerFileActuClasses}>
                     <div className="flex flex-col w-full md:w-auto">
-                        <h3 className="m-0 text-xl md:text-2xl font-semibold">{"fil d'actualité"}</h3>
+                        <h3 className="m-0 text-xl md:text-2xl font-semibold">fil d'actualité</h3>
                     </div>
                     <div className="w-full md:w-1/2"> 
                         <SearchBarComponent 
