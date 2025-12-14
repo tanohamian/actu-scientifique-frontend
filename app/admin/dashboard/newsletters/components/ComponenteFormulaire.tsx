@@ -3,7 +3,7 @@ import Form from "next/form"
 import React, { FormEvent, useState } from 'react';
 import { FileUpload } from "../../produit_commandes/components/FileUpload";
 import AddArticle from "@/app/actions/addArticle";
-import { Article } from "./Affichage";
+import { Article, Media } from "./Affichage";
 // import { ChevronUp } from 'lucide-react';
 export enum Rubriques{
     HEALTH = "une seule santé",
@@ -15,8 +15,9 @@ export enum Rubriques{
 }
 interface FormPropos{
   isArticle: boolean
+  isMedia ?: boolean
 }
-export default function ComponenteFormulaire( {isArticle=false}: FormPropos) {
+export default function ComponenteFormulaire( {isArticle=false, isMedia=false}: FormPropos) {
   const rubriques = Object.values(Rubriques) as string[]; // Forcer le type à string[] pour le mapping
   const endpoint = isArticle? "articles" : "newsletters"
   const titleText = isArticle? "Ajouter un Article" : "Formulaire de News Letters"
@@ -24,7 +25,9 @@ export default function ComponenteFormulaire( {isArticle=false}: FormPropos) {
   
   // 1. État pour les données du formulaire
   const [formData, setFormData] = useState({
-        titre: "futur du journalisme",
+        title: "futur du journalisme",
+        type : "",
+        file: undefined,
         contenu: "le contenu................",
         categorie:  isArticle ? rubriques[0] : "Technologie", // Défaut basé sur l'état
     });
@@ -43,7 +46,7 @@ export default function ComponenteFormulaire( {isArticle=false}: FormPropos) {
         try {
             if (isArticle) {
             const newArticle: Article = {
-              title: formData.titre,
+              title: formData.title,
               content: formData.contenu,
               rubrique: formData.categorie,
             };
@@ -53,9 +56,18 @@ export default function ComponenteFormulaire( {isArticle=false}: FormPropos) {
             AddArticle(newArticle)
             alert(`Article soumis ! Titre : ${newArticle.title} / Rubrique : ${newArticle.rubrique}`);
 
-          } else {
+          } else if (isMedia) {
+            const newMedia : Media = {
+              title : formData.title,
+              name: formData.type,
+              category: formData.categorie,
+              file: formData.file,
+              type: formData.type
+            }
+          }
+          else {
             console.log("Données Newsletter à Soumettre:", formData);
-            alert(`Newsletter soumise ! Titre : ${formData.titre}`);
+            alert(`Newsletter soumise ! Titre : ${formData.title}`);
           }
         } catch (error) {
           console.log((error as {message: string}).message)
@@ -148,7 +160,7 @@ export default function ComponenteFormulaire( {isArticle=false}: FormPropos) {
             id="titre"
             name="titre"
             style={inputBaseStyle}
-            value={formData.titre} 
+            value={formData.title} 
             onChange={handleChange} 
           />
         </div>

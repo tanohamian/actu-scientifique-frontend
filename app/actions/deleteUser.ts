@@ -1,4 +1,4 @@
-
+"use server"
 import { env } from '@/app/config/env'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'

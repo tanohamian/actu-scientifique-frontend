@@ -2,21 +2,27 @@
 import React, { useState, useMemo } from 'react'
 import { Search, Pencil, Trash2 } from 'lucide-react';
 import Filter, { IFilter } from '@/app/components/filter'; 
-const formatDate = (timestamp: string): string => {
-    try {
-        const date = new Date(Number(timestamp));
-        return date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' });
-    } catch (e) {
-      console.log(e)
-      return "Date invalide"; 
-    }
-};
+
 
 export enum AffichageType{
   ARTICLE  = "article",
   NEWSLETTER= "newsletters",
   MEDIAS = "medias"
 }
+
+export const MimeTypes = {
+    MP4 : "video/mp4",
+    MOV : "video/quicktime",
+    MP3 : "audio/mpeg",
+    WAV : "audio/wav",
+    JPEG : "image/jpeg",
+    PNG : "image/png",
+    GIF : "image/gif",
+    WEBP : "image/webp",
+    SVG :"image/svg+xml"
+}
+
+export type MimeTypes = typeof MimeTypes[keyof typeof MimeTypes];
 
 export interface Newsletter {
   id: number;
@@ -25,23 +31,39 @@ export interface Newsletter {
   publication: string;
 }
 export interface Media {
-  id: number;
-  title: string;
+  title: string
+  name: string;
+  file?: Buffer
   category: string;
-  date?: string,
-  hour?: string,
   type: string
   publicationDate?: string;
 }
 
+export interface DbMedia{
+  id: number;
+  title: string,
+  name: string
+  category: string;
+  mimeType: MimeTypes
+  url: string
+  createdAt: Date|string,
+  type: string
+}
+
 export interface Article{
-  id?: number;
   title: string;
   content: string;
   rubrique: string;
-  createdAt ?: Date | string
 }
-type ItemType = Newsletter | Article;
+
+export interface DbArticle{
+  id: number;
+  title: string;
+  content: string;
+  rubrique: string;
+  createdAt : Date | string
+}
+type ItemType = Newsletter | DbArticle;
 
 interface AffichageProps{
   hasFilter? : boolean
@@ -157,7 +179,7 @@ export default function Affichage({items, type = AffichageType.NEWSLETTER, hasFi
       let filterMatch = true;
       if (activeFilter !== 'all' && activeFilter !== '') {
         if (type === AffichageType.ARTICLE) {
-          filterMatch = (item as Article).rubrique === activeFilter;
+          filterMatch = (item as DbArticle).rubrique === activeFilter;
         } else if (type === AffichageType.NEWSLETTER) {
           filterMatch = (item as Newsletter).category === activeFilter;
         }

@@ -7,7 +7,7 @@ import { X, ChevronDown } from 'lucide-react';
 export interface FormFieldConfig {
     name: string;
     label: string;
-    type: 'text' | 'email' | 'password' | 'select' | 'textarea';
+    type?: 'text' | 'email' | 'password' | 'select' | 'textarea';
     placeholder?: string;
     required?: boolean;
     options?: { value: string; label: string }[];

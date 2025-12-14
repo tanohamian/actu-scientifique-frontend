@@ -5,11 +5,12 @@
 import ButtonComponent from '@/app/components/button';
 import SearchBarComponent from '@/app/components/searchBar';
 import DataTable, { TableData } from '@/app/components/eventDataTable';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
-import { Article } from '../newsletters/components/Affichage';
+import { DbArticle } from '../newsletters/components/Affichage';
 import ComponenteFormulaire from '../newsletters/components/ComponenteFormulaire';
+import FetchArticles from '@/app/actions/fetchArticles';
 
 const formatTimestampToDate = (timestamp: string): string => {
   const date = new Date(parseInt(timestamp, 10)); // Convertir la chaîne en nombre puis en objet Date
@@ -45,13 +46,13 @@ const ArticleFields: FormFieldConfig[] = [
             { label: "Portraits et découverte", value: "portraits et découvertes"}
         ],
         required: true },
+
 ];
 
 const mainHeaders = [
     { key: 'title', label: 'Titre', flexBasis: '38%' },
-    { key: 'type', label: 'Type', flexBasis: '12%' },
-    { key: 'category', label: 'Categorie', flexBasis: '15%' },
-    { key: 'date', label: 'Date de publication', flexBasis: '20%' },
+    { key: 'rubrique', label: 'Rubrique', flexBasis: '15%' },
+    { key: 'createdAt', label: 'Date de publication', flexBasis: '20%' },
     { key: 'actions', label: 'Actions', flexBasis: '15%' },
 ];
 
@@ -68,7 +69,8 @@ export default function ArticlePage() {
     const [filters] = useState<IFilter[]>(mainHeaders.map((header)=>{
       return {value: header.key, label: header.label}
     }))
-    const [medias] = useState<Article[]>([
+    const [articles, setArticles] = useState<DbArticle[]>([])  
+    const staticArtcles = [
       {
         id: 1,
         title: "L'Avenir du Développement Front-end",
@@ -88,7 +90,7 @@ export default function ArticlePage() {
         content: "Photo",
         rubrique: "UX/UI Design"
       },
-    ])    
+    ]  
     const pageContainerClasses = `
         min-h-screen 
         font-sans
@@ -158,7 +160,7 @@ export default function ArticlePage() {
         lg:mt-0 
     `;
 
-
+    //setArticles(staticArtcles)
     const handleEvent = () => {
         setIsOpen(true);
     };
@@ -195,6 +197,27 @@ export default function ArticlePage() {
         };
     }
 
+    useEffect(() => {
+        const fetchArtcicles = async () => {
+            try {
+                const response = await FetchArticles() as DbArticle[]
+                console.log({response})
+                if (response) {
+                    setArticles(response.map(article =>{
+                        const createdAt  = new Date(article.createdAt)
+                        article.createdAt = createdAt.toLocaleString("fr")
+                            console.log("date de création : ", article.createdAt)
+                        return article}))
+                }
+
+            } catch (err) {
+                console.log("erreur lors de la recuperations des utilisateurs : ", err)
+            }
+        }
+        
+        fetchArtcicles()
+    }, [])
+
     return (
         <div className={pageContainerClasses}>
             <div className={headerClasses}>
@@ -221,7 +244,7 @@ export default function ArticlePage() {
                         <>
                             <DataTable
                                 tableTitle=""
-                                data={medias}
+                                data={articles}
                                 columnHeaders={mainHeaders}
                                 handleEditEvent={handleEditEvent}
                             />

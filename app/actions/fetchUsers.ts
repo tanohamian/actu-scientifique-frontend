@@ -10,7 +10,6 @@ export default async function FetchUsers() {
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
         redirect('/admin'); 
-        return []
     }
     try {
        const response = await fetch(`${env.baseUrl}/users/all`,{

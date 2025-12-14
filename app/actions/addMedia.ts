@@ -1,12 +1,12 @@
 'use server'
 import { env } from '@/app/config/env'
 import { redirect } from 'next/navigation'
-import { Article } from '../admin/dashboard/newsletters/components/Affichage'
+import { Media } from '../admin/dashboard/newsletters/components/Affichage'
 import { cookies } from 'next/headers'
 
 
 
-export default async function AddArticle(formData:Article) {
+export default async function AddMedia(formData:Media) {
 
     const authToken = (await cookies()).get('authToken')?.value;
 
@@ -15,7 +15,7 @@ export default async function AddArticle(formData:Article) {
         redirect('/admin'); 
     }
     try {
-        const response = await fetch(`${env.baseUrl}/articles/`,{
+        const response = await fetch(`${env.baseUrl}/multimedia/`,{
             method:'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -27,15 +27,15 @@ export default async function AddArticle(formData:Article) {
 
         if (!response.ok) {
             console.log(response)
-            throw new Error(`Échec de la récupération des articles : ${response}`);
+            throw new Error(`Échec de la récupération des medias : ${response}`);
         }
 
 
         
     } catch (error) {
-        console.error("Erreur lors de la récupération des articles : ")
+        console.error("Erreur lors de la récupération des medias : ")
         console.log(error)
     }
 
-    redirect('/admin/dashboard/gestion_article')
+    redirect('/admin/dashboard/medias')
 }

@@ -4,15 +4,18 @@
 import ButtonComponent from '@/app/components/button';
 import SearchBarComponent from '@/app/components/searchBar';
 import EventDataTable, { TableData } from '@/app/components/eventDataTable';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import { useRouter } from 'next/navigation';
 import Calendar from '@/app/components/calendarCompenetWithFullCalendar';
 import Filter, { IFilter } from '@/app/components/filter';
-import { Media } from '../newsletters/components/Affichage';
+import { DbMedia, Media, MimeTypes } from '../newsletters/components/Affichage';
+import AddMedia from '@/app/actions/addMedia';
+import FetchMedias from '@/app/actions/fetchMedias';
+import ComponenteFormulaire from '../newsletters/components/ComponenteFormulaire';
 
 const formatTimestampToDate = (timestamp: string): string => {
-  const date = new Date(parseInt(timestamp, 10)); // Convertir la chaîne en nombre puis en objet Date
+  const createdAt = new Date(parseInt(timestamp, 10)); // Convertir la chaîne en nombre puis en objet Date
   
   // Utiliser Intl.DateTimeFormat pour un format Jours/Mois/Année (français)
   return new Intl.DateTimeFormat('fr-FR', {
@@ -22,28 +25,23 @@ const formatTimestampToDate = (timestamp: string): string => {
 
     hour : '2-digit',
     minute: '2-digit'
-  }).format(date);
+  }).format(createdAt);
 };
 
 const now = Date.now().toString()
-
-const mainEventData: TableData[] = [
-    { title: 'IA dans le journalisme', lieu: 'Dakar', status: 'pas en direct', date: '14/10/2025', heure: '10:00' },
-    { title: 'IA dans le journalisme', lieu: 'Bouaké', status: 'pas en direct', date: '14/10/2025', heure: '10:00' },
-];
 
 
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', type: 'text', placeholder: 'Entrez le titre du media', required: true },
     { name: 'type', label: 'Type', type: 'select', options: [{ value: 'photo', label: 'Photo' }, { value: 'video', label: 'Vidéo' }, { value: 'podcast', label: 'Podcast' }], required: true },
-    { name: 'category', label: 'Catégorie', type: 'select', options: [{ value: 'Technologie', label: 'Technologie' }, { value: 'Matériel', label: 'Matériel' }], required: true },
+    { name: 'rubrique', label: 'Catégorie', type: 'select', options: [{ value: 'Technologie', label: 'Technologie' }, { value: 'Matériel', label: 'Matériel' }], required: true },
 ];
 
 const mainHeaders = [
     { key: 'title', label: 'Titre', flexBasis: '38%' },
     { key: 'type', label: 'Type', flexBasis: '12%' },
-    { key: 'category', label: 'Categorie', flexBasis: '15%' },
-    { key: 'date', label: 'Date de publication', flexBasis: '20%' },
+    { key: 'rubrique', label: 'Categorie', flexBasis: '15%' },
+    { key: 'createdAt', label: 'Date de publication', flexBasis: '20%' },
     { key: 'actions', label: 'Actions', flexBasis: '15%' },
 ];
 
@@ -56,30 +54,41 @@ export default function EventPage() {
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [editEvent, setEditEvent] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState<TableData | null>(null);
+    const [selectedMedia, setSelectedEvent] = useState<TableData | null>(null);
     const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
     const [filters] = useState<IFilter[]>(mainHeaders.map((header, index)=>{
       return {value: header.key, label: header.label}
     }))
-    const [medias] = useState<Media[]>([
+    const [medias, setMedias] = useState<DbMedia[]>([
       {
         id: 1,
         title: "L'Avenir du Développement Front-end",
+        name: "",
         type: "Photo",
+        url: "",
+        mimeType: MimeTypes.MP3,
         category: "Technologie",
-        date: formattedDatedNow, 
+        createdAt: formattedDatedNow, 
       },
       {
         id: 2,
+        url: "",
         title: "Les Avantages Mécano-Quantiques des Puces M3",
+        mimeType: MimeTypes.JPEG,
+        name: "",
         type: "Video",
-        category: "Matériel"
+        category: "Matériel",
+        createdAt: ""
       },
       {
         id: 3,
+        url: "",
+        mimeType: MimeTypes.PNG,
+        name: "Le Design System : Un Investissement Essentiel",
         title: "Le Design System : Un Investissement Essentiel",
         type: "Photo",
-        category: "UX/UI Design"
+        category: "UX/UI Design",
+        createdAt: ""
       },
     ])
     const router = useRouter();
@@ -151,21 +160,16 @@ export default function EventPage() {
         overflow-hidden 
         p-1
     `;
-    
-    const tabButtonBaseClasses = `
-        py-2 
-        px-5 
-        border-none 
-        cursor-pointer 
-        text-sm 
-        md:text-base 
-        font-medium 
-        transition-all 
-        duration-200 
-        bg-transparent 
-        text-white 
-        rounded-md 
-        whitespace-nowrap
+
+
+    const rightSectionClasses = `
+        w-full 
+        lg:w-1/3 
+        h-fit 
+        ml-auto
+        flex-shrink-0 
+        mt-8 
+        lg:mt-0 
     `;
 
     const handleEvent = () => {
@@ -177,9 +181,9 @@ export default function EventPage() {
     };
 
     let initialData = {
-        title: '',
+        name: '',
         lieu: '',
-        date: '',
+        createdAt: '',
         heure: '',
         status: '',
     };
@@ -194,19 +198,37 @@ export default function EventPage() {
         setEditEvent(false);
     };
 
-    if (selectedEvent) {
+    if (selectedMedia) {
         initialData = {
-            title: selectedEvent.title as string || '',
-            lieu: selectedEvent.lieu as string || '',
-            date: selectedEvent.date as string || '',
-            heure: selectedEvent.heure as string || '',
-            status: selectedEvent.status as string || '',
+            name: selectedMedia.name as string || '',
+            lieu: selectedMedia.lieu as string || '',
+            createdAt: selectedMedia.createdAt as string || '',
+            heure: selectedMedia.heure as string || '',
+            status: selectedMedia.status as string || '',
         };
     }
 
-    const handleTabClick = (mode: 'list' | 'calendar') => {
-        setViewMode(mode);
-    };
+        useEffect(() => {
+            const fetchMedias = async () => {
+                try {
+                    const response = await FetchMedias() as DbMedia[]
+                    console.log({response})
+                    if (response) {
+                        setMedias(response.map(media =>{
+                            const createdAt  = new Date(media.createdAt)
+                            media.createdAt = createdAt.toLocaleString("fr")
+                            console.log("createdAt de création : ", media.createdAt)
+                            return media
+                        }))
+                    }
+    
+                } catch (err) {
+                    console.log("erreur lors de la recuperations des utilisateurs : ", err)
+                }
+            }
+            
+            fetchMedias()
+        }, [])
 
     return (
         <div className={pageContainerClasses}>
@@ -229,20 +251,19 @@ export default function EventPage() {
                     />
                 </div>
 
-                {
-                    viewMode === 'list' ? (
-                        <>
-                            <EventDataTable
-                                tableTitle=""
-                                data={medias}
-                                columnHeaders={mainHeaders}
-                                handleEditEvent={handleEditEvent}
-                            />
-                        </>
-                    ) : (
-                        <Calendar />
-                    )
-                }
+                <article className="flex flex-col lg:flex-row gap-8" >
+                
+                <EventDataTable
+                    tableTitle=""
+                    data={medias}
+                    columnHeaders={mainHeaders}
+                    handleEditEvent={handleEditEvent}
+                />
+
+                <article className={rightSectionClasses}>
+                <ComponenteFormulaire isArticle={true}/>
+                </article>
+            </article>
 
             </div>
 

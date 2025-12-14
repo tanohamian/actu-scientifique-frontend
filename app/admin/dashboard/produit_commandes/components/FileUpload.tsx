@@ -37,14 +37,7 @@ export function FileUpload () {
                 title="Cliquer pour téléverser une image"
             >
                 <Imagelement  className={styles.uploadIcon}  />
-                {/*<Image 
-                    src={image}
-                    alt="Icône Téléverser une image" 
-                    // Utilisation de styles.uploadIcon
-                    
-                    
-                />*/}
-                
+
             </div>
             
             <span className={styles.fileName}>

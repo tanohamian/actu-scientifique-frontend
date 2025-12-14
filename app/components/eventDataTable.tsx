@@ -5,6 +5,8 @@ import { Article, Media } from '../admin/dashboard/newsletters/components/Affich
 
 export interface TableData {
     title: string;
+    name?: string;
+    createdAt: Date | string
     status: 'en direct' | 'pas en direct';
     date?: string;
     lieu?: string;
@@ -14,7 +16,7 @@ export interface TableData {
 
 interface EventDataTableProps {
     tableTitle: string;
-    data: TableData[]| Media[] | Article[];
+    data: TableData[] | Media[] | Article[];
     columnHeaders: { key: string; label: string; flexBasis: string }[];
     handleEditEvent?: (item: TableData) => void;
 }
