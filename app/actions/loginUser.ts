@@ -24,6 +24,7 @@ export default async function LoginUser(formData: FormState) {
             },
             body: JSON.stringify({ email: email, password: password })
         })
+        console.log(response)
         if (!response.ok) {
             throw new Error(`Échec de la connexion : ${response.status}`);
         }
