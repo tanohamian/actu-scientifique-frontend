@@ -82,13 +82,10 @@ export default function Utilisateurs() {
     };
 
     const handleSubmitEditUser = async (formData: UserInterface) => {
-        console.log(formData)
         try {
-            console.log(formData)
             const updatedUser = await UpdateRole(selectUserId, formData.roles)
             if (updatedUser) {
-                console.log("utilisateur modifié : ", updatedUser)
-                setUsers((prevUsers) => prevUsers.map(u => u.id === selectUserId ? formData : u))
+                setUsers((prevUsers) => prevUsers.map(u => u.id === updatedUser.id ? updatedUser : u))
                 setEditUser(false);
             }
         } catch (err) {

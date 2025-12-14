@@ -37,8 +37,9 @@ export default async function UpdateRole(userId: string | undefined, role: strin
             throw new Error('Failed to update user role');
         }
         const data = await response.json();
+        console.log("data : ", data.user)
         revalidatePath('/admin/dashboard/users')
-        return data;
+        return data.user;
     } catch (error) {
         console.error('Error updating user role:', error);
     }
