@@ -7,7 +7,25 @@ export interface FormState {
     password: string;
 }
 
+export const Categories = {
+    EBOOK : "livres",
+    CLOTHES : "vêtements",
+    TECHNOLOGYOBJECT : "objets tech"
+} as const
+export type Categories = typeof Categories [keyof typeof Categories]
+
+export interface Product {
+    id :string,
+    name : string
+    categories:Categories
+    price:number
+    preview_image:string
+    createdAt:Date
+    stock:number
+}
+
 export default function Connexion() {
+
 
 
 
@@ -25,6 +43,7 @@ export default function Connexion() {
         }));
     };
 
+    
     /*const handleSubmit = async () => {
         setLoading(true)
         setMessage('')

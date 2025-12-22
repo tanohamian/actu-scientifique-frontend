@@ -7,10 +7,10 @@ import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import { useRouter } from 'next/navigation';
 import Calendar from '@/app/components/calendarCompenetWithFullCalendar';
 
-
+const now = new Date()
 const mainEventData: TableData[] = [
-    { title: 'IA dans le journalisme', lieu: 'Dakar', status: 'pas en direct', date: '14/10/2025', heure: '10:00' },
-    { title: 'IA dans le journalisme', lieu: 'Bouaké', status: 'pas en direct', date: '14/10/2025', heure: '10:00' },
+    { title: 'IA dans le journalisme', lieu: 'Dakar', status: 'pas en direct', createdAt: now },
+    { title: 'IA dans le journalisme', lieu: 'Bouaké', status: 'pas en direct', createdAt: now },
 ];
 
 
@@ -32,8 +32,8 @@ const mainHeaders = [
 ];
 
 const liveEventData: TableData[] = [
-    { title: 'IA dans le journalisme', status: 'en direct', url: 'https://ghhddd.com' },
-    { title: 'IA dans le journalisme', status: 'en direct', url: 'https://vubu.com' },
+    { title: 'IA dans le journalisme', status: 'en direct', url: 'https://ghhddd.com', createdAt: now },
+    { title: 'IA dans le journalisme', status: 'en direct', url: 'https://vubu.com', createdAt: now },
 ];
 
 const liveHeaders = [

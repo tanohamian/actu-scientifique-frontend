@@ -3,6 +3,7 @@ import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Article, Media } from '../admin/dashboard/newsletters/components/Affichage';
 
+
 export interface TableData {
     title: string;
     name?: string;
@@ -14,6 +15,13 @@ export interface TableData {
     url?: string;
 }
 
+export class Event {
+    id?: string 
+    title!: string
+    date?: Date |string
+    description?: string
+    createdAt?: Date
+}
 interface EventDataTableProps {
     tableTitle: string;
     data: TableData[] | Media[] | Article[];
