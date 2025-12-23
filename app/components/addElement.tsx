@@ -3,7 +3,6 @@ import ButtonComponent from "@/app/components/button";
 import React, { useState, useEffect, useMemo } from 'react';
 import { X, ChevronDown } from 'lucide-react';
 
-// Maintenir l'interface d'exportation pour l'utilisation dans d'autres fichiers
 export interface FormFieldConfig {
     name: string;
     label: string;
