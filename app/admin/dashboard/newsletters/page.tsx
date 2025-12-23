@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import ComponenteFormulaire from './components/ComponenteFormulaire';
-import Affichage, { Newsletter } from './components/Affichage';
+import Affichage from './components/Affichage';
 
 export default function Page() {
     const MOBILE_BREAKPOINT = 768;
@@ -17,12 +17,6 @@ export default function Page() {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
-
-    const newsletters: Newsletter[] = [
-        { id: 1, title: "Utilisation de l'IA dans le journalisme", category: 'Technologie', publication: '14/10/2025' },
-        { id: 2, title: "Utilisation de l'IA dans le journalisme", category: 'Une seule santé', publication: '14/10/2025' },
-        { id: 3, title: "Utilisation de l'IA dans le journalisme", category: 'Technologie', publication: '14/10/2025' }
-    ];
 
     const container: React.CSSProperties = {
         minHeight: '100vh',
@@ -59,9 +53,7 @@ export default function Page() {
         <div style={container}>
             <div style={leftSection}>
                 <h1 style={title}>Gestion des Newsletters</h1>
-                <Affichage
-                    items={newsletters}
-                />
+                <Affichage/>
             </div>
             <div style={rightSection}>
                 <ComponenteFormulaire isArticle={false}/>
