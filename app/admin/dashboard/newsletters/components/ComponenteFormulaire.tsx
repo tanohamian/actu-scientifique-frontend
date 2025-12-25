@@ -16,20 +16,20 @@ export enum ArticleRubriques {
   PORTRAITSDISCOVERIES = "portraits et découvertes"
 }
 
-export enum Rubriques{
-    TECHNOLOGY ="technology",
-    ONE_HEALTH ="health",
-    SCIENCE = "science",
-    ART = "art"
-} 
+export enum Rubriques {
+  TECHNOLOGY = "technology",
+  ONE_HEALTH = "health",
+  SCIENCE = "science",
+  ART = "art"
+}
 
 interface FormPropos {
   isArticle?: boolean
   isMedia?: boolean
-  setMedias ?: (medias : DbMedia[])=> void
+  setMedias?: (medias: DbMedia[]) => void
 }
-export default function ComponenteFormulaire({ isArticle = false, isMedia = false, setMedias=undefined }: FormPropos) {
-  const articleRubriques = Object.values(ArticleRubriques) as string[]; 
+export default function ComponenteFormulaire({ isArticle = false, isMedia = false, setMedias = undefined }: FormPropos) {
+  const articleRubriques = Object.values(ArticleRubriques) as string[];
   const rubriques = Object.values(Rubriques) as string[];
 
   const endpoint = isArticle ? "articles" : "newsletters"
@@ -82,15 +82,15 @@ export default function ComponenteFormulaire({ isArticle = false, isMedia = fals
           type: formData.type
         }
         const mediaFormData = new FormData()
-        mediaFormData.append('file', file as File )
+        mediaFormData.append('file', file as File)
         mediaFormData.append("rubrique", formData.categorie)
         console.log("Objet Media à Soumettre:", newMedia);
         AddMedia(mediaFormData)
         if (setMedias) {
-          const newMedias : DbMedia[] = (await FetchMedias()) as DbMedia[]
+          const newMedias: DbMedia[] = (await FetchMedias()) as DbMedia[]
           setMedias(newMedias)
         }
-        
+
       }
       else {
         console.log("Données Newsletter à Soumettre:", formData);
@@ -221,27 +221,27 @@ export default function ComponenteFormulaire({ isArticle = false, isMedia = fals
                   {articleRubriques.map((rubrique) => <option key={rubrique} value={rubrique}>{rubrique}</option>)}
                 </select>
                 :
-                isMedia ? 
-                <select
-                  id="categorie"
-                  name="categorie"
-                  style={selectStyle}
-                  value={formData.categorie}
-                  onChange={handleChange}
-                >
-                  {rubriques.map((rubrique) => <option key={rubrique} value={rubrique}>{rubrique}</option>)}
-                </select> :
-                <select
-                  id="categorie"
-                  name="categorie"
-                  style={selectStyle}
-                  value={formData.categorie} // 👈 Value lié à l'état
-                  onChange={handleChange} // 👈 Gestion du changement
-                >
-                  <option value={Rubriques.TECHNOLOGY}> Technologie </option>
-                  <option value="Politique"> Politique </option>
-                  <option value="Économie"> Économie </option>
-                </select>}
+                isMedia ?
+                  <select
+                    id="categorie"
+                    name="categorie"
+                    style={selectStyle}
+                    value={formData.categorie}
+                    onChange={handleChange}
+                  >
+                    {rubriques.map((rubrique) => <option key={rubrique} value={rubrique}>{rubrique}</option>)}
+                  </select> :
+                  <select
+                    id="categorie"
+                    name="categorie"
+                    style={selectStyle}
+                    value={formData.categorie} // 👈 Value lié à l'état
+                    onChange={handleChange} // 👈 Gestion du changement
+                  >
+                    <option value={Rubriques.TECHNOLOGY}> Technologie </option>
+                    <option value="Politique"> Politique </option>
+                    <option value="Économie"> Économie </option>
+                  </select>}
           </div>
         </div>
 

@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import ComponenteFormulaire from './components/ComponenteFormulaire';
 import Affichage, { Newsletter } from './components/Affichage';
-import { env } from '@/app/config/env';
+import { env } from '@/env';
 console.log(env)
 export default function Page() {
     const MOBILE_BREAKPOINT = 768;
-    const [isMobile, setIsMobile] = useState(() => 
+    const [isMobile, setIsMobile] = useState(() =>
         typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT
     );
 
@@ -41,14 +41,14 @@ export default function Page() {
         gap: '30px',
         width: isMobile ? '100%' : 'auto'
     };
-    
+
     const rightSection: React.CSSProperties = {
         width: isMobile ? '100%' : '350px',
         height: 'fit-content',
-        alignItems:'flex-start',
-        padding:"27px"
+        alignItems: 'flex-start',
+        padding: "27px"
     };
-    
+
     const title: React.CSSProperties = {
         color: 'white',
         fontSize: isMobile ? '28px' : '36px',
@@ -65,7 +65,7 @@ export default function Page() {
                 />
             </div>
             <div style={rightSection}>
-                <ComponenteFormulaire isArticle={false}/>
+                <ComponenteFormulaire isArticle={false} />
             </div>
         </div>
     )
