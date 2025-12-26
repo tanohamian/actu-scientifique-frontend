@@ -3,7 +3,6 @@ import React, { useState, useMemo, useEffect } from 'react'
 import { Search, Pencil, Trash2 } from 'lucide-react';
 import Filter, { IFilter } from '@/app/components/filter';
 
-// Utilisation de l'URL du .env
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export enum AffichageType {
@@ -12,7 +11,7 @@ export enum AffichageType {
     MEDIAS = "medias"
 }
 
-// Interface alignée sur ton API
+
 export interface Newsletter {
     id: string;
     titre: string;
@@ -34,7 +33,6 @@ interface AffichageProps {
     hasFilter?: boolean
     filters?: IFilter[]
     type?: AffichageType
-    // On garde items en prop au cas où, mais on va gérer un état local pour la synchro API
     items?: ItemType[] 
 }
 
