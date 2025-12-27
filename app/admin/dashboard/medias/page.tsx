@@ -6,13 +6,12 @@ import SearchBarComponent from '@/app/components/searchBar';
 import EventDataTable, { TableData } from '@/app/components/eventDataTable';
 import React, { useEffect, useState } from 'react'
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
-import { useRouter } from 'next/navigation';
-import Calendar from '@/app/components/calendarCompenetWithFullCalendar';
+
 import Filter, { IFilter } from '@/app/components/filter';
-import { DbMedia, Media, MimeTypes } from '../newsletters/components/Affichage';
-import AddMedia from '@/app/actions/addMedia';
-import FetchMedias from '@/app/actions/fetchMedias';
+import { DbMedia } from '../newsletters/components/Affichage';
+
 import ComponenteFormulaire, { Rubriques } from '../newsletters/components/ComponenteFormulaire';
+import { FetchMedias } from '@/app/actions/Media';
 
 const formatTimestampToDate = (timestamp: string): string => {
   const createdAt = new Date(parseInt(timestamp, 10)); // Convertir la chaîne en nombre puis en objet Date

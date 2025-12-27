@@ -10,25 +10,9 @@ import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
 import { DbArticle } from '../newsletters/components/Affichage';
 import ComponenteFormulaire from '../newsletters/components/ComponenteFormulaire';
-import FetchArticles from '@/app/actions/fetchArticles';
-
-const formatTimestampToDate = (timestamp: string): string => {
-  const date = new Date(parseInt(timestamp, 10)); // Convertir la chaîne en nombre puis en objet Date
-  
-  // Utiliser Intl.DateTimeFormat pour un format Jours/Mois/Année (français)
-  return new Intl.DateTimeFormat('fr-FR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-
-    hour : '2-digit',
-    minute: '2-digit'
-  }).format(date);
-};
+import { FetchArticles } from '@/app/actions/Articles';
 
 
-
-const now = Date.now().toString()
 
 const ArticleFields: FormFieldConfig[] = [
     { name: 'title', label: "Titre de l'article", type: 'text', placeholder: "Entrez le titre de l'article", required: true },
@@ -60,7 +44,6 @@ const mainHeaders = [
 //const TABS_INACTIVE_COLOR = '#5A8FAC'; 
 
 export default function ArticlePage() {
-  const formattedDatedNow = formatTimestampToDate(now)
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [editEvent, setEditEvent] = useState(false);
@@ -70,27 +53,7 @@ export default function ArticlePage() {
       return {value: header.key, label: header.label}
     }))
     const [articles, setArticles] = useState<DbArticle[]>([])  
-    const staticArtcles = [
-      {
-        id: 1,
-        title: "L'Avenir du Développement Front-end",
-        content: "Photo",
-        rubrique: "Technologie",
-        createdAt : formattedDatedNow, 
-      },
-      {
-        id: 2,
-        title: "Les Avantages Mécano-Quantiques des Puces M3",
-        content: "Video",
-        rubrique: "Matériel"
-      },
-      {
-        id: 3,
-        title: "Le Design System : Un Investissement Essentiel",
-        content: "Photo",
-        rubrique: "UX/UI Design"
-      },
-    ]  
+ 
     const pageContainerClasses = `
         min-h-screen 
         font-sans

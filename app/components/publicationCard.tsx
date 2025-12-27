@@ -27,7 +27,7 @@ const PublicationCard = ({ cardTitle, items }: PublicationCardProps) => {
                     const rawDate = isEvent ? item.date : item.createdAt;
                     const displayDate = rawDate 
                         ? new Date(rawDate).toLocaleDateString() 
-                        : item.createdAt ? new Date(item.createdAt).toLocaleString() : "Date inconnue";
+                        : item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "Date inconnue";
 
                     return (
                         <li key={index} className={styles['list-item']}>

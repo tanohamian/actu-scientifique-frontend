@@ -4,10 +4,11 @@ import styles from '../../styles/Dashboard.module.scss'
 import DashboardCardContainer from '@/app/components/dashboardCardsContainer'
 import { DashboardCardProps } from '@/app/components/dashboardCards'
 import PublicationCard, { ListItem } from '@/app/components/publicationCard'
-import FetchArticles from '@/app/actions/fetchArticles'
-import FetchProducts from '@/app/actions/fetchProducts'
+import {FetchProducts} from '@/app/actions/Products'
 import { Event } from '@/app/components/eventDataTable'
-import FetchEvents from '@/app/actions/fetchEvents'
+import {FetchEvents} from '@/app/actions/Events'
+import {FetchReports} from '@/app/actions/Reports'
+import { FetchArticles } from '@/app/actions/Articles'
 
 export default function Page() {
     const today = new Date().toISOString();
@@ -37,7 +38,7 @@ export default function Page() {
         { text: "Stage rédaction internationale", date: today },
         { text: "Programme accéléré éditorial", date: today },
     ])
-    const [games] = useState<ListItem[]>([
+    const [reportages, setReportages] = useState<ListItem[]>([
         { text: "Quiz du meilleur éditeur - Juillet", date: today },
         { text: "Défi mensuel : Rédiger en 1h", date: today },
         { text: "Compétition de vérification des faits", date: today },
@@ -52,6 +53,7 @@ export default function Page() {
         setProducts({label: products.label, value: (await FetchProducts()).length})
         setRealizedEvents((await FetchEvents()))
         setPublishedContent((await FetchArticles()).slice(0,4))
+        setReportages((await FetchReports()).slice(0,4))
     }
     update()
     }, [])
@@ -87,10 +89,11 @@ export default function Page() {
                     items={scholarshipsAndTraining}
                 />
                 <PublicationCard 
-                    cardTitle="Jeux du meilleur journaliste"
-                    items={games}
+                    cardTitle="Reportages"
+                    items={reportages}
                 />
             </section>
         </main>
     )
 }
+
