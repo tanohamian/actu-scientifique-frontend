@@ -30,15 +30,13 @@ export default async function LoginUser(formData: FormState) {
         }
 
         const setCookieHeader = response.headers.get('set-cookie');
-
-
+        console.log("setCookieHeader : ", setCookieHeader)
         if (setCookieHeader) {
             authTokenValue = setCookieHeader.match(/authToken=([^;]*)/);
-
             if (authTokenValue && authTokenValue[1]) {
                 (await cookies()).set('authToken', authTokenValue[1], {
                     httpOnly: true,
-                    //maxAge: 3600,
+                    maxAge: 3600,
                     path: '/',
                     sameSite: 'lax'
                 });

@@ -20,6 +20,17 @@ export interface Newsletter {
     createdAt: string;
 }
 
+export interface DbMedia{
+  id: number;
+  title: string,
+  name: string
+  rubrique : string
+  mimeType: MimeTypes
+  url: string
+  createdAt: Date|string,
+  type: string
+}
+
 export interface Article {
     id?: string;
     titre: string;

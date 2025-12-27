@@ -1,12 +1,11 @@
 'use client'
 import ButtonComponent from "@/app/components/button";
 import SearchBarComponent from "@/app/components/searchBar";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState/*, useTransition*/ } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
-import AddUser from "@/app/actions/addUser";
-import FetchUsers from "@/app/actions/fetchUsers";
-import DeleteUser from "@/app/actions/deleteUser";
+//import { useRouter } from 'next/navigation';
+import { AddUser, DeleteUser, FetchUsers, UpdateRole } from "@/app/actions/Users";
 
 export interface UserInterface {
     id?: string
@@ -32,12 +31,23 @@ const userFields: FormFieldConfig[] = [
     { name: 'password', label: 'Mot de passe', type: 'password', placeholder: 'Entrez le mot de passe', required: true },
 ]
 
+const roleFields: FormFieldConfig[] = [
+    {
+        name: 'roles', label: 'Rôle', type: 'select', options: [
+            { value: 'ROLE_ADMIN', label: 'Administrateur' },
+            { value: 'ROLE_VIEWER', label: 'Utilisateur' },
+        ], required: true
+    }
+]
+
 export default function Utilisateurs() {
     const [inputValue, setInputValue] = useState('');
     const [addUser, setAddUser] = useState(false);
     const [editUser, setEditUser] = useState(false)
-    const [selectedUser, setSelectedUser] = useState<UserInterface | null>(null);
-    const [loading, setLoading] = useState(false)
+    const [selectedUser, setSelectedUser] = useState<string | null>(null);
+    const [selectUserId, setSelectUserId] = useState<string | undefined>("");
+    //const router = useRouter();
+    //const [isPending, startTransition] = useTransition()
 
     const [users, setUsers] = useState<UserInterface[]>([]);
 
@@ -62,13 +72,23 @@ export default function Utilisateurs() {
 
     }
 
-    const handleEdit = (user: UserInterface) => {
-        setSelectedUser(user);
+    const handleEdit = (userId: string | undefined, userRole: string) => {
+        setSelectedUser(userRole);
+        setSelectUserId(userId);
         setEditUser(true);
     };
 
-    const handleSubmitEditUser = (formData: any) => {
-        setEditUser(false);
+    const handleSubmitEditUser = async (formData: UserInterface) => {
+        try {
+            const updatedUser = await UpdateRole(selectUserId, formData.roles)
+            if (updatedUser) {
+                setUsers((prevUsers) => prevUsers.map(u => u.id === updatedUser.id ? updatedUser : u))
+                setEditUser(false);
+            }
+        } catch (err) {
+            console.log("erreur lors de l'appel updateRole : ", err)
+        }
+
     }
 
     const handleDelete = async (userId: string | undefined) => {
@@ -108,7 +128,7 @@ export default function Utilisateurs() {
                 <div className="flex gap-3 justify-end mt-4 pt-4 border-t border-white/20">
                     <button
                         className="p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-blue-400"
-                        onClick={() => handleEdit(user)}
+                        onClick={() => handleEdit(user.id, user.roles)}
                         aria-label="Éditer"
                     >
                         <Pencil size={18} />
@@ -130,7 +150,7 @@ export default function Utilisateurs() {
             <>
                 <button
                     className="p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-blue-400"
-                    onClick={() => handleEdit(user)}
+                    onClick={() => handleEdit(user.id, user.roles)}
                     aria-label="Éditer"
                 >
                     <Pencil size={20} />
@@ -147,13 +167,10 @@ export default function Utilisateurs() {
     };
 
     let initialData = {};
-    if (selectedUser) {
+    if (selectedUser && selectUserId) {
         initialData = {
-            username: selectedUser.username,
-            first_name: selectedUser.username,
-            last_name: selectedUser.last_name,
-            email: selectedUser.email,
-            roles: selectedUser.password
+            roles: selectedUser,
+            id: selectUserId
         }
     }
 
@@ -165,7 +182,7 @@ export default function Utilisateurs() {
                 const response = await FetchUsers()
                 console.log(response)
                 if (response) {
-                    setUsers((prevUsers) => [...prevUsers, ...response])
+                    setUsers(response)
                 }
 
             } catch (err) {
@@ -200,7 +217,7 @@ export default function Utilisateurs() {
 
             <div className="md:hidden">
                 {filteredUsers.length > 0 ? (
-                    filteredUsers.map((user) => (
+                    filteredUsers.map((user: UserInterface) => (
                         <MobileUserCard key={user.id} user={user} />
                     ))
                 ) : (
@@ -261,7 +278,7 @@ export default function Utilisateurs() {
                 onSubmit={handleSubmitEditUser}
                 titleComponent="Modifier Informations"
                 buttonTitle="Modifier"
-                fields={userFields}
+                fields={roleFields}
                 initialData={initialData}
             />
         </div>

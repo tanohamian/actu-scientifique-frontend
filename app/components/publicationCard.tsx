@@ -1,13 +1,17 @@
 import styles from "../styles/Dashboard.module.scss";
+import { Event } from "./eventDataTable";
+
 
 export interface ListItem {
-    text: string;
-    date: string;
+    text ?: string;
+    title?:string
+    date ?: string;
+    createdAt ?: Date|string
 }
 
 export interface PublicationCardProps {
     cardTitle: string; 
-    items: ListItem[]; 
+    items: ListItem[] | Event[]; 
 }
 
 const PublicationCard = ({ cardTitle, items }: PublicationCardProps) => {
@@ -15,12 +19,23 @@ const PublicationCard = ({ cardTitle, items }: PublicationCardProps) => {
         <article className={styles.card}> 
             <h2 className={styles.title}>{cardTitle}</h2>
             <ul className={styles['content-list']}>
-                {items.map((item, index) => (
-                    <li key={index} className={styles['list-item']}>
-                        <span className={styles['item-text']}>{item.text}</span>
-                        <span className={styles['item-date']}>{new Date(item.date).toLocaleDateString()}</span>
-                    </li>
-                ))}
+                {items.map((item, index) => {
+                    const isEvent = 'title' in item;
+                    
+                    const displayTitle : string | Date | undefined = isEvent ? item.title : item.text;
+                    
+                    const rawDate = isEvent ? item.date : item.createdAt;
+                    const displayDate = rawDate 
+                        ? new Date(rawDate).toLocaleDateString() 
+                        : item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "Date inconnue";
+
+                    return (
+                        <li key={index} className={styles['list-item']}>
+                            <span className={styles['item-text']}>{displayTitle}</span>
+                            <span className={styles['item-date']}>{displayDate}</span>
+                        </li>
+                    );
+                })}
             </ul>
         </article>
     );
