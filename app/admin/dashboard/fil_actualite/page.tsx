@@ -5,10 +5,7 @@ import SearchBarComponent from '@/app/components/searchBar';
 import React, { useEffect, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
-import CreateFeed from '@/app/actions/createFeed';
-import GetFeeds from '@/app/actions/getFeeds';
-import UpdateFeed from '@/app/actions/updateFeed';
-import DeleteFeed from '@/app/actions/deleteFeed';
+import { CreateFeed, DeleteFeed, GetFeeds, UpdateFeed } from '@/app/actions/Feed';
 
 export interface FeedInterface {
     id?: string
@@ -85,7 +82,7 @@ export default function FilActualite() {
             setEditActu(false);
             setSelectedActu(null);
         } catch (error) {
-            console.log("erreur recuperation feed : ", error)
+            console.log("erreur récupération feed : ", error)
         }
 
     };
@@ -295,7 +292,7 @@ export default function FilActualite() {
                 }
 
             } catch (error) {
-
+                console.log(error)
             } finally {
                 setIsLoading(false)
             }
@@ -308,8 +305,8 @@ export default function FilActualite() {
         <div className={containerClasses}>
 
             <div className='text-white mb-5 md:mb-8'>
-                <h1 className={mainTitleClasses}>Gestion du fil d'actualité</h1>
-                <h3 className={subTitleClasses}>Gérer vos fils d'actualité</h3>
+                <h1 className={mainTitleClasses}>{"Gestion du fil d'actualité"}</h1>
+                <h3 className={subTitleClasses}>{"Gérer vos fils d'actualité"}</h3>
             </div>
 
             {/* Section Ajout d'actualité */}
@@ -370,7 +367,7 @@ export default function FilActualite() {
 
                 <div className={headerFileActuClasses}>
                     <div className="flex flex-col w-full md:w-auto">
-                        <h3 className="m-0 text-xl md:text-2xl font-semibold">fil d'actualité</h3>
+                        <h3 className="m-0 text-xl md:text-2xl font-semibold">{"fil d'actualité"}</h3>
                     </div>
                     <div className="w-full md:w-1/2">
                         <SearchBarComponent
