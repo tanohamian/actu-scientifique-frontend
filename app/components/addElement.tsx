@@ -35,7 +35,7 @@ const customStyles = `
 
 
 export default function AddElementModal({ isOpen, onClose, onSubmit, titleComponent, buttonTitle, fields, initialData = {} }: AddElementModalProps) {
-    
+
     const initialFormData = useMemo(() => {
         return fields.reduce((acc, field) => {
             acc[field.name] = initialData[field.name] !== undefined ? initialData[field.name] : '';
@@ -65,7 +65,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSubmit(formData);
-   
+
     };
 
     const handleChange = (name: string, value: string) => {
@@ -152,7 +152,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                     </div>
                 </form>
             </div>
-            
+
             <style jsx global>{customStyles}</style>
 
         </div>

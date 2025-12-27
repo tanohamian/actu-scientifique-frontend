@@ -1,52 +1,52 @@
 'use client'
 import React from 'react';
 import Link from "next/link";
-import { usePathname } from 'next/navigation'; 
+import { usePathname } from 'next/navigation';
 import { X } from 'lucide-react';
 import IconComponent from '@components/Icons';
 
-interface NavItems{
+interface NavItems {
     name: string,
     path: string,
     icon: React.ReactElement
 }
 
-const iconSize = 'w-5 h-5'; 
+const iconSize = 'w-5 h-5';
 
 const ACTIVE_BG_COLOR = 'bg-[#E65A46]';
 
-export default function SidebarComponent({ onClose, isMobile }: { onClose?: () => void; isMobile: boolean }){
-    
-    const pathname = usePathname(); 
+export default function SidebarComponent({ onClose, isMobile }: { onClose?: () => void; isMobile: boolean }) {
+
+    const pathname = usePathname();
 
     const iconBaseProps = { className: `text-white ${iconSize}` };
 
-    const navItems : NavItems[] = [
-        {name:"Tableau de bord", path:"/admin/dashboard", icon: <IconComponent name='ControlPanel' {...iconBaseProps} />},
-        {name:"Gestion des articles", path:"/admin/dashboard/gestion_article", icon: <IconComponent name='List' {...iconBaseProps} />},
-        {name:"Medias (Vidéos,Podcasts)", path:"/admin/dashboard/medias", icon: <IconComponent name='Video' {...iconBaseProps} />},
-        {name:"Opportunités", path:"/admin/dashboard/formations_bourses", icon: <IconComponent name='Feed' {...iconBaseProps} />},
-        {name:"Newsletters", path:"/admin/dashboard/newsletters", icon: <IconComponent name='Envelope' {...iconBaseProps} />},
-        {name:"Boutiques", path:"/admin/dashboard/produit_commandes", icon: <IconComponent name='Product' {...iconBaseProps} />},
-        {name:"Utilisateurs", path:"/admin/dashboard/users", icon: <IconComponent name='UsersOnline' {...iconBaseProps} />},
-        {name:"Fil d'actualité", path:"/admin/dashboard/feed", icon: <IconComponent name='Rss' {...iconBaseProps} />},
-        {name:"Agenda", path:"/admin/dashboard/event", icon: <IconComponent name='Schedule' {...iconBaseProps} />}
+    const navItems: NavItems[] = [
+        { name: "Tableau de bord", path: "/admin/dashboard", icon: <IconComponent name='ControlPanel' {...iconBaseProps} /> },
+        { name: "Gestion des articles", path: "/admin/dashboard/gestion_article", icon: <IconComponent name='List' {...iconBaseProps} /> },
+        { name: "Medias (Vidéos,Podcasts)", path: "/admin/dashboard/medias", icon: <IconComponent name='Video' {...iconBaseProps} /> },
+        { name: "Opportunités", path: "/admin/dashboard/formations_bourses", icon: <IconComponent name='Feed' {...iconBaseProps} /> },
+        { name: "Newsletters", path: "/admin/dashboard/newsletters", icon: <IconComponent name='Envelope' {...iconBaseProps} /> },
+        { name: "Boutiques", path: "/admin/dashboard/produit_commandes", icon: <IconComponent name='Product' {...iconBaseProps} /> },
+        { name: "Utilisateurs", path: "/admin/dashboard/users", icon: <IconComponent name='UsersOnline' {...iconBaseProps} /> },
+        { name: "Fil d'actualité", path: "/admin/dashboard/fil_actualite", icon: <IconComponent name='Rss' {...iconBaseProps} /> },
+        { name: "Agenda", path: "/admin/dashboard/event", icon: <IconComponent name='Schedule' {...iconBaseProps} /> }
     ];
 
     const NavLinkItem = ({ item }: { item: NavItems }) => {
-        
-        const isActive = pathname === item.path; 
+
+        const isActive = pathname === item.path;
 
         const baseClasses = `
             flex items-center p-3 my-1 rounded-lg transition-colors duration-150
             text-white focus:outline-none focus:ring-2 focus:ring-white/50
         `;
-        
+
         const inactiveHoverClasses = `
             hover:bg-white/10 hover:shadow-lg
         `;
-        
-        const activeClasses = `${ACTIVE_BG_COLOR} shadow-xl`; 
+
+        const activeClasses = `${ACTIVE_BG_COLOR} shadow-xl`;
 
         const linkClasses = `${baseClasses} ${isActive ? activeClasses : inactiveHoverClasses}`;
 
@@ -111,7 +111,7 @@ export default function SidebarComponent({ onClose, isMobile }: { onClose?: () =
     const avatarTextClasses = "text-sm font-light leading-tight font-sans";
 
     const closeButtonClasses = "bg-transparent border-none text-white cursor-pointer p-2 flex items-center hover:text-red-300 transition-colors duration-200";
-    
+
     const navClasses = "flex-grow p-2 overflow-y-auto";
 
     const footerClasses = "p-4 border-t border-white/20";
@@ -130,7 +130,7 @@ export default function SidebarComponent({ onClose, isMobile }: { onClose?: () =
                 </div>
                 {isMobile && onClose && (
                     <button onClick={onClose} className={closeButtonClasses} aria-label="Fermer le menu">
-                       <X size={24} />
+                        <X size={24} />
                     </button>
                 )}
             </div>
