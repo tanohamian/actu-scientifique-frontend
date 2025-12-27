@@ -19,11 +19,11 @@ export default function Page() {
 
 
 
-    const [publishedContent] = useState<ListItem[]>([
-        { text: "Comment utiliser l'IA dans le journalisme", date: today },
-        { text: "Ethique et sources numériques", date: today },
-        { text: "Rapport annuel 2024 des médias", date: today },
-        { text: "Démocratiser l'accès à l'information", date: today }
+    const [publishedContent, setPublishedContent] = useState<ListItem[]>([
+        { title: "Comment utiliser l'IA dans le journalisme", createdAt: today },
+        { title: "Ethique et sources numériques", createdAt: today },
+        { title: "Rapport annuel 2024 des médias", createdAt: today },
+        { title: "Démocratiser l'accès à l'information", createdAt: today }
     ])
     const [realizedEvents, setRealizedEvents] = useState<Event[]>([
         { title: "Conférence sur le futur du journalisme", date: today },
@@ -51,6 +51,7 @@ export default function Page() {
         setArticles({label: articles.label, value: (await FetchArticles()).length})
         setProducts({label: products.label, value: (await FetchProducts()).length})
         setRealizedEvents((await FetchEvents()))
+        setPublishedContent((await FetchArticles()).slice(0,4))
     }
     update()
     }, [])

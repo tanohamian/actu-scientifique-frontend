@@ -3,8 +3,10 @@ import { Event } from "./eventDataTable";
 
 
 export interface ListItem {
-    text: string;
-    date: string;
+    text ?: string;
+    title?:string
+    date ?: string;
+    createdAt ?: Date|string
 }
 
 export interface PublicationCardProps {
@@ -20,12 +22,12 @@ const PublicationCard = ({ cardTitle, items }: PublicationCardProps) => {
                 {items.map((item, index) => {
                     const isEvent = 'title' in item;
                     
-                    const displayTitle = isEvent ? item.title : item.text;
+                    const displayTitle : string | Date | undefined = isEvent ? item.title : item.text;
                     
-                    const rawDate = isEvent ? item.date : item.date;
+                    const rawDate = isEvent ? item.date : item.createdAt;
                     const displayDate = rawDate 
                         ? new Date(rawDate).toLocaleDateString() 
-                        : "Date inconnue";
+                        : item.createdAt ? new Date(item.createdAt).toLocaleString() : "Date inconnue";
 
                     return (
                         <li key={index} className={styles['list-item']}>

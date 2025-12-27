@@ -51,6 +51,7 @@ export interface DbMedia{
 }
 
 export interface Article{
+  createdAt?: Date|string
   title: string;
   content: string;
   rubrique: string;
