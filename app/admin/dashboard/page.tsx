@@ -9,6 +9,8 @@ import { Event } from '@/app/components/eventDataTable'
 import {FetchEvents} from '@/app/actions/Events'
 import {FetchReports} from '@/app/actions/Reports'
 import { FetchArticles } from '@/app/actions/Articles'
+import { FetchFormations } from '@/app/actions/Formations'
+import { FetchBourses } from '@/app/actions/Bourses'
 
 export default function Page() {
     const today = new Date().toISOString();
@@ -32,7 +34,7 @@ export default function Page() {
         { title: "Webinaire : Sécurité des données", date: today },
         { title: "Rencontre des professionnels IT", date: today },
     ])
-    const [scholarshipsAndTraining] = useState<ListItem[]>([
+    const [scholarshipsAndTraining, setScholarshipsAndTraining] = useState<ListItem[]>([
         { text: "Bourse journalisme d'investigation 2025", date: today },
         { text: "Formation : Analyse de données", date: today },
         { text: "Stage rédaction internationale", date: today },
@@ -54,6 +56,9 @@ export default function Page() {
         setRealizedEvents((await FetchEvents()))
         setPublishedContent((await FetchArticles()).slice(0,4))
         setReportages((await FetchReports()).slice(0,4))
+        const formations = await FetchFormations()
+        const bourses = await FetchBourses()
+        setScholarshipsAndTraining([...formations.slice(0,2), ...bourses.slice(0,2)])
     }
     update()
     }, [])

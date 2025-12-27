@@ -82,7 +82,7 @@ export default function FilActualite() {
             setEditActu(false);
             setSelectedActu(null);
         } catch (error) {
-            console.log("erreur recuperation feed : ", error)
+            console.log("erreur récupération feed : ", error)
         }
 
     };

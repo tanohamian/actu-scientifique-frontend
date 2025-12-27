@@ -5,7 +5,8 @@ import React, { useEffect, useState/*, useTransition*/ } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 //import { useRouter } from 'next/navigation';
-import { AddUser, DeleteUser, FetchUsers, UpdateRole } from "@/app/actions/Users";
+import { DeleteUser, FetchUsers, UpdateRole } from "@/app/actions/Users";
+import { RegisterUser } from "@/app/actions/Auth";
 
 export interface UserInterface {
     id?: string
@@ -59,7 +60,7 @@ export default function Utilisateurs() {
 
     const handleSubmitUser = async (formData: UserInterface) => {
         try {
-            const newUser = await AddUser(formData)
+            const newUser = await RegisterUser(formData)
             if (newUser && 'id' in newUser) {
                 console.log("nouvel utilisateur : ", newUser)
                 setUsers((prevUsers) => [...prevUsers, newUser as UserInterface])

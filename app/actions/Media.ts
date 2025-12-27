@@ -78,7 +78,7 @@ export async function FetchMedias() {
        }
        return []
     } catch (error) {
-        console.log("erreur lors de la recuperation des médias : ", error)
+        console.log("erreur lors de la récupération des médias : ", error)
         return []
     }
 }

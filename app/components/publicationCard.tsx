@@ -5,7 +5,7 @@ import { Event } from "./eventDataTable";
 export interface ListItem {
     text ?: string;
     title?:string
-    date ?: string;
+    date ?: string | Date;
     createdAt ?: Date|string
 }
 

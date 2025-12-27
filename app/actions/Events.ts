@@ -28,7 +28,7 @@ export async function FetchEvents() {
        }
        return []
     } catch (error) {
-        console.log("erreur lors de la récuperation des évènements : ", error)
+        console.log("erreur lors de la récupération des évènements : ", error)
         return []
     }
 }

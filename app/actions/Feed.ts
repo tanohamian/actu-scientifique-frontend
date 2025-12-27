@@ -86,7 +86,7 @@ export async function GetFeeds() {
         revalidatePath('/admin/dashboard/fil_actualite')
         return response.json()
     } catch (error) {
-        console.log("erreur lors de la recuperation des feeds : ", error)
+        console.log("erreur lors de la récupération des feeds : ", error)
     }
 
 }

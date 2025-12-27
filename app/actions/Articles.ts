@@ -64,7 +64,7 @@ export async function FetchArticles() {
        }
        return []
     } catch (error) {
-        console.log("erreur lors de la recuperation des utilisateurs : ", error)
+        console.log("erreur lors de la récupération des utilisateurs : ", error)
         return []
     }
 }

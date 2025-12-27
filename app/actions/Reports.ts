@@ -28,7 +28,7 @@ export async function FetchReports() {
        }
        return []
     } catch (error) {
-        console.log("erreur lors de la recuperation des reportages : ", error)
+        console.log("erreur lors de la récupération des reportages : ", error)
         return []
     }
 }
