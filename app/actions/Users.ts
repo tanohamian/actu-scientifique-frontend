@@ -6,7 +6,6 @@ import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 
 
-
 export async function FetchUsers() {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
