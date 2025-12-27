@@ -1,14 +1,11 @@
 'use client'
 import ButtonComponent from "@/app/components/button";
 import SearchBarComponent from "@/app/components/searchBar";
-import React, { useEffect, useState, useTransition } from 'react';
+import React, { useEffect, useState/*, useTransition*/ } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
-import AddUser from "@/app/actions/addUser";
-import FetchUsers from "@/app/actions/fetchUsers";
-import DeleteUser from "@/app/actions/deleteUser";
-import UpdateRole from "@/app/actions/updateRole";
-import { useRouter } from 'next/navigation';
+//import { useRouter } from 'next/navigation';
+import { AddUser, DeleteUser, FetchUsers, UpdateRole } from "@/app/actions/Users";
 
 export interface UserInterface {
     id?: string
@@ -49,8 +46,8 @@ export default function Utilisateurs() {
     const [editUser, setEditUser] = useState(false)
     const [selectedUser, setSelectedUser] = useState<string | null>(null);
     const [selectUserId, setSelectUserId] = useState<string | undefined>("");
-    const router = useRouter();
-    const [isPending, startTransition] = useTransition()
+    //const router = useRouter();
+    //const [isPending, startTransition] = useTransition()
 
     const [users, setUsers] = useState<UserInterface[]>([]);
 
