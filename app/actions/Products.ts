@@ -34,6 +34,7 @@ export async function FetchProducts() {
 }
 
 export async function AddProduct(product: FormData) {
+    console.log(product)
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
@@ -43,12 +44,12 @@ export async function AddProduct(product: FormData) {
         const response = await fetch(`${env.baseUrl}/products`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                //'Content-Type': 'application/json',
                 'Cookie': `authToken=${authToken}`
             },
             body: product
         })
-
+        console.log(response)
         if (response.ok) {
             const responseData = await response.json()
             console.log(responseData)
@@ -63,6 +64,7 @@ export async function AddProduct(product: FormData) {
 }
 
 export async function UpdateProduct(product: FormData, id: string) {
+    console.log(product)
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");

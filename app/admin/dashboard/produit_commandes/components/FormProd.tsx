@@ -53,7 +53,7 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
     }
   };
 
-  const categories = ['livre', 'Magazine', 'Journal', 'Autre'];
+  const categories = ['livres', 'CLOTHES', 'TECHNOLOGYOBJECT'];
 
   const formTitle: React.CSSProperties = {
     color: 'white',
