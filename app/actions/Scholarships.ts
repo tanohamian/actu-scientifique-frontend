@@ -1,29 +1,33 @@
-'use server'
+"use server"
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-
-export interface ITraining {
+export interface IScholarship {
     id?: string;
     titre: string;
     lien: string;
     description: string;
     date: string;
-    createdAt?: string;
 }
 
+// On utilise uniquement cette variable bien nommée
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 async function getAuthHeaders() {
-    const authToken = (await cookies()).get('authToken')?.value;
+    const cookieStore = await cookies();
+    const authToken = cookieStore.get('authToken')?.value;
+    
     return {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`,
         'Cookie': `authToken=${authToken}`
     };
 }
 
-export async function FetchTrainings() {
+export async function FetchScholarships() {
     try {
-        const response = await fetch(`${BASE_URL}/trainings`, {
+        // CORRECTION ICI : Utilise BASE_URL (qui pointe vers NEXT_PUBLIC_BASE_URL)
+        const response = await fetch(`${BASE_URL}/scholarships`, {
             method: 'GET',
             headers: await getAuthHeaders(),
             next: { revalidate: 0 }
@@ -31,37 +35,41 @@ export async function FetchTrainings() {
 
         if (response.ok) {
             const data = await response.json();
-            return data.formations as ITraining[];
+            return data.bourses || [];
         }
+        
+        console.error(`FetchScholarships a échoué avec le statut : ${response.status}`);
         return [];
     } catch (error) {
-        console.error("Erreur FetchTrainings:", error);
+        console.error("Erreur FetchScholarships:", error);
         return [];
     }
 }
 
-export async function AddTraining(data: ITraining) {
+export async function AddScholarship(data: IScholarship) {
     try {
-        const response = await fetch(`${BASE_URL}/trainings`, {
+        const response = await fetch(`${BASE_URL}/scholarships`, {
             method: 'POST',
             headers: await getAuthHeaders(),
             body: JSON.stringify(data)
         });
-
+        
         if (response.ok) {
             revalidatePath('/admin/dashboard/formations_bourses');
             return { success: true };
         }
-        return { success: false, error: "Erreur lors de l'ajout" };
+        
+        const errorData = await response.json();
+        return { success: false, error: errorData.message || "Échec de l'ajout" };
     } catch (error) {
+        console.error("Erreur AddScholarship:", error);
         return { success: false, error: "Erreur réseau" };
-        console.log(`Erreur lors de la creation : ${error}`)
     }
 }
 
-export async function UpdateTraining(id: string, data: ITraining) {
+export async function UpdateScholarship(id: string, data: IScholarship) {
     try {
-        const response = await fetch(`${BASE_URL}/trainings/${id}`, {
+        const response = await fetch(`${BASE_URL}/scholarships/${id}`, {
             method: 'PUT',
             headers: await getAuthHeaders(),
             body: JSON.stringify(data)
@@ -71,27 +79,27 @@ export async function UpdateTraining(id: string, data: ITraining) {
             revalidatePath('/admin/dashboard/formations_bourses');
             return { success: true };
         }
-        const errorDetail = await response.json();
-        return { success: false, error: errorDetail.message || "Erreur lors de la mise à jour" };
+        return { success: false };
     } catch (error) {
-        return { success: false, error: "Erreur réseau" };
-        console.log(`Erreur lors de la modification: ${error}`)
+        console.error("Erreur UpdateScholarship:", error);
+        return { success: false };
     }
 }
 
-export async function DeleteTraining(id: string) {
+export async function DeleteScholarship(id: string) {
     try {
-        const response = await fetch(`${BASE_URL}/trainings/${id}`, {
+        const response = await fetch(`${BASE_URL}/scholarships/${id}`, {
             method: 'DELETE',
             headers: await getAuthHeaders(),
         });
+
         if (response.ok) {
             revalidatePath('/admin/dashboard/formations_bourses');
             return true;
         }
         return false;
     } catch (error) {
+        console.error("Erreur DeleteScholarship:", error);
         return false;
-        console.log(`Erreur lors de la suppression : ${error}`)
     }
 }
