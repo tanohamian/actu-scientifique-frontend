@@ -1,33 +1,44 @@
+'use client'
+import { useEffect, useState } from "react";
 import AffichageTableau from "./ListingTask";
+import { FetchProducts } from "@/app/actions/Products";
+import { Product } from "@/app/admin/page";
 
-interface Produit {
-    id: number;
-    produits: string;
-    categories: string;
-    prix: string;
-    stock: number;
-}
 
-const donneesProduits: Produit[] = [
-    { id: 1, produits: 'Science & vie', categories: 'Livre', prix: '15.000 fcfa', stock: 15 },
-    { id: 2, produits: 'Science & vie', categories: 'Livre', prix: '15.000 fcfa', stock: 15 },
-    { id: 3, produits: 'Science & vie', categories: 'Livre', prix: '15.000 fcfa', stock: 15 },
-];
+
 
 const colonnesProduits = [
-    { key: 'produits', header: 'Produits' },
+    { key: 'name', header: 'Produits' },
     { key: 'categories', header: 'Catégories' },
-    { key: 'prix', header: 'Prix' },
+    { key: 'price', header: 'Prix' },
     { key: 'stock', header: 'Stock' },
 ];
 
+interface ProduitInterface {
+    products: Product[],
+    setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+}
 
-export default function ProduitsTable() {
+export default function ProduitsTable({ products, setProducts }: ProduitInterface) {
+
+    //const [produits, setProduits] = useState<Product[]>([])
+
+
+
+    useEffect(() => {
+        (async () => {
+            const products: Product[] = await FetchProducts()
+            if (products) {
+                setProducts(products)
+            }
+        })()
+    }, [])
+
     return (
-        <AffichageTableau<Produit>
+        <AffichageTableau<Product>
             titre="Produits"
             columns={colonnesProduits}
-            data={donneesProduits}
+            data={products}
         />
     );
 }

@@ -5,10 +5,11 @@ import StatGlobal from './components/StatGlobal';
 import ProduitsTable from './components/ProduitListing';
 import TransactionsTable from './components/TransactionsListing';
 import CommandesTable from './components/CommandesListing';
+import { Product } from '../../page';
 
 export default function Page() {
     const MOBILE_BREAKPOINT = 768;
-    const [isMobile, setIsMobile] = useState(() => 
+    const [isMobile, setIsMobile] = useState(() =>
         typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT
     );
 
@@ -37,7 +38,7 @@ export default function Page() {
         gap: '30px',
         width: isMobile ? '100%' : 'auto'
     };
-    
+
     const rightSection: React.CSSProperties = {
         width: isMobile ? '100%' : '350px',
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -45,14 +46,14 @@ export default function Page() {
         padding: '30px',
         height: 'fit-content'
     };
-    
+
     const title: React.CSSProperties = {
         color: 'white',
         fontSize: isMobile ? '28px' : '36px',
         fontWeight: 'bold',
         marginBottom: '1px'
     };
-    
+
     const Soustitre: React.CSSProperties = {
         color: 'white',
         fontSize: isMobile ? '16px' : '20px',
@@ -60,21 +61,22 @@ export default function Page() {
         marginBottom: '30px'
     };
 
+    const [products, setProducts] = useState<Product[]>([])
     return (
         <div style={container}>
             <div style={leftSection}>
                 <h1 style={title}>Gestion des produits et commandes</h1>
                 <h1 style={Soustitre}>Gérer les produits et suivez les commandes en temps réel</h1>
-                <StatGlobal/>
+                <StatGlobal />
                 <h1 style={Soustitre}>Produits</h1>
-                <ProduitsTable/>
+                <ProduitsTable products={products} setProducts={setProducts} />
                 <h1 style={Soustitre}>Commandes</h1>
-                <CommandesTable/>
+                <CommandesTable />
                 <h1 style={Soustitre}>Transactions</h1>
-                <TransactionsTable/>
+                <TransactionsTable />
             </div>
             <div style={rightSection}>
-                <ComponentFormProd/>
+                <ComponentFormProd setProducts={setProducts} />
             </div>
         </div>
     )

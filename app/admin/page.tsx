@@ -8,20 +8,21 @@ export interface FormState {
 }
 
 export const Categories = {
-    EBOOK : "livres",
-    CLOTHES : "vêtements",
-    TECHNOLOGYOBJECT : "objets tech"
+    EBOOK: "livres",
+    CLOTHES: "vêtements",
+    TECHNOLOGYOBJECT: "objets tech"
 } as const
-export type Categories = typeof Categories [keyof typeof Categories]
+export type Categories = typeof Categories[keyof typeof Categories]
 
 export interface Product {
-    id :string,
-    name : string
-    categories:Categories
-    price:number
-    preview_image:string
-    createdAt:Date
-    stock:number
+    id: string,
+    name: string
+    categories: Categories
+    price: number
+    preview_image: string
+    description?: string
+    createdAt: Date
+    stock: number
 }
 
 export default function Connexion() {
@@ -33,8 +34,8 @@ export default function Connexion() {
         email: "",
         password: ""
     });
-    const [loading,setLoading] = useState<boolean>(false)
-    const [message,setMessage] = useState<string>('')
+    const [loading, setLoading] = useState<boolean>(false)
+    const [message, setMessage] = useState<string>('')
 
     const handleInputChange = (field: keyof FormState, value: string) => {
         setFormData(prev => ({
@@ -43,7 +44,7 @@ export default function Connexion() {
         }));
     };
 
-    
+
     /*const handleSubmit = async () => {
         setLoading(true)
         setMessage('')
@@ -92,7 +93,7 @@ export default function Connexion() {
         max-w-md
     `;
 
-    
+
     const titleClasses = `
         text-[#588DA9] 
         text-2xl 
@@ -110,7 +111,7 @@ export default function Connexion() {
         text-center
     `;
 
-  
+
     const inputClasses = `
         w-full 
         p-3 
@@ -125,7 +126,7 @@ export default function Connexion() {
         focus:border-[#588DA9]
     `;
 
-  
+
     const buttonClasses = `
         w-full 
         p-3 
@@ -143,7 +144,7 @@ export default function Connexion() {
         shadow-md 
         hover:bg-[#4a7390]
     `;
-    
+
     const inputGroupClasses = "mb-6";
     const labelClasses = "block text-gray-700 text-sm font-medium mb-2";
     const linkContainerClasses = "text-center mt-6";
@@ -193,10 +194,10 @@ export default function Connexion() {
                     </div>
 
                     <button
-                        onClick={()=>LoginUser(formData)}
+                        onClick={() => LoginUser(formData)}
                         className={buttonClasses}
                     >
-                        {loading ? <p>••••••</p> :<p>Se connecter</p>}
+                        {loading ? <p>••••••</p> : <p>Se connecter</p>}
                     </button>
                 </div>
 

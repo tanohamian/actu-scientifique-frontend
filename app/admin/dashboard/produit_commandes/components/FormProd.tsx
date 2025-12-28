@@ -4,11 +4,18 @@ import React from 'react'
 import Image from 'next/image';
 import { useState } from 'react';
 import { ChevronDown, Upload } from 'lucide-react';
+import { AddProduct } from '@/app/actions/Products';
+import { Product } from '@/app/admin/page';
 
-export default function ComponentFormProd() {
+interface ComponentFormProdProps {
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+}
+
+export default function ComponentFormProd({ setProducts }: ComponentFormProdProps) {
 
   const [nomProduit, setNomProduit] = useState('');
-  const [image, setImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [description, setDescription] = useState('');
   const [categorie, setCategorie] = useState('livre');
   const [prix, setPrix] = useState('');
@@ -17,16 +24,33 @@ export default function ComponentFormProd() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setImageFile(file)
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImage(reader.result as string);
+        setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handlePublish = () => {
-    console.log({ nomProduit, image, description, categorie, prix, stock });
+  const handlePublish = async () => {
+    try {
+      const product = new FormData()
+      product.append('name', nomProduit)
+      product.append('description', description)
+      product.append('categories', categorie)
+      product.append('price', prix)
+      product.append('stock', stock)
+      if (imageFile) {
+        product.append('preview_image', imageFile)
+      }
+      const response = await AddProduct(product)
+      if (response) {
+        setProducts((prevProducts) => [...prevProducts, response as Product])
+      }
+    } catch (error) {
+      console.log("erreur lors de l'ajout du produit : ", error)
+    }
   };
 
   const categories = ['livre', 'Magazine', 'Journal', 'Autre'];
@@ -167,8 +191,8 @@ export default function ComponentFormProd() {
             onChange={handleImageUpload}
             style={{ display: 'none' }}
           />
-          {image ? (
-            <img src={image} alt="Preview" style={{ maxWidth: '100%', maxHeight: '150px' }} />
+          {imagePreview ? (
+            <img src={imagePreview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '150px' }} />
           ) : (
             <>
               <Upload size={40} style={uploadIcon} />
