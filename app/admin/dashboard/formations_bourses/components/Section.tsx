@@ -1,257 +1,194 @@
 "use client"
-import React, { useState, CSSProperties, useEffect } from 'react';
-import { Pencil, Trash2, Calendar } from 'lucide-react';
+import React, { useState, CSSProperties, useEffect, useCallback } from 'react';
+import { Pencil, Trash2, Loader2 } from 'lucide-react';
+
+
+import { FetchTrainings, AddTraining, UpdateTraining, DeleteTraining, ITraining } from '@/app/actions/Trainings';
+import { FetchScholarships, AddScholarship, UpdateScholarship, DeleteScholarship, IScholarship } from '@/app/actions/Scholarships';
+
+// Création d'un type Union pour éviter le "any"
+type DataItem = ITraining | IScholarship;
 
 interface FormData {
   title: string;
   url: string;
   description: string;
   date: string;
-  reward?: string;
 }
 
-const tabContainer: CSSProperties = {
-  display: 'flex',
-  gap: '30px',
-  marginBottom: '40px',
-  borderBottom: '2px solid rgba(255, 255, 255, 0.3)'
-}
-const tabStyle: CSSProperties = {
-  color: 'white',
-  fontSize: '16px',
-  padding: '12px 0',
-  background: 'none',
-  border: 'none',
-  borderBottom: 'none',
-  cursor: 'pointer',
-  position: 'relative',
-  fontWeight: '500'
-}
-const activeTabStyle: CSSProperties = {
-  borderBottom: '3px solid #E67E5F',
-  fontWeight: 'bold',
-}
-const labelStyle: CSSProperties = {
-  fontSize: '14px',
-  fontWeight: '500'
-};
-const iconButtonStyle: CSSProperties = {
-  background: 'none',
-  border: 'none',
-  cursor: 'pointer',
-  padding: '4px',
-  color: 'white',
-  opacity: 0.8
-};
-
-const baseInputStyle: CSSProperties = {
-  padding: '12px 16px',
-  borderRadius: '8px',
-  border: '1px solid rgba(255, 255, 255, 0.3)',
-  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  color: 'white',
-  fontSize: '14px',
-  outline: 'none'
-};
+const tabContainer: CSSProperties = { display: 'flex', gap: '30px', marginBottom: '40px', borderBottom: '2px solid rgba(255, 255, 255, 0.3)' };
+const tabStyle: CSSProperties = { color: 'white', fontSize: '16px', padding: '12px 0', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '500',borderBottom: '3px solid transparent', };
+const activeTabStyle: CSSProperties = { borderBottom: '3px solid #E67E5F', fontWeight: 'bold',borderBottomColor: '#E67E5F', };
+const baseInputStyle: CSSProperties = { padding: '12px 16px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.3)', backgroundColor: 'rgba(255, 255, 255, 0.1)', color: 'white', fontSize: '14px', outline: 'none' };
+const buttonStyle: CSSProperties = { padding: '12px 40px', backgroundColor: '#E67E5F', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: '600', cursor: 'pointer' };
 
 export default function SwitchSection() {
-  const [activeTab, setActiveTab] = useState('Bourses');
-  const [searchValue, setSearchValue] = useState('');
+  const [activeTab, setActiveTab] = useState<'Bourses' | 'Formations'>('Bourses');
+  const [items, setItems] = useState<DataItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  
   const [formData, setFormData] = useState<FormData>({
-    title: '', url: '', description: '', date: '', reward: ''
+    title: '', url: '', description: '', date: ''
   });
 
-  const MOBILE_BREAKPOINT = 768;
-  const [isMobile, setIsMobile] = useState(false);
+  // useCallback empêche la fonction de changer à chaque rendu
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = activeTab === 'Formations'
+        ? await FetchTrainings()
+        : await FetchScholarships();
+        console.log("Données reçues pour", activeTab, ":", data);
+      setItems(data || []);
+    } catch (error) {
+      console.error("Erreur de récupération:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTab]);
 
   useEffect(() => {
-    
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    };
-
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  
-  const handleChange = (field: keyof FormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  const handleSave = async () => {
+    setLoading(true);
+    
+    const payload = {
+      titre: formData.title,
+      lien: formData.url,
+      description: formData.description,
+      date: formData.date
+    };
+
+    let res;
+    if (activeTab === 'Formations') {
+      res = editingId
+        ? await UpdateTraining(editingId, payload as ITraining)
+        : await AddTraining(payload as ITraining);
+    } else {
+      res = editingId
+        ? await UpdateScholarship(editingId, payload as IScholarship)
+        : await AddScholarship(payload as IScholarship);
+    }
+
+    if (res?.success) {
+      setEditingId(null);
+      setFormData({ title: '', url: '', description: '', date: '' });
+      await loadData(); // On attend le rechargement
+    } else {
+      alert("Une erreur est survenue lors de l'enregistrement.");
+    }
+    setLoading(false);
   };
 
-  const getTabConfig = () => {
-    
-    switch(activeTab) {
-        case 'Bourses':
-            return {
-                title: 'Ajouter une nouvelle bourse', secondFieldLabel: 'Lien', secondFieldPlaceholder: 'http://example.com',
-                listTitle: 'Bourses', sampleData: { title: 'Bourse du meilleur journaliste', date: '14/01/2027' }, showReward: false
-            };
-        case 'Formations':
-            return {
-                title: 'Ajouter une nouvelle formation', secondFieldLabel: 'Lien ou vidéo', secondFieldPlaceholder: 'http://example.com',
-                listTitle: 'Formations', sampleData: { title: 'Importance du journaliste dans la société', date: '14/01/2027' }, showReward: false
-            };
-        case 'Reportages':
-            return {
-                title: 'Ajouter un reportage', secondFieldLabel: 'Récompense', secondFieldPlaceholder: '200.000 ou un ticket pour la conférence des journalistes',
-                listTitle: 'Reportages', sampleData: { title: 'Importance du journaliste dans la société', date: '14/01/2027' }, showReward: true
-            };
-        default:
-            return {
-                title: '', secondFieldLabel: '', secondFieldPlaceholder: '',
-                listTitle: '', sampleData: { title: '', date: '' }, showReward: false
-            };
+  const handleDelete = async (id: string) => {
+    if (confirm(`Supprimer cet élément ?`)) {
+      const success = activeTab === 'Formations' ? await DeleteTraining(id) : await DeleteScholarship(id);
+      if (success) loadData();
     }
   };
 
-  const config = getTabConfig();
-
-
-  const containerStyle: CSSProperties = {
-    backgroundColor: '#5A8FAC',
-    minHeight: '100vh',
-    padding: isMobile ? '20px' : '40px',
-    color: 'white'
+  const handleEditClick = (item: DataItem) => {
+    setEditingId(item.id || null);
+    setFormData({
+      title: item.titre,
+      url: item.lien,
+      description: item.description,
+      date: item.date
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  const inputGroupStyle: CSSProperties = {
-    display: 'flex',
-    flexDirection: isMobile ? 'column' : 'row',
-    gap: '20px',
-    marginBottom: '20px'
-  };
-  const inputWrapperStyle: CSSProperties = {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px'
-  };
-  const textareaStyle: CSSProperties = {
-    ...baseInputStyle,
-    minHeight: '100px',
-    resize: 'vertical'
-  };
-  const dateInputWrapperStyle: CSSProperties = {
-    display: 'flex',
-    flexDirection: isMobile ? 'column' : 'row',
-    gap: '20px',
-    alignItems: isMobile ? 'stretch' : 'flex-end',
-    marginTop: '20px'
-  };
-  const buttonStyle: CSSProperties = {
-    padding: '12px 40px',
-    backgroundColor: '#E67E5F',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    fontSize: '16px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    width: isMobile ? '100%' : 'auto'
-  };
-  const listHeaderStyle: CSSProperties = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '30px',
-    gap: '20px',
-    flexWrap: isMobile ? 'wrap' : 'nowrap'
-  };
-  const searchStyle: CSSProperties = {
-    ...baseInputStyle,
-    padding: '10px 16px',
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    width: isMobile ? '100%' : '400px'
-  };
-  const tableHeaderStyle: CSSProperties = {
-    display: 'flex',
-    padding: '10px 0',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.4)',
-    fontWeight: 'bold',
-    fontSize: isMobile ? '12px' : '14px',
-  };
-  const tableRowStyle: CSSProperties = {
-    display: 'flex',
-    padding: isMobile ? '10px 0' : '15px 0',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
-    alignItems: 'center'
-  };
-
 
   return (
-    <div style={containerStyle}>
+    <div style={{ backgroundColor: '#5A8FAC', minHeight: '100vh', padding: isMobile ? '20px' : '40px', color: 'white' }}>
+      {/* ONGLETS */}
       <div style={tabContainer}>
-        {['Bourses', 'Formations', 'Reportages'].map((tabName) => (
+        {(['Bourses', 'Formations'] as const).map((tab) => (
           <button
-            key={tabName}
-            style={{ ...tabStyle, ...(activeTab === tabName ? activeTabStyle : {}) }}
-            onClick={() => setActiveTab(tabName)}
+            key={tab}
+            style={{ ...tabStyle, ...(activeTab === tab ? activeTabStyle : {}) }}
+            onClick={() => {
+              setActiveTab(tab);
+              setEditingId(null);
+              setFormData({title:'', url:'', description:'', date:''});
+            }}
           >
-            {tabName}
+            {tab}
           </button>
         ))}
       </div>
 
+      {/* FORMULAIRE D'AJOUT / MODIF */}
       <div style={{ marginBottom: '60px' }}>
-        <h2 style={{ marginBottom: '30px', fontSize: '24px' }}>{config.title}</h2>
+        <h2 style={{ marginBottom: '30px', fontSize: '24px' }}>
+            {editingId ? 'Modifier' : 'Ajouter'} {activeTab === 'Bourses' ? 'une bourse' : 'une formation'}
+        </h2>
         
-        <div style={inputGroupStyle}>
-          <div style={inputWrapperStyle}>
-            <label style={labelStyle}>Titre</label>
-            <input type="text" placeholder="Ecrivez le titre" style={baseInputStyle}
-              value={formData.title} onChange={(e) => handleChange('title', e.target.value)} />
+        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '20px', marginBottom: '20px' }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ fontSize: '14px' }}>Titre</label>
+            <input type="text" placeholder="Entrez le titre" style={baseInputStyle}
+              value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} />
           </div>
-          
-          <div style={inputWrapperStyle}>
-            <label style={labelStyle}>{config.secondFieldLabel}</label>
-            <input type="text" placeholder={config.secondFieldPlaceholder} style={baseInputStyle}
-              value={config.showReward ? formData.reward : formData.url}
-              onChange={(e) => handleChange(config.showReward ? 'reward' : 'url', e.target.value)} />
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ fontSize: '14px' }}>Lien (YouTube ou Web)</label>
+            <input type="text" placeholder="https://..." style={baseInputStyle}
+              value={formData.url} onChange={(e) => setFormData({...formData, url: e.target.value})} />
           </div>
         </div>
 
-        <div style={inputWrapperStyle}>
-          <label style={labelStyle}>Description</label>
-          <textarea placeholder="Entrez une brève description" style={textareaStyle}
-            value={formData.description} onChange={(e) => handleChange('description', e.target.value)} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+          <label style={{ fontSize: '14px' }}>Description</label>
+          <textarea placeholder="Brève description..." style={{...baseInputStyle, minHeight: '100px', resize: 'vertical'}}
+            value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} />
         </div>
 
-        <div style={dateInputWrapperStyle}>
-          <div style={{ ...inputWrapperStyle, width: isMobile ? '100%' : '50%' }}>
-            <label style={labelStyle}>Date</label>
-            <div style={{ position: 'relative' }}>
-              <input type="text" placeholder="dd/mm/yy" style={baseInputStyle}
-                value={formData.date} onChange={(e) => handleChange('date', e.target.value)} />
-              <Calendar size={20} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-            </div>
+        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '20px', alignItems: 'flex-end' }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ fontSize: '14px' }}>Date</label>
+            <input type="date" style={{...baseInputStyle, colorScheme: 'dark'}}
+              value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} />
           </div>
-          <button style={buttonStyle}>Ajouter</button>
+          <button onClick={handleSave} disabled={loading} style={{...buttonStyle, display: 'flex', alignItems: 'center', gap: '10px'}}>
+            {loading && <Loader2 className="animate-spin" size={18} />}
+            {editingId ? "Mettre à jour" : "Enregistrer"}
+          </button>
         </div>
       </div>
 
+      {/* LISTE DES DONNÉES */}
       <div>
-        <div style={listHeaderStyle}>
-          <h3 style={{ fontSize: '28px', margin: 0 }}>{config.listTitle}</h3>
-          <input type="text" placeholder="Rechercher par titre....." style={searchStyle}
-            value={searchValue} onChange={(e) => setSearchValue(e.target.value)} />
-        </div>
-
-        <div style={tableHeaderStyle}>
-          <div style={{ flex: isMobile ? 1.5 : 2 }}>Titres</div>
-          <div style={{ flex: isMobile ? 1 : 1 }}>Dates</div>
-          <div style={{ flex: isMobile ? 0.7 : 0.5, textAlign: 'right' }}>Actions</div>
-        </div>
-
-        <div style={tableRowStyle}>
-          <div style={{ flex: isMobile ? 1.5 : 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{config.sampleData.title}</div>
-          <div style={{ flex: isMobile ? 1 : 1 }}>{config.sampleData.date}</div>
-          <div style={{ flex: isMobile ? 0.7 : 0.5, display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-            <button style={iconButtonStyle}><Pencil size={18} /></button>
-            <button style={iconButtonStyle}><Trash2 size={18} /></button>
-          </div>
-        </div>
+        <h3 style={{ fontSize: '24px', marginBottom: '20px' }}>Liste des {activeTab}</h3>
+        {loading && items.length === 0 ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}><Loader2 className="animate-spin" size={32} /></div>
+        ) : items.length === 0 ? (
+          <p style={{ textAlign: 'center', opacity: 0.6 }}>Aucune donnée trouvée.</p>
+        ) : (
+          items.map((item) => (
+            <div key={item.id} style={{ display: 'flex', padding: '15px 0', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', alignItems: 'center' }}>
+              <div style={{ flex: 2, fontWeight: '500' }}>{item.titre}</div>
+              <div style={{ flex: 1, opacity: 0.8 }}>{item.date}</div>
+              <div style={{ flex: 0.5, display: 'flex', gap: '15px', justifyContent: 'flex-end' }}>
+                <button onClick={() => handleEditClick(item)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }} title="Modifier">
+                  <Pencil size={18} />
+                </button>
+                <button onClick={() => item.id && handleDelete(item.id)} style={{ background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer' }} title="Supprimer">
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
