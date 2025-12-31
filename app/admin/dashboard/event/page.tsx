@@ -53,7 +53,7 @@ const STATUS_LABELS: Record<string, string> = {
     'LIVE': 'en direct',
 };
 export default function EventPage() {
-
+    const [allEvents, setAllEvents] = useState<EventInterface[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [editEvent, setEditEvent] = useState(false);
@@ -161,10 +161,11 @@ export default function EventPage() {
                 const formattedEvent = {
                     ...newEvent,
                     status: newEvent.status ? STATUS_LABELS[newEvent.status] || newEvent.status : 'pas en direct',
-                    date: newEvent.date ? new Date(newEvent.date).toLocaleDateString('fr-FR') : ''
+                    date: newEvent.date || ''
                 };
 
                 setEvents((prevEvents) => [...prevEvents, formattedEvent as EventInterface]);
+                setAllEvents((prevAll) => [...prevAll, formattedEvent as EventInterface]);
             }
         } catch (error) {
             console.error("Erreur lors de la création de l'événement : ", error);
@@ -186,6 +187,14 @@ export default function EventPage() {
                     status: updatedEvent.status ? STATUS_LABELS[updatedEvent.status] || updatedEvent.status : 'pas en direct',
                     url: updatedEvent.url || '',
                 };
+
+                // Mettre à jour allEvents
+                setAllEvents((prevAll) => {
+                    const exists = prevAll.find(e => e.id === updatedEvent.id);
+                    return exists
+                        ? prevAll.map(e => e.id === updatedEvent.id ? formattedEvent as EventInterface : e)
+                        : [...prevAll, formattedEvent as EventInterface];
+                });
 
                 if (updatedEvent.status === 'LIVE') {
                     setEventLive((prevLive) => {
@@ -264,6 +273,7 @@ export default function EventPage() {
             if (deletedEvent) {
                 setEvents((prevEvents) => prevEvents.filter(event => event.id !== data.id));
                 setEventLive((prevLive) => prevLive.filter(event => event.id !== data.id));
+                setAllEvents((prevAll) => prevAll.filter(event => event.id !== data.id));
             }
         } catch (error) {
             console.error("Erreur lors de la suppression de l'événement : ", error);
@@ -274,7 +284,6 @@ export default function EventPage() {
         (async () => {
             const events = await FetchEvents()
             if (events) {
-                // Filtrer les événements LIVE pour la section "en direct"
                 const liveEvents = events
                     .filter(event => event.status === 'LIVE')
                     .map(event => ({
@@ -291,6 +300,12 @@ export default function EventPage() {
                         status: event.status === 'LIVE' ? 'en direct' : 'pas en direct'
                     }))
 
+                const allFormattedEvents = events.map(event => ({
+                    ...event,
+                    status: event.status === 'LIVE' ? 'en direct' : 'pas en direct'
+                }))
+
+                setAllEvents(allFormattedEvents)
                 setEventLive(liveEvents)
                 setEvents(regularEvents)
             }
@@ -351,7 +366,7 @@ export default function EventPage() {
 
                         </>
                     ) : (
-                        <Calendar events={events} />
+                        <Calendar events={allEvents} />
                     )
                 }
 

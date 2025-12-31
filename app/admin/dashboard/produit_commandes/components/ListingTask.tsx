@@ -1,7 +1,8 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Search, Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
+import SearchBarComponent from '@/app/components/searchBar';
 
 interface ColonneDefinition {
   key: string;
@@ -63,7 +64,7 @@ const styles = {
     width: '100%'
   } as React.CSSProperties,
   sortButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'black',
     color: 'white',
     border: '1px solid rgba(255, 255, 255, 0.3)',
     borderRadius: '8px',
@@ -130,7 +131,8 @@ export default function AffichageTableau<T extends { id: number | string }>({
 
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
-
+  const [inputValue, setInputValue] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('');
   const hasActions = onEdit || onDelete;
 
   const handleSelectElement = (item: T) => {
@@ -143,23 +145,59 @@ export default function AffichageTableau<T extends { id: number | string }>({
     initialData = selectedItem;
   }
 
+  const filteredAndSortedData = useMemo(() => {
+    let result = [...data];
+
+    if (inputValue) {
+      const query = inputValue.toLowerCase();
+      result = result.filter((item) => {
+        return Object.values(item).some((val) =>
+          String(val).toLowerCase().includes(query)
+        );
+      });
+    }
+
+    if (sortBy) {
+      result.sort((a, b) => {
+        const valA = (a as any)[sortBy];
+        const valB = (b as any)[sortBy];
+
+        if (typeof valA === 'number' && typeof valB === 'number') {
+          return valA - valB;
+        }
+        return String(valA).localeCompare(String(valB));
+      });
+    }
+
+    return result;
+  }, [data, inputValue, sortBy]);
+
+
   return (
     <div style={styles.container}>
       <h2 style={styles.title}>{titre}</h2>
 
       <div style={styles.searchSection}>
         <div style={styles.searchWrapper}>
-          <Search size={20} style={styles.searchIcon} />
-          <input
-            type="text"
-            placeholder={`Rechercher par nom produit.....`}
-            style={styles.searchInput}
+          <SearchBarComponent
+            placeholder="Rechercher..........."
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+
           />
+
         </div>
-        <select style={styles.sortButton}>
-          <option>Trier par</option>
-          <option>Nom</option>
-          <option>Prix</option>
+        <select
+          style={styles.sortButton}
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+        >
+          <option value="">Trier par</option>
+          {columns.map(col => (
+            <option key={col.key} value={col.key}>
+              {col.header}
+            </option>
+          ))}
         </select>
       </div>
 

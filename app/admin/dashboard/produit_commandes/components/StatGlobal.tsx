@@ -2,13 +2,18 @@
 
 import React from 'react';
 
+export interface StatGlobalProps {
+  numberOrder: number,
+  numberValidated: number,
+  revenue: number
+}
 
-export default function StatGlobal() {
+export default function StatGlobal({ numberOrder, numberValidated, revenue }: StatGlobalProps) {
 
-  const container : React.CSSProperties = {
-    margin:0
+  const container: React.CSSProperties = {
+    margin: 0
   }
-  
+
   const statsContainer: React.CSSProperties = {
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)',
@@ -21,7 +26,7 @@ export default function StatGlobal() {
     borderRadius: '12px',
     padding: '25px',
     textAlign: 'center',
-    
+
   };
 
   const statLabel: React.CSSProperties = {
@@ -37,23 +42,25 @@ export default function StatGlobal() {
   };
 
 
+
+
   return (
     <div style={container}>
-        <div style={statsContainer}>
-          <div style={statCard}>
-            <div style={statLabel}>Commandes</div>
-            <div style={statValue}>15</div>
-          </div>
-          <div style={statCard}>
-            <div style={statLabel}>Paiements validés</div>
-            <div style={statValue}>15</div>
-          </div>
-          <div style={statCard}>
-            <div style={statLabel}>Revenu</div>
-            <div style={statValue}>150,000 fcfa</div>
-          </div>
+      <div style={statsContainer}>
+        <div style={statCard}>
+          <div style={statLabel}>Commandes</div>
+          <div style={statValue}>{numberOrder}</div>
         </div>
-
+        <div style={statCard}>
+          <div style={statLabel}>Paiements validés</div>
+          <div style={statValue}>{numberValidated}</div>
+        </div>
+        <div style={statCard}>
+          <div style={statLabel}>Revenu</div>
+          <div style={statValue}>{revenue} fcfa</div>
+        </div>
       </div>
+
+    </div>
   );
 }
