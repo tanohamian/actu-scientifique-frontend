@@ -44,7 +44,6 @@ export async function AddProduct(product: FormData) {
         const response = await fetch(`${env.baseUrl}/products`, {
             method: 'POST',
             headers: {
-                //'Content-Type': 'application/json',
                 'Cookie': `authToken=${authToken}`
             },
             body: product
@@ -63,33 +62,42 @@ export async function AddProduct(product: FormData) {
     }
 }
 
-export async function UpdateProduct(product: FormData, id: string) {
-    console.log(product)
+export async function UpdateProduct(product: FormData | Product, id: string) {
+    console.log("product : ", product)
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
         redirect('/admin');
     }
+    const headers: HeadersInit = {
+        'Cookie': `authToken=${authToken}`
+    }
+
+    let body: any
+
+    if (product instanceof FormData) {
+        body = product
+    } else {
+        headers['Content-Type'] = 'application/json'
+        body = JSON.stringify(product)
+    }
     try {
         const response = await fetch(`${env.baseUrl}/products/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Cookie': `authToken=${authToken}`
-            },
-            body: product
+            method: 'PATCH',
+            headers: headers,
+            body: body
         })
-
+        console.log(response)
         if (response.ok) {
             const responseData = await response.json()
             console.log(responseData)
             revalidatePath('/admin/dashboard/gestion_article')
             return responseData.product as Product
         }
-        return []
+        return null
     } catch (error) {
         console.log("erreur lors de la mise à jour d'un produit : ", error)
-        return []
+        return null
     }
 }
 

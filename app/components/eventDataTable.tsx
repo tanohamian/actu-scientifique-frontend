@@ -2,31 +2,38 @@
 import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Article, Media } from '../admin/dashboard/newsletters/components/Affichage';
+import { EventLive } from '../admin/dashboard/event/page';
 
 
 export interface TableData {
+    id?: string
     title: string;
     name?: string;
     createdAt?: Date | string
+    location?: string
     status: 'en direct' | 'pas en direct';
     date?: string;
-    lieu?: string;
-    heure?: string;
+    time?: string;
     url?: string;
 }
 
-export class Event {
-    id?: string 
-    title!: string
-    date?: Date |string
+export interface EventInterface {
+    id?: string
+    title: string
+    location?: string
+    date?: Date | string
     description?: string
     createdAt?: Date
+    time?: string
+    url?: string
+    status?: string
 }
 interface EventDataTableProps {
     tableTitle: string;
-    data: TableData[] | Media[] | Article[];
+    data: TableData[] | Media[] | Article[] | EventInterface[] | EventLive[];
     columnHeaders: { key: string; label: string; flexBasis: string }[];
     handleEditEvent?: (item: TableData) => void;
+    handleDeleteEvent?: (item: TableData) => void;
 }
 
 const DeleteIcon = () => (
@@ -47,7 +54,7 @@ const getStatusClasses = (status: TableData['status']): string => {
     }
 };
 
-export default function DataTable({ tableTitle, data, columnHeaders, handleEditEvent }: EventDataTableProps) {
+export default function DataTable({ tableTitle, data, columnHeaders, handleEditEvent, handleDeleteEvent }: EventDataTableProps) {
 
 
     return (
@@ -102,7 +109,12 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                         >
                                             <Pencil size={20} />
                                         </button>
-                                        <DeleteIcon />
+                                        <button
+                                            className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-400"
+                                            onClick={handleDeleteEvent ? () => handleDeleteEvent(item as TableData) : undefined}
+                                        >
+                                            <Trash2 size={20} />
+                                        </button>
                                     </div>
                                 );
                             }

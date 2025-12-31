@@ -12,14 +12,15 @@ interface ComponentFormProdProps {
 }
 
 export default function ComponentFormProd({ setProducts }: ComponentFormProdProps) {
+  const categories = ['livres', 'vêtements', 'objets tech'];
 
   const [nomProduit, setNomProduit] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [description, setDescription] = useState('');
-  const [categorie, setCategorie] = useState('livre');
-  const [prix, setPrix] = useState('');
-  const [stock, setStock] = useState('');
+  const [categorie, setCategorie] = useState(categories[0]);
+  const [prix, setPrix] = useState(0);
+  const [stock, setStock] = useState(0);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -35,14 +36,15 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
 
   const handlePublish = async () => {
     try {
+      console.log("Catégorie avant envoi:", categorie);
       const product = new FormData()
       product.append('name', nomProduit)
       product.append('description', description)
       product.append('categories', categorie)
-      product.append('price', prix)
-      product.append('stock', stock)
+      product.append('price', prix.toString())
+      product.append('stock', stock.toString())
       if (imageFile) {
-        product.append('preview_image', imageFile)
+        product.append('file', imageFile)
       }
       const response = await AddProduct(product)
       if (response) {
@@ -53,7 +55,7 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
     }
   };
 
-  const categories = ['livres', 'CLOTHES', 'TECHNOLOGYOBJECT'];
+
 
   const formTitle: React.CSSProperties = {
     color: 'white',
@@ -87,7 +89,9 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
     outline: 'none',
     width: '100%',
     cursor: 'pointer',
-    appearance: 'none'
+    zIndex: 1,
+    height: "45px"
+    //appearance: 'none'
   };
 
   const selectIcon: React.CSSProperties = {
@@ -217,7 +221,10 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
         <div style={selectWrapper}>
           <select
             value={categorie}
-            onChange={(e) => setCategorie(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+              console.log("Nouvelle catégorie sélectionnée :", e.target.value);
+              setCategorie(e.target.value)
+            }}
             style={select}
           >
             {categories.map((cat) => (
@@ -226,7 +233,6 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
               </option>
             ))}
           </select>
-          <ChevronDown size={20} style={selectIcon} />
         </div>
       </div>
 
@@ -236,7 +242,7 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
           <input
             type="text"
             value={prix}
-            onChange={(e) => setPrix(e.target.value)}
+            onChange={(e) => setPrix(Number(e.target.value))}
             style={input}
           />
         </div>
@@ -245,7 +251,7 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
           <input
             type="text"
             value={stock}
-            onChange={(e) => setStock(e.target.value)}
+            onChange={(e) => setStock(Number(e.target.value))}
             style={input}
           />
         </div>
