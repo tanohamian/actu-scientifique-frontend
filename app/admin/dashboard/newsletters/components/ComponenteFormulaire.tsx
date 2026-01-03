@@ -33,7 +33,7 @@ export default function ComponenteFormulaire({ isArticle = false, isMedia = fals
 
   const endpoint = isArticle ? "articles" : "newsletters"
   const titleText = isArticle ? "Ajouter un Article" : isMedia ? "Ajouter un média" : "Formulaire de News Letters"
-  const label = isArticle ? "Titre de l'article" : "Titre de la News Letter"
+  const label = isArticle ? "Titre de l'article" : isMedia ? "Titre du média" :"Titre de la News Letter"
   const [rubrique, setRubrique] = useState()
   // 1. État pour les données du formulaire
   const [formData, setFormData] = useState({
@@ -194,7 +194,7 @@ export default function ComponenteFormulaire({ isArticle = false, isMedia = fals
         </div>
         <div>
           <label htmlFor="contenu" style={labelStyle}>Contenu</label>
-          <textarea
+          {isMedia ? null :<textarea
             id="contenu"
             name="contenu"
             style={textareaStyle}
@@ -203,6 +203,7 @@ export default function ComponenteFormulaire({ isArticle = false, isMedia = fals
             value={formData.contenu}
             onChange={handleChange}
           />
+          }
         </div>
         {isArticle || isMedia ? (<FileUpload setFile={setFile} />) : null}
         <div>

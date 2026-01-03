@@ -236,7 +236,7 @@ export default function ArticlePage() {
                 isOpen={editEvent}
                 onClose={() => setEditEvent(false)}
                 onSubmit={handleSubmitEditEvent}
-                titleComponent="Modifier un média"
+                titleComponent="Modifier un article"
                 buttonTitle="Modifier"
                 fields={ArticleFields}
                 initialData={initialData}
