@@ -1,10 +1,11 @@
 'use client';
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Article, Media } from '../admin/dashboard/newsletters/components/Affichage';
 
 
 export interface TableData {
+    id ?:string
     title: string;
     name?: string;
     createdAt: Date | string
@@ -22,20 +23,36 @@ export class Event {
     description?: string
     createdAt?: Date
 }
+export type ElementType = TableData | Media | Article
 interface EventDataTableProps {
     tableTitle: string;
     data: TableData[] | Media[] | Article[];
     columnHeaders: { key: string; label: string; flexBasis: string }[];
-    handleEditEvent?: (item: TableData) => void;
+    handleEditEvent: (element: ElementType) => Promise<void>;
+    handleDeleteEvent: ((element: ElementType)=>Promise<void>)
+}
+interface DeleteIconeProps {
+    handleDeleteItem : (element: ElementType) => Promise<void>
+    element: ElementType
 }
 
-const DeleteIcon = () => (
-    <button 
-        className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
-    >
-        <Trash2 size={20} />
-    </button>
-);
+
+export function DeleteIcon({handleDeleteItem, element}: DeleteIconeProps) {
+
+    const deleteHandler = async () => {
+        await handleDeleteItem(element)   
+    }
+    
+
+  return(
+        <button onClick={deleteHandler}
+            className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
+        >
+            <Trash2 size={20} />
+        </button>
+    )
+}
+
 
 const getStatusClasses = (status: TableData['status']): string => {
     switch (status) {
@@ -47,7 +64,7 @@ const getStatusClasses = (status: TableData['status']): string => {
     }
 };
 
-export default function DataTable({ tableTitle, data, columnHeaders, handleEditEvent }: EventDataTableProps) {
+export default function DataTable({ tableTitle, data, columnHeaders, handleEditEvent, handleDeleteEvent }: EventDataTableProps) {
     
 
     return (
@@ -98,11 +115,14 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                     <div className="flex gap-2">
                                         <button 
                                             className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-blue-400"
-                                            onClick={handleEditEvent ? () => handleEditEvent(item as TableData) : undefined} 
+                                            onClick={handleEditEvent ? () => handleEditEvent(item ) : undefined} 
                                         >
                                             <Pencil size={20} />
                                         </button> 
-                                        <DeleteIcon/>
+                                        <DeleteIcon 
+                                            handleDeleteItem={handleDeleteEvent!} 
+                                            element={item} 
+                                        />
                                     </div>
                                 );
                             }

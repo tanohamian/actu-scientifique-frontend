@@ -25,12 +25,13 @@ export const MimeTypes = {
 export type MimeTypes = typeof MimeTypes[keyof typeof MimeTypes];
 
 export interface Newsletter {
-  id: number;
+  id: string;
   title: string;
   category: string;
   publication: string;
 }
 export interface Media {
+  id?: string
   title: string
   name: string;
   file?: File 
@@ -51,6 +52,7 @@ export interface DbMedia{
 }
 
 export interface Article{
+  id?: string;
   createdAt?: Date|string
   title: string;
   content: string;
@@ -58,7 +60,7 @@ export interface Article{
 }
 
 export interface DbArticle{
-  id: number;
+  id: string;
   title: string;
   content: string;
   rubrique: string;
@@ -67,6 +69,9 @@ export interface DbArticle{
 type ItemType = Newsletter | DbArticle;
 
 interface AffichageProps{
+  deleteHandler?: (elementId: string)=>Promise<void>
+  editHandler: (elementId: string) => Promise<void>
+
   hasFilter? : boolean
   filters ?: IFilter[]
   type ?: AffichageType
@@ -161,7 +166,7 @@ const styles = {
 }
 
 
-export default function Affichage({items, type = AffichageType.NEWSLETTER, hasFilter=false, filters=[]}: AffichageProps) {
+export default function Affichage({items, type = AffichageType.NEWSLETTER, hasFilter=false, filters=[], deleteHandler, editHandler}: AffichageProps) {
 
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>(""); 
@@ -269,7 +274,7 @@ export default function Affichage({items, type = AffichageType.NEWSLETTER, hasFi
                 
                 <td style={styles.td}>
                   <div style={styles.actionButtons}>
-                    <button
+                    <button onClick={() => editHandler(item.id)}
                       style={styles.iconButton}
                     >
                       <Pencil size={18} />

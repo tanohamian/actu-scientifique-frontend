@@ -28,13 +28,13 @@ export async function AddArticle(formData:Article) {
 
         if (!response.ok) {
             console.log(response)
-            throw new Error(`Échec de la récupération des articles : ${response}`);
+            throw new Error(`Erreur lors de la création de l'article  : ${response}`);
         }
 
 
         
     } catch (error) {
-        console.error("Erreur lors de la récupération des articles : ")
+        console.error("Erreur lors de la création de l'article : ")
         console.log(error)
     }
 
@@ -64,7 +64,34 @@ export async function FetchArticles() {
        }
        return []
     } catch (error) {
-        console.log("erreur lors de la récupération des utilisateurs : ", error)
+        console.log("erreur lors de la récupération des articles : ", error)
+        return []
+    }
+}
+
+export async function DeleteArticle(articleId : string) {
+    const authToken = (await cookies()).get('authToken')?.value;
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin'); 
+    }
+    try {
+       const response = await fetch(`${env.baseUrl}/articles/${articleId}`,{
+            method:'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Cookie': `authToken=${authToken}`
+            }
+       }) 
+
+       if(response.ok){
+         const responseData = await response.json()
+         console.log(responseData)
+         revalidatePath('/admin/dashboard/gestion_article')
+       }
+       return []
+    } catch (error) {
+        console.log("erreur lors de la suppression de l'article : ", error)
         return []
     }
 }
