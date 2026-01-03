@@ -11,7 +11,7 @@ import Filter, { IFilter } from '@/app/components/filter';
 import { DbMedia, Media } from '../newsletters/components/Affichage';
 
 import ComponenteFormulaire, { Rubriques } from '../newsletters/components/ComponenteFormulaire';
-import { DeleteMedia, FetchMedias } from '@/app/actions/Medias';
+import { DeleteMedia, FetchMedias } from '@/app/actions/MediasManager';
 import { it } from 'node:test';
 
 const formatTimestampToDate = (timestamp: string): string => {

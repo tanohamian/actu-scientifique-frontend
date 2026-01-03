@@ -5,7 +5,7 @@ import SearchBarComponent from '@/app/components/searchBar';
 import React, { useEffect, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
-import { CreateFeed, DeleteFeed, GetFeeds, UpdateFeed } from '@/app/actions/Feed';
+import { CreateFeed, DeleteFeed, GetFeeds, UpdateFeed } from '@/app/actions/FeedManager';
 
 export interface FeedInterface {
     id?: string
