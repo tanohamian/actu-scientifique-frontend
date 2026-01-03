@@ -4,7 +4,7 @@ import React, { FormEvent, useState } from 'react';
 import { FileUpload } from "../../produit_commandes/components/FileUpload";
 import { Article, DbMedia, Media } from "./Affichage";
 import { AddArticle } from "@/app/actions/Articles";
-import { AddMedia, FetchMedias } from "@/app/actions/Media";
+import { AddMedia, FetchMedias } from "@/app/actions/Medias";
 // import { ChevronUp } from 'lucide-react';
 export enum ArticleRubriques {
   HEALTH = "une seule santé",

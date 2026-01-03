@@ -85,8 +85,7 @@ export async function DeleteArticle(articleId : string) {
        }) 
 
        if(response.ok){
-         const responseData = await response.json()
-         console.log(responseData)
+         console.log(response)
          revalidatePath('/admin/dashboard/gestion_article')
        }
        return []

@@ -3,15 +3,16 @@
 
 import ButtonComponent from '@/app/components/button';
 import SearchBarComponent from '@/app/components/searchBar';
-import EventDataTable, { TableData } from '@/app/components/eventDataTable';
+import EventDataTable, { ElementType, TableData } from '@/app/components/eventDataTable';
 import React, { useEffect, useState } from 'react'
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 
 import Filter, { IFilter } from '@/app/components/filter';
-import { DbMedia } from '../newsletters/components/Affichage';
+import { DbMedia, Media } from '../newsletters/components/Affichage';
 
 import ComponenteFormulaire, { Rubriques } from '../newsletters/components/ComponenteFormulaire';
-import { FetchMedias } from '@/app/actions/Media';
+import { DeleteMedia, FetchMedias } from '@/app/actions/Medias';
+import { it } from 'node:test';
 
 const formatTimestampToDate = (timestamp: string): string => {
   const createdAt = new Date(parseInt(timestamp, 10)); // Convertir la chaîne en nombre puis en objet Date
@@ -48,12 +49,12 @@ const mainHeaders = [
 const TABS_INACTIVE_COLOR = '#5A8FAC'; 
 const TABS_ACTIVE_COLOR = '#374151';
 
-export default function EventPage() {
+export default function MediaPage() {
   const formattedDatedNow = formatTimestampToDate(now)
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
-    const [editEvent, setEditEvent] = useState(false);
-    const [selectedMedia, setSelectedEvent] = useState<TableData | null>(null);
+    const [editMedia, setEditMedia] = useState(false);
+    const [selectedMedia, setSelectedMedia] = useState<TableData | null>(null);
     const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
     const [filters] = useState<IFilter[]>(mainHeaders.map((header, index)=>{
       return {value: header.key, label: header.label}
@@ -139,11 +140,11 @@ export default function EventPage() {
         lg:mt-0 
     `;
 
-    const handleEvent = () => {
+    const handleMedia = () => {
         setIsOpen(true);
     };
 
-    const handleSubmitEvent = () => {
+    const handleSubmitMedia = () => {
         setIsOpen(false);
     };
 
@@ -155,14 +156,22 @@ export default function EventPage() {
         status: '',
     };
 
-    const handleEditEvent = (item: TableData) => {
+    const handleEditMedia = async (item: ElementType) => {
         console.log('Editing event:', item);
-        setSelectedEvent(item);
-        setEditEvent(true);
+        setSelectedMedia(item as TableData);
+        setEditMedia(true);
     };
 
-    const handleSubmitEditEvent = () => {
-        setEditEvent(false);
+    const handleDeleteMedia = async (item: ElementType) => {
+        console.log('Deleting event:', item);
+        setSelectedMedia(item as TableData);
+        await DeleteMedia(item.id as string)
+        setMedias(medias.filter((media) => media.id !== item.id))
+        
+    };
+
+    const handleSubmitEditMedia = () => {
+        setEditMedia(false);
     };
 
     if (selectedMedia) {
@@ -204,7 +213,7 @@ export default function EventPage() {
                     <h1 className={textClasses}>Gestion des Médias</h1>
                     <h3 className={subTextClasses}>Gérer les podcasts et les videos depuis cette interface</h3>
                 </div>
-                <ButtonComponent textButton='Ajouter un media' size='large' onclick={handleEvent} />
+                <ButtonComponent textButton='Ajouter un media' size='large' onclick={handleMedia} />
             </div>
 
             <div className={contentContainerClasses}>
@@ -222,9 +231,10 @@ export default function EventPage() {
                 
                 <EventDataTable
                     tableTitle=""
-                    data={medias}
+                    data={medias as Media[]}
                     columnHeaders={mainHeaders}
-                    handleEditEvent={handleEditEvent}
+                    handleEditEvent={handleEditMedia}
+                    handleDeleteEvent={handleDeleteMedia}
                 />
 
                 <article className={rightSectionClasses}>
@@ -237,7 +247,7 @@ export default function EventPage() {
             <AddElementModal
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
-                onSubmit={handleSubmitEvent}
+                onSubmit={handleSubmitMedia}
                 titleComponent="Ajouter un Média"
                 buttonTitle="Ajouter"
                 fields={MediaFields}
@@ -245,9 +255,9 @@ export default function EventPage() {
             />
 
             <AddElementModal
-                isOpen={editEvent}
-                onClose={() => setEditEvent(false)}
-                onSubmit={handleSubmitEditEvent}
+                isOpen={editMedia}
+                onClose={() => setEditMedia(false)}
+                onSubmit={handleSubmitEditMedia}
                 titleComponent="Modifier un média"
                 buttonTitle="Modifier"
                 fields={MediaFields}
