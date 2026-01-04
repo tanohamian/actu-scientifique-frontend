@@ -62,9 +62,24 @@ export default function Page() {
     }
     update()
     }, [])
+    const textClasses = `
+        m-0 
+        text-2xl 
+        md:text-3xl 
+        lg:text-4xl 
+       font-light
+        text-white
+    `;
+    const subTextClasses = `
+        text-white 
+        text-sm 
+        md:text-base 
+        font-light
+    `;
     return (
         <main style={{ padding: '20px' }}>
-            <h1>Dashboard</h1>
+            <h1 className={textClasses}>Dashboard</h1>
+            <h3 className={subTextClasses}>Avoir une vision globale de l'application</h3>
             
             <DashboardCardContainer 
 

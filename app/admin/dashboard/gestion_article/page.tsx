@@ -4,13 +4,13 @@
 
 import ButtonComponent from '@/app/components/button';
 import SearchBarComponent from '@/app/components/searchBar';
-import DataTable, { TableData } from '@/app/components/eventDataTable';
+import DataTable, { ElementType, TableData } from '@/app/components/eventDataTable';
 import React, { useEffect, useState } from 'react'
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
 import { DbArticle } from '../newsletters/components/Affichage';
 import ComponenteFormulaire from '../newsletters/components/ComponenteFormulaire';
-import { FetchArticles } from '@/app/actions/Articles';
+import { DeleteArticle, FetchArticles } from '@/app/actions/Articles';
 
 
 
@@ -134,16 +134,22 @@ export default function ArticlePage() {
 
     let initialData = {
         title: '',
-        lieu: '',
-        date: '',
+        lieu:  '',
+        date:  '',
         heure: '',
         status: '',
     };
 
-    const handleEditEvent = (item: TableData) => {
+    const handleEditEvent = async (item: ElementType) => {
         console.log('Editing event:', item);
-        setSelectedEvent(item);
+        setSelectedEvent(item as TableData);
         setEditEvent(true);
+    };
+    const handleDeleteEvent = async (item: ElementType) => {
+        console.log('Deleting event:', item);
+        setSelectedEvent(item as TableData);
+        setArticles(articles.filter(newItem => newItem.id !== item.id))
+        await DeleteArticle(item.id as string)
     };
 
     const handleSubmitEditEvent = () => {
@@ -210,6 +216,7 @@ export default function ArticlePage() {
                                 data={articles}
                                 columnHeaders={mainHeaders}
                                 handleEditEvent={handleEditEvent}
+                                handleDeleteEvent={handleDeleteEvent}
                             />
                         </>
                     ) : null
@@ -236,7 +243,7 @@ export default function ArticlePage() {
                 isOpen={editEvent}
                 onClose={() => setEditEvent(false)}
                 onSubmit={handleSubmitEditEvent}
-                titleComponent="Modifier un média"
+                titleComponent="Modifier un article"
                 buttonTitle="Modifier"
                 fields={ArticleFields}
                 initialData={initialData}

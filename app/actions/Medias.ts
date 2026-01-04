@@ -82,3 +82,29 @@ export async function FetchMedias() {
         return []
     }
 }
+
+export async function DeleteMedia(mediaId : string) {
+    const authToken = (await cookies()).get('authToken')?.value;
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin'); 
+    }
+    try {
+       const response = await fetch(`${env.baseUrl}/multimedia/${mediaId}`,{
+            method:'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Cookie': `authToken=${authToken}`
+            }
+       }) 
+
+       if(response.ok){
+         console.log(response)
+         revalidatePath('/admin/dashboard/gestion_media')
+       }
+       return []
+    } catch (error) {
+        console.log("erreur lors de la suppression du media : ", error)
+        return []
+    }
+}

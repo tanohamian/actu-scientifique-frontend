@@ -1,9 +1,12 @@
 "use client"
+import Form from "next/form"
 import React, { FormEvent, useState, useEffect } from 'react';
-import { Article, Newsletter } from "./Affichage";
-import { AddNewsletter, UpdateNewsletter } from "@/app/actions/Newsletters";
-
-export enum Rubriques {
+import { FileUpload } from "../../produit_commandes/components/FileUpload";
+import { Article, DbMedia, Media } from "./Affichage";
+import { AddArticle } from "@/app/actions/Articles";
+import { AddMedia, FetchMedias } from "@/app/actions/Medias";
+// import { ChevronUp } from 'lucide-react';
+export enum ArticleRubriques {
   HEALTH = "une seule santé",
   TECHNOLOGY = "tech",
   ECOHUMANITY = "éco-humanité",
@@ -27,6 +30,11 @@ interface FormPropos {
 export default function ComponenteFormulaire({ isArticle = false, initialData, onSuccess }: FormPropos) {
   const rubriques = Object.values(Rubriques) as string[];
 
+  const endpoint = isArticle ? "articles" : "newsletters"
+  const titleText = isArticle ? "Ajouter un Article" : isMedia ? "Ajouter un média" : "Formulaire de News Letters"
+  const label = isArticle ? "Titre de l'article" : isMedia ? "Titre du média" : "Titre de la News Letter"
+  const [rubrique, setRubrique] = useState()
+  // 1. État pour les données du formulaire
   const [formData, setFormData] = useState({
     titre: "",
     contenu: "",
@@ -103,8 +111,9 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
           />
         </div>
         <div>
-          <label style={labelStyle}>Contenu</label>
-          <textarea
+          <label htmlFor="contenu" style={labelStyle}>Contenu</label>
+          {isMedia ? null : <textarea
+            id="contenu"
             name="contenu"
             style={textareaStyle}
             rows={8}
@@ -112,6 +121,7 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
             onChange={handleChange}
             required
           />
+          }
         </div>
         <div>
           <label style={labelStyle}>Catégorie</label>
