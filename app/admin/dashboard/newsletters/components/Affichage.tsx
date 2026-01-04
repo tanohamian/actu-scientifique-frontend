@@ -47,6 +47,16 @@ interface AffichageProps {
     items?: ItemType[];
     onEdit?: (item: ItemType) => void;
 }
+export interface Media {
+    id?: string
+    title: string
+    name: string;
+    file?: File
+    rubrique?: string
+    type: string
+    publicationDate?: string;
+}
+
 
 const styles = {
     container: { backgroundColor: '#50789B', width: '100%', maxWidth: '809px', padding: '40px', fontFamily: 'Arial, sans-serif', borderRadius: '20px', minHeight: '468px', display: 'flex', flexDirection: 'column' as const, boxSizing: 'border-box' as const },

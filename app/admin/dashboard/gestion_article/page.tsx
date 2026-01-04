@@ -10,7 +10,7 @@ import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
 import { DbArticle } from '../newsletters/components/Affichage';
 import ComponenteFormulaire from '../newsletters/components/ComponenteFormulaire';
-import { DeleteArticle, FetchArticles } from '@/app/actions/Articles';
+import { DeleteArticle, FetchArticles } from '@/app/actions/ArticleManager';
 
 
 

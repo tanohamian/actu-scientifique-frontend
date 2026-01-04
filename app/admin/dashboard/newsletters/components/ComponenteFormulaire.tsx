@@ -3,10 +3,8 @@ import Form from "next/form"
 import React, { FormEvent, useState, useEffect } from 'react';
 import { FileUpload } from "../../produit_commandes/components/FileUpload";
 import { Article, DbMedia, Media } from "./Affichage";
-import { AddArticle } from "@/app/actions/Articles";
-import { AddMedia, FetchMedias } from "@/app/actions/Medias";
-import { AddNewsletter, UpdateNewsletter } from "@/app/actions/Newsletters";
-import { INewsletter } from "@/app/actions/Newsletters";
+import { AddArticle } from "@/app/actions/ArticleManager";
+import { AddMedia, FetchMedias } from "@/app/actions/MediasManager";
 // import { ChevronUp } from 'lucide-react';
 export enum ArticleRubriques {
   HEALTH = "une seule santé",
