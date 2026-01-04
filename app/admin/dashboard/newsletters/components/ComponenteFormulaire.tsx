@@ -5,6 +5,8 @@ import { FileUpload } from "../../produit_commandes/components/FileUpload";
 import { Article, DbMedia, Media } from "./Affichage";
 import { AddArticle } from "@/app/actions/Articles";
 import { AddMedia, FetchMedias } from "@/app/actions/Medias";
+import { AddNewsletter, UpdateNewsletter } from "@/app/actions/Newsletters";
+import { INewsletter } from "@/app/actions/Newsletters";
 // import { ChevronUp } from 'lucide-react';
 export enum ArticleRubriques {
   HEALTH = "une seule santé",
@@ -23,11 +25,12 @@ export enum Rubriques {
 
 interface FormPropos {
   isArticle: boolean;
-  initialData?: Newsletter | Article | null;
+  isMedia: boolean;
+  initialData?: INewsletter | Article | null;
   onSuccess?: () => void;
 }
 
-export default function ComponenteFormulaire({ isArticle = false, initialData, onSuccess }: FormPropos) {
+export default function ComponenteFormulaire({ isArticle = false, isMedia = false, initialData, onSuccess }: FormPropos) {
   const rubriques = Object.values(Rubriques) as string[];
 
   const endpoint = isArticle ? "articles" : "newsletters"

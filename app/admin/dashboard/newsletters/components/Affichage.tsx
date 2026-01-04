@@ -11,33 +11,13 @@ export enum AffichageType {
     MEDIAS = "medias"
 }
 
-export const MimeTypes = {
-    MP4: "video/mp4",
-    MOV: "video/quicktime",
-    MP3: "audio/mpeg",
-    WAV: "audio/wav",
-    JPEG: "image/jpeg",
-    PNG: "image/png",
-    GIF: "image/gif",
-    WEBP: "image/webp",
-    SVG: "image/svg+xml"
-}
-
-export type MimeTypes = typeof MimeTypes[keyof typeof MimeTypes];
 
 export interface Newsletter {
-    id: number;
-    title: string;
-    category: string;
-    publication: string;
-}
-export interface Media {
-    title: string
-    name: string;
-    file?: File
-    rubrique?: string
-    type: string
-    publicationDate?: string;
+    id: string;
+    titre: string;
+    categorie: string;
+    contenu: string;
+    createdAt: string;
 }
 
 export interface Article {
@@ -83,7 +63,6 @@ const styles = {
     actionButtons: { display: 'flex', gap: '15px', justifyContent: 'flex-end' as const },
     iconButton: { background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'opacity 0.3s' }
 }
-
 
 export default function Affichage({
     items: initialItems = [],
@@ -132,32 +111,24 @@ export default function Affichage({
     };
 
     const handleNewFilter = (filterValue: string) => {
-        if (filterValue == '') {
-            setActiveFilter("all")
-            return
-        }
-        setActiveFilter(filterValue);
-        console.log("Nouveau filtre sélectionné:", filterValue);
+        setActiveFilter(filterValue === '' ? "all" : filterValue);
     };
 
     const filteredItems = useMemo(() => {
-        if (!items) return [];
-        return items.filter(item => {
+        return itemList.filter(item => {
             let filterMatch = true;
             if (activeFilter !== 'all' && activeFilter !== '') {
                 if (type === AffichageType.ARTICLE) {
-                    filterMatch = (item as DbArticle).rubrique === activeFilter;
+                    filterMatch = (item as Article).rubrique === activeFilter;
                 } else if (type === AffichageType.NEWSLETTER) {
-                    filterMatch = (item as Newsletter).category === activeFilter;
+                    filterMatch = (item as Newsletter).categorie === activeFilter;
                 }
             }
             if (!filterMatch) return false;
             const currentTitle = item.titre || '';
             return currentTitle.toLowerCase().includes(searchTerm.toLowerCase());
-
         });
-    }, [items, activeFilter, searchTerm, type]);
-
+    }, [itemList, activeFilter, searchTerm, type]);
 
     const renderItemContent = (item: ItemType) => {
         if (type === AffichageType.ARTICLE) {
@@ -184,32 +155,20 @@ export default function Affichage({
     return (
         <div style={styles.container}>
             <div style={styles.searchSection}>
-
                 <div style={styles.searchWrapper}>
-
                     <div style={styles.searchInputContainer}>
                         <Search size={20} style={styles.searchIcon} />
                         <input
                             type="text"
                             placeholder="Rechercher par titre....."
                             style={styles.searchInput}
-                            value={searchTerm} // Lier à l'état
+                            value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
-
-                    {
-                        hasFilter ? <Filter
-                            filters={filters}
-                            onFilterChange={handleNewFilter}
-                        /> : null
-                    }
-                    {
-                        type === AffichageType.MEDIAS ? <Filter
-                            filters={filters}
-                            onFilterChange={handleNewFilter}
-                        /> : null
-                    }
+                    {(hasFilter || type === AffichageType.MEDIAS) && (
+                        <Filter filters={filters} onFilterChange={handleNewFilter} />
+                    )}
                 </div>
             </div>
 
@@ -227,7 +186,6 @@ export default function Affichage({
                         {filteredItems.map((item) => (
                             <tr key={item.id}>
                                 {renderItemContent(item)}
-
                                 <td style={styles.td}>
                                     <div style={styles.actionButtons}>
                                         <button
