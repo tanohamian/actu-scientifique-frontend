@@ -1,98 +1,93 @@
 "use client"
-import React, { FormEvent, useState } from 'react';
-import { FileUpload } from "../../produit_commandes/components/FileUpload";
-import AddArticle from "@/app/actions/addArticle";
-import { Article } from "./Affichage";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+import React, { FormEvent, useState, useEffect } from 'react';
+import { Article, Newsletter } from "./Affichage";
+import { AddNewsletter, UpdateNewsletter } from "@/app/actions/Newsletters";
 
 export enum Rubriques {
     HEALTH = "une seule santé",
     TECHNOLOGY = "tech",
     ECOHUMANITY = "éco-humanité",
     OPPORTUNITY = "opportunité",
-    CALENDAR = "agenda",
     PORTRAITSDISCOVERIES = "portraits et découvertes"
 }
 
 interface FormPropos {
-    isArticle: boolean
+    isArticle: boolean;
+    initialData?: Newsletter | Article | null; 
+    onSuccess?: () => void; 
 }
 
-export default function ComponenteFormulaire({ isArticle = false }: FormPropos) {
+export default function ComponenteFormulaire({ isArticle = false, initialData, onSuccess }: FormPropos) {
     const rubriques = Object.values(Rubriques) as string[];
-    const titleText = isArticle ? "Ajouter un Article" : "Formulaire de News Letters"
-    const label = isArticle ? "Titre de l'article" : "Titre de la News Letter"
-
+    
     const [formData, setFormData] = useState({
         titre: "",
         contenu: "",
-        categorie: isArticle ? rubriques[0] : "tech",
+        categorie: "tech",
     });
 
+    useEffect(() => {
+        if (initialData) {
+            const titre = initialData.titre || "";
+            const contenu = initialData.contenu || "";
+            const categorie = 'categorie' in initialData 
+                ? initialData.categorie 
+                : ('rubrique' in initialData ? initialData.rubrique : "tech");
+
+            setFormData({ titre, contenu, categorie });
+        } else {
+            setFormData({ titre: "", contenu: "", categorie: "tech" });
+        }
+    }, [initialData]);
+
+    const isEditing = !!initialData;
+    
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        setFormData({
-            ...formData,
+        setFormData(prev => ({
+            ...prev,
             [e.target.name]: e.target.value,
-        });
+        }));
     };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-
         try {
-            if (isArticle) {
-                // Correction des clés ici pour correspondre à l'interface Article
-                const newArticle: Article = {
-                    titre: formData.titre,
-                    contenu: formData.contenu,
-                    rubrique: formData.categorie,
-                };
-                await AddArticle(newArticle);
-                alert(`Article soumis !`);
-                setFormData({ titre: "", contenu: "", categorie: rubriques[0] });
-            } else {
-                const response = await fetch(`${BASE_URL}/newsletters`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        titre: formData.titre,
-                        contenu: formData.contenu,
-                        categorie: formData.categorie
-                    }),
-                });
+            let result;
+            const currentId = initialData?.id;
 
-                if (response.ok) {
-                    alert(`Newsletter soumise ! Titre : ${formData.titre}`);
-                    setFormData({ titre: "", contenu: "", categorie: "tech" });
-                } else {
-                    alert("Erreur lors de l'envoi de la newsletter");
-                }
+            if (isEditing && currentId) {
+                result = await UpdateNewsletter(currentId, formData);
+            } else {
+                result = await AddNewsletter(formData);
+            }
+
+            if (result?.success) {
+                alert(isEditing ? "Mis à jour !" : "Publié !");
+                setFormData({ titre: "", contenu: "", categorie: "tech" });
+                if (onSuccess) onSuccess();
             }
         } catch (error) {
-            console.error("Erreur détaillée:", error);
+            console.error("Erreur:", error);
         }
     };
 
-    // --- TES STYLES (STRICTEMENT INCHANGÉS) ---
-    const container: React.CSSProperties = { backgroundColor: '#50789B', maxWidth: '500px', width: '90%', minHeight: 'auto', padding: '20px', fontFamily: 'Arial, sans-serif', borderRadius: '25px', margin: '20px auto', boxSizing: 'border-box' };
-    const labelStyle: React.CSSProperties = { color: 'white', fontWeight: 'bold', marginBottom: '8px', display: 'block', fontSize: '16px', marginTop: '20px' };
+    const container: React.CSSProperties = { backgroundColor: '#50789B', maxWidth: '100%', width: '90%', padding: '30px', fontFamily: 'Arial, sans-serif', borderRadius: '25px', margin: '0 auto', boxSizing: 'border-box' };
+    const labelStyle: React.CSSProperties = { color: 'white', fontWeight: 'bold', marginBottom: '8px', display: 'block', fontSize: '25px', marginTop: '20px' };
     const inputBaseStyle: React.CSSProperties = { backgroundColor: '#2D4459', color: 'white', padding: '12px', borderRadius: '8px', border: 'none', width: '100%', boxSizing: 'border-box', fontSize: '16px', outline: 'none' };
-    const textareaStyle: React.CSSProperties = { ...inputBaseStyle, minHeight: '150px', resize: 'vertical', whiteSpace: 'pre-wrap' };
-    const selectStyle: React.CSSProperties = { ...inputBaseStyle, appearance: 'none', paddingRight: '30px' };
-    const buttonStyle: React.CSSProperties = { backgroundColor: '#E76C5B', color: 'white', padding: '15px 0', borderRadius: '8px', border: 'none', width: '100%', fontSize: '18px', fontWeight: 'bold', cursor: 'pointer', marginTop: '40px', marginBottom: '10px' };
-    const titleStyle: React.CSSProperties = { color: 'white', fontSize: '24px', fontWeight: 'bold', marginBottom: '30px', textAlign: 'center' };
+    const textareaStyle: React.CSSProperties = { ...inputBaseStyle, minHeight: '150px', resize: 'vertical' };
+    const selectStyle: React.CSSProperties = { ...inputBaseStyle, appearance: 'none' };
+    const buttonStyle: React.CSSProperties = { backgroundColor: '#E76C5B', color: 'white', padding: '15px 0', borderRadius: '8px', border: 'none', width: '100%', fontSize: '18px', fontWeight: 'bold', cursor: 'pointer', marginTop: '40px' };
 
     return (
         <div style={container}>
-            <h2 style={titleStyle}>{titleText}</h2>
-            {/* Utilisation de la balise form standard pour la stabilité du onSubmit */}
+            <h2 style={{ color: 'white', textAlign: 'center',fontSize: '25px', fontWeight: 'bold'}}>
+                {isEditing ? "Modifier" : (isArticle ? "Ajouter un Article" : "Nouvelle NewsLetter")}
+            </h2>
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label htmlFor="titre" style={labelStyle}>{label}</label>
+                    <label style={labelStyle}>{isArticle ? "Titre de l'article" : "Titre de la NewsLetter"}</label>
                     <input
                         type="text"
-                        id="titre"
                         name="titre"
                         style={inputBaseStyle}
                         value={formData.titre}
@@ -101,42 +96,33 @@ export default function ComponenteFormulaire({ isArticle = false }: FormPropos) 
                     />
                 </div>
                 <div>
-                    <label htmlFor="contenu" style={labelStyle}>Contenu</label>
+                    <label style={labelStyle}>Contenu</label>
                     <textarea
-                        id="contenu"
                         name="contenu"
                         style={textareaStyle}
-                        placeholder="le contenu................"
                         rows={8}
                         value={formData.contenu}
                         onChange={handleChange}
                         required
                     />
                 </div>
-                {isArticle ? (<FileUpload />) : null}
                 <div>
-                    <label htmlFor="categorie" style={labelStyle}>Catégorie</label>
-                    <div style={{ position: 'relative' }}>
-                        <select
-                            id="categorie"
-                            name="categorie"
-                            style={selectStyle}
-                            value={formData.categorie}
-                            onChange={handleChange}
-                        >
-                            {rubriques.map((rubrique) => (
-                                <option key={rubrique} value={rubrique}>
-                                    {rubrique}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    <label style={labelStyle}>Catégorie</label>
+                    <select
+                        name="categorie"
+                        style={selectStyle}
+                        value={formData.categorie}
+                        onChange={handleChange}
+                    >
+                        {rubriques.map((rub) => (
+                            <option key={rub} value={rub}>{rub}</option>
+                        ))}
+                    </select>
                 </div>
-
                 <button type="submit" style={buttonStyle}>
-                    Publier
+                    {isEditing ? "Enregistrer les modifications" : "Publier"}
                 </button>
             </form>
         </div>
-    )
+    );
 }
