@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import { useRouter } from 'next/navigation';
 import Calendar from '@/app/components/calendarCompenetWithFullCalendar';
-import { CreateEvent, DeleteEvent, FetchEvents, UpdateEvent } from '@/app/actions/Events';
+import { CreateEvent, DeleteEvent, FetchEvents, UpdateEvent } from '@/app/actions/EventsManager';
 
 const now = new Date()
 

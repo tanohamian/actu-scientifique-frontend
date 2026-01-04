@@ -1,5 +1,5 @@
 'use client';
-import React, { MouseEventHandler } from 'react';
+import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Article, Media } from '../admin/dashboard/newsletters/components/Affichage';
 import { EventLive } from '../admin/dashboard/event/page';
@@ -28,36 +28,21 @@ export interface EventInterface {
     url?: string
     status?: string
 }
-export type ElementType = TableData | Media | Article
 interface EventDataTableProps {
     tableTitle: string;
     data: TableData[] | Media[] | Article[] | EventInterface[] | EventLive[];
     columnHeaders: { key: string; label: string; flexBasis: string }[];
-    handleEditEvent: (element: ElementType) => Promise<void>;
-    handleDeleteEvent: ((element: ElementType) => Promise<void>)
-}
-interface DeleteIconeProps {
-    handleDeleteItem: (element: ElementType) => Promise<void>
-    element: ElementType
+    handleEditEvent?: (item: TableData) => void;
+    handleDeleteEvent?: (item: TableData) => void;
 }
 
-
-export function DeleteIcon({ handleDeleteItem, element }: DeleteIconeProps) {
-
-    const deleteHandler = async () => {
-        await handleDeleteItem(element)
-    }
-
-
-    return (
-        <button onClick={deleteHandler}
-            className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
-        >
-            <Trash2 size={20} />
-        </button>
-    )
-}
-
+const DeleteIcon = () => (
+    <button
+        className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
+    >
+        <Trash2 size={20} />
+    </button>
+);
 
 const getStatusClasses = (status: TableData['status']): string => {
     switch (status) {
@@ -120,14 +105,16 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                     <div className="flex gap-2">
                                         <button
                                             className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-blue-400"
-                                            onClick={handleEditEvent ? () => handleEditEvent(item) : undefined}
+                                            onClick={handleEditEvent ? () => handleEditEvent(item as TableData) : undefined}
                                         >
                                             <Pencil size={20} />
                                         </button>
-                                        <DeleteIcon
-                                            handleDeleteItem={handleDeleteEvent!}
-                                            element={item}
-                                        />
+                                        <button
+                                            className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-400"
+                                            onClick={handleDeleteEvent ? () => handleDeleteEvent(item as TableData) : undefined}
+                                        >
+                                            <Trash2 size={20} />
+                                        </button>
                                     </div>
                                 );
                             }

@@ -4,7 +4,7 @@ import React from 'react'
 import Image from 'next/image';
 import { useState } from 'react';
 import { ChevronDown, Upload } from 'lucide-react';
-import { AddProduct } from '@/app/actions/Products';
+import { AddProduct } from '@/app/actions/ProductsManager';
 import { Product } from '@/app/admin/page';
 
 interface ComponentFormProdProps {

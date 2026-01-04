@@ -1,12 +1,9 @@
 "use client"
-import Form from "next/form"
 import React, { FormEvent, useState, useEffect } from 'react';
-import { FileUpload } from "../../produit_commandes/components/FileUpload";
-import { Article, DbMedia, Media } from "./Affichage";
-import { AddArticle } from "@/app/actions/ArticleManager";
-import { AddMedia, FetchMedias } from "@/app/actions/MediasManager";
-// import { ChevronUp } from 'lucide-react';
-export enum ArticleRubriques {
+import { Article, Newsletter } from "./Affichage";
+import { AddNewsletter, UpdateNewsletter } from "@/app/actions/Newsletters";
+
+export enum Rubriques {
   HEALTH = "une seule santé",
   TECHNOLOGY = "tech",
   ECOHUMANITY = "éco-humanité",
@@ -14,28 +11,15 @@ export enum ArticleRubriques {
   PORTRAITSDISCOVERIES = "portraits et découvertes"
 }
 
-export enum Rubriques {
-  TECHNOLOGY = "technology",
-  ONE_HEALTH = "health",
-  SCIENCE = "science",
-  ART = "art"
-}
-
 interface FormPropos {
   isArticle: boolean;
-  isMedia: boolean;
-  initialData?: INewsletter | Article | null;
+  initialData?: Newsletter | Article | null;
   onSuccess?: () => void;
 }
 
-export default function ComponenteFormulaire({ isArticle = false, isMedia = false, initialData, onSuccess }: FormPropos) {
+export default function ComponenteFormulaire({ isArticle = false, initialData, onSuccess }: FormPropos) {
   const rubriques = Object.values(Rubriques) as string[];
 
-  const endpoint = isArticle ? "articles" : "newsletters"
-  const titleText = isArticle ? "Ajouter un Article" : isMedia ? "Ajouter un média" : "Formulaire de News Letters"
-  const label = isArticle ? "Titre de l'article" : isMedia ? "Titre du média" : "Titre de la News Letter"
-  const [rubrique, setRubrique] = useState()
-  // 1. État pour les données du formulaire
   const [formData, setFormData] = useState({
     titre: "",
     contenu: "",
@@ -112,9 +96,8 @@ export default function ComponenteFormulaire({ isArticle = false, isMedia = fals
           />
         </div>
         <div>
-          <label htmlFor="contenu" style={labelStyle}>Contenu</label>
-          {isMedia ? null : <textarea
-            id="contenu"
+          <label style={labelStyle}>Contenu</label>
+          <textarea
             name="contenu"
             style={textareaStyle}
             rows={8}
@@ -122,7 +105,6 @@ export default function ComponenteFormulaire({ isArticle = false, isMedia = fals
             onChange={handleChange}
             required
           />
-          }
         </div>
         <div>
           <label style={labelStyle}>Catégorie</label>
