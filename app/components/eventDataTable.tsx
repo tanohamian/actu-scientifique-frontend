@@ -1,5 +1,5 @@
 'use client';
-import React, { MouseEventHandler } from 'react';
+import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Article, Media } from '../admin/dashboard/newsletters/components/Affichage';
 

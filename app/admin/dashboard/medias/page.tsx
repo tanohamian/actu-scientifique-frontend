@@ -12,24 +12,6 @@ import { DbMedia, Media } from '../newsletters/components/Affichage';
 
 import ComponenteFormulaire, { Rubriques } from '../newsletters/components/ComponenteFormulaire';
 import { DeleteMedia, FetchMedias } from '@/app/actions/MediasManager';
-import { it } from 'node:test';
-
-const formatTimestampToDate = (timestamp: string): string => {
-  const createdAt = new Date(parseInt(timestamp, 10)); // Convertir la chaîne en nombre puis en objet Date
-  
-  // Utiliser Intl.DateTimeFormat pour un format Jours/Mois/Année (français)
-  return new Intl.DateTimeFormat('fr-FR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-
-    hour : '2-digit',
-    minute: '2-digit'
-  }).format(createdAt);
-};
-
-const now = Date.now().toString()
-
 
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', type: 'text', placeholder: 'Entrez le titre du media', required: true },
@@ -50,7 +32,6 @@ const TABS_INACTIVE_COLOR = '#5A8FAC';
 const TABS_ACTIVE_COLOR = '#374151';
 
 export default function MediaPage() {
-  const formattedDatedNow = formatTimestampToDate(now)
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [editMedia, setEditMedia] = useState(false);
