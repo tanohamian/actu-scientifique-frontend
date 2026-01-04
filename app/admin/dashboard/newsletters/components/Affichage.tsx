@@ -175,6 +175,7 @@ export default function Affichage({ items, type = AffichageType.NEWSLETTER, hasF
     };
 
     const filteredItems = useMemo(() => {
+        if (!items) return [];
         return items.filter(item => {
             let filterMatch = true;
             if (activeFilter !== 'all' && activeFilter !== '') {
@@ -282,7 +283,7 @@ export default function Affichage({ items, type = AffichageType.NEWSLETTER, hasF
                                 </td>
                             </tr>
                         ))}
-                        {filteredItems.length === 0 && (
+                        {filteredItems?.length === 0 && (
                             <tr>
                                 <td colSpan={type === AffichageType.MEDIAS ? 5 : 4} style={{ ...styles.td, textAlign: 'center' }}>
                                     Aucun élément trouvé pour ces critères.
