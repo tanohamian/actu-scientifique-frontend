@@ -1,303 +1,222 @@
 "use client"
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { Search, Pencil, Trash2 } from 'lucide-react';
-import Filter, { IFilter } from '@/app/components/filter'; 
+import Filter, { IFilter } from '@/app/components/filter';
+// Importation des Server Actions
+import { FetchNewsletters, DeleteNewsletter } from '@/app/actions/Newsletters';
 
-
-export enum AffichageType{
-  ARTICLE  = "article",
-  NEWSLETTER= "newsletters",
-  MEDIAS = "medias"
+export enum AffichageType {
+    ARTICLE = "article",
+    NEWSLETTER = "newsletters",
+    MEDIAS = "medias"
 }
 
-export const MimeTypes = {
-    MP4 : "video/mp4",
-    MOV : "video/quicktime",
-    MP3 : "audio/mpeg",
-    WAV : "audio/wav",
-    JPEG : "image/jpeg",
-    PNG : "image/png",
-    GIF : "image/gif",
-    WEBP : "image/webp",
-    SVG :"image/svg+xml"
-}
-
-export type MimeTypes = typeof MimeTypes[keyof typeof MimeTypes];
 
 export interface Newsletter {
-  id: string;
-  title: string;
-  category: string;
-  publication: string;
+    id: string;
+    titre: string;
+    categorie: string;
+    contenu: string;
+    createdAt: string;
+}
+
+export interface Article {
+    id: string;
+    titre: string;
+    contenu: string;
+    rubrique: string;
+}
+
+export interface DbMedia {
+    id: number;
+    title: string;
+    name: string;
+    rubrique: string;
+    mimeType: string;
+    url: string;
+    createdAt: Date | string;
+    type: string;
+}
+
+type ItemType = Newsletter | Article;
+
+interface AffichageProps {
+    hasFilter?: boolean;
+    filters?: IFilter[];
+    type?: AffichageType;
+    items?: ItemType[];
+    onEdit?: (item: ItemType) => void;
 }
 export interface Media {
-  id?: string
-  title: string
-  name: string;
-  file?: File 
-  rubrique ?: string
-  type: string
-  publicationDate?: string;
+    id?: string
+    title: string
+    name: string;
+    file?: File
+    rubrique?: string
+    type: string
+    publicationDate?: string;
 }
 
-export interface DbMedia{
-  id: string;
-  title: string,
-  name: string
-  rubrique : string
-  mimeType: MimeTypes
-  url: string
-  createdAt: Date|string,
-  type: string
-}
-
-export interface Article{
-  id?: string;
-  createdAt?: Date|string
-  title: string;
-  content: string;
-  rubrique: string;
-}
-
-export interface DbArticle{
-  id: string;
-  title: string;
-  content: string;
-  rubrique: string;
-  createdAt : Date | string
-}
-type ItemType = Newsletter | DbArticle;
-
-interface AffichageProps{
-  deleteHandler?: (elementId: string)=>Promise<void>
-  editHandler: (elementId: string) => Promise<void>
-
-  hasFilter? : boolean
-  filters ?: IFilter[]
-  type ?: AffichageType
-  items : ItemType[]
-}
 
 const styles = {
-    container: {
-        backgroundColor: '#50789B',
-        // Vous pouvez laisser 'height: auto' pour que le contenu détermine la hauteur
-        //height:'50%', 
-        width:'809px',
-        padding: '40px',
-        fontFamily: 'Arial, sans-serif',
-        borderRadius:'20px',
-        minHeight: '468px',
-        display: 'flex',
-        flexDirection: 'column' as const,
-    },
-    searchSection: {
-        borderRadius: '12px',
-        marginBottom : '25px'
-    },
-    searchWrapper: {
-        position: 'relative' as const,
-        alignItems:'center',
-        display: 'flex', 
-        gap: '20px', 
-    },
-    searchInputContainer: {
-        position: 'relative' as const,
-        flexGrow: 1, 
-    },
-    searchIcon: {
-        position: 'absolute' as const,
-        left: '15px',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        color: 'rgba(255, 255, 255, 0.9)'
-    },
-    searchInput: {
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
-        border: '1px solid #ffffff4d',
-        borderRadius: '8px',
-        padding: '14px 15px',
-        paddingLeft: '45px',
-        color: 'white',
-        fontSize: '14px',
-        outline: 'none',
-        width: '80%',
-    },
-    tableSection: {
-        flex: '1', 
-        overflowY: 'auto' as const, 
-    },
-    table: {
-        width: '100%',
-        borderCollapse: 'collapse' as const
-    },
-    tableHeader: {
-        borderBottom: '2px solid rgba(255, 255, 255, 0.3)'
-    },
-    th: {
-        color: 'white',
-        fontSize: '14px',
-        fontWeight: '600',
-        textAlign: 'left' as const,
-        padding: '15px 10px',
-    },
-    td: {
-        color: 'white',
-        fontSize: '14px',
-        padding: '20px 10px',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.2)'
-    },
-    actionButtons: {
-        display: 'flex',
-        gap: '15px',
-        justifyContent: 'flex-end' as const
-    },
-    iconButton: {
-        background: 'none',
-        border: 'none',
-        color: 'white',
-        cursor: 'pointer',
-        padding: '5px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        transition: 'opacity 0.3s'
-    }
+    container: { backgroundColor: '#50789B', width: '100%', maxWidth: '809px', padding: '40px', fontFamily: 'Arial, sans-serif', borderRadius: '20px', minHeight: '468px', display: 'flex', flexDirection: 'column' as const, boxSizing: 'border-box' as const },
+    searchSection: { borderRadius: '12px', marginBottom: '25px' },
+    searchWrapper: { position: 'relative' as const, alignItems: 'center', display: 'flex', gap: '20px' },
+    searchInputContainer: { position: 'relative' as const, flexGrow: 1 },
+    searchIcon: { position: 'absolute' as const, left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255, 255, 255, 0.9)' },
+    searchInput: { backgroundColor: 'rgba(255, 255, 255, 0.2)', border: '1px solid #ffffff4d', borderRadius: '8px', padding: '14px 15px', paddingLeft: '45px', color: 'white', fontSize: '14px', outline: 'none', width: '100%', boxSizing: 'border-box' as const },
+    tableSection: { flex: '1', overflowY: 'auto' as const },
+    table: { width: '100%', borderCollapse: 'collapse' as const },
+    tableHeader: { borderBottom: '2px solid rgba(255, 255, 255, 0.3)' },
+    th: { color: 'white', fontSize: '14px', fontWeight: '600', textAlign: 'left' as const, padding: '15px 10px' },
+    td: { color: 'white', fontSize: '14px', padding: '20px 10px', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' },
+    actionButtons: { display: 'flex', gap: '15px', justifyContent: 'flex-end' as const },
+    iconButton: { background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'opacity 0.3s' }
 }
 
+export default function Affichage({
+    items: initialItems = [],
+    type = AffichageType.NEWSLETTER,
+    hasFilter = false,
+    filters = [],
+    onEdit
+}: AffichageProps) {
+    const [itemList, setItemList] = useState<ItemType[]>(initialItems);
+    const [activeFilter, setActiveFilter] = useState<string>("all");
+    const [searchTerm, setSearchTerm] = useState<string>("");
 
-export default function Affichage({items, type = AffichageType.NEWSLETTER, hasFilter=false, filters=[], deleteHandler, editHandler}: AffichageProps) {
 
-  const [activeFilter, setActiveFilter] = useState<string>("all");
-  const [searchTerm, setSearchTerm] = useState<string>(""); 
-
-  const handleNewFilter = (filterValue: string) => {
-    if (filterValue == '') {
-      setActiveFilter("all")
-      return
-    }
-    setActiveFilter(filterValue);
-    console.log("Nouveau filtre sélectionné:", filterValue);
-  };
-
-  const filteredItems = useMemo(() => {
-    return items.filter(item => {
-      let filterMatch = true;
-      if (activeFilter !== 'all' && activeFilter !== '') {
-        if (type === AffichageType.ARTICLE) {
-          filterMatch = (item as DbArticle).rubrique === activeFilter;
-        } else if (type === AffichageType.NEWSLETTER) {
-          filterMatch = (item as Newsletter).category === activeFilter;
+    const loadData = useCallback(async () => {
+        try {
+            if (type === AffichageType.NEWSLETTER) {
+                const data = await FetchNewsletters();
+                if (data) setItemList(data);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération :", error);
         }
-      }
-      if (!filterMatch) return false;
+    }, [type]);
 
-      const currentTitle = (item as {title: string}).title || '';
-      return currentTitle.toLowerCase().includes(searchTerm.toLowerCase());
+    useEffect(() => {
+        loadData();
+    }, [loadData]);
 
-    });
-  }, [items, activeFilter, searchTerm, type]);
+    const handleDelete = async (id: string) => {
+        if (!confirm("Voulez-vous vraiment supprimer cet élément ?")) return;
 
+        try {
+            let success = false;
+            if (type === AffichageType.NEWSLETTER) {
+                success = await DeleteNewsletter(id);
+            }
 
-  const renderItemContent = (item: ItemType) => {
-    switch (type) {
-      case AffichageType.ARTICLE:
-        const article = item as Article;
-        return (
-          <>
-            <td style={styles.td}>{article.title.substring(0, 35)}...</td>
-            <td style={styles.td}>{article.rubrique}</td>
-            <td style={styles.td}>{article.content.substring(0, 35)}...</td>
-          </>
-        );
-      case AffichageType.NEWSLETTER:
-      default:
-        const newsletter = item as Newsletter;
-        return (
-          <>
-            <td style={styles.td}>{newsletter.title}</td>
-            <td style={styles.td}>{newsletter.category}</td>
-            <td style={styles.td}>{newsletter.publication}</td>
-          </>
-        );
-    }
-  };
+            if (success) {
+                setItemList(prev => prev.filter(item => item.id !== id));
+            } else {
+                alert("Erreur lors de la suppression");
+            }
+        } catch (error) {
+            console.error("Erreur lors de la suppression :", error);
+        }
+    };
 
-  return (
-    <div style={styles.container}>
-      <div style={styles.searchSection}>
-        
-        <div style={styles.searchWrapper}> 
-          
-          <div style={styles.searchInputContainer}>
-            <Search size={20} style={styles.searchIcon} />
-            <input
-              type="text"
-              placeholder="Rechercher par titre....."
-              style={styles.searchInput}
-              value={searchTerm} // Lier à l'état
-              onChange={(e) => setSearchTerm(e.target.value)} 
-            />
-          </div>
+    const handleNewFilter = (filterValue: string) => {
+        setActiveFilter(filterValue === '' ? "all" : filterValue);
+    };
 
-          {
-            hasFilter ? <Filter 
-                            filters={filters}
-                            onFilterChange={handleNewFilter}
-                          /> : null 
-          }
-          {
-            type===AffichageType.MEDIAS? <Filter 
-                            filters={filters}
-                            onFilterChange={handleNewFilter}
-                          /> : null 
-          }
+    const filteredItems = useMemo(() => {
+        return itemList.filter(item => {
+            let filterMatch = true;
+            if (activeFilter !== 'all' && activeFilter !== '') {
+                if (type === AffichageType.ARTICLE) {
+                    filterMatch = (item as Article).rubrique === activeFilter;
+                } else if (type === AffichageType.NEWSLETTER) {
+                    filterMatch = (item as Newsletter).categorie === activeFilter;
+                }
+            }
+            if (!filterMatch) return false;
+            const currentTitle = item.titre || '';
+            return currentTitle.toLowerCase().includes(searchTerm.toLowerCase());
+        });
+    }, [itemList, activeFilter, searchTerm, type]);
+
+    const renderItemContent = (item: ItemType) => {
+        if (type === AffichageType.ARTICLE) {
+            const article = item as Article;
+            return (
+                <>
+                    <td style={styles.td}>{article.titre?.substring(0, 35)}...</td>
+                    <td style={styles.td}>{article.rubrique}</td>
+                    <td style={styles.td}>{article.contenu?.substring(0, 35)}...</td>
+                </>
+            );
+        } else {
+            const newsletter = item as Newsletter;
+            return (
+                <>
+                    <td style={styles.td}>{newsletter.titre}</td>
+                    <td style={styles.td}>{newsletter.categorie}</td>
+                    <td style={styles.td}>{newsletter.createdAt ? new Date(newsletter.createdAt).toLocaleDateString('fr-FR') : '-'}</td>
+                </>
+            );
+        }
+    };
+
+    return (
+        <div style={styles.container}>
+            <div style={styles.searchSection}>
+                <div style={styles.searchWrapper}>
+                    <div style={styles.searchInputContainer}>
+                        <Search size={20} style={styles.searchIcon} />
+                        <input
+                            type="text"
+                            placeholder="Rechercher par titre....."
+                            style={styles.searchInput}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                    {(hasFilter || type === AffichageType.MEDIAS) && (
+                        <Filter filters={filters} onFilterChange={handleNewFilter} />
+                    )}
+                </div>
+            </div>
+
+            <div style={styles.tableSection}>
+                <table style={styles.table}>
+                    <thead style={styles.tableHeader}>
+                        <tr>
+                            <th style={styles.th}>{type === AffichageType.ARTICLE ? "Titre de l'Article" : 'Titre'}</th>
+                            <th style={styles.th}>{type === AffichageType.ARTICLE ? 'Rubrique' : 'Catégorie'}</th>
+                            <th style={styles.th}>{type === AffichageType.ARTICLE ? 'Contenu (Début)' : 'Date de Publication'}</th>
+                            <th style={styles.th}>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredItems.map((item) => (
+                            <tr key={item.id}>
+                                {renderItemContent(item)}
+                                <td style={styles.td}>
+                                    <div style={styles.actionButtons}>
+                                        <button
+                                            style={styles.iconButton}
+                                            onClick={() => onEdit?.(item)}
+                                        >
+                                            <Pencil size={18} />
+                                        </button>
+                                        <button
+                                            style={styles.iconButton}
+                                            onClick={() => handleDelete(item.id)}
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
-      </div>
-          
-      <div style={styles.tableSection}>
-        <table style={styles.table}>
-          <thead style={styles.tableHeader}>
-            <tr>
-              <th style={styles.th}>{type === AffichageType.ARTICLE ? 'Titre de l\'Article' : type === AffichageType.MEDIAS ? 'Titre' : "Titre de la Newsletter"}</th>
-              <th style={styles.th}>{type === AffichageType.ARTICLE ? 'Rubrique' : type === AffichageType.MEDIAS ? 'Type' : 'Catégorie'}</th>
-              <th style={styles.th}>{type === AffichageType.ARTICLE ? 'Contenu (Début)' : type === AffichageType.MEDIAS ? "Date d'ajout" : 'Publication'}</th>
-              {type === AffichageType.MEDIAS ? (<th style={styles.th}>Catégorie</th>) : null} 
-
-              <th style={styles.th}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredItems.map((item) => (
-              <tr key={item.id}>
-                {renderItemContent(item)}
-                
-                <td style={styles.td}>
-                  <div style={styles.actionButtons}>
-                    <button onClick={() => editHandler(item.id)}
-                      style={styles.iconButton}
-                    >
-                      <Pencil size={18} />
-                    </button>
-                    <button
-                      style={styles.iconButton}
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {filteredItems.length === 0 && (
-                <tr>
-                    <td colSpan={type === AffichageType.MEDIAS ? 5 : 4} style={{...styles.td, textAlign: 'center'}}>
-                        Aucun élément trouvé pour ces critères.
-                    </td>
-                </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
+    )
 }

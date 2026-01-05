@@ -5,64 +5,53 @@ import { Article, Media } from '../admin/dashboard/newsletters/components/Affich
 
 
 export interface TableData {
-    id ?:string
+    id?: string
     title: string;
     name?: string;
-    createdAt: Date | string
+    createdAt?: Date | string
+    location?: string
     status: 'en direct' | 'pas en direct';
     date?: string;
-    lieu?: string;
-    heure?: string;
+    time?: string;
     url?: string;
 }
 
-export class Event {
-    id?: string 
-    title!: string
-    date?: Date |string
+export interface EventInterface {
+    id?: string
+    title: string
+    location?: string
+    date?: Date | string
     description?: string
     createdAt?: Date
+    time?: string
+    url?: string
+    status?: string
 }
-export type ElementType = TableData | Media | Article
 interface EventDataTableProps {
     tableTitle: string;
     data: TableData[] | Media[] | Article[];
     isMedia?: boolean;
 
     columnHeaders: { key: string; label: string; flexBasis: string }[];
-    handleEditEvent: (element: ElementType) => Promise<void>;
-    handleDeleteEvent: ((element: ElementType)=>Promise<void>)
-}
-interface DeleteIconeProps {
-    handleDeleteItem : (element: ElementType) => Promise<void>
-    element: ElementType
+    handleEditEvent?: (item: TableData) => void;
+    handleDeleteEvent?: (item: TableData) => void;
 }
 
-
-export function DeleteIcon({handleDeleteItem, element}: DeleteIconeProps) {
-
-    const deleteHandler = async () => {
-        await handleDeleteItem(element)   
-    }
-    
-
-  return(
-        <button onClick={deleteHandler}
-            className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
-        >
-            <Trash2 size={20} />
-        </button>
-    )
-}
-
+const DeleteIcon = () => (
+    <button
+        className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
+    >
+        <Trash2 size={20} />
+    </button>
+);
 
 const getStatusClasses = (status: TableData['status']): string => {
     switch (status) {
         case 'en direct':
-            return 'text-red-400 font-bold  px-2 py-0.5 rounded-full text-xs'; 
+            return 'text-red-400 font-bold  px-2 py-0.5 rounded-full text-xs';
         case 'pas en direct':
         default:
-            return 'text-white/80 font-medium  px-2 py-0.5 rounded-full text-xs'; 
+            return 'text-white/80 font-medium  px-2 py-0.5 rounded-full text-xs';
     }
 };
 
@@ -76,11 +65,11 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
             {/* En-tête (Desktop) */}
             <div className="hidden md:flex p-2 border-b border-white/40 font-bold text-sm uppercase text-white">
                 {columnHeaders.map(header => (
-                    <div 
-                        key={header.key} 
+                    <div
+                        key={header.key}
                         // Utilisation du style inline pour flexBasis car Tailwind ne le gère pas directement avec des pourcentages dynamiques
-                        style={{ flexBasis: header.flexBasis }} 
-                        className={`flex-shrink-0 flex-grow-0`} 
+                        style={{ flexBasis: header.flexBasis }}
+                        className={`flex-shrink-0 flex-grow-0`}
                     >
                         {header.label}
                     </div>
@@ -95,7 +84,7 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                     >
                         {columnHeaders.map(header => {
                             const isActionColumn = header.key === 'actions';
-                            
+
                             const cellClasses = `
                                 flex 
                                 items-center 
@@ -103,7 +92,7 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                 md:w-auto 
                                 ${isActionColumn ? 'mt-3 md:mt-0 justify-end md:justify-start' : 'mb-1 md:mb-0'}
                             `;
-                            
+
                             let content: React.ReactNode = (item as any)[header.key] || '';
 
                             if (header.key === 'status') {
@@ -111,27 +100,29 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                     <span className={getStatusClasses((item as TableData).status)}>{(item as TableData).status}</span>
                                 );
                             }
-                            
+
                             if (isActionColumn) {
                                 content = (
                                     <div className="flex gap-2">
-                                        <button 
+                                        <button
                                             className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-blue-400"
-                                            onClick={handleEditEvent ? () => handleEditEvent(item ) : undefined} 
+                                            onClick={handleEditEvent ? () => handleEditEvent(item as TableData) : undefined}
                                         >
                                             <Pencil size={20} />
-                                        </button> 
-                                        <DeleteIcon 
-                                            handleDeleteItem={handleDeleteEvent!} 
-                                            element={item} 
-                                        />
+                                        </button>
+                                        <button
+                                            className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-400"
+                                            onClick={handleDeleteEvent ? () => handleDeleteEvent(item as TableData) : undefined}
+                                        >
+                                            <Trash2 size={20} />
+                                        </button>
                                     </div>
                                 );
                             }
 
                             return (
-                                <div 
-                                    key={header.key} 
+                                <div
+                                    key={header.key}
                                     className={cellClasses}
                                     style={{ flexBasis: header.flexBasis }}
                                 >

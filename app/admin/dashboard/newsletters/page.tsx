@@ -3,18 +3,25 @@ import React, { useState, useEffect } from 'react';
 import Affichage, { Newsletter } from './components/Affichage';
 import { env } from '@/app/config/env';
 import FormComponent from '@/app/components/FormComponent';
+import ComponenteFormulaire from './components/ComponenteFormulaire';
 console.log(env)
 export default function Page() {
     const MOBILE_BREAKPOINT = 768;
-    const [isMobile, setIsMobile] = useState(() => 
+    const [isMobile, setIsMobile] = useState(() =>
         typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT
     );
 
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-        };
+    // ÉTATS POUR LA COMMUNICATION
+    const [selectedItem, setSelectedItem] = useState<any>(null);
+    const [refreshSignal, setRefreshSignal] = useState(0);
 
+    const handleSuccess = () => {
+        setSelectedItem(null); // Reset le formulaire
+        setRefreshSignal(prev => prev + 1); // Notifie Affichage de se recharger
+    };
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -61,12 +68,16 @@ export default function Page() {
             <div style={leftSection}>
                 <h1 style={title}>Gestion des Newsletters</h1>
                 <Affichage
-                    editHandler={}
-                    items={newsletters}
+                    key={refreshSignal}
+                    onEdit={(item) => setSelectedItem(item)}
                 />
             </div>
             <div style={rightSection}>
-                <FormComponent isArticle={false}/>
+                <ComponenteFormulaire
+                    isArticle={false}
+                    initialData={selectedItem}
+                    onSuccess={handleSuccess}
+                />
             </div>
         </div>
     )

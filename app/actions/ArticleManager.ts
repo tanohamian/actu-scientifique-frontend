@@ -7,23 +7,23 @@ import { revalidatePath } from 'next/cache'
 
 
 
-export async function AddArticle(formData:Article) {
+export async function AddArticle(formData: Article) {
 
     const authToken = (await cookies()).get('authToken')?.value;
 
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin'); 
+        redirect('/admin');
     }
     try {
-        const response = await fetch(`${env.baseUrl}/articles/`,{
-            method:'POST',
+        const response = await fetch(`${env.baseUrl}/articles/`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Cookie': `authToken=${authToken}`,
             },
-            
-            body:JSON.stringify(formData)
+
+            body: JSON.stringify(formData)
         })
 
         if (!response.ok) {
@@ -32,7 +32,7 @@ export async function AddArticle(formData:Article) {
         }
 
 
-        
+
     } catch (error) {
         console.error("Erreur lors de la création de l'article : ")
         console.log(error)
@@ -45,50 +45,50 @@ export async function FetchArticles() {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin'); 
+        redirect('/admin');
     }
     try {
-       const response = await fetch(`${env.baseUrl}/articles`,{
-            method:'GET',
+        const response = await fetch(`${env.baseUrl}/articles`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Cookie': `authToken=${authToken}`
             }
-       }) 
+        })
 
-       if(response.ok){
-         const responseData = await response.json()
-         console.log(responseData)
-         revalidatePath('/admin/dashboard/gestion_article')
-         return responseData.articles as Article[]
-       }
-       return []
+        if (response.ok) {
+            const responseData = await response.json()
+            console.log(responseData)
+            revalidatePath('/admin/dashboard/gestion_article')
+            return responseData.articles as Article[]
+        }
+        return []
     } catch (error) {
         console.log("erreur lors de la récupération des articles : ", error)
         return []
     }
 }
 
-export async function DeleteArticle(articleId : string) {
+export async function DeleteArticle(articleId: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin'); 
+        redirect('/admin');
     }
     try {
-       const response = await fetch(`${env.baseUrl}/articles/${articleId}`,{
-            method:'DELETE',
+        const response = await fetch(`${env.baseUrl}/articles/${articleId}`, {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Cookie': `authToken=${authToken}`
             }
-       }) 
+        })
 
-       if(response.ok){
-         console.log(response)
-         revalidatePath('/admin/dashboard/gestion_article')
-       }
-       return []
+        if (response.ok) {
+            console.log(response)
+            revalidatePath('/admin/dashboard/gestion_article')
+        }
+        return []
     } catch (error) {
         console.log("erreur lors de la suppression de l'article : ", error)
         return []

@@ -1,13 +1,14 @@
 'use client'
 import ButtonComponent from "@/app/components/button";
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, ChevronDown } from 'lucide-react';
+import { X, ChevronDown, Upload } from 'lucide-react';
+import { Product } from "../admin/page";
+import { env } from "../config/env";
 
-// Maintenir l'interface d'exportation pour l'utilisation dans d'autres fichiers
 export interface FormFieldConfig {
     name: string;
     label: string;
-    type?: 'text' | 'email' | 'password' | 'select' | 'textarea';
+    type?: 'text' | 'email' | 'password' | 'select' | 'textarea' | 'file' | 'number' | 'date' | 'time';
     placeholder?: string;
     required?: boolean;
     options?: { value: string; label: string }[];
@@ -16,7 +17,7 @@ export interface FormFieldConfig {
 interface AddElementModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: any) => void;
+    onSubmit: (data: any | Product) => void;
     titleComponent: string;
     buttonTitle: string;
     fields: FormFieldConfig[];
@@ -33,6 +34,17 @@ const customStyles = `
     }
 `;
 
+const uploadText: React.CSSProperties = {
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: '14px'
+}
+
+const uploadIcon: React.CSSProperties = {
+    color: 'rgba(255, 255, 255, 0.6)',
+    marginBottom: '10px'
+};
+
+
 
 export default function AddElementModal({ isOpen, onClose, onSubmit, titleComponent, buttonTitle, fields, initialData = {} }: AddElementModalProps) {
 
@@ -40,10 +52,10 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
         return fields.reduce((acc, field) => {
             acc[field.name] = initialData[field.name] !== undefined ? initialData[field.name] : '';
             return acc;
-        }, {} as { [key: string]: string });
+        }, {} as { [key: string]: string | number });
     }, [fields, initialData]);
 
-    const [formData, setFormData] = useState(initialFormData);
+    const [formData, setFormData] = useState<{ [key: string]: string | number }>(initialFormData);
 
     useEffect(() => {
         setFormData(initialFormData);
@@ -68,10 +80,10 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
 
     };
 
-    const handleChange = (name: string, value: string) => {
+    const handleChange = (name: string, value: string, type?: string) => {
         setFormData(prevData => ({
             ...prevData,
-            [name]: value,
+            [name]: type === 'number' ? Number(value) : value,
         }));
     };
 
@@ -101,10 +113,54 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                         </div>
                     </div>
                 );
+            case 'file':
+                return (
+                    <div key={field.name} className={containerClasses}>
+                        <label className={labelClasses}>{field.label}</label>
+                        <label className="cursor-pointer">
+                            <input
+                                type={field.type}
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                placeholder={field.placeholder || ''}
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        const reader = new FileReader();
+                                        reader.onloadend = () => {
+                                            handleChange(field.name, reader.result as string);
+                                        };
+                                        reader.readAsDataURL(file)
+                                    };
+                                }}
+                                required={field.required}
+                            />
+                            {formData[field.name] ? (
+                                <div className="mt-2">
+                                    <img
+                                        src={
+                                            String(formData[field.name]) || String(formData[field.name]).startsWith('http://') || String(formData[field.name]).startsWith('https://')
+                                                ? String(formData[field.name])
+                                                : `${env.baseUrl}/uploads/productImage/${String(formData[field.name])}`
+                                        }
+                                        alt="Preview"
+                                        className="max-w-full h-auto rounded-lg"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center bg-[#00283C99] rounded-lg p-10 cursor-pointer">
+                                    <Upload size={40} style={uploadIcon} />
+                                    <div style={uploadText}>cliquez pour uploader une image</div>
+                                </div>
+                            )}
+                        </label>
+                    </div>
+                );
             case 'text':
             case 'email':
             case 'password':
             case 'textarea':
+            case 'number':
             default:
                 return (
                     <div key={field.name} className={containerClasses}>
@@ -114,7 +170,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                             className={inputClasses}
                             placeholder={field.placeholder || ''}
                             value={formData[field.name] || ''}
-                            onChange={(e) => handleChange(field.name, e.target.value)}
+                            onChange={(e) => handleChange(field.name, e.target.value, field.type)}  // ✅ Passer le type
                             required={field.required}
                         />
                     </div>
