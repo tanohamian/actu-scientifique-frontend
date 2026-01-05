@@ -11,6 +11,7 @@ import Filter, { IFilter } from '@/app/components/filter';
 import { DbMedia, Media } from '../newsletters/components/Affichage';
 
 import { DeleteMedia, FetchMedias } from '@/app/actions/MediasManager';
+import { Rubriques } from '@/app/components/FormComponent';
 
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', type: 'text', placeholder: 'Entrez le titre du media', required: true },
@@ -34,7 +35,7 @@ export default function MediaPage() {
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [editMedia, setEditMedia] = useState(false);
-    const [selectedMedia, setSelectedMedia] = useState<TableData | null>(null);
+    const [selectedMedia, setSelectedMedia] = useState<ElementType | null>(null);
     const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
     const [filters] = useState<IFilter[]>(mainHeaders.map((header, index)=>{
       return {value: header.key, label: header.label}
@@ -130,10 +131,10 @@ export default function MediaPage() {
 
     let initialData = {
         name: '',
-        lieu: '',
         createdAt: '',
-        heure: '',
-        status: '',
+        title: "",
+        type : ""
+
     };
 
     const handleEditMedia = async (item: ElementType) => {
@@ -156,11 +157,10 @@ export default function MediaPage() {
 
     if (selectedMedia) {
         initialData = {
-            name: selectedMedia.name as string || '',
-            lieu: selectedMedia.lieu as string || '',
-            createdAt: selectedMedia.createdAt as string || '',
-            heure: selectedMedia.heure as string || '',
-            status: selectedMedia.status as string || '',
+            name: (selectedMedia as Media).name as string || '',
+            createdAt: (selectedMedia as Media).createdAt as string || '',
+            type : (selectedMedia as Media).type,
+            title: (selectedMedia as Media).title
         };
     }
 

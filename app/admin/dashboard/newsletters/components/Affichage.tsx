@@ -4,6 +4,7 @@ import { Search, Pencil, Trash2 } from 'lucide-react';
 import Filter, { IFilter } from '@/app/components/filter';
 // Importation des Server Actions
 import { FetchNewsletters, DeleteNewsletter } from '@/app/actions/Newsletters';
+import { TableData } from '@/app/components/eventDataTable';
 
 export enum AffichageType {
     ARTICLE = "article",
@@ -16,7 +17,7 @@ export interface Newsletter {
     id: string;
     titre: string;
     categorie: string;
-    contenu: string;
+    contenu?: string;
     createdAt: string;
 }
 
@@ -28,7 +29,7 @@ export interface Article {
 }
 
 export interface DbMedia {
-    id: number;
+    id: string;
     title: string;
     name: string;
     rubrique: string;
@@ -54,6 +55,7 @@ export interface Media {
     file?: File
     rubrique?: string
     type: string
+    createdAt?: string
     publicationDate?: string;
 }
 
@@ -98,7 +100,10 @@ export default function Affichage({
     }, [type]);
 
     useEffect(() => {
-        loadData();
+        const dataload = async()=>{
+            loadData();
+        }
+        dataload()
     }, [loadData]);
 
     const handleDelete = async (id: string) => {

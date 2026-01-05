@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import Affichage, { Newsletter } from './components/Affichage';
 import { env } from '@/app/config/env';
-import FormComponent from '@/app/components/FormComponent';
 import ComponenteFormulaire from './components/ComponenteFormulaire';
 console.log(env)
 export default function Page() {
@@ -27,9 +26,9 @@ export default function Page() {
     }, []);
 
     const newsletters: Newsletter[] = [
-        { id: "1", title: "Utilisation de l'IA dans le journalisme", category: 'Technologie', publication: '14/10/2025' },
-        { id: "2", title: "Utilisation de l'IA dans le journalisme", category: 'Une seule santé', publication: '14/10/2025' },
-        { id: "3", title: "Utilisation de l'IA dans le journalisme", category: 'Technologie', publication: '14/10/2025' }
+        { id: "1", titre: "Utilisation de l'IA dans le journalisme", categorie: 'Technologie', createdAt: '14/10/2025' },
+        { id: "2", titre: "Utilisation de l'IA dans le journalisme", categorie: 'Une seule santé', createdAt: '14/10/2025' },
+        { id: "3", titre: "Utilisation de l'IA dans le journalisme", categorie: 'Technologie', createdAt: '14/10/2025' }
     ];
 
     const container: React.CSSProperties = {
@@ -56,7 +55,7 @@ export default function Page() {
         padding:"27px"
     };
     
-    const title: React.CSSProperties = {
+    const titre: React.CSSProperties = {
         color: 'white',
         fontSize: isMobile ? '28px' : '36px',
         fontWeight: 'bold',
@@ -66,7 +65,7 @@ export default function Page() {
     return (
         <div style={container}>
             <div style={leftSection}>
-                <h1 style={title}>Gestion des Newsletters</h1>
+                <h1 style={titre}>Gestion des Newsletters</h1>
                 <Affichage
                     key={refreshSignal}
                     onEdit={(item) => setSelectedItem(item)}

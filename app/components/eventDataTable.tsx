@@ -37,6 +37,8 @@ interface EventDataTableProps {
     handleDeleteEvent?: (item: TableData) => void;
 }
 
+export type ElementType = Media|Article|TableData
+
 const DeleteIcon = () => (
     <button
         className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
