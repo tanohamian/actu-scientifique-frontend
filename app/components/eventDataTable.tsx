@@ -95,7 +95,7 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                 ${isActionColumn ? 'mt-3 md:mt-0 justify-end md:justify-start' : 'mb-1 md:mb-0'}
                             `;
 
-                            let content: React.ReactNode = (item as any)[header.key] || '';
+                            let content: React.ReactNode =(item as unknown as Record<string, unknown>)[header.key]  as React.ReactNode|| '';
 
                             if (header.key === 'status') {
                                 content = (

@@ -4,6 +4,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { X, ChevronDown, Upload } from 'lucide-react';
 import { Product } from "../admin/page";
 import { env } from "../config/env";
+import Image from "next/image";
+import { ElementType } from "./eventDataTable";
 
 export interface FormFieldConfig {
     name: string;
@@ -17,7 +19,7 @@ export interface FormFieldConfig {
 interface AddElementModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: any | Product) => void;
+    onSubmit: (data: ElementType | Product | { [key: string]: string | number; }) => void;
     titleComponent: string;
     buttonTitle: string;
     fields: FormFieldConfig[];
@@ -58,7 +60,10 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
     const [formData, setFormData] = useState<{ [key: string]: string | number }>(initialFormData);
 
     useEffect(() => {
-        setFormData(initialFormData);
+        const set = async () =>{
+            setFormData(initialFormData);
+        }
+        set()
     }, [initialFormData, isOpen]);
 
     useEffect(() => {
@@ -137,7 +142,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                             />
                             {formData[field.name] ? (
                                 <div className="mt-2">
-                                    <img
+                                    <Image
                                         src={
                                             String(formData[field.name]) || String(formData[field.name]).startsWith('http://') || String(formData[field.name]).startsWith('https://')
                                                 ? String(formData[field.name])
