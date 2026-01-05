@@ -64,9 +64,8 @@ const styles = {
     width: '100%'
   } as React.CSSProperties,
   sortButton: {
-    backgroundColor: 'black',
+    backgroundColor: '#d54a36',
     color: 'white',
-    border: '1px solid rgba(255, 255, 255, 0.3)',
     borderRadius: '8px',
     padding: '10px 20px',
     marginLeft: '20px',
@@ -218,8 +217,8 @@ export default function AffichageTableau<T extends { id: number | string }>({
             </tr>
           </thead>
           <tbody>
-            {data.map((item, index) => {
-              const isLastRow = index === data.length - 1;
+            {filteredAndSortedData.map((item, index) => {
+              const isLastRow = index === filteredAndSortedData.length - 1;
               return (
                 <tr key={`${item.id}-${index}`}>
                   {columns.map((col) => {

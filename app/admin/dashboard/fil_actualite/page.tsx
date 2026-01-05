@@ -2,7 +2,7 @@
 import ButtonComponent from '@/app/components/button';
 import InputAndTitleComponent from '@/app/components/inputvalueAndTitle';
 import SearchBarComponent from '@/app/components/searchBar';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import { CreateFeed, DeleteFeed, GetFeeds, UpdateFeed } from '@/app/actions/FeedManager';
@@ -300,6 +300,11 @@ export default function FilActualite() {
     }, [])
 
 
+    const filteredAndSortedData = feedData.filter(feed =>
+        feed && (feed?.title?.toLowerCase().includes(inputValue.toLowerCase()) ||
+            feed?.url?.toLowerCase().includes(inputValue.toLowerCase())
+        )
+    )
 
     return (
         <div className={containerClasses}>
@@ -394,7 +399,7 @@ export default function FilActualite() {
                             <p>Aucune feed</p>
                         </div>
                     ) : (
-                        feedData.map((item, index) => (
+                        filteredAndSortedData.map((item, index) => (
                             <div key={index} className={rowClasses}>
                                 <div className={titleColumnClasses}>
                                     {item.title}

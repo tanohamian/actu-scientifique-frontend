@@ -312,6 +312,21 @@ export default function EventPage() {
         })()
     }, [])
 
+    const filteredEvents = events.filter(event =>
+        event && (event?.title?.toLowerCase().includes(inputValue.toLowerCase()) ||
+            event?.location?.toLowerCase().includes(inputValue.toLowerCase()) ||
+            event?.time?.toLowerCase().includes(inputValue.toLowerCase()) ||
+            event?.status?.toLowerCase().includes(inputValue.toLowerCase())
+        )
+    )
+
+    const filteredLiveEvents = eventLive.filter(event =>
+        event && (event?.title?.toLowerCase().includes(inputValue.toLowerCase()) ||
+            event?.url?.toLowerCase().includes(inputValue.toLowerCase()) ||
+            event?.status?.toLowerCase().includes(inputValue.toLowerCase())
+        )
+    )
+
     return (
         <div className={pageContainerClasses}>
             <div className={headerClasses}>
@@ -351,7 +366,7 @@ export default function EventPage() {
                         <>
                             <EventDataTable
                                 tableTitle=""
-                                data={events}
+                                data={filteredEvents}
                                 columnHeaders={mainHeaders}
                                 handleEditEvent={handleEditEvent}
                                 handleDeleteEvent={handleDeleteEvent}
@@ -359,7 +374,7 @@ export default function EventPage() {
 
                             <EventDataTable
                                 tableTitle="Evènements en direct"
-                                data={eventLive}
+                                data={filteredLiveEvents}
                                 columnHeaders={liveHeaders}
                                 handleDeleteEvent={handleDeleteEvent}
                             />
