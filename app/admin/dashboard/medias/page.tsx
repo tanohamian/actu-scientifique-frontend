@@ -10,7 +10,6 @@ import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
 import { DbMedia, Media } from '../newsletters/components/Affichage';
 
-import ComponenteFormulaire, { Rubriques } from '../newsletters/components/ComponenteFormulaire';
 import { DeleteMedia, FetchMedias } from '@/app/actions/MediasManager';
 
 const MediaFields: FormFieldConfig[] = [
@@ -210,18 +209,15 @@ export default function MediaPage() {
 
                 <article className="flex flex-col lg:flex-row gap-8" >
                 
-                <EventDataTable
-                    tableTitle=""
-                    data={medias as Media[]}
-                    columnHeaders={mainHeaders}
-                    handleEditEvent={handleEditMedia}
-                    handleDeleteEvent={handleDeleteMedia}
-                />
-
-                <article className={rightSectionClasses}>
-                <ComponenteFormulaire isMedia={true} setMedias={setMedias}/>
+                    <EventDataTable
+                        tableTitle=""
+                        isMedia={true}
+                        data={medias as Media[]}
+                        columnHeaders={mainHeaders}
+                        handleEditEvent={handleEditMedia}
+                        handleDeleteEvent={handleDeleteMedia}
+                    />
                 </article>
-            </article>
 
             </div>
 

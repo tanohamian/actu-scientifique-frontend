@@ -1,6 +1,6 @@
 import React from 'react'
 import SwitchSection from './components/Section';
-
+//à ne pas supprimer
   const container: React.CSSProperties = {
         minHeight: '100vh',
         padding: '40px',

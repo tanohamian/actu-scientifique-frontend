@@ -1,10 +1,10 @@
 "use client"
 import Form from "next/form"
 import React, { FormEvent, useState } from 'react';
-import { FileUpload } from "../../produit_commandes/components/FileUpload";
-import { Article, DbMedia, Media } from "./Affichage";
 import { AddArticle } from "@/app/actions/ArticleManager";
 import { AddMedia, FetchMedias } from "@/app/actions/MediasManager";
+import { Article, DbMedia, Media } from "../admin/dashboard/newsletters/components/Affichage";
+import { FileUpload } from "../admin/dashboard/produit_commandes/components/FileUpload";
 // import { ChevronUp } from 'lucide-react';
 export enum ArticleRubriques {
   HEALTH = "une seule santé",
@@ -27,14 +27,13 @@ interface FormPropos {
   isMedia?: boolean
   setMedias ?: (medias : DbMedia[])=> void
 }
-export default function ComponenteFormulaire({ isArticle = false, isMedia = false, setMedias=undefined }: FormPropos) {
+export default function FormComponent({ isArticle = false, isMedia = false, setMedias=undefined }: FormPropos) {
   const articleRubriques = Object.values(ArticleRubriques) as string[]; 
   const rubriques = Object.values(Rubriques) as string[];
 
   const endpoint = isArticle ? "articles" : "newsletters"
   const titleText = isArticle ? "Ajouter un Article" : isMedia ? "Ajouter un média" : "Formulaire de News Letters"
   const label = isArticle ? "Titre de l'article" : isMedia ? "Titre du média" :"Titre de la News Letter"
-  const [rubrique, setRubrique] = useState()
   // 1. État pour les données du formulaire
   const [formData, setFormData] = useState({
     title: "futur du journalisme",

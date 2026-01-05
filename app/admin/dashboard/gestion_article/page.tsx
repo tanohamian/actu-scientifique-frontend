@@ -35,8 +35,8 @@ const ArticleFields: FormFieldConfig[] = [
 
 const mainHeaders = [
     { key: 'title', label: 'Titre', flexBasis: '38%' },
-    { key: 'rubrique', label: 'Rubrique', flexBasis: '15%' },
-    { key: 'createdAt', label: 'Date de publication', flexBasis: '20%' },
+    { key: 'rubrique', label: 'Rubrique', flexBasis: '20%' },
+    { key: 'createdAt', label: 'Date de publication', flexBasis: '25%' },
     { key: 'actions', label: 'Actions', flexBasis: '15%' },
 ];
 
@@ -55,8 +55,8 @@ export default function ArticlePage() {
     const [articles, setArticles] = useState<DbArticle[]>([])  
  
     const pageContainerClasses = `
-        min-h-screen 
         font-sans
+        h-320
     `;
 
     const headerClasses = `
@@ -194,7 +194,7 @@ export default function ArticlePage() {
                     <h1 className={textClasses}>Gestion des Articles</h1>
                     <h3 className={subTextClasses}>Gérer les articles depuis cette interface</h3>
                 </div>
-                <ButtonComponent textButton='Ajouter un article' size='large' onclick={handleEvent} />
+                {/* <ButtonComponent textButton='Ajouter un article' size='large' onclick={handleEvent} /> */}
             </div>
 
             <div className={contentContainerClasses}>
@@ -207,20 +207,16 @@ export default function ArticlePage() {
                       filters={filters}
                     />
                 </div>
-                <article className="flex flex-col lg:flex-row gap-8" >
-                  {
-                    viewMode === 'list' ? (
-                        <>
-                            <DataTable
-                                tableTitle=""
-                                data={articles}
-                                columnHeaders={mainHeaders}
-                                handleEditEvent={handleEditEvent}
-                                handleDeleteEvent={handleDeleteEvent}
-                            />
-                        </>
-                    ) : null
-                  }
+                <article className="flex flex-col lg:flex-row gap-8 h-full" >
+
+                    <DataTable
+                        tableTitle=""
+                        data={articles}
+                        columnHeaders={mainHeaders}
+                        handleEditEvent={handleEditEvent}
+                        handleDeleteEvent={handleDeleteEvent}
+                    />
+
                   <article className={rightSectionClasses}>
                     <ComponenteFormulaire isArticle={true}/>
                   </article>

@@ -1,8 +1,8 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import ComponenteFormulaire from './components/ComponenteFormulaire';
 import Affichage, { Newsletter } from './components/Affichage';
 import { env } from '@/app/config/env';
+import FormComponent from '@/app/components/FormComponent';
 console.log(env)
 export default function Page() {
     const MOBILE_BREAKPOINT = 768;
@@ -20,9 +20,9 @@ export default function Page() {
     }, []);
 
     const newsletters: Newsletter[] = [
-        { id: 1, title: "Utilisation de l'IA dans le journalisme", category: 'Technologie', publication: '14/10/2025' },
-        { id: 2, title: "Utilisation de l'IA dans le journalisme", category: 'Une seule santé', publication: '14/10/2025' },
-        { id: 3, title: "Utilisation de l'IA dans le journalisme", category: 'Technologie', publication: '14/10/2025' }
+        { id: "1", title: "Utilisation de l'IA dans le journalisme", category: 'Technologie', publication: '14/10/2025' },
+        { id: "2", title: "Utilisation de l'IA dans le journalisme", category: 'Une seule santé', publication: '14/10/2025' },
+        { id: "3", title: "Utilisation de l'IA dans le journalisme", category: 'Technologie', publication: '14/10/2025' }
     ];
 
     const container: React.CSSProperties = {
@@ -61,11 +61,12 @@ export default function Page() {
             <div style={leftSection}>
                 <h1 style={title}>Gestion des Newsletters</h1>
                 <Affichage
+                    editHandler={}
                     items={newsletters}
                 />
             </div>
             <div style={rightSection}>
-                <ComponenteFormulaire isArticle={false}/>
+                <FormComponent isArticle={false}/>
             </div>
         </div>
     )
