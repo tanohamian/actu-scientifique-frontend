@@ -27,17 +27,12 @@ const mainHeaders = [
     { key: 'actions', label: 'Actions', flexBasis: '15%' },
 ];
 
-
-const TABS_INACTIVE_COLOR = '#5A8FAC'; 
-const TABS_ACTIVE_COLOR = '#374151';
-
 export default function MediaPage() {
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [editMedia, setEditMedia] = useState(false);
     const [selectedMedia, setSelectedMedia] = useState<ElementType | null>(null);
-    const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
-    const [filters] = useState<IFilter[]>(mainHeaders.map((header, index)=>{
+    const [filters] = useState<IFilter[]>(mainHeaders.map((header)=>{
       return {value: header.key, label: header.label}
     }))
     const [medias, setMedias] = useState<DbMedia[]>([])
@@ -99,26 +94,6 @@ export default function MediaPage() {
         flex-grow 
         w-full 
         md:max-w-xl
-    `;
-
-    const tabsClasses = `
-        flex 
-        gap-0 
-        bg-[${TABS_INACTIVE_COLOR.replace('#', '')}] 
-        rounded-lg 
-        overflow-hidden 
-        p-1
-    `;
-
-
-    const rightSectionClasses = `
-        w-full 
-        lg:w-1/3 
-        h-fit 
-        ml-auto
-        flex-shrink-0 
-        mt-8 
-        lg:mt-0 
     `;
 
     const handleMedia = () => {
