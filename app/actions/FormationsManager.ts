@@ -20,7 +20,7 @@ export async function FetchFormations() {
         redirect('/admin'); 
     }
     try {
-       const response = await fetch(`${env.baseUrl}/formations`,{
+       const response = await fetch(`${env.baseUrl}/trainings`,{
             method:'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ export async function FetchFormations() {
          const responseData = await response.json()
          console.log(responseData)
          revalidatePath('/admin/dashboard/formations_bourses')
-         return responseData.data as Formation[]
+         return responseData.formations as Formation[]
        }
        return []
     } catch (error) {

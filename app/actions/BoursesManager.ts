@@ -20,7 +20,7 @@ export async function FetchBourses() {
         redirect('/admin'); 
     }
     try {
-       const response = await fetch(`${env.baseUrl}/bourses`,{
+       const response = await fetch(`${env.baseUrl}/scholarships`,{
             method:'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ export async function FetchBourses() {
          const responseData = await response.json()
          console.log(responseData)
          revalidatePath('/admin/dashboard/formations_bourses')
-         return responseData.data as Bourse[]
+         return responseData.bourses as Bourse[]
        }
        return []
     } catch (error) {

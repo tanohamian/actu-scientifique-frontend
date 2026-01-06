@@ -5,20 +5,20 @@ import DashboardCardContainer from '@/app/components/dashboardCardsContainer'
 import { DashboardCardProps } from '@/app/components/dashboardCards'
 import PublicationCard, { ListItem } from '@/app/components/publicationCard'
 import {FetchProducts} from '@/app/actions/ProductsManager'
-import { Event } from '@/app/components/eventDataTable'
 import {FetchEvents} from '@/app/actions/EventsManager'
 import {FetchReports} from '@/app/actions/ReportsManager'
 import { FetchArticles } from '@/app/actions/ArticleManager'
 import { FetchFormations } from '@/app/actions/FormationsManager'
 import { FetchBourses } from '@/app/actions/BoursesManager'
+import { EventInterface } from '@/app/components/eventDataTable'
 
 export default function Page() {
     const today = new Date().toISOString();
         
     const [articles, setArticles] = useState<DashboardCardProps>({ label: "Articles", value: 15 })
-    const [visitors, setVisitors] = useState<DashboardCardProps>({ label: "Visiteurs", value: 36 })
+    const [visitors] = useState<DashboardCardProps>({ label: "Visiteurs", value: 36 })
     const [products, setProducts] = useState<DashboardCardProps>({ label: "Produits", value: 41 })
-    const [subscribers, setSubscribers] = useState<DashboardCardProps>({ label: "Abonnés", value: 15 })
+    const [subscribers] = useState<DashboardCardProps>({ label: "Abonnés", value: 15 })
 
 
 
@@ -28,7 +28,7 @@ export default function Page() {
         { title: "Rapport annuel 2024 des médias", createdAt: today },
         { title: "Démocratiser l'accès à l'information", createdAt: today }
     ])
-    const [realizedEvents, setRealizedEvents] = useState<Event[]>([
+    const [realizedEvents, setRealizedEvents] = useState<EventInterface[]>([
         { title: "Conférence sur le futur du journalisme", date: today },
         { title: "Atelier de fact-checking avancé", date: today },
         { title: "Webinaire : Sécurité des données", date: today },
