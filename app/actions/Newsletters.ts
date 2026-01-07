@@ -31,6 +31,7 @@ export async function FetchNewsletters() {
         });
         if (response.ok) {
             const data = await response.json();
+            console.log(data)
             return data.newsletters || data.data || [];
         }
         return [];

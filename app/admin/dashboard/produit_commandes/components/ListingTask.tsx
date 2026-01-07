@@ -226,11 +226,11 @@ export default function AffichageTableau<T extends { id: number | string }>({
                     const displayValue = col.render ? col.render(value) : value;
 
                     return (
-                      <td
+                      <th
                         key={`${item.id}-${col.key}`}
                         style={{ ...styles.td, ...(isLastRow ? styles.lastTd : {}) }}>
                         {displayValue}
-                      </td>
+                      </th>
                     );
                   })}
                   {hasActions && (

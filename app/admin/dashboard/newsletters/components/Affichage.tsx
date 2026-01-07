@@ -14,21 +14,21 @@ export enum AffichageType {
 
 export interface Newsletter {
     id: string;
-    title: string;
+    titre: string;
     categorie: string;
-    content?: string;
+    contenu: string;
     createdAt: string;
 }
 
 export interface Article {
-    id?: string;
-    title: string;
-    content: string;
+    id: string;
+    titre: string;
+    contenu: string;
     rubrique: string;
 }
 
 export interface DbMedia {
-    id: string;
+    id: number;
     title: string;
     name: string;
     rubrique: string;
@@ -47,17 +47,6 @@ interface AffichageProps {
     items?: ItemType[];
     onEdit?: (item: ItemType) => void;
 }
-export interface Media {
-    id?: string
-    title: string
-    name: string;
-    file?: File
-    rubrique?: string
-    type: string
-    createdAt?: string
-    publicationDate?: string;
-}
-
 
 const styles = {
     container: { backgroundColor: '#50789B', width: '100%', maxWidth: '809px', padding: '40px', fontFamily: 'Arial, sans-serif', borderRadius: '20px', minHeight: '468px', display: 'flex', flexDirection: 'column' as const, boxSizing: 'border-box' as const },
@@ -99,10 +88,7 @@ export default function Affichage({
     }, [type]);
 
     useEffect(() => {
-        const dataload = async()=>{
-            loadData();
-        }
-        dataload()
+        loadData();
     }, [loadData]);
 
     const handleDelete = async (id: string) => {
@@ -139,7 +125,7 @@ export default function Affichage({
                 }
             }
             if (!filterMatch) return false;
-            const currentTitle = item.title || '';
+            const currentTitle = item.titre || '';
             return currentTitle.toLowerCase().includes(searchTerm.toLowerCase());
         });
     }, [itemList, activeFilter, searchTerm, type]);
@@ -149,16 +135,16 @@ export default function Affichage({
             const article = item as Article;
             return (
                 <>
-                    <td style={styles.td}>{article.title?.substring(0, 35)}...</td>
+                    <td style={styles.td}>{article.titre?.substring(0, 35)}...</td>
                     <td style={styles.td}>{article.rubrique}</td>
-                    <td style={styles.td}>{article.content?.substring(0, 35)}...</td>
+                    <td style={styles.td}>{article.contenu?.substring(0, 35)}...</td>
                 </>
             );
         } else {
             const newsletter = item as Newsletter;
             return (
                 <>
-                    <td style={styles.td}>{newsletter.title}</td>
+                    <td style={styles.td}>{newsletter.titre}</td>
                     <td style={styles.td}>{newsletter.categorie}</td>
                     <td style={styles.td}>{newsletter.createdAt ? new Date(newsletter.createdAt).toLocaleDateString('fr-FR') : '-'}</td>
                 </>
@@ -174,7 +160,7 @@ export default function Affichage({
                         <Search size={20} style={styles.searchIcon} />
                         <input
                             type="text"
-                            placeholder="Rechercher par title....."
+                            placeholder="Rechercher par titre....."
                             style={styles.searchInput}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -210,7 +196,7 @@ export default function Affichage({
                                         </button>
                                         <button
                                             style={styles.iconButton}
-                                            onClick={() => handleDelete(item.id as string)}
+                                            onClick={() => handleDelete(item.id)}
                                         >
                                             <Trash2 size={18} />
                                         </button>
