@@ -1,6 +1,7 @@
 "use server"
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache';
+import { env } from '../config/env';
 
 export interface IScholarship {
     id?: string;
@@ -11,7 +12,6 @@ export interface IScholarship {
 }
 
 // On utilise uniquement cette variable bien nommée
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 async function getAuthHeaders() {
     const cookieStore = await cookies();
@@ -26,8 +26,8 @@ async function getAuthHeaders() {
 
 export async function FetchScholarships() {
     try {
-        // CORRECTION ICI : Utilise BASE_URL (qui pointe vers NEXT_PUBLIC_BASE_URL)
-        const response = await fetch(`${BASE_URL}/scholarships`, {
+        // CORRECTION ICI : Utilise env.baseUrl (qui pointe vers NEXT_PUBLIC_env.baseUrl)
+        const response = await fetch(`${env.baseUrl}/scholarships`, {
             method: 'GET',
             headers: await getAuthHeaders(),
             next: { revalidate: 0 }
@@ -48,7 +48,7 @@ export async function FetchScholarships() {
 
 export async function AddScholarship(data: IScholarship) {
     try {
-        const response = await fetch(`${BASE_URL}/scholarships`, {
+        const response = await fetch(`${env.baseUrl}/scholarships`, {
             method: 'POST',
             headers: await getAuthHeaders(),
             body: JSON.stringify(data)
@@ -69,7 +69,7 @@ export async function AddScholarship(data: IScholarship) {
 
 export async function UpdateScholarship(id: string, data: IScholarship) {
     try {
-        const response = await fetch(`${BASE_URL}/scholarships/${id}`, {
+        const response = await fetch(`${env.baseUrl}/scholarships/${id}`, {
             method: 'PUT',
             headers: await getAuthHeaders(),
             body: JSON.stringify(data)
@@ -88,7 +88,7 @@ export async function UpdateScholarship(id: string, data: IScholarship) {
 
 export async function DeleteScholarship(id: string) {
     try {
-        const response = await fetch(`${BASE_URL}/scholarships/${id}`, {
+        const response = await fetch(`${env.baseUrl}/scholarships/${id}`, {
             method: 'DELETE',
             headers: await getAuthHeaders(),
         });

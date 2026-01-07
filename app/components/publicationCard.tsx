@@ -22,7 +22,7 @@ const PublicationCard = ({ cardTitle, items }: PublicationCardProps) => {
                 {items.map((item, index) => {
                     const isEvent = 'title' in item;
                     
-                    const displayTitle : string | Date | undefined = isEvent ? item.title : item.text;
+                    const displayTitle : string | Date | undefined = isEvent ? item.title : item.titre ? item.titre : item.text;
                     
                     const rawDate = isEvent ? item.date : item.createdAt;
                     const displayDate = rawDate 
