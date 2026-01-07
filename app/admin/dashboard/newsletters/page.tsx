@@ -46,7 +46,7 @@ export default function Page() {
         width: isMobile ? '100%' : '350px',
         height: 'fit-content',
         alignItems: 'flex-start',
-        padding: "27px"
+        padding: "0px"
     };
 
     const titre: React.CSSProperties = {

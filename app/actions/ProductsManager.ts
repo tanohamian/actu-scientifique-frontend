@@ -22,7 +22,6 @@ export async function FetchProducts() {
 
         if (response.ok) {
             const responseData = await response.json()
-            console.log(responseData)
             revalidatePath('/admin/dashboard/gestion_article')
             return responseData.products as Product[]
         }
@@ -48,10 +47,8 @@ export async function AddProduct(product: FormData) {
             },
             body: product
         })
-        console.log(response)
         if (response.ok) {
             const responseData = await response.json()
-            console.log(responseData)
             revalidatePath('/admin/dashboard/gestion_article')
             return responseData.product as Product
         }
@@ -87,10 +84,8 @@ export async function UpdateProduct(product: FormData | Product, id: string) {
             headers: headers,
             body: body
         })
-        console.log(response)
         if (response.ok) {
             const responseData = await response.json()
-            console.log(responseData)
             revalidatePath('/admin/dashboard/gestion_article')
             return responseData.product as Product
         }
@@ -118,7 +113,6 @@ export async function DeleteProduct(id: string) {
 
         if (response.ok) {
             const responseData = await response.json()
-            console.log(responseData)
             revalidatePath('/admin/dashboard/gestion_article')
             return responseData
         }

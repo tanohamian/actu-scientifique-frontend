@@ -223,14 +223,37 @@ export default function AffichageTableau<T extends { id: number | string }>({
                 <tr key={`${item.id}-${index}`}>
                   {columns.map((col) => {
                     const value = (item as Record<string, any>)[col.key];
-                    const displayValue = col.render ? col.render(value) : value;
+
+                    if (col.key === columns[0].key && (item as any).preview_image) {
+                      return (
+                        <td
+                          key={`${item.id}-${col.key}`}
+                          style={{ ...styles.td, ...(isLastRow ? styles.lastTd : {}) }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <img
+                              src={(item as any).preview_image}
+                              alt={value || 'preview'}
+                              style={{
+                                width: '50px',
+                                height: '50px',
+                                objectFit: 'cover',
+                                borderRadius: '4px'
+                              }}
+                            />
+                            <span>{col.render ? col.render(value) : value}</span>
+                          </div>
+                        </td>
+                      );
+                    }
 
                     return (
-                      <th
+                      <td
                         key={`${item.id}-${col.key}`}
-                        style={{ ...styles.td, ...(isLastRow ? styles.lastTd : {}) }}>
-                        {displayValue}
-                      </th>
+                        style={{ ...styles.td, ...(isLastRow ? styles.lastTd : {}) }}
+                      >
+                        {col.render ? col.render(value) : value}
+                      </td>
                     );
                   })}
                   {hasActions && (

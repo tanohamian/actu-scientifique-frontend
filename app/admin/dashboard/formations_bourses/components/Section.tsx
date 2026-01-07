@@ -12,7 +12,6 @@ type DataItem = ITraining | IScholarship;
 interface FormData {
   title: string;
   url?: string;
-  recompense?: string;
   description: string;
   date: string;
 }
@@ -24,7 +23,7 @@ const baseInputStyle: CSSProperties = { padding: '12px 16px', borderRadius: '8px
 const buttonStyle: CSSProperties = { padding: '12px 40px', backgroundColor: '#E67E5F', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: '600', cursor: 'pointer' };
 
 export default function SwitchSection() {
-  const [activeTab, setActiveTab] = useState<'Bourses' | 'Formations' | 'Reportages'>('Bourses');
+  const [activeTab, setActiveTab] = useState<'Bourses' | 'Formations'>('Bourses');
   const [items, setItems] = useState<DataItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -35,25 +34,6 @@ export default function SwitchSection() {
   });
 
 
-  useEffect(() => {
-
-    if (activeTab === 'Reportages') {
-      setFormData({
-        title: '',
-        description: '',
-        date: '',
-        recompense: '',
-      })
-    } else {
-      setFormData({
-        title: '',
-        description: '',
-        date: '',
-        url: '',
-      })
-    }
-
-  }, [activeTab]);
 
   // useCallback empêche la fonction de changer à chaque rendu
   const loadData = useCallback(async () => {
@@ -135,7 +115,7 @@ export default function SwitchSection() {
     <div style={{ backgroundColor: '#5A8FAC', minHeight: '100vh', padding: isMobile ? '20px' : '40px', color: 'white' }}>
       {/* ONGLETS */}
       <div style={tabContainer}>
-        {(['Bourses', 'Formations', 'Reportages'] as const).map((tab) => (
+        {(['Bourses', 'Formations'] as const).map((tab) => (
           <button
             key={tab}
             style={{ ...tabStyle, ...(activeTab === tab ? activeTabStyle : {}) }}
@@ -163,8 +143,8 @@ export default function SwitchSection() {
               value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
           </div>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label style={{ fontSize: '14px' }}>{activeTab === 'Reportages' ? "Recompense" : "Lien (YouTube ou Web)"}</label>
-            <input type="text" placeholder={activeTab === 'Reportages' ? "200.000 fcfa" : "https://..."} style={baseInputStyle}
+            <label style={{ fontSize: '14px' }}>Lien (YouTube ou Web)</label>
+            <input type="text" placeholder="https://..." style={baseInputStyle}
               value={formData.url} onChange={(e) => setFormData({ ...formData, url: e.target.value })} />
           </div>
         </div>
