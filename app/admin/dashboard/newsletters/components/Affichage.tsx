@@ -56,6 +56,7 @@ export interface DbArticle{
     title:string
     content:string
     rubrique:ArticleRubriques
+    illustrationUrl?: string;
     une:boolean
     createdAt: Date | string
 }

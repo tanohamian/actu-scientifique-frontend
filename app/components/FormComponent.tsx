@@ -4,7 +4,7 @@ import { AddNewsletter, INewsletter, UpdateNewsletter } from "@/app/actions/News
 import Image from 'next/image';
 import { ChevronDown, Upload } from 'lucide-react';
 import { FormFieldConfig, uploadIcon, uploadText } from '@/app/components/addElement';
-import { Article, ArticleRubriques, Newsletter } from '../admin/dashboard/newsletters/components/Affichage';
+import { Article, ArticleRubriques, DbArticle, Newsletter } from '../admin/dashboard/newsletters/components/Affichage';
 import ButtonComponent from './button';
 import { AddArticle } from '../actions/ArticleManager';
 
@@ -20,11 +20,12 @@ interface FormPropos {
   isArticle: boolean;
   fields?: FormFieldConfig[];
   initialData?: Newsletter | Article | null;
-  initialArticleData: { [key: string]: string | number | File | undefined; };
-  onSuccess?: () => void;
+  initialArticleData: { [key: string]: string | File| undefined };
+  onSuccess : (item ?: DbArticle) => void;
+  setter?: (value: React.SetStateAction<DbArticle | undefined>) => void
 }
 
-export default function FormComponent({ isArticle = false, initialData, onSuccess, fields, initialArticleData = {} }: FormPropos) {
+export default function FormComponent({ isArticle = false, initialData, onSuccess, fields, initialArticleData = {}, setter }: FormPropos) {
   const rubriques = Object.values(Rubriques) as string[];
 
   const [formData, setFormData] = useState<Article | INewsletter>({
@@ -44,11 +45,7 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
 
   useEffect(() => {
     const set = async () =>{
-      //setArticleFormData(initialFormData);
-      (fields as FormFieldConfig[]).reduce((acc, field) => {
-              initialArticleData[field.name] = initialArticleData[field.name] !== undefined ? initialArticleData[field.name] : '';
-              return acc;
-          }, {} as { [key: string]: string | number | File | string | undefined})
+      setArticleFormData(initialFormData);
       setImageUrl(initialArticleData['illustrationUrl'] as string);
 
     }
@@ -72,7 +69,7 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
     }
     initiateDatas()
     
-  }, [fields,initialArticleData,initialData, initialFormData, isArticle]);
+  }, [initialData, initialFormData, isArticle]);
 
 
   const isEditing = !!initialData;
@@ -90,29 +87,32 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
         ...prevData,
         [name]: type === 'number' ? Number(value) : type === 'file' ? value as File : value,
     }));
-    (fields as FormFieldConfig[]).reduce((acc, field) => {
-      if (name === field.name) {
-        initialArticleData[field.name] = value
-      }
-      return acc;
-    }, {})
-    setImageUrl(initialArticleData['illustrationUrl'] as string);
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      let result;
+      let result: DbArticle | undefined | {success: boolean};
       const currentId = initialData?.id;
-      /*if (isArticle) {
+      if (isArticle) {
         const article = new FormData()
-        article.append('title', initialArticleData["title"] as string)
-        article.append('content', initialArticleData["content"] as string )
-        article.append('rubrique', initialArticleData["rubrique"] as string)
-        article.append('file', initialArticleData["file"] as File)
+        article.append('title', articleFormData["title"] as string)
+        article.append('content', articleFormData["content"] as string )
+        article.append('rubrique', articleFormData["rubrique"] as string)
+        article.append('file', articleFormData["file"] as File)
         result = await AddArticle(article, false)
+        if (result) {
+          if (setter) {
+            console.log("article sauvegardé localement")
+            setter(result)
+          }
+          alert(isEditing ? "Mis à jour !" : "Publié !");
+          console.log(result)
+          setFormData({ title: "", content: "", rubrique: "tech" });
+          onSuccess();
+        }
         return
-      }*/
+      }
 
       if (isEditing && currentId) {
         result = await UpdateNewsletter(currentId, formData as INewsletter);
@@ -120,9 +120,12 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
         result = await AddNewsletter(formData as INewsletter);
       }
 
-        //alert(isEditing ? "Mis à jour !" : "Publié !");
+      if (result) {
+        alert(isEditing ? "Mis à jour !" : "Publié !");
+        console.log(result)
         setFormData({ title: "", content: "", rubrique: "tech" });
-        if (onSuccess) onSuccess();
+        onSuccess();
+      }
     } catch (error) {
       console.error("Erreur:", error);
     }
@@ -146,7 +149,7 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
                         <div className="relative w-full">
                             <select
                                 style={selectStyle}
-                                value={(initialArticleData[field.name] as string) || ''}
+                                value={(articleFormData[field.name] as string) || ''}
                                 onChange={(e) => handleArticleChange(field.name, e.target.value)}
                                 required={field.required}
                             >
@@ -183,7 +186,7 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
                                 }}
                                 required={field.required}
                             />
-                            {initialArticleData[field.name] || imageUrl  ? (
+                            {articleFormData[field.name] || imageUrl  ? (
                                 <div className="mt-2">
                                   
                                     {/* eslint-disable-next-line @next/next/no-img-element*/}
@@ -209,7 +212,7 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
                     style={textareaStyle}
                     placeholder={field.placeholder || ''}
                     rows={6}
-                    value={(initialArticleData[field.name] as string) || ''}
+                    value={(articleFormData[field.name] as string) || ''}
                     onChange={(e) => handleArticleChange(field.name, e.target.value, field.type)} 
                     required={field.required}
                   />
@@ -224,7 +227,7 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
                             type={field.type}
                             style={inputBaseStyle}
                             placeholder={field.placeholder || ''}
-                            value={(initialArticleData[field.name] as string) || ''}
+                            value={(articleFormData[field.name] as string) || ''}
                             onChange={(e) => handleArticleChange(field.name, e.target.value, field.type)} 
                             required={field.required}
                         />

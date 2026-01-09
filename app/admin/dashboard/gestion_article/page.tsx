@@ -122,17 +122,15 @@ export default function ArticlePage() {
         lg:mt-0 
     `;
 
+    const [article, setArticle] = useState<DbArticle>(); 
 
-    const handleSubmitArticle = async() => {
-        const article = new FormData()
-        article.append('title', initialData["title"] as string)
-        article.append('content', initialData["content"] as string )
-        article.append('rubrique', initialData["rubrique"] as string)
-        article.append('file', initialData["file"] as File)
-        const result = await AddArticle(article, false)
-        if (result){
-            setArticles(prevState => [...prevState, result]);
+    const handleSubmitArticle = () => {
+        console.log({article})
+        if (!article) {
+            alert("Aucun article à ajouter")
+            return
         }
+        setArticles(prevState => [...prevState, article as DbArticle]);
         setIsOpen(false);
     };
 
@@ -227,6 +225,7 @@ export default function ArticlePage() {
                         initialArticleData={initialData}
                         fields={ArticleFields}
                         onSuccess={handleSubmitArticle}
+                        setter={setArticle}
                     />
                   </article>
                 </article>
