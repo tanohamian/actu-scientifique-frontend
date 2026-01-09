@@ -2,21 +2,21 @@
 'use client'
 
 
-import ButtonComponent from '@/app/components/button';
 import SearchBarComponent from '@/app/components/searchBar';
-import DataTable, { ElementType, TableData } from '@/app/components/eventDataTable';
+import DataTable, { ElementType } from '@/app/components/eventDataTable';
 import React, { useEffect, useState } from 'react'
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
-import { DbArticle } from '../newsletters/components/Affichage';
-import ComponenteFormulaire from '../newsletters/components/ComponenteFormulaire';
-import { DeleteArticle, FetchArticles } from '@/app/actions/ArticleManager';
+import { Article, ArticleRubriques, DbArticle } from '../newsletters/components/Affichage';
+import { AddArticle, DeleteArticle, FetchArticles } from '@/app/actions/ArticleManager';
+import FormComponent from '@/app/components/FormComponent';
 
 
 
 const ArticleFields: FormFieldConfig[] = [
-    { name: 'title', label: "Titre de l'article", type: 'text', placeholder: "Entrez le titre de l'article", required: true },
-    { name: 'content', label: 'Contenu', type: 'text', required: true },
+    { name: 'title', label: "Titre de l'article", placeholder: "Entrez le titre de l'article", required: true },
+    { name: 'content', label: 'Contenu', type: 'textarea', required: true },
+    { name: 'file', label: "Fichier", placeholder: 'Ajoutez une illustration', type: 'file'},
     { 
         name: 'rubrique', 
         label: 'Rubrique', 
@@ -46,9 +46,8 @@ const mainHeaders = [
 export default function ArticlePage() {
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
-    const [editEvent, setEditEvent] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState<TableData | null>(null);
-    const [viewMode] = useState<'list' | 'calendar'>('list');
+    const [editArticle, setEditArticle] = useState(false);
+    const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
     const [filters] = useState<IFilter[]>(mainHeaders.map((header)=>{
       return {value: header.key, label: header.label}
     }))
@@ -123,46 +122,51 @@ export default function ArticlePage() {
         lg:mt-0 
     `;
 
-    //setArticles(staticArtcles)
-    const handleEvent = () => {
-        setIsOpen(true);
-    };
 
-    const handleSubmitEvent = () => {
+    const handleSubmitArticle = async() => {
+        const article = new FormData()
+        article.append('title', initialData["title"] as string)
+        article.append('content', initialData["content"] as string )
+        article.append('rubrique', initialData["rubrique"] as string)
+        article.append('file', initialData["file"] as File)
+        const result = await AddArticle(article, false)
+        if (result){
+            setArticles(prevState => [...prevState, result]);
+        }
         setIsOpen(false);
     };
 
-    let initialData = {
+    let initialData : {[key: string]: string | undefined| File} = {
         title: '',
-        lieu:  '',
-        date:  '',
-        heure: '',
-        status: '',
+        content:  '',
+        illustationUrl: "https://via.placeholder.com/150",
+        createdAt:  (new Date()).toLocaleDateString(),
+        rubrique: ArticleRubriques.ECOHUMANITY as string
     };
 
-    const handleEditEvent = async (item: ElementType) => {
+    const handleEditArticle = async (item: ElementType) => {
         console.log('Editing event:', item);
-        setSelectedEvent(item as TableData);
-        setEditEvent(true);
+        setSelectedArticle(item as Article);
+        setEditArticle(true);
     };
-    const handleDeleteEvent = async (item: ElementType) => {
+    const handleDeleteArticle = async (item: ElementType) => {
         console.log('Deleting event:', item);
-        setSelectedEvent(item as TableData);
+        setSelectedArticle(item as Article);
         setArticles(articles.filter(newItem => newItem.id !== item.id))
         await DeleteArticle(item.id as string)
     };
 
-    const handleSubmitEditEvent = () => {
-        setEditEvent(false);
+    const handleSubmitEditArticle = () => {
+        setEditArticle(false);
     };
 
-    if (selectedEvent) {
+    if (selectedArticle) {
         initialData = {
-            title: selectedEvent.title as string || '',
-            lieu: selectedEvent.lieu as string || '',
-            date: selectedEvent.date as string || '',
-            heure: selectedEvent.heure as string || '',
-            status: selectedEvent.status as string || '',
+            title: selectedArticle.title as string || '',
+            content: selectedArticle.content as string || '',
+            createdAt: selectedArticle.createdAt as string || '',
+            rubrique: selectedArticle.rubrique as ArticleRubriques|| '',
+            illustationUrl: selectedArticle.illustrationUrl
         };
     }
 
@@ -194,7 +198,7 @@ export default function ArticlePage() {
                     <h1 className={textClasses}>Gestion des Articles</h1>
                     <h3 className={subTextClasses}>Gérer les articles depuis cette interface</h3>
                 </div>
-                {/* <ButtonComponent textButton='Ajouter un article' size='large' onclick={handleEvent} /> */}
+                {/* <ButtonComponent textButton='Ajouter un article' size='large' onclick={handleArticle} /> */}
             </div>
 
             <div className={contentContainerClasses}>
@@ -213,12 +217,17 @@ export default function ArticlePage() {
                         tableTitle=""
                         data={articles}
                         columnHeaders={mainHeaders}
-                        handleEditEvent={handleEditEvent}
-                        handleDeleteEvent={handleDeleteEvent}
+                        handleEditEvent={handleEditArticle}
+                        handleDeleteEvent={handleDeleteArticle}
                     />
 
                   <article className={rightSectionClasses}>
-                    <ComponenteFormulaire isArticle={true}/>
+                    <FormComponent 
+                        isArticle={true} 
+                        initialArticleData={initialData}
+                        fields={ArticleFields}
+                        onSuccess={handleSubmitArticle}
+                    />
                   </article>
                 </article>
                 
@@ -228,7 +237,7 @@ export default function ArticlePage() {
             <AddElementModal
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
-                onSubmit={handleSubmitEvent}
+                onSubmit={handleSubmitArticle}
                 titleComponent="Ajouter un Article"
                 buttonTitle="Ajouter"
                 fields={ArticleFields}
@@ -236,9 +245,9 @@ export default function ArticlePage() {
             />
 
             <AddElementModal
-                isOpen={editEvent}
-                onClose={() => setEditEvent(false)}
-                onSubmit={handleSubmitEditEvent}
+                isOpen={editArticle}
+                onClose={() => setEditArticle(false)}
+                onSubmit={handleSubmitEditArticle}
                 titleComponent="Modifier un article"
                 buttonTitle="Modifier"
                 fields={ArticleFields}

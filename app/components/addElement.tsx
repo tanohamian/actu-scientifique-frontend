@@ -19,11 +19,11 @@ export interface FormFieldConfig {
 interface AddElementModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: ElementType | Product | { [key: string]: string | number; }) => void;
+    onSubmit: (data: ElementType | Product | { [key: string]: string | number | File | undefined; }) => void;
     titleComponent: string;
     buttonTitle: string;
     fields: FormFieldConfig[];
-    initialData?: { [key: string]: string };
+    initialData?: { [key: string]: string | File | undefined };
 }
 
 const customStyles = `
@@ -36,12 +36,12 @@ const customStyles = `
     }
 `;
 
-const uploadText: React.CSSProperties = {
+export const uploadText: React.CSSProperties = {
     color: 'rgba(255, 255, 255, 0.7)',
     fontSize: '14px'
 }
 
-const uploadIcon: React.CSSProperties = {
+export const uploadIcon: React.CSSProperties = {
     color: 'rgba(255, 255, 255, 0.6)',
     marginBottom: '10px'
 };
@@ -50,15 +50,19 @@ const uploadIcon: React.CSSProperties = {
 
 export default function AddElementModal({ isOpen, onClose, onSubmit, titleComponent, buttonTitle, fields, initialData = {} }: AddElementModalProps) {
 
+    
+    const [imageUrl, setImageUrl] = useState<string | ArrayBuffer | null>("")
     const initialFormData = useMemo(() => {
         return fields.reduce((acc, field) => {
             acc[field.name] = initialData[field.name] !== undefined ? initialData[field.name] : '';
+            if (field.name ==='illustrationUrl') {
+                setImageUrl(initialData[field.name] as string)
+            }
             return acc;
-        }, {} as { [key: string]: string | number });
+        }, {} as { [key: string]: string | number | File | undefined });
     }, [fields, initialData]);
 
-    const [formData, setFormData] = useState<{ [key: string]: string | number }>(initialFormData);
-
+    const [formData, setFormData] = useState<{ [key: string]: string | number | File | undefined }>(initialFormData);
     useEffect(() => {
         const set = async () =>{
             setFormData(initialFormData);
@@ -85,10 +89,10 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
 
     };
 
-    const handleChange = (name: string, value: string, type?: string) => {
+    const handleChange = (name: string, value: string | File, type?: string) => {
         setFormData(prevData => ({
             ...prevData,
-            [name]: type === 'number' ? Number(value) : value,
+            [name]: type === 'number' ? Number(value) : type ==='file' ? value as File :  value,
         }));
     };
 
@@ -105,7 +109,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                         <div className="relative w-full">
                             <select
                                 className={`${inputClasses} appearance-none cursor-pointer custom-select`}
-                                value={formData[field.name] || ''}
+                                value={(formData[field.name] as string) || ''}
                                 onChange={(e) => handleChange(field.name, e.target.value)}
                                 required={field.required}
                             >
@@ -134,23 +138,17 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                                         const reader = new FileReader();
                                         reader.onloadend = () => {
                                             handleChange(field.name, reader.result as string);
+                                            setImageUrl(reader.result)
                                         };
                                         reader.readAsDataURL(file)
                                     };
                                 }}
                                 required={field.required}
                             />
-                            {formData[field.name] ? (
+                            {formData[field.name] || field.name=== 'illustrationUrl'  ? (
                                 <div className="mt-2">
-                                    <Image
-                                        src={
-                                            String(formData[field.name]) || String(formData[field.name]).startsWith('http://') || String(formData[field.name]).startsWith('https://')
-                                                ? String(formData[field.name])
-                                                : `${env.baseUrl}/uploads/productImage/${String(formData[field.name])}`
-                                        }
-                                        alt="Preview"
-                                        className="max-w-full h-auto rounded-lg"
-                                    />
+                                    {/* eslint-disable-next-line @next/next/no-img-element*/}
+                                    <img src={ imageUrl as string} alt="Preview" className="max-w-full h-auto rounded-lg"/>
                                 </div>
                             ) : (
                                 <div className="flex flex-col items-center justify-center bg-[#00283C99] rounded-lg p-10 cursor-pointer">
@@ -174,7 +172,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                             type={field.type}
                             className={inputClasses}
                             placeholder={field.placeholder || ''}
-                            value={formData[field.name] || ''}
+                            value={(formData[field.name] as string) || ''}
                             onChange={(e) => handleChange(field.name, e.target.value, field.type)}  // ✅ Passer le type
                             required={field.required}
                         />

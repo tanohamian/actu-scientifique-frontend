@@ -43,7 +43,7 @@ export default function Filter({
         maxHeight: '10%',
         
       }}>
-        <InputLabel id="demo-simple-select-label" sx={{ color: 'rgba(255, 255, 255, 0.3)'}}>Filtrer</InputLabel>
+        <InputLabel id="demo-simple-select-label" sx={{ color: 'rgba(255, 255, 255, 0.3)'}}>Trier</InputLabel>
         <Select
 
           labelId="demo-simple-select-label"

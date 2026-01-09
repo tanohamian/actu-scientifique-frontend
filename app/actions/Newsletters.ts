@@ -1,6 +1,7 @@
 "use server"
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache';
+import { env } from '../config/env';
 
 export interface INewsletter {
     id?: string;
@@ -10,7 +11,7 @@ export interface INewsletter {
     createdAt?: string;
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const BASE_URL = env.baseUrl;
 
 async function getAuthHeaders() {
     const cookieStore = await cookies();
@@ -31,6 +32,7 @@ export async function FetchNewsletters() {
         });
         if (response.ok) {
             const data = await response.json();
+            console.log(data)
             return data.newsletters || data.data || [];
         }
         return [];

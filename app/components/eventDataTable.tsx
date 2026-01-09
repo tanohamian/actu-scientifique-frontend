@@ -8,6 +8,7 @@ export interface TableData {
     id?: string
     title: string;
     name?: string;
+    rubrique?: string
     createdAt?: Date | string
     location?: string
     status: 'en direct' | 'pas en direct';
@@ -18,35 +19,37 @@ export interface TableData {
 
 export interface EventInterface {
     id?: string
-    title: string
+    title?: string
     location?: string
     date?: Date | string
     description?: string
-    createdAt?: Date
+    createdAt?: Date | string
     time?: string
     url?: string
     status?: string
 }
+
+export type ElementType = Media|Article|TableData
+
 interface EventDataTableProps {
     tableTitle: string;
     data: TableData[] | Media[] | Article[];
     isMedia?: boolean;
 
     columnHeaders: { key: string; label: string; flexBasis: string }[];
-    handleEditEvent?: (item: TableData) => void;
-    handleDeleteEvent?: (item: TableData) => void;
+    handleEditEvent?: (item: ElementType) => void;
+    handleDeleteEvent?: (item: ElementType) => void;
 }
 
-export type ElementType = Media|Article|TableData
-
-const DeleteIcon = () => (
-    <button
-        className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
-    >
-        <Trash2 size={20} />
-    </button>
-);
-
+/*
+    const DeleteIcon = () => (
+        <button
+            className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
+        >
+            <Trash2 size={20} />
+        </button>
+    );
+*/
 const getStatusClasses = (status: TableData['status']): string => {
     switch (status) {
         case 'en direct':

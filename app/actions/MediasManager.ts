@@ -6,6 +6,8 @@ import { revalidatePath } from 'next/cache';
 import { DbMedia } from '../admin/dashboard/newsletters/components/Affichage';
 
 export async function AddMedia(formData: FormData) {
+
+    console.log("payload : ", formData)
     console.log("Received FormData:");
 
 

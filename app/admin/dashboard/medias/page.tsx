@@ -10,12 +10,13 @@ import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
 import { DbMedia, Media } from '../newsletters/components/Affichage';
 
-import { DeleteMedia, FetchMedias } from '@/app/actions/MediasManager';
+import { AddMedia, DeleteMedia, FetchMedias } from '@/app/actions/MediasManager';
 import { Rubriques } from '@/app/components/FormComponent';
 
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', type: 'text', placeholder: 'Entrez le titre du media', required: true },
     { name: 'type', label: 'Type', type: 'select', options: [{ value: 'photo', label: 'Photo' }, { value: 'video', label: 'Vidéo' }, { value: 'podcast', label: 'Podcast' }], required: true },
+    { name : 'file', label : "Fichier", type : "file" , required : true} ,
     { name: 'rubrique', label: 'Catégorie', type: 'select', options: [{ value: Rubriques.TECHNOLOGY, label: 'Technologie' }, { value: 'Matériel', label: 'Matériel' }], required: true },
 ];
 
@@ -100,17 +101,29 @@ export default function MediaPage() {
         setIsOpen(true);
     };
 
-    const handleSubmitMedia = () => {
-        setIsOpen(false);
-    };
-
-    let initialData = {
+    let initialData : { [key: string]: string| File | undefined; }= {
         name: '',
         createdAt: '',
         title: "",
-        type : ""
+        type : "",
+        file: undefined,
 
     };
+
+    const handleSubmitMedia = async() => {
+        const media = new FormData()
+        media.append('title', initialData.title as string)
+        media.append('name', initialData.name as string)
+        media.append('type', initialData.type as string)
+        if (initialData.file) {
+            media.append('file', initialData.file)
+        }
+
+        await AddMedia(media)
+        setIsOpen(false);
+    };
+
+    
 
     const handleEditMedia = async (item: ElementType) => {
         console.log('Editing event:', item);

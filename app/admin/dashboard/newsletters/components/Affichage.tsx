@@ -4,6 +4,17 @@ import { Search, Pencil, Trash2 } from 'lucide-react';
 import Filter, { IFilter } from '@/app/components/filter';
 // Importation des Server Actions
 import { FetchNewsletters, DeleteNewsletter } from '@/app/actions/Newsletters';
+import { File } from 'buffer';
+
+export const ArticleRubriques = {
+    HEALTH : "une seule santé",
+    TECHNOLOGY : "tech",
+    ECOHUMANITY : "éco-humanité",
+    OPPORTUNITY: "opportunité",
+    CALENDAR : "agenda",
+    PORTRAITSDISCOVERIES : "portraits et découvertes"
+} as const
+export type ArticleRubriques = typeof ArticleRubriques[keyof typeof ArticleRubriques];
 
 export enum AffichageType {
     ARTICLE = "article",
@@ -17,14 +28,16 @@ export interface Newsletter {
     title: string;
     categorie: string;
     content?: string;
-    createdAt: string;
+    createdAt: string |Date;
 }
 
 export interface Article {
     id?: string;
     title: string;
+    illustrationUrl?: string;
     content: string;
-    rubrique: string;
+    rubrique?: string;
+    createdAt ?: Date | string
 }
 
 export interface DbMedia {
@@ -37,6 +50,16 @@ export interface DbMedia {
     createdAt: Date | string;
     type: string;
 }
+
+export interface DbArticle{
+    id:string
+    title:string
+    content:string
+    rubrique:ArticleRubriques
+    une:boolean
+    createdAt: Date | string
+}
+
 
 type ItemType = Newsletter | Article;
 

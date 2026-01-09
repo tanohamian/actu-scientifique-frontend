@@ -13,7 +13,7 @@ export enum Rubriques {
 
 interface FormPropos {
   isArticle: boolean;
-  initialData?: Newsletter | Article | null;
+  initialData?: Newsletter| null;
   onSuccess?: () => void;
 }
 
@@ -31,9 +31,7 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
       if (initialData) {
         const titre = initialData.titre || "";
         const contenu = initialData.contenu || "";
-        const categorie = 'categorie' in initialData
-          ? initialData.categorie
-          : ('rubrique' in initialData ? initialData.rubrique : "tech");
+        const categorie = initialData.categorie
 
         setFormData({ titre, contenu, categorie });
       } else {
