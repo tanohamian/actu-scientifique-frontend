@@ -5,7 +5,7 @@
 import SearchBarComponent from '@/app/components/searchBar';
 import DataTable, { ElementType } from '@/app/components/eventDataTable';
 import React, { useEffect, useState } from 'react'
-import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
+import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
 import { Article, ArticleRubriques, DbArticle } from '../newsletters/components/Affichage';
 import { AddArticle, DeleteArticle, FetchArticles } from '@/app/actions/ArticleManager';
@@ -134,7 +134,7 @@ export default function ArticlePage() {
         setIsOpen(false);
     };
 
-    let initialData : {[key: string]: string | undefined| File} = {
+    let initialData : InitialDataType = {
         title: '',
         content:  '',
         illustationUrl: "https://via.placeholder.com/150",
@@ -154,7 +154,7 @@ export default function ArticlePage() {
         await DeleteArticle(item.id as string)
     };
 
-    const handleSubmitEditArticle = () => {
+    const handleSubmitEditArticle = async() => {
         setEditArticle(false);
     };
 

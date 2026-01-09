@@ -7,14 +7,12 @@ import { DbMedia } from '../admin/dashboard/newsletters/components/Affichage';
 
 export async function AddMedia(formData: FormData) {
 
-    console.log("payload : ", formData)
-    console.log("Received FormData:");
-
-
-    const file = formData.get('file') as File;
+    const authToken = (await cookies()).get('authToken')?.value;
+    console.log("payload: ", formData)
+    const file = (formData as FormData).get('file') as File;
 
     if (!file || file.size === 0) {
-        throw new Error("Aucun fichier sélectionné ou fichier vide");
+        throw Error("Aucun fichier sélectionné ou fichier vide");
     }
 
     console.log("File details:", {
@@ -22,14 +20,10 @@ export async function AddMedia(formData: FormData) {
         size: file.size,
         type: file.type
     });
-
-    const authToken = (await cookies()).get('authToken')?.value;
-
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin'); 
+        redirect('/admin');
     }
-
     try {
         const response = await fetch(`${env.baseUrl}/multimedia/`, {
             method: 'POST',
@@ -40,9 +34,9 @@ export async function AddMedia(formData: FormData) {
         });
 
         if (!response.ok) {
-            //const errorData = await response.json();
-            console.log("Server error response:", response);
-            throw new Error(`Échec de l'upload du média : ${response.status} ${response.statusText}`);
+            const errorData = response;
+            console.log("Server error response:", JSON.stringify(errorData));
+            throw Error(`Échec de l'upload du média : ${response.status} ${response.statusText}`);
         }
 
         const result = await response.json();

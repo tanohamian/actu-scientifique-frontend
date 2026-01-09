@@ -11,7 +11,7 @@ export interface TableData {
     rubrique?: string
     createdAt?: Date | string
     location?: string
-    status: 'en direct' | 'pas en direct';
+    status?: 'en direct' | 'pas en direct';
     date?: string;
     time?: string;
     url?: string;
@@ -33,7 +33,7 @@ export type ElementType = Media|Article|TableData
 
 interface EventDataTableProps {
     tableTitle: string;
-    data: TableData[] | Media[] | Article[];
+    data: TableData[] | Media[] | Article[] | EventInterface[];
     isMedia?: boolean;
 
     columnHeaders: { key: string; label: string; flexBasis: string }[];

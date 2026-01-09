@@ -14,7 +14,7 @@ export async function AddArticle(formData: Article | FormData , json: boolean =f
     const file = (formData as FormData).get('file') as File;
 
     if (!file || file.size === 0) {
-        throw new Error("Aucun fichier sélectionné ou fichier vide");
+        throw Error("Aucun fichier sélectionné ou fichier vide");
     }
 
     console.log("File details:", {
@@ -43,8 +43,9 @@ export async function AddArticle(formData: Article | FormData , json: boolean =f
         })
 
         if (!response.ok) {
-            console.log(response)
-            throw new Error(`Erreur lors de la création de l'article  : ${response}`);
+            const errorData = response;
+            console.log("Server error response:", JSON.stringify(errorData));
+            throw Error(`Échec de l'upload du média : ${response.status} ${response.statusText}`);
         }
         return (await response.json()).article as DbArticle
 

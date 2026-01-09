@@ -10,21 +10,25 @@ import { ElementType } from "./eventDataTable";
 export interface FormFieldConfig {
     name: string;
     label: string;
-    type?: 'text' | 'email' | 'password' | 'select' | 'textarea' | 'file' | 'number' | 'date' | 'time';
+    type?: 'text' | 'email' | 'password' | 'select' | 'textarea' | 'file' | 'number' | 'date' | 'time' | 'url';
     placeholder?: string;
     required?: boolean;
     options?: { value: string; label: string }[];
 }
 
+export type InitialDataType = { [key: string]: string | number | File | undefined }
+
+
 interface AddElementModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: ElementType | Product | { [key: string]: string | number | File | undefined; }) => void;
+    onSubmit: (data: Product | InitialDataType) => Promise<void> | void;
     titleComponent: string;
     buttonTitle: string;
     fields: FormFieldConfig[];
-    initialData?: { [key: string]: string | File | undefined };
+    initialData?: InitialDataType;
 }
+
 
 const customStyles = `
     .custom-select option {
@@ -59,10 +63,10 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                 setImageUrl(initialData[field.name] as string)
             }
             return acc;
-        }, {} as { [key: string]: string | number | File | undefined });
+        }, {} as InitialDataType);
     }, [fields, initialData]);
 
-    const [formData, setFormData] = useState<{ [key: string]: string | number | File | undefined }>(initialFormData);
+    const [formData, setFormData] = useState<InitialDataType>(initialFormData);
     useEffect(() => {
         const set = async () =>{
             setFormData(initialFormData);
@@ -85,7 +89,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(formData);
+        onSubmit(formData as InitialDataType);
 
     };
 
@@ -137,7 +141,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                                     if (file) {
                                         const reader = new FileReader();
                                         reader.onloadend = () => {
-                                            handleChange(field.name, reader.result as string);
+                                            handleChange(field.name, file );
                                             setImageUrl(reader.result)
                                         };
                                         reader.readAsDataURL(file)

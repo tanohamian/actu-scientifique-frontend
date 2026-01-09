@@ -5,10 +5,10 @@ import { env } from '../config/env';
 
 export interface INewsletter {
     id?: string;
-    titre: string;
+    title: string;
     categorie: string;
     contenu: string;
-    createdAt?: string;
+    createdAt?: string | Date;
 }
 
 const BASE_URL = env.baseUrl;

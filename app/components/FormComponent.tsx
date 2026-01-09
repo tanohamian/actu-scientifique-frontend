@@ -1,11 +1,9 @@
 "use client"
 import React, { FormEvent, useState, useEffect, useMemo } from 'react';
 import { AddNewsletter, INewsletter, UpdateNewsletter } from "@/app/actions/Newsletters";
-import Image from 'next/image';
 import { ChevronDown, Upload } from 'lucide-react';
-import { FormFieldConfig, uploadIcon, uploadText } from '@/app/components/addElement';
+import { FormFieldConfig, InitialDataType, uploadIcon, uploadText } from '@/app/components/addElement';
 import { Article, ArticleRubriques, DbArticle, Newsletter } from '../admin/dashboard/newsletters/components/Affichage';
-import ButtonComponent from './button';
 import { AddArticle } from '../actions/ArticleManager';
 
 export enum Rubriques {
@@ -16,11 +14,18 @@ export enum Rubriques {
   PORTRAITSDISCOVERIES = "portraits et découvertes"
 }
 
+export enum MediaRubriques{
+    TECHNOLOGY = "technology",
+    ONE_HEALTH = "health",
+    SCIENCE = "science",
+    ART = "art"
+}
+
 interface FormPropos {
   isArticle: boolean;
   fields?: FormFieldConfig[];
   initialData?: Newsletter | Article | null;
-  initialArticleData: { [key: string]: string | File| undefined };
+  initialArticleData: InitialDataType;
   onSuccess : (item ?: DbArticle) => void;
   setter?: (value: React.SetStateAction<DbArticle | undefined>) => void
 }
@@ -38,9 +43,9 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
           return (fields as FormFieldConfig[]).reduce((acc, field) => {
               acc[field.name] = initialArticleData[field.name] !== undefined ? initialArticleData[field.name] : '';
               return acc;
-          }, {} as { [key: string]: string | number | File | string | undefined});
+          }, {} as InitialDataType);
       }, [fields, initialArticleData]);
-  const [articleFormData, setArticleFormData] = useState<{ [key: string]: string | number | File | undefined }>(initialFormData);
+  const [articleFormData, setArticleFormData] = useState<InitialDataType>(initialFormData);
   const [imageUrl, setImageUrl] = useState<string | ArrayBuffer | null | undefined>("");
 
   useEffect(() => {
@@ -100,6 +105,8 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
         article.append('content', articleFormData["content"] as string )
         article.append('rubrique', articleFormData["rubrique"] as string)
         article.append('file', articleFormData["file"] as File)
+        console.log("Aperçu de l'article : ")
+        console.log(article)
         result = await AddArticle(article, false)
         if (result) {
           if (setter) {
@@ -124,7 +131,7 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
         alert(isEditing ? "Mis à jour !" : "Publié !");
         console.log(result)
         setFormData({ title: "", content: "", rubrique: "tech" });
-        onSuccess();
+        await onSuccess();
       }
     } catch (error) {
       console.error("Erreur:", error);

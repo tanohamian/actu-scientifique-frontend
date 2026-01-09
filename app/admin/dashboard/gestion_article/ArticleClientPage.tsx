@@ -59,7 +59,7 @@ export default function ArticleClientPage({ initialArticles }: ArticleClientPage
         setIsOpen(true);
     };
 
-    const handleSubmitArticle = () => {
+    const handleSubmitArticle = async () => {
         setIsOpen(false);
     };
 
@@ -76,7 +76,7 @@ export default function ArticleClientPage({ initialArticles }: ArticleClientPage
         setEditArticle(true);
     };
 
-    const handleSubmitEditArticle = () => {
+    const handleSubmitEditArticle = async() => {
         setEditArticle(false);
     };
 
