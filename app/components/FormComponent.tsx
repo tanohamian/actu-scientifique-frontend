@@ -1,253 +1,305 @@
 "use client"
-import Form from "next/form"
-import React, { FormEvent, useState } from 'react';
-import { AddArticle } from "@/app/actions/ArticleManager";
-import { AddMedia, FetchMedias } from "@/app/actions/MediasManager";
-import { Article, DbMedia, Media } from "../admin/dashboard/newsletters/components/Affichage";
-import { FileUpload } from "../admin/dashboard/produit_commandes/components/FileUpload";
-// import { ChevronUp } from 'lucide-react';
-export enum ArticleRubriques {
+import React, { FormEvent, useState, useEffect, useMemo } from 'react';
+import { AddNewsletter, INewsletter, UpdateNewsletter } from "@/app/actions/Newsletters";
+import { ChevronDown, Upload } from 'lucide-react';
+import { FormFieldConfig, InitialDataType, uploadIcon, uploadText } from '@/app/components/addElement';
+import { Article, ArticleRubriques, DbArticle, Newsletter } from '../admin/dashboard/newsletters/components/Affichage';
+import { AddArticle } from '../actions/ArticleManager';
+
+export enum Rubriques {
   HEALTH = "une seule santé",
   TECHNOLOGY = "tech",
   ECOHUMANITY = "éco-humanité",
   OPPORTUNITY = "opportunité",
-  CALENDAR = "agenda",
   PORTRAITSDISCOVERIES = "portraits et découvertes"
 }
 
-export enum Rubriques{
-    TECHNOLOGY ="technology",
-    ONE_HEALTH ="health",
+export enum MediaRubriques{
+    TECHNOLOGY = "technology",
+    ONE_HEALTH = "health",
     SCIENCE = "science",
     ART = "art"
-} 
+}
 
 interface FormPropos {
-  isArticle?: boolean
-  isMedia?: boolean
-  setMedias ?: (medias : DbMedia[])=> void
+  isArticle: boolean;
+  fields?: FormFieldConfig[];
+  initialData?: Newsletter | Article | null;
+  initialArticleData: InitialDataType;
+  onSuccess : (item ?: DbArticle) => void;
+  setter?: (value: React.SetStateAction<DbArticle | undefined>) => void
 }
-export default function FormComponent({ isArticle = false, isMedia = false, setMedias=undefined }: FormPropos) {
-  const articleRubriques = Object.values(ArticleRubriques) as string[]; 
+
+export default function FormComponent({ isArticle = false, initialData, onSuccess, fields, initialArticleData = {}, setter }: FormPropos) {
   const rubriques = Object.values(Rubriques) as string[];
 
-  const endpoint = isArticle ? "articles" : "newsletters"
-  const titleText = isArticle ? "Ajouter un Article" : isMedia ? "Ajouter un média" : "Formulaire de News Letters"
-  const label = isArticle ? "Titre de l'article" : isMedia ? "Titre du média" :"Titre de la News Letter"
-  // 1. État pour les données du formulaire
-  const [formData, setFormData] = useState({
-    title: "futur du journalisme",
-    type: "",
-    file: undefined,
-    contenu: "le contenu................",
-    categorie: isArticle ? articleRubriques[0] : isMedia ? rubriques[0] : "technology", // Défaut basé sur l'état
+  const [formData, setFormData] = useState<Article | INewsletter>({
+    title: "",
+    content: "",
+    createdAt: "tech"
   });
 
+  const initialFormData = useMemo(() => {
+          return (fields as FormFieldConfig[]).reduce((acc, field) => {
+              acc[field.name] = initialArticleData[field.name] !== undefined ? initialArticleData[field.name] : '';
+              return acc;
+          }, {} as InitialDataType);
+      }, [fields, initialArticleData]);
+  const [articleFormData, setArticleFormData] = useState<InitialDataType>(initialFormData);
+  const [imageUrl, setImageUrl] = useState<string | ArrayBuffer | null | undefined>("");
+
+  useEffect(() => {
+    const set = async () =>{
+      setArticleFormData(initialFormData);
+      setImageUrl(initialArticleData['illustrationUrl'] as string);
+
+    }
+    if (isArticle) {
+      set()
+      return
+    }
+    const initiateDatas = async()=>{
+      if (initialData) {
+        const title = initialData.title || "";
+        const content = initialData.content || "";
+        const rubrique = 'categorie' in initialData
+          ? initialData.categorie
+          : ('rubrique' in initialData ? initialData.rubrique : ArticleRubriques.TECHNOLOGY);
+
+
+        setFormData({ title, content, rubrique });
+      } else {
+        setFormData({ title: "", content: "", rubrique: ArticleRubriques.TECHNOLOGY });
+      }
+    }
+    initiateDatas()
+    
+  }, [initialData, initialFormData, isArticle]);
+
+
+  const isEditing = !!initialData;
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
+    
+  };
+
+  const handleArticleChange = (name: string, value: string | File, type?: string) => {
+    setArticleFormData(prevData => ({
+        ...prevData,
+        [name]: type === 'number' ? Number(value) : type === 'file' ? value as File : value,
+    }));
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     try {
+      let result: DbArticle | undefined | {success: boolean};
+      const currentId = initialData?.id;
       if (isArticle) {
-        const newArticle: Article = {
-          title: formData.title,
-          content: formData.contenu,
-          rubrique: formData.categorie,
-        };
-
-        console.log("Objet Article à Soumettre:", newArticle);
-
-        AddArticle(newArticle)
-        alert(`Article soumis ! Titre : ${newArticle.title} / Rubrique : ${newArticle.rubrique}`);
-
-      } else if (isMedia) {
-        if (!file) {
-          alert("Veuillez sélectionner un fichier");
-          return;
+        const article = new FormData()
+        article.append('title', articleFormData["title"] as string)
+        article.append('content', articleFormData["content"] as string )
+        article.append('rubrique', articleFormData["rubrique"] as string)
+        article.append('file', articleFormData["file"] as File)
+        console.log("Aperçu de l'article : ")
+        console.log(article)
+        result = await AddArticle(article, false)
+        if (result) {
+          if (setter) {
+            console.log("article sauvegardé localement")
+            setter(result)
+          }
+          alert(isEditing ? "Mis à jour !" : "Publié !");
+          console.log(result)
+          setFormData({ title: "", content: "", rubrique: "tech" });
+          onSuccess();
         }
-        const newMedia: Media = {
-          title: formData.title,
-          name: formData.type,
-          rubrique: formData.categorie,
-          file,
-          type: formData.type
-        }
-        const mediaFormData = new FormData()
-        mediaFormData.append('file', file as File )
-        mediaFormData.append("rubrique", formData.categorie)
-        console.log("Objet Media à Soumettre:", newMedia);
-        AddMedia(mediaFormData)
-        if (setMedias) {
-          const newMedias : DbMedia[] = (await FetchMedias()) as DbMedia[]
-          setMedias(newMedias)
-        }
-        
+        return
       }
-      else {
-        console.log("Données Newsletter à Soumettre:", formData);
-        alert(`Newsletter soumise ! Titre : ${formData.title}`);
+
+      if (isEditing && currentId) {
+        result = await UpdateNewsletter(currentId, formData as INewsletter);
+      } else {
+        result = await AddNewsletter(formData as INewsletter);
+      }
+
+      if (result) {
+        alert(isEditing ? "Mis à jour !" : "Publié !");
+        console.log(result)
+        setFormData({ title: "", content: "", rubrique: "tech" });
+        await onSuccess();
       }
     } catch (error) {
-      console.log((error as { message: string }).message)
+      console.error("Erreur:", error);
     }
-
-
-  };
-  // Rendre le conteneur responsive
-  const container: React.CSSProperties = {
-    backgroundColor: '#50789B',
-    maxWidth: '500px', // Largeur maximale pour les grands écrans
-    width: '90%', // Occupe 90% de la largeur disponible
-    minHeight: 'auto', // Hauteur s'adapte au contenu
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif',
-    borderRadius: '25px',
-    margin: '20px auto', // Centre le bloc
-    boxSizing: 'border-box', // Assure que padding est inclus dans la largeur/hauteur
   };
 
-  const labelStyle: React.CSSProperties = {
-    color: 'white',
-    fontWeight: 'bold',
-    marginBottom: '8px',
-    display: 'block',
-    fontSize: '16px',
-    marginTop: '20px',
-  };
+  const container: React.CSSProperties = { backgroundColor: '#50789B', maxWidth: '100%', width: '90%', padding: '30px', fontFamily: 'Arial, sans-serif', borderRadius: '25px', margin: '0 auto', boxSizing: 'border-box' };
+  const labelStyle: React.CSSProperties = { color: 'white', fontWeight: 'bold', marginBottom: '8px', display: 'block', fontSize: '25px', marginTop: '20px' };
+  const inputBaseStyle: React.CSSProperties = { backgroundColor: '#2D4459', color: 'white', padding: '12px', borderRadius: '8px', border: 'none', width: '100%', boxSizing: 'border-box', fontSize: '16px', outline: 'none' };
+  const textareaStyle: React.CSSProperties = { ...inputBaseStyle, minHeight: '150px', resize: 'vertical' };
+  const selectStyle: React.CSSProperties = { ...inputBaseStyle, appearance: 'none' };
+  const buttonStyle: React.CSSProperties = { backgroundColor: '#E76C5B', color: 'white', padding: '15px 0', borderRadius: '8px', border: 'none', width: '100%', fontSize: '18px', fontWeight: 'bold', cursor: 'pointer', marginTop: '40px' };
 
-  const inputBaseStyle: React.CSSProperties = {
-    backgroundColor: '#2D4459',
-    color: 'white',
-    padding: '12px',
-    borderRadius: '8px',
-    border: 'none',
-    width: '100%', // Reste à 100% pour remplir l'espace
-    boxSizing: 'border-box',
-    fontSize: '16px',
-    outline: 'none',
-  };
+  const renderField = (field: FormFieldConfig) => {
+        const containerClasses = "flex flex-col gap-1";
 
-  const textareaStyle: React.CSSProperties = {
-    ...inputBaseStyle,
-    minHeight: '150px',
-    resize: 'vertical',
-    whiteSpace: 'pre-wrap',
-  };
-
-
-  const selectStyle: React.CSSProperties = {
-    ...inputBaseStyle,
-    appearance: 'none',
-    paddingRight: '30px',
-  };
-
-  const buttonStyle: React.CSSProperties = {
-    backgroundColor: '#E76C5B',
-    color: 'white',
-    padding: '15px 0',
-    borderRadius: '8px',
-    border: 'none',
-    width: '100%', // Reste à 100%
-    fontSize: '18px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    marginTop: '40px',
-    marginBottom: '10px',
-  };
-
-  const titleStyle: React.CSSProperties = {
-    color: 'white',
-    fontSize: '24px',
-    fontWeight: 'bold',
-    marginBottom: '30px',
-    textAlign: 'center', // Ajout pour un meilleur centrage visuel
-  };
-
-  const formUlaire: React.CSSProperties = {
-    height: '100%'
-  }
-  const [file, setFile] = useState<File | undefined>(undefined);
-
+        switch (field.type) {
+            case 'select':
+                return (
+                    <div key={field.name} className={containerClasses}>
+                        <label style={labelStyle}>{field.label}</label>
+                        <div className="relative w-full">
+                            <select
+                                style={selectStyle}
+                                value={(articleFormData[field.name] as string) || ''}
+                                onChange={(e) => handleArticleChange(field.name, e.target.value)}
+                                required={field.required}
+                            >
+                                <option value="" disabled className="text-white/50">Sélectionner {field.label.toLowerCase()}</option>
+                                {field.options?.map(option => (
+                                    <option key={option.value} value={option.value}>{option.label}</option>
+                                ))}
+                            </select>
+                            <ChevronDown size={20} className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white" />
+                        </div>
+                    </div>
+                );
+            case 'file':
+                return (
+                    <div key={field.name} className={containerClasses}>
+                        <label style={labelStyle}>{field.label}</label>
+                        <label className="cursor-pointer">
+                            <input
+                                type={field.type}
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                placeholder={field.placeholder || ''}
+                                onChange={(e) => {
+                                  
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        const reader = new FileReader();
+                                        reader.onloadend = () => {
+                                            handleArticleChange(field.name, file as File, 'file');
+                                            setImageUrl(reader.result)
+                                        };
+                                        reader.readAsDataURL(file)
+                                    };
+                                }}
+                                required={field.required}
+                            />
+                            {articleFormData[field.name] || imageUrl  ? (
+                                <div className="mt-2">
+                                  
+                                    {/* eslint-disable-next-line @next/next/no-img-element*/}
+                                    <img src={ imageUrl as string} alt="Preview" className="max-w-full h-auto rounded-lg"/>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center bg-[#00283C99] rounded-lg p-10 cursor-pointer">
+                                    <Upload size={40} style={uploadIcon} />
+                                    <div style={uploadText}>cliquez pour uploader une image</div>
+                                </div>
+                            )}
+                        </label>
+                    </div>
+                );
+            case 'text':
+            case 'email':
+            case 'password':
+            case 'textarea':
+              return (
+                <div key={field.name} className={containerClasses}>
+                  <label style={labelStyle}>{field.label}</label>
+                  <textarea
+                    style={textareaStyle}
+                    placeholder={field.placeholder || ''}
+                    rows={6}
+                    value={(articleFormData[field.name] as string) || ''}
+                    onChange={(e) => handleArticleChange(field.name, e.target.value, field.type)} 
+                    required={field.required}
+                  />
+                  </div>
+                )
+            case 'number':
+            default:
+                return (
+                    <div key={field.name} className={containerClasses}>
+                        <label style={labelStyle}>{field.label}</label>
+                        <input
+                            type={field.type}
+                            style={inputBaseStyle}
+                            placeholder={field.placeholder || ''}
+                            value={(articleFormData[field.name] as string) || ''}
+                            onChange={(e) => handleArticleChange(field.name, e.target.value, field.type)} 
+                            required={field.required}
+                        />
+                    </div>
+                );
+        }
+    };
 
   return (
     <div style={container}>
-      <h2 style={titleStyle}>{titleText}</h2>
-      <Form action={`/admin/dashboard/${endpoint}`} onSubmit={handleSubmit} style={formUlaire}>
-        <div>
-          <label htmlFor="titre" style={labelStyle}>{label}</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            style={inputBaseStyle}
-            value={formData.title}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="contenu" style={labelStyle}>Contenu</label>
-          {isMedia ? null :<textarea
-            id="contenu"
-            name="contenu"
-            style={textareaStyle}
-            placeholder="le contenu................"
-            rows={8}
-            value={formData.contenu}
-            onChange={handleChange}
-          />
-          }
-        </div>
-        {isArticle || isMedia ? (<FileUpload setFile={setFile} />) : null}
-        <div>
-          <label htmlFor="categorie" style={labelStyle}>Catégorie</label>
-          <div style={{ position: 'relative' }}>
-            {
-              isArticle ?
-                <select
-                  id="categorie"
-                  name="categorie"
-                  style={selectStyle}
-                  value={formData.categorie}
-                  onChange={handleChange}
-                >
-                  {articleRubriques.map((rubrique) => <option key={rubrique} value={rubrique}>{rubrique}</option>)}
-                </select>
-                :
-                isMedia ? 
-                <select
-                  id="categorie"
-                  name="categorie"
-                  style={selectStyle}
-                  value={formData.categorie}
-                  onChange={handleChange}
-                >
-                  {rubriques.map((rubrique) => <option key={rubrique} value={rubrique}>{rubrique}</option>)}
-                </select> :
-                <select
-                  id="categorie"
-                  name="categorie"
-                  style={selectStyle}
-                  value={formData.categorie} // 👈 Value lié à l'état
-                  onChange={handleChange} // 👈 Gestion du changement
-                >
-                  <option value={Rubriques.TECHNOLOGY}> Technologie </option>
-                  <option value="Politique"> Politique </option>
-                  <option value="Économie"> Économie </option>
-                </select>}
-          </div>
-        </div>
 
-        <button type="submit" style={buttonStyle}>
-          Publier
-        </button>
-
-      </Form>
+      <h2 style={{ color: 'white', textAlign: 'center', fontSize: '25px', fontWeight: 'bold' }}>
+        {isEditing ? "Modifier" : (isArticle ? "Ajouter un Article" : "Nouvelle NewsLetter")}
+      </h2>
+      {
+        isArticle ? 
+          <form onSubmit={handleSubmit}>
+              {(fields as FormFieldConfig[]).map(field => renderField(field))}
+              <button type="submit" style={buttonStyle}>
+                {isEditing ? "Enregistrer les modifications" : "Publier"}
+              </button>
+          </form> :
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label style={labelStyle}>{"Titre de la NewsLetter"}</label>
+              <input
+                type="text"
+                id="titre"
+                name="titre"
+                style={inputBaseStyle}
+                value={(formData as Article).title}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>Contenu</label>
+              <textarea
+                name="contenu"
+                style={textareaStyle}
+                rows={8}
+                value={(formData as Article).content}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>Rubrique</label>
+              <select
+                name="categorie"
+                style={selectStyle}
+                value={(formData as Article).rubrique }
+                onChange={handleChange}
+              >
+                {rubriques.map((rub) => (
+                  <option key={rub} value={rub}>{rub}</option>
+                ))}
+              </select>
+            </div>
+            <button type="submit" style={buttonStyle}>
+              {isEditing ? "Enregistrer les modifications" : "Publier"}
+            </button>
+          </form>
+      }
+      
     </div>
-  )
+  );
 }

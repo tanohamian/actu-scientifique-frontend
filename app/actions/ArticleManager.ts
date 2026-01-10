@@ -1,16 +1,27 @@
 'use server'
 import { env } from '@/app/config/env'
 import { redirect } from 'next/navigation'
-import { Article } from '../admin/dashboard/newsletters/components/Affichage'
+import { Article, DbArticle } from '../admin/dashboard/newsletters/components/Affichage'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 
 
 
-export async function AddArticle(formData: Article) {
+export async function AddArticle(formData: Article | FormData , json: boolean =false, ) {
 
     const authToken = (await cookies()).get('authToken')?.value;
+    console.log("payload: ", formData)
+    const file = (formData as FormData).get('file') as File;
 
+    if (!file || file.size === 0) {
+        throw Error("Aucun fichier sélectionné ou fichier vide");
+    }
+
+    console.log("File details:", {
+        name: file.name,
+        size: file.size,
+        type: file.type
+    });
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
         redirect('/admin');
@@ -18,19 +29,25 @@ export async function AddArticle(formData: Article) {
     try {
         const response = await fetch(`${env.baseUrl}/articles/`, {
             method: 'POST',
-            headers: {
+            headers: json ? 
+                {
                 'Content-Type': 'application/json',
+                'Cookie': `authToken=${authToken}`,
+            } : {
+                
                 'Cookie': `authToken=${authToken}`,
             },
 
-            body: JSON.stringify(formData)
+            body: json? JSON.stringify(formData) : formData as FormData,
+
         })
 
         if (!response.ok) {
-            console.log(response)
-            throw new Error(`Erreur lors de la création de l'article  : ${response}`);
+            const errorData = response;
+            console.log("Server error response:", JSON.stringify(errorData));
+            throw Error(`Échec de l'upload du média : ${response.status} ${response.statusText}`);
         }
-
+        return (await response.json()).article as DbArticle
 
 
     } catch (error) {

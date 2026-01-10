@@ -4,7 +4,7 @@
 
 import ButtonComponent from '@/app/components/button';
 import SearchBarComponent from '@/app/components/searchBar';
-import EventDataTable, { TableData } from '@/app/components/eventDataTable';
+import ArticleDataTable, { ElementType } from '@/app/components/eventDataTable';
 import React, { useState } from 'react'
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
@@ -36,7 +36,7 @@ const mainHeaders = [
     { key: 'title', label: 'Titre', flexBasis: '38%' },
     { key: 'type', label: 'Type', flexBasis: '12%' },
     { key: 'rubrique', label: 'Categorie', flexBasis: '15%' },
-    { key: 'date', label: 'Date de publication', flexBasis: '20%' },
+    { key: 'createdAt', label: 'Date de publication', flexBasis: '20%' },
     { key: 'actions', label: 'Actions', flexBasis: '15%' },
 ];
 
@@ -44,8 +44,8 @@ const mainHeaders = [
 export default function ArticleClientPage({ initialArticles }: ArticleClientPageProps) {
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
-    const [editEvent, setEditEvent] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState<TableData | null>(null);
+    const [editArticle, setEditArticle] = useState(false);
+    const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
     const [viewMode] = useState<'list' | 'calendar'>('list');
     
     const [articles] = useState<Article[]>(initialArticles) 
@@ -55,39 +55,37 @@ export default function ArticleClientPage({ initialArticles }: ArticleClientPage
     }))
     
 
-    const handleEvent = () => {
+    const handleArticle = () => {
         setIsOpen(true);
     };
 
-    const handleSubmitEvent = () => {
+    const handleSubmitArticle = async () => {
         setIsOpen(false);
     };
 
     let initialData = {
         title: '',
-        lieu: '',
-        date: '',
-        heure: '',
-        status: '',
+        content: '',
+        createdAt: '',
+        rubrique: '',
     };
 
-    const handleEditEvent = (item: TableData) => {
+    const handleEditArticle = (item: ElementType) => {
         console.log('Editing event:', item);
-        setSelectedEvent(item);
-        setEditEvent(true);
+        setSelectedArticle(item as Article);
+        setEditArticle(true);
     };
 
-    const handleSubmitEditEvent = () => {
-        setEditEvent(false);
+    const handleSubmitEditArticle = async() => {
+        setEditArticle(false);
     };
 
-    if (selectedEvent) {
+    if (selectedArticle) {
         initialData = {
-            title: selectedEvent.title as string || '',
-            lieu: selectedEvent.lieu as string || '',
-            date: selectedEvent.date as string || '',
-            heure: selectedEvent.heure as string || '',
-            status: selectedEvent.status as string || '',
+            title: selectedArticle.title as string || '',
+            content: selectedArticle.content as string || '',
+            createdAt: selectedArticle.createdAt as string || '',
+            rubrique: selectedArticle.rubrique as string || '',
         };
     }
 
@@ -165,7 +163,7 @@ export default function ArticleClientPage({ initialArticles }: ArticleClientPage
                     <h1 className={textClasses}>Gestion des Articles</h1>
                     <h3 className={subTextClasses}>Gérer les posdcasts et les videos depuis cette interface</h3>
                 </div>
-                <ButtonComponent textButton='Ajouter un article' size='large' onclick={handleEvent} />
+                <ButtonComponent textButton='Ajouter un article' size='large' onclick={handleArticle} />
             </div>
 
             <div className={contentContainerClasses}>
@@ -182,11 +180,11 @@ export default function ArticleClientPage({ initialArticles }: ArticleClientPage
                   {
                     viewMode === 'list' ? (
                         <>
-                            <EventDataTable
+                            <ArticleDataTable
                                 tableTitle=""
                                 data={articles || []}
                                 columnHeaders={mainHeaders}
-                                handleEditEvent={handleEditEvent}
+                                handleEditEvent={handleEditArticle}
                             />
                         </>
                     ) : null
@@ -202,7 +200,7 @@ export default function ArticleClientPage({ initialArticles }: ArticleClientPage
             <AddElementModal
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
-                onSubmit={handleSubmitEvent}
+                onSubmit={handleSubmitArticle}
                 titleComponent="Ajouter un Article"
                 buttonTitle="Ajouter"
                 fields={ArticleFields}
@@ -210,9 +208,9 @@ export default function ArticleClientPage({ initialArticles }: ArticleClientPage
             />
 
             <AddElementModal
-                isOpen={editEvent}
-                onClose={() => setEditEvent(false)}
-                onSubmit={handleSubmitEditEvent}
+                isOpen={editArticle}
+                onClose={() => setEditArticle(false)}
+                onSubmit={handleSubmitEditArticle}
                 titleComponent="Modifier un média"
                 buttonTitle="Modifier"
                 fields={ArticleFields}

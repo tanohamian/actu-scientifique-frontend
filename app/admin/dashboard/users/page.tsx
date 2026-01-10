@@ -3,10 +3,11 @@ import ButtonComponent from "@/app/components/button";
 import SearchBarComponent from "@/app/components/searchBar";
 import React, { useEffect, useState/*, useTransition*/ } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
-import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
+import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/components/addElement';
 //import { useRouter } from 'next/navigation';
 import { DeleteUser, FetchUsers, UpdateRole } from "@/app/actions/Users";
 import { RegisterUser } from "@/app/actions/Auth";
+import { Product } from "../../page";
 
 export interface UserInterface {
     id?: string
@@ -58,9 +59,9 @@ export default function Utilisateurs() {
         setAddUser(true);
     };
 
-    const handleSubmitUser = async (formData: UserInterface) => {
+    const handleSubmitUser = async (formData: UserInterface | Product | InitialDataType) => {
         try {
-            const newUser = await RegisterUser(formData)
+            const newUser = await RegisterUser(formData as UserInterface)
             if (newUser && 'id' in newUser) {
                 console.log("nouvel utilisateur : ", newUser)
                 setUsers((prevUsers) => [...prevUsers, newUser as UserInterface])
@@ -79,9 +80,9 @@ export default function Utilisateurs() {
         setEditUser(true);
     };
 
-    const handleSubmitEditUser = async (formData: UserInterface) => {
+    const handleSubmitEditUser = async (formData: UserInterface | Product | InitialDataType) => {
         try {
-            const updatedUser = await UpdateRole(selectUserId, formData.roles)
+            const updatedUser = await UpdateRole(selectUserId, (formData as UserInterface).roles)
             if (updatedUser) {
                 setUsers((prevUsers) => prevUsers.map(u => u.id === updatedUser.id ? updatedUser : u))
                 setEditUser(false);

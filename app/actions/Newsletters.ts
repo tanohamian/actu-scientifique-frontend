@@ -1,16 +1,17 @@
 "use server"
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache';
+import { env } from '../config/env';
 
 export interface INewsletter {
     id?: string;
-    titre: string;
+    title: string;
     categorie: string;
     contenu: string;
-    createdAt?: string;
+    createdAt?: string | Date;
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const BASE_URL = env.baseUrl;
 
 async function getAuthHeaders() {
     const cookieStore = await cookies();

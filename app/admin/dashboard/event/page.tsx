@@ -3,7 +3,7 @@ import ButtonComponent from '@/app/components/button';
 import SearchBarComponent from '@/app/components/searchBar';
 import EventDataTable, { EventInterface, TableData } from '@/app/components/eventDataTable';
 import React, { useEffect, useState } from 'react'
-import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
+import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/components/addElement';
 import { useRouter } from 'next/navigation';
 import Calendar from '@/app/components/calendarCompenetWithFullCalendar';
 import { CreateEvent, DeleteEvent, FetchEvents, UpdateEvent } from '@/app/actions/EventsManager';
@@ -225,14 +225,14 @@ export default function EventPage() {
         }
     };
 
-    let initialData = {
+    let initialData : InitialDataType= {
         title: '',
         location: '',
         date: '',
         time: '',
         status: '',
     };
-    let initialDataLive = {
+    let initialDataLive : InitialDataType = {
         title: '',
         url: '',
         status: '',

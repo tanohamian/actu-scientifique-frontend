@@ -158,8 +158,8 @@ export default function AffichageTableau<T extends { id: number | string }>({
 
     if (sortBy) {
       result.sort((a, b) => {
-        const valA = (a as any)[sortBy];
-        const valB = (b as any)[sortBy];
+        const valA = (a as { [key: string]: string |undefined; })[sortBy];
+        const valB = (b as { [key: string]: string |undefined; })[sortBy];
 
         if (typeof valA === 'number' && typeof valB === 'number') {
           return valA - valB;
@@ -283,7 +283,7 @@ export default function AffichageTableau<T extends { id: number | string }>({
             isOpen={showModal}
             onClose={() => setShowModal(false)}
             titleComponent="Modifier Informations"
-            onSubmit={(updatedData) => {
+            onSubmit={async (updatedData) => {
               if (selectedItem && onEdit) {
                 onEdit({ ...selectedItem, ...updatedData });
               }

@@ -15,6 +15,7 @@ export const Categories = {
 export type Categories = typeof Categories[keyof typeof Categories]
 
 export interface Product {
+    title?: string
     id: string,
     name: string
     categories: Categories

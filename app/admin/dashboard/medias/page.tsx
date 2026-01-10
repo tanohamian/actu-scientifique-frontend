@@ -5,24 +5,27 @@ import ButtonComponent from '@/app/components/button';
 import SearchBarComponent from '@/app/components/searchBar';
 import EventDataTable, { ElementType, TableData } from '@/app/components/eventDataTable';
 import React, { useEffect, useState } from 'react'
-import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
+import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/components/addElement';
 
 import Filter, { IFilter } from '@/app/components/filter';
 import { DbMedia, Media } from '../newsletters/components/Affichage';
 
-import { DeleteMedia, FetchMedias } from '@/app/actions/MediasManager';
-import { Rubriques } from '@/app/components/FormComponent';
+import { AddMedia, DeleteMedia, FetchMedias } from '@/app/actions/MediasManager';
+import { MediaRubriques, Rubriques } from '@/app/components/FormComponent';
+import { Product } from '../../page';
 
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', type: 'text', placeholder: 'Entrez le titre du media', required: true },
     { name: 'type', label: 'Type', type: 'select', options: [{ value: 'photo', label: 'Photo' }, { value: 'video', label: 'Vidéo' }, { value: 'podcast', label: 'Podcast' }], required: true },
-    { name: 'rubrique', label: 'Catégorie', type: 'select', options: [{ value: Rubriques.TECHNOLOGY, label: 'Technologie' }, { value: 'Matériel', label: 'Matériel' }], required: true },
+    { name : 'file', label : "Fichier", type : "file" , required : true} ,
+    { name: 'rubrique', label: 'Catégorie', type: 'select', options: [{ value: MediaRubriques.TECHNOLOGY, label: 'Technologie' }, { value: MediaRubriques.ART, label: 'Art' }, {value: MediaRubriques.ONE_HEALTH, label : "Santé"}, {value: MediaRubriques.SCIENCE, label: "Science"}], required: true },
 ];
 
 const mainHeaders = [
-    { key: 'title', label: 'Titre', flexBasis: '38%' },
+    { key: 'title', label: 'Titre', flexBasis: '20%' },
     { key: 'type', label: 'Type', flexBasis: '12%' },
-    { key: 'rubrique', label: 'Categorie', flexBasis: '15%' },
+    { key: 'rubrique', label: 'Categorie', flexBasis: '18%' },
+    { key: 'url', label: 'URL', flexBasis: '15%' }, 
     { key: 'createdAt', label: 'Date de publication', flexBasis: '20%' },
     { key: 'actions', label: 'Actions', flexBasis: '15%' },
 ];
@@ -100,17 +103,39 @@ export default function MediaPage() {
         setIsOpen(true);
     };
 
-    const handleSubmitMedia = () => {
-        setIsOpen(false);
-    };
-
-    let initialData = {
+    let initialData : InitialDataType= {
         name: '',
         createdAt: '',
         title: "",
-        type : ""
+        type : "",
+        file: undefined,
 
     };
+
+    const handleSubmitMedia = async(data: Product | InitialDataType) => {
+        try {
+            data = data as InitialDataType
+            const media = new FormData()
+            media.append('title', data["title"] as string)
+            media.append('name', data["name"] as string)
+            media.append('type', data["type"] as string)
+            media.append('rubrique', data["rubrique"] as string)
+            if (data["file"]) {
+                media.append('file', data['file'] as File)
+                console.log("file found !")
+            }
+            console.log(media)
+            console.log(data)
+            await AddMedia(media)
+
+            setIsOpen(false);
+        } catch (error) {
+            console.log((error as Error).message)
+        }
+        
+    };
+
+    
 
     const handleEditMedia = async (item: ElementType) => {
         console.log('Editing event:', item);
@@ -126,7 +151,7 @@ export default function MediaPage() {
         
     };
 
-    const handleSubmitEditMedia = () => {
+    const handleSubmitEditMedia = async() => {
         setEditMedia(false);
     };
 

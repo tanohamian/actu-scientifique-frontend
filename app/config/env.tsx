@@ -1,3 +1,3 @@
 export const env = {
-    baseUrl : process.env.BASE_URL as string ? process.env.BASE_URL as string : "https://actuscientifique.com/actu-sciences"
+    baseUrl : process.env.API_MODE === 'local' as string ? process.env.LOCAL_BASE_URL as string : "https://actuscientifique.com/actu-sciences"
 }

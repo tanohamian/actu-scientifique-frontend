@@ -9,9 +9,10 @@ export interface TableData {
     id?: string
     title: string;
     name?: string;
+    rubrique?: string
     createdAt?: Date | string
     location?: string
-    status: 'en direct' | 'pas en direct';
+    status?: 'en direct' | 'pas en direct';
     date?: string;
     time?: string;
     url?: string;
@@ -19,35 +20,37 @@ export interface TableData {
 
 export interface EventInterface {
     id?: string
-    title: string
+    title?: string
     location?: string
     date?: Date | string
     description?: string
-    createdAt?: Date
+    createdAt?: Date | string
     time?: string
     url?: string
     status?: string
 }
-interface EventDataTableProps {
-    tableTitle: string;
-    data: TableData[] | Media[] | Article[] | EventLive[] | EventInterface[];
-    isMedia?: boolean;
-
-    columnHeaders: { key: string; label: string; flexBasis: string }[];
-    handleEditEvent?: (item: TableData) => void;
-    handleDeleteEvent?: (item: TableData) => void;
-}
 
 export type ElementType = Media | Article | TableData
 
-const DeleteIcon = () => (
-    <button
-        className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
-    >
-        <Trash2 size={20} />
-    </button>
-);
+interface EventDataTableProps {
+    tableTitle: string;
+    data: TableData[] | Media[] | Article[] | EventInterface[];
+    isMedia?: boolean;
 
+    columnHeaders: { key: string; label: string; flexBasis: string }[];
+    handleEditEvent?: (item: ElementType) => void;
+    handleDeleteEvent?: (item: ElementType) => void;
+}
+
+/*
+    const DeleteIcon = () => (
+        <button
+            className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
+        >
+            <Trash2 size={20} />
+        </button>
+    );
+*/
 const getStatusClasses = (status: TableData['status']): string => {
     switch (status) {
         case 'en direct':
@@ -96,7 +99,7 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                 ${isActionColumn ? 'mt-3 md:mt-0 justify-end md:justify-start' : 'mb-1 md:mb-0'}
                             `;
 
-                            let content: React.ReactNode =(item as unknown as Record<string, unknown>)[header.key]  as React.ReactNode|| '';
+                            let content: React.ReactNode = (item as unknown as Record<string, unknown>)[header.key] as React.ReactNode || '';
 
                             if (header.key === 'status') {
                                 content = (
