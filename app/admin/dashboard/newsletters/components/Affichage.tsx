@@ -7,12 +7,12 @@ import { FetchNewsletters, DeleteNewsletter } from '@/app/actions/Newsletters';
 import { File } from 'buffer';
 
 export const ArticleRubriques = {
-    HEALTH : "une seule santé",
-    TECHNOLOGY : "tech",
-    ECOHUMANITY : "éco-humanité",
+    HEALTH: "une seule santé",
+    TECHNOLOGY: "tech",
+    ECOHUMANITY: "éco-humanité",
     OPPORTUNITY: "opportunité",
-    CALENDAR : "agenda",
-    PORTRAITSDISCOVERIES : "portraits et découvertes"
+    CALENDAR: "agenda",
+    PORTRAITSDISCOVERIES: "portraits et découvertes"
 } as const
 export type ArticleRubriques = typeof ArticleRubriques[keyof typeof ArticleRubriques];
 
@@ -25,21 +25,10 @@ export enum AffichageType {
 
 export interface Newsletter {
     id: string;
-    titre: string;
+    title: string;
     categorie: string;
-<<<<<<< HEAD
-    contenu: string;
-    createdAt: string;
-}
-
-export interface Article {
-    id: string;
-    titre: string;
-    contenu: string;
-    rubrique: string;
-=======
     content?: string;
-    createdAt: string |Date;
+    createdAt: string | Date;
 }
 
 export interface Article {
@@ -48,8 +37,7 @@ export interface Article {
     illustrationUrl?: string;
     content: string;
     rubrique?: string;
-    createdAt ?: Date | string
->>>>>>> 5c21d568c846579b801fbbdc49d6d3f69f5abfe6
+    createdAt?: Date | string
 }
 
 export interface DbMedia {
@@ -63,13 +51,13 @@ export interface DbMedia {
     type: string;
 }
 
-export interface DbArticle{
-    id:string
-    title:string
-    content:string
-    rubrique:ArticleRubriques
+export interface DbArticle {
+    id: string
+    title: string
+    content: string
+    rubrique: ArticleRubriques
     illustrationUrl?: string;
-    une:boolean
+    une: boolean
     createdAt: Date | string
 }
 
@@ -161,7 +149,7 @@ export default function Affichage({
                 }
             }
             if (!filterMatch) return false;
-            const currentTitle = item.titre || '';
+            const currentTitle = item.title || '';
             return currentTitle.toLowerCase().includes(searchTerm.toLowerCase());
         });
     }, [itemList, activeFilter, searchTerm, type]);
@@ -171,16 +159,16 @@ export default function Affichage({
             const article = item as Article;
             return (
                 <>
-                    <td style={styles.td}>{article.titre?.substring(0, 35)}...</td>
+                    <td style={styles.td}>{article.title?.substring(0, 35)}...</td>
                     <td style={styles.td}>{article.rubrique}</td>
-                    <td style={styles.td}>{article.contenu?.substring(0, 35)}...</td>
+                    <td style={styles.td}>{article.content?.substring(0, 35)}...</td>
                 </>
             );
         } else {
             const newsletter = item as Newsletter;
             return (
                 <>
-                    <td style={styles.td}>{newsletter.titre}</td>
+                    <td style={styles.td}>{newsletter.title}</td>
                     <td style={styles.td}>{newsletter.categorie}</td>
                     <td style={styles.td}>{newsletter.createdAt ? new Date(newsletter.createdAt).toLocaleDateString('fr-FR') : '-'}</td>
                 </>
@@ -232,7 +220,7 @@ export default function Affichage({
                                         </button>
                                         <button
                                             style={styles.iconButton}
-                                            onClick={() => handleDelete(item.id)}
+                                            onClick={() => handleDelete(item.id as string)}
                                         >
                                             <Trash2 size={18} />
                                         </button>

@@ -6,6 +6,7 @@ import { Product } from "../admin/page";
 import { env } from "../config/env";
 import Image from "next/image";
 import { ElementType } from "./eventDataTable";
+import { DbArticle } from "../admin/dashboard/newsletters/components/Affichage";
 
 export interface FormFieldConfig {
     name: string;
@@ -22,7 +23,7 @@ export type InitialDataType = { [key: string]: string | number | File | undefine
 interface AddElementModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: Product | InitialDataType) => Promise<void> | void;
+    onSubmit: (data: Product | InitialDataType | DbArticle) => Promise<void> | void;
     titleComponent: string;
     buttonTitle: string;
     fields: FormFieldConfig[];
@@ -54,12 +55,12 @@ export const uploadIcon: React.CSSProperties = {
 
 export default function AddElementModal({ isOpen, onClose, onSubmit, titleComponent, buttonTitle, fields, initialData = {} }: AddElementModalProps) {
 
-    
+
     const [imageUrl, setImageUrl] = useState<string | ArrayBuffer | null>("")
     const initialFormData = useMemo(() => {
         return fields.reduce((acc, field) => {
             acc[field.name] = initialData[field.name] !== undefined ? initialData[field.name] : '';
-            if (field.name ==='illustrationUrl') {
+            if (field.name === 'illustrationUrl') {
                 setImageUrl(initialData[field.name] as string)
             }
             return acc;
@@ -68,7 +69,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
 
     const [formData, setFormData] = useState<InitialDataType>(initialFormData);
     useEffect(() => {
-        const set = async () =>{
+        const set = async () => {
             setFormData(initialFormData);
         }
         set()
@@ -96,7 +97,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
     const handleChange = (name: string, value: string | File, type?: string) => {
         setFormData(prevData => ({
             ...prevData,
-            [name]: type === 'number' ? Number(value) : type ==='file' ? value as File :  value,
+            [name]: type === 'number' ? Number(value) : type === 'file' ? value as File : value,
         }));
     };
 
@@ -141,7 +142,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                                     if (file) {
                                         const reader = new FileReader();
                                         reader.onloadend = () => {
-                                            handleChange(field.name, file );
+                                            handleChange(field.name, file);
                                             setImageUrl(reader.result)
                                         };
                                         reader.readAsDataURL(file)
@@ -149,10 +150,10 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                                 }}
                                 required={field.required}
                             />
-                            {formData[field.name] || field.name=== 'illustrationUrl'  ? (
+                            {formData[field.name] || field.name === 'illustrationUrl' ? (
                                 <div className="mt-2">
                                     {/* eslint-disable-next-line @next/next/no-img-element*/}
-                                    <img src={ imageUrl as string} alt="Preview" className="max-w-full h-auto rounded-lg"/>
+                                    <img src={imageUrl as string} alt="Preview" className="max-w-full h-auto rounded-lg" />
                                 </div>
                             ) : (
                                 <div className="flex flex-col items-center justify-center bg-[#00283C99] rounded-lg p-10 cursor-pointer">
