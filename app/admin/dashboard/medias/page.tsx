@@ -9,9 +9,9 @@ import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/compone
 
 import Filter, { IFilter } from '@/app/components/filter';
 import { DbMedia, Media } from '../newsletters/components/Affichage';
-
-import { AddMedia, DeleteMedia, FetchMedias } from '@/app/actions/MediasManager';
-import { MediaRubriques, Rubriques } from '@/app/components/FormComponent';
+import { Property } from "csstype"
+import { AddMedia, DeleteMedia, FetchMedias, UpdateMedia } from '@/app/actions/MediasManager';
+import { MediaRubriques } from '@/app/components/FormComponent';
 import { Product } from '../../page';
 
 const MediaFields: FormFieldConfig[] = [
@@ -22,12 +22,12 @@ const MediaFields: FormFieldConfig[] = [
 ];
 
 const mainHeaders = [
-    { key: 'title', label: 'Titre', flexBasis: '20%' },
-    { key: 'type', label: 'Type', flexBasis: '12%' },
-    { key: 'rubrique', label: 'Categorie', flexBasis: '18%' },
-    { key: 'url', label: 'URL', flexBasis: '15%' }, 
+    { key: 'title', label: 'Titre', flexBasis: '15%' },
+    { key: 'type', label: 'Type', flexBasis: '9%' },
+    { key: 'rubrique', label: 'Categorie', flexBasis: '15%', textAlign: "center" as Property.TextAlign},
+    { key: 'url', label: 'URL', flexBasis: '29%', type: 'url' }, 
     { key: 'createdAt', label: 'Date de publication', flexBasis: '20%' },
-    { key: 'actions', label: 'Actions', flexBasis: '15%' },
+    { key: 'actions', label: 'Actions', flexBasis: '12%' },
 ];
 
 export default function MediaPage() {
@@ -151,7 +151,27 @@ export default function MediaPage() {
         
     };
 
-    const handleSubmitEditMedia = async() => {
+    const handleSubmitEditMedia = async(data: Product | InitialDataType) => {
+        
+        try {
+            data = data as InitialDataType
+            const media = new FormData()
+            media.append('title', data["title"] as string)
+            media.append('name', data["name"] as string)
+            media.append('type', data["type"] as string)
+            media.append('rubrique', data["rubrique"] as string)
+            if (data["file"]) {
+                media.append('file', data['file'] as File)
+                console.log("file found !")
+            }
+            console.log(media)
+            console.log(data)
+            await UpdateMedia(media, selectedMedia?.id as string)
+
+            setIsOpen(false);
+        } catch (error) {
+            console.log((error as Error).message)
+        }
         setEditMedia(false);
     };
 

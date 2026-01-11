@@ -2,7 +2,7 @@
 import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Article, Media } from '../admin/dashboard/newsletters/components/Affichage';
-
+import { Property } from "csstype"
 
 export interface TableData {
     id?: string
@@ -36,7 +36,7 @@ interface EventDataTableProps {
     data: TableData[] | Media[] | Article[] | EventInterface[];
     isMedia?: boolean;
 
-    columnHeaders: { key: string; label: string; flexBasis: string }[];
+    columnHeaders: { key: string; label: string; flexBasis: string, textAlign?: Property.TextAlign, type ?:  string }[];
     handleEditEvent?: (item: ElementType) => void;
     handleDeleteEvent?: (item: ElementType) => void;
 }
@@ -64,7 +64,7 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
     
 
     return (
-        <div className={"bg-[#50789B] p-5 rounded-lg mt-5 shadow-xl font-sans "+ isMedia?  "w-full bg-[#50789B] p-5 rounded-lg mt-5 shadow-xl font-sans " : "w-200"}>
+        <div className={"bg-[#50789B] p-5 rounded-lg mt-5 shadow-xl font-sans " + isMedia?  "w-full bg-[#50789B] p-5 rounded-lg mt-5 shadow-xl font-sans " : "w-200"}>
             <h2 className="text-white text-xl mb-5 font-bold">{tableTitle}</h2>
 
             {/* En-tête (Desktop) */}
@@ -73,10 +73,11 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                     <div
                         key={header.key}
                         // Utilisation du style inline pour flexBasis car Tailwind ne le gère pas directement avec des pourcentages dynamiques
-                        style={{ flexBasis: header.flexBasis }}
+                        style={{ flexBasis: header.flexBasis, textAlign: header?.textAlign || "left"}}
                         className={`flex-shrink-0 flex-grow-0`}
                     >
-                        {header.label}
+                        
+                        <span>{header.label}</span>
                     </div>
                 ))}
             </div>
@@ -87,7 +88,8 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                         key={index} 
                         className="flex flex-col md:flex-row py-4 md:py-3 border-b border-white/25 items-start md:items-center text-white text-sm md:text-base"
                     >
-                        {columnHeaders.map(header => {
+                        {
+                            columnHeaders.map(header => {
                             const isActionColumn = header.key === 'actions';
 
                             const cellClasses = `
@@ -134,10 +136,24 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                     <span className="font-bold mr-2 md:hidden min-w-[80px]">
                                         {header.label}:
                                     </span>
-                                    {content}
+                                    {header.type === "url" ? (
+                                        <a 
+                                            href={content as string} 
+                                            className="hover:underline text-blue-400 lowercase italic"
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                        >
+                                            {content}
+                                        </a>
+                                    ) : (
+                                        <div style={ header.textAlign === "center" ? { margin :"auto auto" }: {}}>
+                                            {content}
+                                        </div>
+                                    )}
                                 </div>
                             );
-                        })}
+                        })
+                        }
                     </div>
                 ))}
             </div>

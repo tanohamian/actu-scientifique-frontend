@@ -50,6 +50,52 @@ export async function AddMedia(formData: FormData) {
 
     redirect('/admin/dashboard/medias');
 }
+
+export async function UpdateMedia(formData: FormData, id: string) {
+
+    const authToken = (await cookies()).get('authToken')?.value;
+    console.log("payload: ", formData)
+    const file = (formData as FormData).get('file') as File;
+
+    if (!file || file.size === 0) {
+        throw Error("Aucun fichier sélectionné ou fichier vide");
+    }
+
+    console.log("File details:", {
+        name: file.name,
+        size: file.size,
+        type: file.type
+    });
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin');
+    }
+    try {
+        const response = await fetch(`${env.baseUrl}/multimedia/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Cookie': `authToken=${authToken}`,
+            },
+            body: formData  
+        });
+
+        if (!response.ok) {
+            const errorData = response;
+            console.log("Server error response:", JSON.stringify(errorData));
+            throw Error(`Échec de l'upload du média : ${response.status} ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        console.log("Update successful:", result);
+        
+    } catch (error) {
+        console.error("Erreur lors de l'upload du média:");
+        console.log(error);
+        throw error; 
+    }
+
+    redirect('/admin/dashboard/medias');
+}
 export async function FetchMedias() {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
