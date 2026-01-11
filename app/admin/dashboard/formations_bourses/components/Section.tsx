@@ -4,7 +4,7 @@ import { Pencil, Trash2, Loader2 } from 'lucide-react';
 
 import { FetchTrainings, AddTraining, UpdateTraining, DeleteTraining, ITraining } from '@/app/actions/Trainings';
 import { FetchScholarships, AddScholarship, UpdateScholarship, DeleteScholarship, IScholarship } from '@/app/actions/Scholarships';
-import { FetchReports, AddReport, DeleteReport, UpdateReport, IReport } from '@/app/actions/Reports';
+import { FetchReports, AddReport, DeleteReport, UpdateReport, IReport } from '@/app/actions/ReportsManager';
 
 type DataItem = ITraining | IScholarship | IReport;
 
