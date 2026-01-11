@@ -22,12 +22,15 @@ const PublicationCard = ({ cardTitle, items }: PublicationCardProps) => {
                 {items.map((item, index) => {
                     const isEvent = 'title' in item;
                     
-                    const displayTitle : string | Date | undefined = isEvent ? item.title : item.titre ? item.titre : item.text;
+                    const displayTitle : string | undefined = isEvent ? item.title : item.titre ? item.titre : item.text;
                     
                     const rawDate = isEvent ? item.date : item.createdAt;
-                    const displayDate = rawDate 
-                        ? new Date(rawDate).toLocaleDateString() 
-                        : item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "Date inconnue";
+                    const displayDate = (() => {
+                        const d = rawDate ?? item.createdAt;
+                        return d
+                            ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                            : "Date inconnue";
+                    })();
 
                     return (
                         <li key={index} className={styles['list-item']}>

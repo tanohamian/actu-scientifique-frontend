@@ -1,8 +1,7 @@
 'use client';
 import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
-import { Article, Media } from '../admin/dashboard/newsletters/components/Affichage';
-import { EventLive } from '../admin/dashboard/event/page';
+import { Article, DbMedia } from '../admin/dashboard/newsletters/components/Affichage';
 import { Property } from "csstype"
 
 export interface TableData {
@@ -30,11 +29,11 @@ export interface EventInterface {
     status?: string
 }
 
-export type ElementType = Media | Article | TableData
+export type ElementType = DbMedia | Article | TableData
 
 interface EventDataTableProps {
     tableTitle: string;
-    data: TableData[] | Media[] | Article[] | EventInterface[];
+    data: TableData[] | DbMedia[] | Article[] | EventInterface[];
     isMedia?: boolean;
 
     columnHeaders: { key: string; label: string; flexBasis: string, textAlign?: Property.TextAlign, type ?:  string }[];
@@ -108,13 +107,13 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                     <span className={getStatusClasses((item as TableData).status)}>{(item as TableData).status}</span>
                                 );
                             }
-                            if (header.key === 'url') {
+                            /*if (header.key === 'url') {
                                 content = (
                                     <a href={(item as TableData).url} target="_blank" rel="noopener noreferrer">
                                         {(item as TableData).url}
                                     </a>
                                 );
-                            }
+                            }*/ 
 
                             if (isActionColumn) {
                                 content = (

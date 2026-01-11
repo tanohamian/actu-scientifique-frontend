@@ -6,7 +6,7 @@ import { Product } from "../admin/page";
 import { env } from "../config/env";
 import Image from "next/image";
 import { ElementType } from "./eventDataTable";
-import { DbArticle } from "../admin/dashboard/newsletters/components/Affichage";
+import { DbArticle, DbMedia } from "../admin/dashboard/newsletters/components/Affichage";
 
 export interface FormFieldConfig {
     name: string;
@@ -23,7 +23,7 @@ export type InitialDataType = { [key: string]: string | number | File | undefine
 interface AddElementModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: Product | InitialDataType | DbArticle) => Promise<void> | void;
+    onSubmit: (data: Product | InitialDataType ) => Promise<void> | void;
     titleComponent: string;
     buttonTitle: string;
     fields: FormFieldConfig[];

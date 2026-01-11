@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react'
 import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/components/addElement';
 
 import Filter, { IFilter } from '@/app/components/filter';
-import { DbMedia, Media } from '../newsletters/components/Affichage';
+import { DbMedia } from '../newsletters/components/Affichage';
 import { Property } from "csstype"
 import { AddMedia, DeleteMedia, FetchMedias, UpdateMedia } from '@/app/actions/MediasManager';
 import { MediaRubriques } from '@/app/components/FormComponent';
@@ -112,7 +112,7 @@ export default function MediaPage() {
 
     };
 
-    const handleSubmitMedia = async(data: Product | InitialDataType) => {
+    const handleSubmitMedia = async(data: Product | InitialDataType | DbMedia) => {
         try {
             data = data as InitialDataType
             const media = new FormData()
@@ -151,7 +151,7 @@ export default function MediaPage() {
         
     };
 
-    const handleSubmitEditMedia = async(data: Product | InitialDataType) => {
+    const handleSubmitEditMedia = async(data: Product | InitialDataType | DbMedia) => {
         
         try {
             data = data as InitialDataType
@@ -177,10 +177,10 @@ export default function MediaPage() {
 
     if (selectedMedia) {
         initialData = {
-            name: (selectedMedia as Media).name as string || '',
-            createdAt: (selectedMedia as Media).createdAt as string || '',
-            type : (selectedMedia as Media).type,
-            title: (selectedMedia as Media).title
+            name: (selectedMedia as DbMedia).name as string || '',
+            createdAt: (selectedMedia as DbMedia).createdAt as string || '',
+            type : (selectedMedia as DbMedia).type,
+            title: (selectedMedia as DbMedia).title
         };
     }
 
@@ -232,7 +232,7 @@ export default function MediaPage() {
                     <EventDataTable
                         tableTitle=""
                         isMedia={true}
-                        data={medias as Media[]}
+                        data={medias as DbMedia[]}
                         columnHeaders={mainHeaders}
                         handleEditEvent={handleEditMedia}
                         handleDeleteEvent={handleDeleteMedia}
