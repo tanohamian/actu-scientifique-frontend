@@ -25,12 +25,6 @@ export default function Page() {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const newsletters: Newsletter[] = [
-        { id: "1", titre: "Utilisation de l'IA dans le journalisme", categorie: 'Technologie', createdAt: '14/10/2025' },
-        { id: "2", titre: "Utilisation de l'IA dans le journalisme", categorie: 'Une seule santé', createdAt: '14/10/2025' },
-        { id: "3", titre: "Utilisation de l'IA dans le journalisme", categorie: 'Technologie', createdAt: '14/10/2025' }
-    ];
-
     const container: React.CSSProperties = {
         minHeight: '100vh',
         padding: isMobile ? '20px' : '40px',
@@ -47,14 +41,14 @@ export default function Page() {
         gap: '30px',
         width: isMobile ? '100%' : 'auto'
     };
-    
+
     const rightSection: React.CSSProperties = {
         width: isMobile ? '100%' : '350px',
         height: 'fit-content',
-        alignItems:'flex-start',
-        padding:"27px"
+        alignItems: 'flex-start',
+        padding: "0px"
     };
-    
+
     const titre: React.CSSProperties = {
         color: 'white',
         fontSize: isMobile ? '28px' : '36px',

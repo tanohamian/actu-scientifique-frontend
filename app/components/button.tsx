@@ -7,16 +7,16 @@ interface ButtonText {
     size?: 'small' | 'medium' | 'large' | 'big';
 }
 
-export default function ButtonComponent({ 
-    textButton, 
-    onclick, 
+export default function ButtonComponent({
+    textButton,
+    onclick,
     size = 'medium',
 }: ButtonText) {
-    
+
 
 
     const baseClasses = "bg-[#E65A46] text-white font-medium rounded-lg border-none transition-all duration-200 ease-in-out whitespace-nowrap flex justify-center items-center font-sans";
-    
+
     const getSizeClasses = () => {
         switch (size) {
             case 'small':
@@ -42,8 +42,8 @@ export default function ButtonComponent({
     };
 
     return (
-        <button 
-            className={finalClasses} 
+        <button
+            className={finalClasses}
             onClick={handleClick}
         >
             {textButton}

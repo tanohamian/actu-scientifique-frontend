@@ -2,6 +2,7 @@
 import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Article, Media } from '../admin/dashboard/newsletters/components/Affichage';
+import { EventLive } from '../admin/dashboard/event/page';
 import { Property } from "csstype"
 
 export interface TableData {
@@ -29,7 +30,7 @@ export interface EventInterface {
     status?: string
 }
 
-export type ElementType = Media|Article|TableData
+export type ElementType = Media | Article | TableData
 
 interface EventDataTableProps {
     tableTitle: string;
@@ -60,11 +61,11 @@ const getStatusClasses = (status: TableData['status']): string => {
     }
 };
 
-export default function DataTable({ tableTitle, data, columnHeaders, handleEditEvent, handleDeleteEvent, isMedia= false }: EventDataTableProps) {
-    
+export default function DataTable({ tableTitle, data, columnHeaders, handleEditEvent, handleDeleteEvent, isMedia = false }: EventDataTableProps) {
+
 
     return (
-        <div className={"bg-[#50789B] p-5 rounded-lg mt-5 shadow-xl font-sans " + isMedia?  "w-full bg-[#50789B] p-5 rounded-lg mt-5 shadow-xl font-sans " : "w-200"}>
+        <div className={"bg-[#50789B] p-5 rounded-lg mt-5 shadow-xl font-sans " + isMedia ? "w-full bg-[#50789B] p-5 rounded-lg mt-5 shadow-xl font-sans " : "w-200"}>
             <h2 className="text-white text-xl mb-5 font-bold">{tableTitle}</h2>
 
             {/* En-tête (Desktop) */}
@@ -84,8 +85,8 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
 
             <div className="max-h-[40vh] overflow-y-auto overflow-x-hidden">
                 {data.map((item, index) => (
-                    <div 
-                        key={index} 
+                    <div
+                        key={index}
                         className="flex flex-col md:flex-row py-4 md:py-3 border-b border-white/25 items-start md:items-center text-white text-sm md:text-base"
                     >
                         {
@@ -100,11 +101,18 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                 ${isActionColumn ? 'mt-3 md:mt-0 justify-end md:justify-start' : 'mb-1 md:mb-0'}
                             `;
 
-                            let content: React.ReactNode =(item as unknown as Record<string, unknown>)[header.key]  as React.ReactNode|| '';
+                            let content: React.ReactNode = (item as unknown as Record<string, unknown>)[header.key] as React.ReactNode || '';
 
                             if (header.key === 'status') {
                                 content = (
                                     <span className={getStatusClasses((item as TableData).status)}>{(item as TableData).status}</span>
+                                );
+                            }
+                            if (header.key === 'url') {
+                                content = (
+                                    <a href={(item as TableData).url} target="_blank" rel="noopener noreferrer">
+                                        {(item as TableData).url}
+                                    </a>
                                 );
                             }
 

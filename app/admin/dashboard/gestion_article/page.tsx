@@ -16,20 +16,21 @@ import FormComponent from '@/app/components/FormComponent';
 const ArticleFields: FormFieldConfig[] = [
     { name: 'title', label: "Titre de l'article", placeholder: "Entrez le titre de l'article", required: true },
     { name: 'content', label: 'Contenu', type: 'textarea', required: true },
-    { name: 'file', label: "Fichier", placeholder: 'Ajoutez une illustration', type: 'file'},
-    { 
-        name: 'rubrique', 
-        label: 'Rubrique', 
-        type: 'select', 
+    { name: 'file', label: "Fichier", placeholder: 'Ajoutez une illustration', type: 'file' },
+    {
+        name: 'rubrique',
+        label: 'Rubrique',
+        type: 'select',
         options: [
-            { label: "Santé", value: "une seule santé"},
-            { value: 'tech', label: 'Technologie' }, 
-            { value: 'éco-humanité', label: 'Éco-humanité' }, 
-            { value: "opportunité", label:"Opportunités" }, 
-            { label: "Agenda", value: "agenda"},
-            { label: "Portraits et découverte", value: "portraits et découvertes"}
+            { label: "Santé", value: "une seule santé" },
+            { value: 'tech', label: 'Technologie' },
+            { value: 'éco-humanité', label: 'Éco-humanité' },
+            { value: "opportunité", label: "Opportunités" },
+            { label: "Agenda", value: "agenda" },
+            { label: "Portraits et découverte", value: "portraits et découvertes" }
         ],
-        required: true },
+        required: true
+    },
 
 ];
 
@@ -48,11 +49,11 @@ export default function ArticlePage() {
     const [isOpen, setIsOpen] = useState(false);
     const [editArticle, setEditArticle] = useState(false);
     const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-    const [filters] = useState<IFilter[]>(mainHeaders.map((header)=>{
-      return {value: header.key, label: header.label}
+    const [filters] = useState<IFilter[]>(mainHeaders.map((header) => {
+        return { value: header.key, label: header.label }
     }))
-    const [articles, setArticles] = useState<DbArticle[]>([])  
- 
+    const [articles, setArticles] = useState<DbArticle[]>([])
+
     const pageContainerClasses = `
         font-sans
         h-320
@@ -105,7 +106,7 @@ export default function ArticlePage() {
         justify-center 
         md:justify-between
     `;
-    
+
     const searchBarWrapperClasses = `
         flex-grow 
         w-full 
@@ -122,23 +123,23 @@ export default function ArticlePage() {
         lg:mt-0 
     `;
 
-    const [article, setArticle] = useState<DbArticle>(); 
+    const [article, setArticle] = useState<DbArticle>();
 
-    const handleSubmitArticle = () => {
-        console.log({article})
-        if (!article) {
+    const handleSubmitArticle = (newArticle?: DbArticle) => {
+        console.log({ newArticle })
+        if (!newArticle) {
             alert("Aucun article à ajouter")
             return
         }
-        setArticles(prevState => [...prevState, article as DbArticle]);
+        setArticles(prevState => [...prevState, newArticle]);
         setIsOpen(false);
     };
 
-    let initialData : InitialDataType = {
+    let initialData: InitialDataType = {
         title: '',
-        content:  '',
+        content: '',
         illustationUrl: "https://via.placeholder.com/150",
-        createdAt:  (new Date()).toLocaleDateString(),
+        createdAt: (new Date()).toLocaleDateString(),
         rubrique: ArticleRubriques.ECOHUMANITY as string
     };
 
@@ -154,7 +155,7 @@ export default function ArticlePage() {
         await DeleteArticle(item.id as string)
     };
 
-    const handleSubmitEditArticle = async() => {
+    const handleSubmitEditArticle = async () => {
         setEditArticle(false);
     };
 
@@ -163,7 +164,7 @@ export default function ArticlePage() {
             title: selectedArticle.title as string || '',
             content: selectedArticle.content as string || '',
             createdAt: selectedArticle.createdAt as string || '',
-            rubrique: selectedArticle.rubrique as ArticleRubriques|| '',
+            rubrique: selectedArticle.rubrique as ArticleRubriques || '',
             illustationUrl: selectedArticle.illustrationUrl
         };
     }
@@ -172,20 +173,21 @@ export default function ArticlePage() {
         const fetchArtcicles = async () => {
             try {
                 const response = await FetchArticles() as DbArticle[]
-                console.log({response})
+                console.log({ response })
                 if (response) {
-                    setArticles(response.map(article =>{
-                        const createdAt  = new Date(article.createdAt)
+                    setArticles(response.map(article => {
+                        const createdAt = new Date(article.createdAt)
                         article.createdAt = createdAt.toLocaleString("fr")
-                            console.log("date de création : ", article.createdAt)
-                        return article}))
+                        console.log("date de création : ", article.createdAt)
+                        return article
+                    }))
                 }
 
             } catch (err) {
                 console.log("erreur lors de la recuperations des utilisateurs : ", err)
             }
         }
-        
+
         fetchArtcicles()
     }, [])
 
@@ -206,7 +208,7 @@ export default function ArticlePage() {
                         <SearchBarComponent placeholder='Rechercher un media....' inputValue={inputValue} setInputValue={setInputValue} />
                     </div>
                     <Filter
-                      filters={filters}
+                        filters={filters}
                     />
                 </div>
                 <article className="flex flex-col lg:flex-row gap-8 h-full" >
@@ -219,29 +221,19 @@ export default function ArticlePage() {
                         handleDeleteEvent={handleDeleteArticle}
                     />
 
-                  <article className={rightSectionClasses}>
-                    <FormComponent 
-                        isArticle={true} 
-                        initialArticleData={initialData}
-                        fields={ArticleFields}
-                        onSuccess={handleSubmitArticle}
-                        setter={setArticle}
-                    />
-                  </article>
+                    <article className={rightSectionClasses}>
+                        <FormComponent
+                            isArticle={true}
+                            initialArticleData={initialData}
+                            fields={ArticleFields}
+                            onSuccess={handleSubmitArticle}
+                        //setter={setArticle}
+                        />
+                    </article>
                 </article>
-                
-              
-            </div>
 
-            <AddElementModal
-                isOpen={isOpen}
-                onClose={() => setIsOpen(false)}
-                onSubmit={handleSubmitArticle}
-                titleComponent="Ajouter un Article"
-                buttonTitle="Ajouter"
-                fields={ArticleFields}
-                initialData={initialData}
-            />
+
+            </div>
 
             <AddElementModal
                 isOpen={editArticle}

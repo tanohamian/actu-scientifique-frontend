@@ -7,12 +7,12 @@ import { FetchNewsletters, DeleteNewsletter } from '@/app/actions/Newsletters';
 import { File } from 'buffer';
 
 export const ArticleRubriques = {
-    HEALTH : "une seule santé",
-    TECHNOLOGY : "tech",
-    ECOHUMANITY : "éco-humanité",
+    HEALTH: "une seule santé",
+    TECHNOLOGY: "tech",
+    ECOHUMANITY: "éco-humanité",
     OPPORTUNITY: "opportunité",
-    CALENDAR : "agenda",
-    PORTRAITSDISCOVERIES : "portraits et découvertes"
+    CALENDAR: "agenda",
+    PORTRAITSDISCOVERIES: "portraits et découvertes"
 } as const
 export type ArticleRubriques = typeof ArticleRubriques[keyof typeof ArticleRubriques];
 
@@ -28,7 +28,7 @@ export interface Newsletter {
     title: string;
     categorie: string;
     content?: string;
-    createdAt: string |Date;
+    createdAt: string | Date;
 }
 
 export interface Article {
@@ -37,11 +37,11 @@ export interface Article {
     illustrationUrl?: string;
     content: string;
     rubrique?: string;
-    createdAt ?: Date | string
+    createdAt?: Date | string
 }
 
 export interface DbMedia {
-    id: string;
+    id: number;
     title: string;
     name: string;
     rubrique: string;
@@ -51,13 +51,13 @@ export interface DbMedia {
     type: string;
 }
 
-export interface DbArticle{
-    id:string
-    title:string
-    content:string
-    rubrique:ArticleRubriques
+export interface DbArticle {
+    id: string
+    title: string
+    content: string
+    rubrique: ArticleRubriques
     illustrationUrl?: string;
-    une:boolean
+    une: boolean
     createdAt: Date | string
 }
 
@@ -71,17 +71,6 @@ interface AffichageProps {
     items?: ItemType[];
     onEdit?: (item: ItemType) => void;
 }
-export interface Media {
-    id?: string
-    title: string
-    name: string;
-    file?: File
-    rubrique?: string
-    type: string
-    createdAt?: string
-    publicationDate?: string;
-}
-
 
 const styles = {
     container: { backgroundColor: '#50789B', width: '100%', maxWidth: '809px', padding: '40px', fontFamily: 'Arial, sans-serif', borderRadius: '20px', minHeight: '468px', display: 'flex', flexDirection: 'column' as const, boxSizing: 'border-box' as const },
@@ -123,10 +112,7 @@ export default function Affichage({
     }, [type]);
 
     useEffect(() => {
-        const dataload = async()=>{
-            loadData();
-        }
-        dataload()
+        loadData();
     }, [loadData]);
 
     const handleDelete = async (id: string) => {
@@ -198,7 +184,7 @@ export default function Affichage({
                         <Search size={20} style={styles.searchIcon} />
                         <input
                             type="text"
-                            placeholder="Rechercher par title....."
+                            placeholder="Rechercher par titre....."
                             style={styles.searchInput}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}

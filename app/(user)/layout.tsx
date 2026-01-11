@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import SearchBarComponent from '@components/searchBar';
 import IconComponent from '@components/Icons';
 import ButtonComponent from '@components/button';
-
-const iconSize = 'w-8 h-8'; 
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+const iconSize = 'w-8 h-8';
 
 export default function RootLayout({
   children,
@@ -13,6 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
+  const pathname = usePathname()
   const [inputValue, setInputValue] = useState('')
   const [activeTab, setActiveTab] = useState('Accueil')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -21,14 +23,14 @@ export default function RootLayout({
   const footerElement = "flex flex-row items-center"
 
   const navItems = [
-    'Accueil',
-    'Une seule santé',
-    'Tech',
-    'Agenda',
-    'Eco-humanité',
-    'Portraits & découvertes',
-    'Opportunités',
-    'À propos'
+    { 'Accueil': "/" },
+    { 'Une seule santé': "/one-health" },
+    { 'Tech': "/technology" },
+    { 'Agenda': "/agenda" },
+    { 'Eco-humanité': "/eco-humanity" },
+    { 'Portraits & découvertes': "/portrait-discovery" },
+    { 'Opportunités': "/opportunities" },
+    { 'À propos': "/about" }
   ];
 
   return (
@@ -43,15 +45,15 @@ export default function RootLayout({
           </div>
 
           <div className='w-full lg:flex-1 lg:max-w-md mx-0 lg:mx-4'>
-            <SearchBarComponent 
-              placeholder='Rechercher un sujet' 
-              inputValue={inputValue} 
-              setInputValue={setInputValue} 
+            <SearchBarComponent
+              placeholder='Rechercher un sujet'
+              inputValue={inputValue}
+              setInputValue={setInputValue}
             />
           </div>
 
           <div className='flex flex-row items-center gap-4 w-full lg:w-auto justify-between lg:justify-end'>
-            <div className='flex flex-row gap-2'> 
+            <div className='flex flex-row gap-2'>
               <IconComponent name='InstagramIcon' {...iconBaseProps} />
               <IconComponent name='FacebookIcon' {...iconBaseProps} />
               <IconComponent name='WhatsAppIcon' {...iconBaseProps} />
@@ -59,7 +61,7 @@ export default function RootLayout({
               <IconComponent name='LinkedIn' {...iconBaseProps} />
             </div>
 
-            <ButtonComponent textButton='Connexion' onclick={() => {}} /> 
+            <ButtonComponent textButton='Connexion' onclick={() => { }} />
           </div>
         </div>
 
@@ -83,25 +85,28 @@ export default function RootLayout({
             </button>
           </div>
 
-          <div className={`${
-            isMobileMenuOpen ? 'flex' : 'hidden'
-          } lg:flex flex-col lg:flex-row lg:flex-wrap justify-center lg:justify-around px-4 lg:px-4`}>
-            {navItems.map((item) => (
-              <button
-                key={item}
-                onClick={() => {
-                  setActiveTab(item)
-                  setIsMobileMenuOpen(false)
-                }}
-                className={`text-2xl w-full lg:w-auto rounded-lg   px-3 py-2 font-medium text-white text-left lg:text-center transition-all duration-200 ${
-                  activeTab === item
+          <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'
+            } lg:flex flex-col lg:flex-row lg:flex-wrap justify-center lg:justify-around px-4 lg:px-4`}>
+            {navItems.map((item, index) => {
+              const label = Object.keys(item)[0]
+              const href = Object.values(item)[0]
+              const isActive = pathname === href || pathname.startsWith(href + '/')
+              return (
+                <Link
+                  key={index}
+                  href={href}
+                  onClick={() => {
+                    setIsMobileMenuOpen(false)
+                  }}
+                  className={`text-2xl w-full lg:w-auto rounded-lg   px-3 py-2 font-medium text-white text-left lg:text-center transition-all duration-200 ${isActive
                     ? 'bg-[#E65A46]'
                     : 'hover:bg-white/10'
-                }`}
-              >
-                {item}
-              </button>
-            ))}
+                    }`}
+                >
+                  {label}
+                </Link>
+              )
+            })}
           </div>
         </nav>
       </header>
@@ -115,12 +120,12 @@ export default function RootLayout({
           <div className='flex flex-col'>
             <h2 className='text-white text-2xl font-bold mb-4'>Contacts & Localisations</h2>
             <div className={footerElement + ' mb-3'}>
-              <IconComponent name='Localisation' className={`text-white w-6 h-6 flex-shrink-0`}/>
-              <span className='text-white ml-3 text-sm lg:text-base'>Adresse de {"l'entreprise"}</span> 
+              <IconComponent name='Localisation' className={`text-white w-6 h-6 flex-shrink-0`} />
+              <span className='text-white ml-3 text-sm lg:text-base'>Adresse de {"l'entreprise"}</span>
             </div>
             <div className={footerElement}>
-              <IconComponent name='Phone' className={`text-white w-6 h-6 flex-shrink-0`}/>
-              <span className='text-white ml-3 text-sm lg:text-base'>+33 1 23 45 67 89</span> 
+              <IconComponent name='Phone' className={`text-white w-6 h-6 flex-shrink-0`} />
+              <span className='text-white ml-3 text-sm lg:text-base'>+33 1 23 45 67 89</span>
             </div>
           </div>
 
@@ -137,7 +142,7 @@ export default function RootLayout({
           </div>
         </div>
 
-        
+
         <div className=' border-white/20 py-4 px-4 text-center'>
           <p className='text-white/70 text-sm'>© 2026 - Tous droits réservés</p>
         </div>

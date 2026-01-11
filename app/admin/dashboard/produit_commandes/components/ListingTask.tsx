@@ -64,9 +64,8 @@ const styles = {
     width: '100%'
   } as React.CSSProperties,
   sortButton: {
-    backgroundColor: 'black',
+    backgroundColor: '#d54a36',
     color: 'white',
-    border: '1px solid rgba(255, 255, 255, 0.3)',
     borderRadius: '8px',
     padding: '10px 20px',
     marginLeft: '20px',
@@ -218,19 +217,42 @@ export default function AffichageTableau<T extends { id: number | string }>({
             </tr>
           </thead>
           <tbody>
-            {data.map((item, index) => {
-              const isLastRow = index === data.length - 1;
+            {filteredAndSortedData.map((item, index) => {
+              const isLastRow = index === filteredAndSortedData.length - 1;
               return (
                 <tr key={`${item.id}-${index}`}>
                   {columns.map((col) => {
                     const value = (item as Record<string, any>)[col.key];
-                    const displayValue = col.render ? col.render(value) : value;
+
+                    if (col.key === columns[0].key && (item as any).preview_image) {
+                      return (
+                        <td
+                          key={`${item.id}-${col.key}`}
+                          style={{ ...styles.td, ...(isLastRow ? styles.lastTd : {}) }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <img
+                              src={(item as any).preview_image}
+                              alt={value || 'preview'}
+                              style={{
+                                width: '50px',
+                                height: '50px',
+                                objectFit: 'cover',
+                                borderRadius: '4px'
+                              }}
+                            />
+                            <span>{col.render ? col.render(value) : value}</span>
+                          </div>
+                        </td>
+                      );
+                    }
 
                     return (
                       <td
                         key={`${item.id}-${col.key}`}
-                        style={{ ...styles.td, ...(isLastRow ? styles.lastTd : {}) }}>
-                        {displayValue}
+                        style={{ ...styles.td, ...(isLastRow ? styles.lastTd : {}) }}
+                      >
+                        {col.render ? col.render(value) : value}
                       </td>
                     );
                   })}

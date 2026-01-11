@@ -149,7 +149,8 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
     border: '2px dashed rgba(255, 255, 255, 0.3)',
     borderRadius: '8px',
     padding: '40px 20px',
-    textAlign: 'center',
+    //textAlign: 'center',
+    //alignItems: 'center',
     cursor: 'pointer',
     position: 'relative',
     overflow: 'hidden'
@@ -157,7 +158,7 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
 
   const uploadIcon: React.CSSProperties = {
     color: 'rgba(255, 255, 255, 0.6)',
-    marginBottom: '10px'
+    marginBottom: '10px',
   };
 
   const uploadText: React.CSSProperties = {
@@ -198,10 +199,10 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
           {imagePreview ? (
             <img src={imagePreview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '150px' }} />
           ) : (
-            <>
+            <div className='flex flex-col items-center justify-center'>
               <Upload size={40} style={uploadIcon} />
               <div style={uploadText}>cliquez pour uploader une image</div>
-            </>
+            </div>
           )}
         </label>
       </div>
