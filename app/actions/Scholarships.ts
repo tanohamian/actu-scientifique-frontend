@@ -11,7 +11,6 @@ export interface IScholarship {
     date: string;
 }
 
-// On utilise uniquement cette variable bien nommée
 
 async function getAuthHeaders() {
     const cookieStore = await cookies();

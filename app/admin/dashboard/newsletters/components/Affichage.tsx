@@ -27,7 +27,7 @@ export interface Newsletter {
     id: string;
     title: string;
     categorie: string;
-    content?: string;
+    contenu?: string;
     createdAt: string | Date;
 }
 
@@ -116,7 +116,6 @@ export default function Affichage({
     }, [loadData]);
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Voulez-vous vraiment supprimer cet élément ?")) return;
 
         try {
             let success = false;

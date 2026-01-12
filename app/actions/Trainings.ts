@@ -52,10 +52,11 @@ export async function AddTraining(data: ITraining) {
             revalidatePath('/admin/dashboard/formations_bourses');
             return { success: true };
         }
-        return { success: false, error: "Erreur lors de l'ajout" };
+        const errorData = await response.json();
+        return { success: false, error: errorData.message || "Échec de l'ajout" };
     } catch (error) {
-        return { success: false, error: "Erreur réseau" };
-        console.log(`Erreur lors de la creation : ${error}`)
+        console.log(`Erreur lors de la creation du training : ${error}`)
+        return
     }
 }
 

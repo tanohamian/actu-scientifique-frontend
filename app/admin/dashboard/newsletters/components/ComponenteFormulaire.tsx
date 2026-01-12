@@ -13,7 +13,7 @@ export enum Rubriques {
 
 interface FormPropos {
   isArticle: boolean;
-  initialData?: Newsletter| null;
+  initialData?: Newsletter | null;
   onSuccess?: () => void;
 }
 
@@ -21,25 +21,25 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
   const rubriques = Object.values(Rubriques) as string[];
 
   const [formData, setFormData] = useState({
-    titre: "",
+    title: "",
     contenu: "",
     categorie: "tech",
   });
 
   useEffect(() => {
-    const initiateDatas = async()=>{
+    const initiateDatas = async () => {
       if (initialData) {
-        const titre = initialData.titre || "";
+        const title = initialData.title || "";
         const contenu = initialData.contenu || "";
         const categorie = initialData.categorie
 
-        setFormData({ titre, contenu, categorie });
+        setFormData({ title, contenu, categorie });
       } else {
-        setFormData({ titre: "", contenu: "", categorie: "tech" });
+        setFormData({ title: "", contenu: "", categorie: "tech" });
       }
     }
     initiateDatas()
-    
+
   }, [initialData]);
 
   const isEditing = !!initialData;
@@ -64,8 +64,7 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
       }
 
       if (result?.success) {
-        alert(isEditing ? "Mis à jour !" : "Publié !");
-        setFormData({ titre: "", contenu: "", categorie: "tech" });
+        setFormData({ title: "", contenu: "", categorie: "tech" });
         if (onSuccess) onSuccess();
       }
     } catch (error) {
@@ -90,10 +89,10 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
           <label style={labelStyle}>{isArticle ? "Titre de l'article" : "Titre de la NewsLetter"}</label>
           <input
             type="text"
-            id="titre"
-            name="titre"
+            id="title"
+            name="title"
             style={inputBaseStyle}
-            value={formData.titre}
+            value={formData.title}
             onChange={handleChange}
             required
           />

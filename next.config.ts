@@ -6,10 +6,40 @@ const nextConfig: NextConfig = {
             bodySizeLimit: '5mb',
         },
     },
-     
-  /* config options here */
-  webpack(config) {
-    config.module.rules.push({
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'global.unitednations.entermediadb.net',
+                port: '',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'tse2.mm.bing.net',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'tse1.mm.bing.net',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'www.cameroon-tribune.cm',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'www.bing.com',
+                pathname: '/**',
+            }
+        ],
+    },
+
+    /* config options here */
+    webpack(config) {
+        config.module.rules.push({
             test: /\.svg$/i,
             issuer: { and: [/\.(js|ts|md)x?$/] }, // S'assure que cela ne s'applique qu'aux imports JS/TS
             use: [
@@ -24,7 +54,7 @@ const nextConfig: NextConfig = {
                             ],
                         },
                         // Permet d'injecter des props comme 'style' et 'onClick'
-                        typescript: true, 
+                        typescript: true,
                         ext: 'tsx', // Utiliser l'extension TSX pour les composants
                     },
                 },
@@ -32,7 +62,7 @@ const nextConfig: NextConfig = {
         });
 
         return config;
-  }
+    }
 };
 
 
