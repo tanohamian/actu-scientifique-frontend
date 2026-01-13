@@ -67,6 +67,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
         }, {} as InitialDataType);
     }, [fields, initialData]);
 
+    const [isImage, setIsImage] = useState(false)
     const [formData, setFormData] = useState<InitialDataType>(initialFormData);
     useEffect(() => {
         const set = async () => {
@@ -134,26 +135,29 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                         <label className="cursor-pointer">
                             <input
                                 type={field.type}
-                                accept="image/*"
+                                accept="image/*,video/*,audio/*,application/pdf"
                                 style={{ display: 'none' }}
                                 placeholder={field.placeholder || ''}
                                 onChange={(e) => {
                                     const file = e.target.files?.[0];
+                                    console.log("file in addElementModal")
+                                    console.log(file)
                                     if (file) {
-                                        const reader = new FileReader();
-                                        reader.onloadend = () => {
-                                            handleChange(field.name, file);
-                                            setImageUrl(reader.result)
-                                        };
-                                        reader.readAsDataURL(file)
-                                    };
+                                        handleChange(field.name, file);
+                                        setIsImage(file.type.startsWith('image/'))
+                                        const objectUrl = URL.createObjectURL(file);
+                                        setImageUrl(objectUrl);
+                                    }
                                 }}
                                 required={field.required}
                             />
                             {formData[field.name] || field.name === 'illustrationUrl' ? (
                                 <div className="mt-2">
-                                    {/* eslint-disable-next-line @next/next/no-img-element*/}
-                                    <img src={imageUrl as string} alt="Preview" className="max-w-full h-auto rounded-lg" />
+                                    {
+                                        isImage ? 
+                                        <img src={imageUrl as string} alt="Preview" className="max-w-full h-auto rounded-lg" /> : null
+                                    }
+                                    
                                 </div>
                             ) : (
                                 <div className="flex flex-col items-center justify-center bg-[#00283C99] rounded-lg p-10 cursor-pointer">
