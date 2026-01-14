@@ -7,6 +7,7 @@ import ButtonComponent from '@components/button';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Loupe from "@public/images/loupe.svg"
+import LoginRegisterComponent from '../components/login_register_Component';
 
 const iconSize = 'w-8 h-8';
 
@@ -18,8 +19,13 @@ export default function RootLayout({
 
   const pathname = usePathname()
   const [inputValue, setInputValue] = useState('')
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false)
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
+  const [isLoginOpen, setIsLoginOpen] = useState(false)
   const iconBaseProps = { className: `text-white ${iconSize}` };
   const footerElement = "flex flex-row items-center"
 
@@ -33,11 +39,23 @@ export default function RootLayout({
     { 'Opportunités': "/opportunities" },
     { 'À propos': "/about" }
   ];
-
+  const inputs = [
+    { typeInput: 'email', placeholderInput: 'Email', inputValue: email, setInputValue: setEmail },
+    { typeInput: 'password', placeholderInput: 'Mot de passe', inputValue: password, setInputValue: setPassword },
+  ];
+  const inputsRegister = [
+    { typeInput: 'text', placeholderInput: 'Nom', inputValue: firstName, setInputValue: setFirstName },
+    { typeInput: 'text', placeholderInput: 'Prenom', inputValue: lastName, setInputValue: setLastName },
+    { typeInput: 'email', placeholderInput: 'Email', inputValue: email, setInputValue: setEmail },
+    { typeInput: 'password', placeholderInput: 'Mot de passe', inputValue: password, setInputValue: setPassword },
+    { typeInput: 'password', placeholderInput: 'Confirmer le mot de passe', inputValue: password, setInputValue: setPassword },
+  ];
   return (
     <div className="m-0 p-0 bg-[#50789B] w-full min-h-screen flex flex-col">
+
       <header className="w-full  relative ">
-        {pathname === "/" && (
+
+        {pathname === "/" || pathname === "/susbscription" && (
           <div className="absolute right-10 top-20 lg:right-20 lg:top-24 xl:right-10 xl:top-12 2xl:right-20 2xl:top-6 hidden lg:block pointer-events-none z-10">
             <div className="w-80 h-80 lg:w-96 lg:h-96 xl:w-[600px] xl:h-[600px] 2xl:w-[1000px] 2xl:h-[1000px]">
               <Loupe
@@ -72,9 +90,29 @@ export default function RootLayout({
               <IconComponent name='LinkedIn' {...iconBaseProps} />
             </div>
 
-            <ButtonComponent textButton='Connexion' onclick={() => { }} />
+            <ButtonComponent textButton='Connexion' onclick={() => setIsLoginOpen(true)} />
+            {isLoginOpen && (
+              <LoginRegisterComponent
+                type='login'
+                title='Connexion'
+                inputs={inputs}
+                onClose={() => setIsLoginOpen(false)}
+                onSubmit={() => { setIsLoginOpen(false); setIsRegisterOpen(true) }}
+              />
+            )}
+            {isRegisterOpen && (
+              <LoginRegisterComponent
+                type='register'
+                title='Inscription'
+                inputs={inputsRegister}
+                onClose={() => setIsRegisterOpen(false)}
+                onSubmit={() => { setIsRegisterOpen(false); setIsLoginOpen(true) }}
+              />
+            )}
           </div>
         </div>
+
+
 
         <nav className='w-full  border-white/20 relative z-20'>
           <div className='lg:hidden flex justify-between items-center px-4 py-3'>

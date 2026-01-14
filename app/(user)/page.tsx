@@ -4,6 +4,7 @@ import ViewElement, { ViewElementProps } from "../components/viewElement";
 import { useState } from "react";
 import Pagination from "../components/pagination";
 import SocialNetworks from "../components/socialNetworks";
+import { useRouter } from "next/navigation";
 
 const dataFirstInformations: ViewElementProps[] = [
   {
@@ -118,6 +119,7 @@ const dataFirstInformations: ViewElementProps[] = [
 
 
 export default function Home() {
+  const router = useRouter()
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -133,11 +135,11 @@ export default function Home() {
 
 
       <div className="flex flex-col sm:flex-row gap-3 mb-12">
-        <button className="bg-[#E65A46] text-white font-medium rounded-lg border-none transition-all duration-200 hover:bg-[#d14a36] whitespace-nowrap flex justify-center items-center font-sans px-6 py-3 text-base md:text-lg lg:text-xl w-full sm:w-auto">
+        <button className="bg-[#E65A46] text-white font-medium rounded-lg border-none transition-all duration-200 hover:bg-[#d14a36] whitespace-nowrap flex justify-center items-center font-sans px-6 py-3 text-base md:text-lg lg:text-xl w-full sm:w-auto" onClick={() => router.push('/susbscription')}>
           S'abonner
         </button>
 
-        <button className="bg-white/10 rounded-lg p-3 w-full sm:w-auto sm:aspect-square hover:bg-white/20 transition-all flex items-center justify-center">
+        <button className="bg-white/10 rounded-lg p-3 w-full sm:w-auto sm:aspect-square hover:bg-white/20 transition-all flex items-center justify-center" onClick={() => router.push('/shop')}>
           <IconComponent
             name="ShoppingCartIcon"
             className="text-white w-6 h-6 flex-shrink-0"
@@ -160,6 +162,7 @@ export default function Home() {
                   title={item.title}
                   type={item.type}
                   description={item.description}
+                  onclick={() => router.push(`/${index + 1}`)}
                 />
               ))}
             </div>
