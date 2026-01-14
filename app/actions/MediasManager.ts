@@ -11,8 +11,13 @@ export async function AddMedia(formData: FormData) {
     console.log("payload: ", formData)
     const file = (formData as FormData).get('file') as File;
 
+    // Log de survie pour voir si Next.js a laissé passer le fichier
+    console.log("--- SERVER ACTION RECEIVE ---");
+    console.log("File exists:", !!file);
+    if (file) console.log("File size on server:", file.size);
+
     if (!file || file.size === 0) {
-        throw Error("Aucun fichier sélectionné ou fichier vide");
+        throw new Error("Aucun fichier sélectionné ou fichier vide");
     }
 
     console.log("File details:", {
@@ -36,12 +41,14 @@ export async function AddMedia(formData: FormData) {
         if (!response.ok) {
             const errorData = response;
             console.log("Server error response:", JSON.stringify(errorData));
+            if(response.status === 401) redirect('/admin');
             throw Error(`Échec de l'upload du média : ${response.status} ${response.statusText}`);
         }
 
         const result = await response.json();
         console.log("Upload successful:", result);
-        
+        return result.file as DbMedia;
+        redirect("/admin/dashboard/medias")
     } catch (error) {
         console.error("Erreur lors de l'upload du média:");
         console.log(error);

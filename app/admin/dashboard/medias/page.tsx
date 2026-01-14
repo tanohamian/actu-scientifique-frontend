@@ -116,17 +116,22 @@ export default function MediaPage() {
         try {
             data = data as InitialDataType
             const media = new FormData()
-            media.append('title', data["title"] as string)
+            media.append('title', data.title as string)
             media.append('name', data["name"] as string)
             media.append('type', data["type"] as string)
             media.append('rubrique', data["rubrique"] as string)
             if (data["file"]) {
                 media.append('file', data['file'] as File)
+                console.log("Contenu du FormData :");
+                for (const [key, value] of media.entries()) {
+                    console.log(key, value);
+                }
                 console.log("file found !")
             }
             console.log(media)
             console.log(data)
-            await AddMedia(media)
+            const newMedia = await AddMedia(media)
+            setMedias(prev => ([...prev,newMedia ]))
 
             setIsOpen(false);
         } catch (error) {

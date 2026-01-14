@@ -8,7 +8,7 @@ import { revalidatePath } from 'next/cache'
 
 
 export async function AddArticle(formData: Article | FormData , json: boolean =false, ) {
-
+    console.log(env)
     const authToken = (await cookies()).get('authToken')?.value;
     console.log("payload: ", formData)
     const file = (formData as FormData).get('file') as File;
@@ -59,6 +59,7 @@ export async function AddArticle(formData: Article | FormData , json: boolean =f
 }
 
 export async function FetchArticles() {
+        console.log(env)
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");

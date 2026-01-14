@@ -110,7 +110,7 @@ const Pagination: React.FC<PaginationProps> = ({
             <button
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-black/10 text-white hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-black/10 text-black-100 hover:bg-black/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 aria-label="Page suivante"
             >
                 <svg
