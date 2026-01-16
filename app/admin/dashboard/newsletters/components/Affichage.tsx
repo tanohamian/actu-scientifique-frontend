@@ -41,7 +41,7 @@ export interface Article {
 }
 
 export interface DbMedia {
-    id: number;
+    id: number | string;
     title: string;
     name: string;
     rubrique: string;

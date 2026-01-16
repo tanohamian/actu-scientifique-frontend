@@ -11,8 +11,9 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@fullcalendar/core": "^6.1.19",
+    "@fullcalendar/core": "^6.1.20",
     "@fullcalendar/daygrid": "^6.1.19",
+    "@fullcalendar/interaction": "^6.1.20",
     "@fullcalendar/react": "^6.1.19",
     "@google/genai": "^1.33.0",
     "@mui/material": "^7.3.5",
