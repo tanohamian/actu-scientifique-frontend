@@ -15,10 +15,9 @@ export enum Rubriques {
 }
 
 export enum MediaRubriques {
-  TECHNOLOGY = "technology",
-  ONE_HEALTH = "health",
-  SCIENCE = "science",
-  ART = "art"
+  TECHNOLOGY = "tech",
+  ONE_HEALTH = "une seule santé",
+  ECO_HUMANITY = 'éco-humanité',
 }
 
 interface FormPropos {

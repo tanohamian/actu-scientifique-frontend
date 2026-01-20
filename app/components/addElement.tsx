@@ -23,7 +23,7 @@ export type InitialDataType = { [key: string]: string | number | File | undefine
 interface AddElementModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: Product | InitialDataType ) => Promise<void> | void;
+    onSubmit: (data: Product | InitialDataType) => Promise<void> | void;
     titleComponent: string;
     buttonTitle: string;
     fields: FormFieldConfig[];
@@ -98,7 +98,11 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
     const handleChange = (name: string, value: string | File, type?: string) => {
         setFormData(prevData => ({
             ...prevData,
-            [name]: type === 'number' ? Number(value) : type === 'file' ? value as File : value,
+            [name]: value instanceof File
+                ? value
+                : type === 'number'
+                    ? Number(value)
+                    : value
         }));
     };
 
@@ -154,10 +158,10 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                             {formData[field.name] || field.name === 'illustrationUrl' ? (
                                 <div className="mt-2">
                                     {
-                                        isImage ? 
-                                        <img src={imageUrl as string} alt="Preview" className="max-w-full h-auto rounded-lg" /> : null
+                                        isImage ?
+                                            <img src={imageUrl as string} alt="Preview" className="max-w-full h-auto rounded-lg" /> : null
                                     }
-                                    
+
                                 </div>
                             ) : (
                                 <div className="flex flex-col items-center justify-center bg-[#00283C99] rounded-lg p-10 cursor-pointer">
@@ -182,7 +186,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                             className={inputClasses}
                             placeholder={field.placeholder || ''}
                             value={(formData[field.name] as string) || ''}
-                            onChange={(e) => handleChange(field.name, e.target.value, field.type)}  // ✅ Passer le type
+                            onChange={(e) => handleChange(field.name, e.target.value, field.type)}
                             required={field.required}
                         />
                     </div>

@@ -17,15 +17,15 @@ import { Product } from '../../page';
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', type: 'text', placeholder: 'Entrez le titre du media', required: true },
     { name: 'type', label: 'Type', type: 'select', options: [{ value: 'photo', label: 'Photo' }, { value: 'video', label: 'Vidéo' }, { value: 'podcast', label: 'Podcast' }], required: true },
-    { name : 'file', label : "Fichier", type : "file" , required : true} ,
-    { name: 'rubrique', label: 'Catégorie', type: 'select', options: [{ value: MediaRubriques.TECHNOLOGY, label: 'Technologie' }, { value: MediaRubriques.ART, label: 'Art' }, {value: MediaRubriques.ONE_HEALTH, label : "Santé"}, {value: MediaRubriques.SCIENCE, label: "Science"}], required: true },
+    { name: 'file', label: "Media", type: "file", required: true },
+    { name: 'rubrique', label: 'Rubrique', type: 'select', options: [{ value: MediaRubriques.TECHNOLOGY, label: 'Tech' }, { value: MediaRubriques.ONE_HEALTH, label: "Une seule santé" }, { value: MediaRubriques.ECO_HUMANITY, label: "Éco-humanité" }], required: true },
 ];
 
 const mainHeaders = [
     { key: 'title', label: 'Titre', flexBasis: '15%' },
     { key: 'type', label: 'Type', flexBasis: '9%' },
-    { key: 'rubrique', label: 'Categorie', flexBasis: '15%', textAlign: "center" as Property.TextAlign},
-    { key: 'url', label: 'URL', flexBasis: '29%', type: 'url' }, 
+    { key: 'rubrique', label: 'Rubrique', flexBasis: '15%', textAlign: "center" as Property.TextAlign },
+    { key: 'url', label: 'URL', flexBasis: '29%', type: 'url' },
     { key: 'createdAt', label: 'Date de publication', flexBasis: '20%' },
     { key: 'actions', label: 'Actions', flexBasis: '12%' },
 ];
@@ -35,11 +35,11 @@ export default function MediaPage() {
     const [isOpen, setIsOpen] = useState(false);
     const [editMedia, setEditMedia] = useState(false);
     const [selectedMedia, setSelectedMedia] = useState<ElementType | null>(null);
-    const [filters] = useState<IFilter[]>(mainHeaders.map((header)=>{
-      return {value: header.key, label: header.label}
+    const [filters] = useState<IFilter[]>(mainHeaders.map((header) => {
+        return { value: header.key, label: header.label }
     }))
     const [medias, setMedias] = useState<DbMedia[]>([])
-    
+
     const pageContainerClasses = `
         min-h-screen 
         font-sans
@@ -67,7 +67,7 @@ export default function MediaPage() {
        font-light
         text-white
     `;
-    
+
     const subTextClasses = `
         text-white 
         text-sm 
@@ -92,7 +92,7 @@ export default function MediaPage() {
         justify-center 
         md:justify-between
     `;
-    
+
     const searchBarWrapperClasses = `
         flex-grow 
         w-full 
@@ -103,44 +103,72 @@ export default function MediaPage() {
         setIsOpen(true);
     };
 
-    let initialData : InitialDataType= {
+    let initialData: InitialDataType = {
         name: '',
         createdAt: '',
         title: "",
-        type : "",
+        type: "",
         file: undefined,
 
     };
 
-    const handleSubmitMedia = async(data: Product | InitialDataType | DbMedia) => {
+    const handleSubmitMedia = async (data: Product | InitialDataType | DbMedia) => {
         try {
-            data = data as InitialDataType
-            const media = new FormData()
-            media.append('title', data.title as string)
-            media.append('name', data["name"] as string)
-            media.append('type', data["type"] as string)
-            media.append('rubrique', data["rubrique"] as string)
-            if (data["file"]) {
-                media.append('file', data['file'] as File)
-                console.log("Contenu du FormData :");
-                for (const [key, value] of media.entries()) {
-                    console.log(key, value);
-                }
-                console.log("file found !")
+            console.log("📋 Données reçues:", data);
+
+            data = data as InitialDataType;
+            const media = new FormData();
+
+            media.append('title', data.title as string);
+            media.append('type', data.type as string);
+            media.append('rubrique', data.rubrique as string);
+
+            if (data.file instanceof File) {
+                media.append('file', data.file);
+                console.log("✅ Fichier ajouté:", data.file.name, data.file.size);
+            } else {
+                throw new Error("Aucun fichier sélectionné");
             }
-            console.log(media)
-            console.log(data)
-            const newMedia = await AddMedia(media)
-            setMedias(prev => ([...prev,newMedia ]))
 
+            console.log("📦 Contenu du FormData:");
+            for (const [key, value] of media.entries()) {
+                if (value instanceof File) {
+                    console.log(`  ${key}: [File] ${value.name} (${value.size} bytes)`);
+                } else {
+                    console.log(`  ${key}:`, value);
+                }
+            }
+
+            console.log("📤 Envoi vers /api/upload-media");
+
+            // ✅ Utiliser l'API route au lieu de la server action
+            const response = await fetch('/api/upload-media', {
+                method: 'POST',
+                body: media,
+                // NE PAS mettre de Content-Type header, le navigateur le fera automatiquement
+            });
+
+            console.log("📨 Réponse reçue:", response.status);
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Erreur lors de l\'upload');
+            }
+
+            const result = await response.json();
+            console.log("✅ Média uploadé:", result);
+
+            // Ajouter le nouveau média à la liste
+            setMedias(prev => ([...prev, result.file]));
             setIsOpen(false);
-        } catch (error) {
-            console.log((error as Error).message)
-        }
-        
-    };
 
-    
+            alert('Média ajouté avec succès !');
+
+        } catch (error) {
+            console.error("❌ Erreur:", error);
+            alert(`Erreur: ${(error as Error).message}`);
+        }
+    };
 
     const handleEditMedia = async (item: ElementType) => {
         console.log('Editing event:', item);
@@ -153,11 +181,11 @@ export default function MediaPage() {
         setSelectedMedia(item as TableData);
         await DeleteMedia(item.id as string)
         setMedias(medias.filter((media) => media.id !== item.id))
-        
+
     };
 
-    const handleSubmitEditMedia = async(data: Product | InitialDataType | DbMedia) => {
-        
+    const handleSubmitEditMedia = async (data: Product | InitialDataType | DbMedia) => {
+
         try {
             data = data as InitialDataType
             const media = new FormData()
@@ -184,32 +212,32 @@ export default function MediaPage() {
         initialData = {
             name: (selectedMedia as DbMedia).name as string || '',
             createdAt: (selectedMedia as DbMedia).createdAt as string || '',
-            type : (selectedMedia as DbMedia).type,
+            type: (selectedMedia as DbMedia).type,
             title: (selectedMedia as DbMedia).title
         };
     }
 
-        useEffect(() => {
-            const fetchMedias = async () => {
-                try {
-                    const response = await FetchMedias() as DbMedia[]
-                    console.log({response})
-                    if (response) {
-                        setMedias(response.map(media =>{
-                            const createdAt  = new Date(media.createdAt)
-                            media.createdAt = createdAt.toLocaleString("fr")
-                            console.log("createdAt de création : ", media.createdAt)
-                            return media
-                        }))
-                    }
-    
-                } catch (err) {
-                    console.log("erreur lors de la recuperations des utilisateurs : ", err)
+    useEffect(() => {
+        const fetchMedias = async () => {
+            try {
+                const response = await FetchMedias() as DbMedia[]
+                console.log({ response })
+                if (response) {
+                    setMedias(response.map(media => {
+                        const createdAt = new Date(media.createdAt)
+                        media.createdAt = createdAt.toLocaleString("fr")
+                        console.log("createdAt de création : ", media.createdAt)
+                        return media
+                    }))
                 }
+
+            } catch (err) {
+                console.log("erreur lors de la recuperations des utilisateurs : ", err)
             }
-            
-            fetchMedias()
-        }, [])
+        }
+
+        fetchMedias()
+    }, [])
 
     return (
         <div className={pageContainerClasses}>
@@ -228,12 +256,12 @@ export default function MediaPage() {
                         <SearchBarComponent placeholder='Rechercher un media....' inputValue={inputValue} setInputValue={setInputValue} />
                     </div>
                     <Filter
-                      filters={filters}
+                        filters={filters}
                     />
                 </div>
 
                 <article className="flex flex-col lg:flex-row gap-8" >
-                
+
                     <EventDataTable
                         tableTitle=""
                         isMedia={true}
