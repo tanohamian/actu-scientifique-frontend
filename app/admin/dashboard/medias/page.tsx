@@ -16,7 +16,7 @@ import { Product } from '../../page';
 
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', type: 'text', placeholder: 'Entrez le titre du media', required: true },
-    { name: 'type', label: 'Type', type: 'select', options: [{ value: 'photo', label: 'Photo' }, { value: 'video', label: 'Vidéo' }, { value: 'podcast', label: 'Podcast' }], required: true },
+    { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...', required: false },
     { name : 'file', label : "Fichier", type : "file" , required : true} ,
     { name: 'rubrique', label: 'Catégorie', type: 'select', options: [{ value: MediaRubriques.TECHNOLOGY, label: 'Technologie' }, { value: MediaRubriques.ART, label: 'Art' }, {value: MediaRubriques.ONE_HEALTH, label : "Santé"}, {value: MediaRubriques.SCIENCE, label: "Science"}], required: true },
 ];
