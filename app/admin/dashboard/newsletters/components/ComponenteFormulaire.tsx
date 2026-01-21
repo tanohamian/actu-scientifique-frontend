@@ -7,8 +7,6 @@ export enum Rubriques {
   HEALTH = "une seule santé",
   TECHNOLOGY = "tech",
   ECOHUMANITY = "éco-humanité",
-  OPPORTUNITY = "opportunité",
-  PORTRAITSDISCOVERIES = "portraits et découvertes"
 }
 
 interface FormPropos {
@@ -30,8 +28,8 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
     const initiateDatas = async () => {
       if (initialData) {
         const title = initialData.title || "";
-        const contenu = initialData.contenu || "";
-        const categorie = initialData.categorie
+        const contenu = initialData.content || "";
+        const categorie = initialData.categorie || "tech";
 
         setFormData({ title, contenu, categorie });
       } else {
@@ -109,7 +107,7 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
           />
         </div>
         <div>
-          <label style={labelStyle}>Catégorie</label>
+          <label style={labelStyle}>Rubrique</label>
           <select
             name="categorie"
             style={selectStyle}

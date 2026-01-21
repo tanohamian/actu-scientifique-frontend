@@ -10,9 +10,6 @@ export const ArticleRubriques = {
     HEALTH: "une seule santé",
     TECHNOLOGY: "tech",
     ECOHUMANITY: "éco-humanité",
-    OPPORTUNITY: "opportunité",
-    CALENDAR: "agenda",
-    PORTRAITSDISCOVERIES: "portraits et découvertes"
 } as const
 export type ArticleRubriques = typeof ArticleRubriques[keyof typeof ArticleRubriques];
 
@@ -27,7 +24,7 @@ export interface Newsletter {
     id: string;
     title: string;
     categorie: string;
-    contenu?: string;
+    content?: string;
     createdAt: string | Date;
 }
 
@@ -200,7 +197,7 @@ export default function Affichage({
                     <thead style={styles.tableHeader}>
                         <tr>
                             <th style={styles.th}>{type === AffichageType.ARTICLE ? "Titre de l'Article" : 'Titre'}</th>
-                            <th style={styles.th}>{type === AffichageType.ARTICLE ? 'Rubrique' : 'Catégorie'}</th>
+                            <th style={styles.th}>Rubrique</th>
                             <th style={styles.th}>{type === AffichageType.ARTICLE ? 'Contenu (Début)' : 'Date de Publication'}</th>
                             <th style={styles.th}>Actions</th>
                         </tr>

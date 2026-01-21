@@ -35,13 +35,13 @@ export async function AddMedia(formData: FormData) {
             headers: {
                 'Cookie': `authToken=${authToken}`,
             },
-            body: formData  
+            body: formData
         });
 
         if (!response.ok) {
             const errorData = response;
             console.log("Server error response:", JSON.stringify(errorData));
-            if(response.status === 401) redirect('/admin');
+            if (response.status === 401) redirect('/admin');
             throw Error(`Échec de l'upload du média : ${response.status} ${response.statusText}`);
         }
 
@@ -52,11 +52,12 @@ export async function AddMedia(formData: FormData) {
     } catch (error) {
         console.error("Erreur lors de l'upload du média:");
         console.log(error);
-        throw error; 
+        throw error;
     }
 
     redirect('/admin/dashboard/medias');
 }
+
 
 export async function UpdateMedia(formData: FormData, id: string) {
 
@@ -83,7 +84,7 @@ export async function UpdateMedia(formData: FormData, id: string) {
             headers: {
                 'Cookie': `authToken=${authToken}`,
             },
-            body: formData  
+            body: formData
         });
 
         if (!response.ok) {
@@ -94,11 +95,11 @@ export async function UpdateMedia(formData: FormData, id: string) {
 
         const result = await response.json();
         console.log("Update successful:", result);
-        
+
     } catch (error) {
         console.error("Erreur lors de l'upload du média:");
         console.log(error);
-        throw error; 
+        throw error;
     }
 
     redirect('/admin/dashboard/medias');
@@ -107,51 +108,51 @@ export async function FetchMedias() {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin'); 
+        redirect('/admin');
     }
     try {
-        const response = await fetch(`${env.baseUrl}/multimedia`,{
-            method:'GET',
+        const response = await fetch(`${env.baseUrl}/multimedia`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Cookie': `authToken=${authToken}`
             }
-        }) 
+        })
         console.log("Response fetch medias:", response);
 
-       if(response.ok){
-         const responseData = await response.json()
-         console.log(responseData)
-         revalidatePath('/admin/dashboard/medias')
-         return responseData as DbMedia[]
-       }
-       return []
+        if (response.ok) {
+            const responseData = await response.json()
+            console.log(responseData)
+            revalidatePath('/admin/dashboard/medias')
+            return responseData as DbMedia[]
+        }
+        return []
     } catch (error) {
         console.log("erreur lors de la récupération des médias : ", error)
         return []
     }
 }
 
-export async function DeleteMedia(mediaId : string) {
+export async function DeleteMedia(mediaId: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin'); 
+        redirect('/admin');
     }
     try {
-       const response = await fetch(`${env.baseUrl}/multimedia/${mediaId}`,{
-            method:'DELETE',
+        const response = await fetch(`${env.baseUrl}/multimedia/${mediaId}`, {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Cookie': `authToken=${authToken}`
             }
-       }) 
+        })
 
-       if(response.ok){
-         console.log(response)
-         revalidatePath('/admin/dashboard/gestion_media')
-       }
-       return []
+        if (response.ok) {
+            console.log(response)
+            revalidatePath('/admin/dashboard/gestion_media')
+        }
+        return []
     } catch (error) {
         console.log("erreur lors de la suppression du media : ", error)
         return []

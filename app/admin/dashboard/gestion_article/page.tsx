@@ -16,7 +16,7 @@ import FormComponent from '@/app/components/FormComponent';
 const ArticleFields: FormFieldConfig[] = [
     { name: 'title', label: "Titre de l'article", placeholder: "Entrez le titre de l'article", required: true },
     { name: 'content', label: 'Contenu', type: 'textarea', required: true },
-    { name: 'file', label: "Fichier", placeholder: 'Ajoutez une illustration', type: 'file' },
+    { name: 'file', label: "Image", placeholder: 'Ajoutez une illustration', type: 'file' },
     {
         name: 'rubrique',
         label: 'Rubrique',
@@ -26,7 +26,6 @@ const ArticleFields: FormFieldConfig[] = [
             { value: 'tech', label: 'Technologie' },
             { value: 'éco-humanité', label: 'Éco-humanité' },
             { value: "opportunité", label: "Opportunités" },
-            { label: "Agenda", value: "agenda" },
             { label: "Portraits et découverte", value: "portraits et découvertes" }
         ],
         required: true
