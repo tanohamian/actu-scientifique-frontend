@@ -1,14 +1,14 @@
-import { DbArticle } from "@/app/admin/dashboard/newsletters/components/Affichage";
+import { Article } from "@/app/admin/dashboard/newsletters/components/Affichage";
 
 
 
 export interface ViewArticleProps {
-    article : DbArticle
+    article : Article
     onclick?: () => void;
 }
 
 
-export default function ViewElement({ article, onclick }: ViewArticleProps) {
+export default function ViewArticleElement({ article, onclick }: ViewArticleProps) {
     return (
         <button className="flex flex-col gap-2 p-6" onClick={onclick}>
             {article.illustrationUrl ? <img src={article.illustrationUrl} alt={article.title} width={500} height={500} className="rounded-lg" /> : null}

@@ -36,7 +36,7 @@ export interface Article {
     title: string;
     illustrationUrl?: string;
     content: string;
-    rubrique?: string;
+    rubrique?: ArticleRubriques;
     createdAt?: Date | string
 }
 

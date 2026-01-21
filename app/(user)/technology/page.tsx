@@ -1,9 +1,11 @@
 'use client'
-import { Article } from "@/app/admin/dashboard/newsletters/components/Affichage";
+import { Article, ArticleRubriques, DbArticle } from "@/app/admin/dashboard/newsletters/components/Affichage";
 import Pagination from "@/app/components/pagination";
 import ViewElement, { ViewElementProps } from "@/app/components/viewElement";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import ViewArticleElement from "./view.component";
+import { FetchArticles } from "@/app/actions/ArticleManager";
 
 const dataFirstInformations: ViewElementProps[] | Article[] = [
     {
@@ -153,6 +155,8 @@ const dataFirstInformations: ViewElementProps[] | Article[] = [
 ]
 
 
+
+
 export default function Technologie() {
     const router = useRouter()
     const [currentPage, setCurrentPage] = useState(1);
@@ -161,20 +165,24 @@ export default function Technologie() {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = dataFirstInformations.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(dataFirstInformations.length / itemsPerPage)
+    const [articles, setArticles] = useState<Article[]>([])
+    useEffect(() => {
+        const fetchArticles = async () =>{
+            setArticles((await FetchArticles())
+            .filter((article)=> article.rubrique === ArticleRubriques.TECHNOLOGY ))
+        }
+        fetchArticles()
+    }, [])
 
 
 
     return (
         <div className="w-full min-h-[400px] rounded-lg p-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                {currentItems.map((item: ViewElementProps) => (
-                    <ViewElement
-                        key={item.id}
-                        media={item.media}
-                        title={item.title}
-                        type={item.type}
-                        description={item.description}
-                        category={item.category}
+                {articles.map((item: Article, key: number) => (
+                    <ViewArticleElement
+                        key={key}
+                        article={item}
                         onclick={() => router.push(`/${item.id}`)}
                     />
                 ))}
