@@ -9,7 +9,7 @@ import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/compone
 import Filter, { IFilter } from '@/app/components/filter';
 import { Article, ArticleRubriques, DbArticle } from '../newsletters/components/Affichage';
 import { AddArticle, DeleteArticle, FetchArticles } from '@/app/actions/ArticleManager';
-import FormComponent from '@/app/components/FormComponent';
+import FormComponent, { MediaRubriques } from '@/app/components/FormComponent';
 
 
 
@@ -21,13 +21,7 @@ const ArticleFields: FormFieldConfig[] = [
         name: 'rubrique',
         label: 'Rubrique',
         type: 'select',
-        options: [
-            { label: "Santé", value: "une seule santé" },
-            { value: 'tech', label: 'Technologie' },
-            { value: 'éco-humanité', label: 'Éco-humanité' },
-            { value: "opportunité", label: "Opportunités" },
-            { label: "Portraits et découverte", value: "portraits et découvertes" }
-        ],
+        options: [{ value: MediaRubriques.TECHNOLOGY, label: 'Tech' }, { value: MediaRubriques.ONE_HEALTH, label: "Une seule santé" }, { value: MediaRubriques.ECO_HUMANITY, label: "Éco-humanité" }],
         required: true
     },
 

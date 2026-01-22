@@ -7,6 +7,7 @@ import { env } from "../config/env";
 import Image from "next/image";
 import { ElementType } from "./eventDataTable";
 import { DbArticle, DbMedia } from "../admin/dashboard/newsletters/components/Affichage";
+import { rubriques } from "../admin/dashboard/medias/page";
 
 export interface FormFieldConfig {
     name: string;
@@ -17,7 +18,7 @@ export interface FormFieldConfig {
     options?: { value: string; label: string }[];
 }
 
-export type InitialDataType = { [key: string]: string | number | File | undefined }
+export type InitialDataType = { [key: string]: string | number | File | undefined | rubriques }
 
 
 interface AddElementModalProps {

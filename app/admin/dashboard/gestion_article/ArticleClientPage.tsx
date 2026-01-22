@@ -10,26 +10,21 @@ import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
 import { Article } from '../newsletters/components/Affichage';
 import ComponenteFormulaire from '../newsletters/components/ComponenteFormulaire';
+import { MediaRubriques } from '@/app/components/FormComponent';
 interface ArticleClientPageProps {
-  initialArticles: Article[];
+    initialArticles: Article[];
 }
 
 const ArticleFields: FormFieldConfig[] = [
     { name: 'title', label: "Titre de l'article", type: 'text', placeholder: "Entrez le titre de l'article", required: true },
     { name: 'content', label: 'Contenu', type: 'text', required: true },
-    { 
-        name: 'rubrique', 
-        label: 'Rubrique', 
-        type: 'select', 
-        options: [
-            { label: "Santé", value: "une seule santé"},
-            { value: 'tech', label: 'Technologie' }, 
-            { value: 'éco-humanité', label: 'Éco-humanité' }, 
-            { value: "opportunité", label:"Opportunités" }, 
-            { label: "Agenda", value: "agenda"},
-            { label: "Portraits et découverte", value: "portraits et découvertes"}
-        ],
-        required: true },
+    {
+        name: 'rubrique',
+        label: 'Rubrique',
+        type: 'select',
+        options: [{ value: MediaRubriques.TECHNOLOGY, label: 'Tech' }, { value: MediaRubriques.ONE_HEALTH, label: "Une seule santé" }, { value: MediaRubriques.ECO_HUMANITY, label: "Éco-humanité" }],
+        required: true
+    },
 ];
 
 const mainHeaders = [
@@ -47,13 +42,13 @@ export default function ArticleClientPage({ initialArticles }: ArticleClientPage
     const [editArticle, setEditArticle] = useState(false);
     const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
     const [viewMode] = useState<'list' | 'calendar'>('list');
-    
-    const [articles] = useState<Article[]>(initialArticles) 
 
-    const [filters] = useState<IFilter[]>(mainHeaders.map((header)=>{
-      return {value: header.key, label: header.label}
+    const [articles] = useState<Article[]>(initialArticles)
+
+    const [filters] = useState<IFilter[]>(mainHeaders.map((header) => {
+        return { value: header.key, label: header.label }
     }))
-    
+
 
     const handleArticle = () => {
         setIsOpen(true);
@@ -76,7 +71,7 @@ export default function ArticleClientPage({ initialArticles }: ArticleClientPage
         setEditArticle(true);
     };
 
-    const handleSubmitEditArticle = async() => {
+    const handleSubmitEditArticle = async () => {
         setEditArticle(false);
     };
 
@@ -141,7 +136,7 @@ export default function ArticleClientPage({ initialArticles }: ArticleClientPage
         justify-center 
         md:justify-between
     `;
-    
+
     const searchBarWrapperClasses = `
         flex-grow 
         w-full 
@@ -173,28 +168,28 @@ export default function ArticleClientPage({ initialArticles }: ArticleClientPage
                         <SearchBarComponent placeholder='Rechercher un media....' inputValue={inputValue} setInputValue={setInputValue} />
                     </div>
                     <Filter
-                      filters={filters}
+                        filters={filters}
                     />
                 </div>
                 <article className="flex flex-col lg:flex-row gap-8" >
-                  {
-                    viewMode === 'list' ? (
-                        <>
-                            <ArticleDataTable
-                                tableTitle=""
-                                data={articles || []}
-                                columnHeaders={mainHeaders}
-                                handleEditEvent={handleEditArticle}
-                            />
-                        </>
-                    ) : null
-                  }
-                  <article className={rightSectionClasses}>
-                    <ComponenteFormulaire isArticle={true}/>
-                  </article>
+                    {
+                        viewMode === 'list' ? (
+                            <>
+                                <ArticleDataTable
+                                    tableTitle=""
+                                    data={articles || []}
+                                    columnHeaders={mainHeaders}
+                                    handleEditEvent={handleEditArticle}
+                                />
+                            </>
+                        ) : null
+                    }
+                    <article className={rightSectionClasses}>
+                        <ComponenteFormulaire isArticle={true} />
+                    </article>
                 </article>
-                
-              
+
+
             </div>
 
             <AddElementModal

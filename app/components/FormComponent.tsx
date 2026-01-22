@@ -7,17 +7,15 @@ import { Article, ArticleRubriques, DbArticle, Newsletter } from '../admin/dashb
 import { AddArticle } from '../actions/ArticleManager';
 
 export enum Rubriques {
-  HEALTH = "une seule santé",
-  TECHNOLOGY = "tech",
-  ECOHUMANITY = "éco-humanité",
-  OPPORTUNITY = "opportunité",
-  PORTRAITSDISCOVERIES = "portraits et découvertes"
+  TECHNOLOGY = "technology",
+  ONE_HEALTH = "one_health",
+  ECO_HUMANITY = 'ecohumanity'
 }
 
 export enum MediaRubriques {
-  TECHNOLOGY = "tech",
-  ONE_HEALTH = "une seule santé",
-  ECO_HUMANITY = 'éco-humanité',
+  TECHNOLOGY = "technology",
+  ONE_HEALTH = "one_health",
+  ECO_HUMANITY = 'ecohumanity',
 }
 
 interface FormPropos {

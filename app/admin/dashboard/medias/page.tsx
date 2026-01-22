@@ -29,6 +29,7 @@ const mainHeaders = [
     { key: 'createdAt', label: 'Date de publication', flexBasis: '20%' },
     { key: 'actions', label: 'Actions', flexBasis: '12%' },
 ];
+export type rubriques = "technology" | "health" | "ecohumanity"
 
 export default function MediaPage() {
     const [inputValue, setInputValue] = useState('');
@@ -39,7 +40,6 @@ export default function MediaPage() {
         return { value: header.key, label: header.label }
     }))
     const [medias, setMedias] = useState<DbMedia[]>([])
-
     const pageContainerClasses = `
         min-h-screen 
         font-sans
@@ -121,7 +121,7 @@ export default function MediaPage() {
 
             media.append('title', data.title as string);
             media.append('type', data.type as string);
-            media.append('rubrique', data.rubrique as string);
+            media.append('rubrique', data.rubrique as rubriques);
 
             if (data.file instanceof File) {
                 media.append('file', data.file);
