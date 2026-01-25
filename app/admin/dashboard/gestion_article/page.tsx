@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react'
 import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
 import { Article, ArticleRubriques, DbArticle } from '../newsletters/components/Affichage';
-import { AddArticle, DeleteArticle, FetchArticles } from '@/app/actions/ArticleManager';
+import { DeleteArticle, FetchArticles } from '@/app/actions/ArticleManager';
 import FormComponent from '@/app/components/FormComponent';
 
 
@@ -22,14 +22,16 @@ const ArticleFields: FormFieldConfig[] = [
         label: 'Rubrique',
         type: 'select',
         options: [
-            { label: "Santé", value: "une seule santé" },
-            { value: 'tech', label: 'Technologie' },
-            { value: 'éco-humanité', label: 'Éco-humanité' },
-            { value: "opportunité", label: "Opportunités" },
-            { label: "Portraits et découverte", value: "portraits et découvertes" }
+            { label: "Santé", value: ArticleRubriques.ONE_HEALTH },
+            { label: 'Technologie', value: ArticleRubriques.TECHNOLOGY },
+            { label: 'Éco-humanité', value: ArticleRubriques.ECO_HUMANITY },
         ],
         required: true
     },
+    { name: 'une', label: 'Mettre à la une', type: "select", options: [
+        { label: "Oui", value: 1 },
+        { label: "Non", value: 0 }
+    ]}
 
 ];
 
@@ -122,7 +124,7 @@ export default function ArticlePage() {
         lg:mt-0 
     `;
 
-    const [article, setArticle] = useState<DbArticle>();
+    //const [article, setArticle] = useState<DbArticle>();
 
     const handleSubmitArticle = (newArticle?: DbArticle) => {
         console.log({ newArticle })
@@ -139,7 +141,7 @@ export default function ArticlePage() {
         content: '',
         illustationUrl: "https://via.placeholder.com/150",
         createdAt: (new Date()).toLocaleDateString(),
-        rubrique: ArticleRubriques.ECOHUMANITY as string
+        rubrique: ArticleRubriques.TECHNOLOGY as string
     };
 
     const handleEditArticle = async (item: ElementType) => {

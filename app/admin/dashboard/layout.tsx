@@ -17,7 +17,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const MOBILE_BREAKPOINT = 1024;
 
     useEffect(() => {
-        setWindowWidth(window.innerWidth);
+        const firstEffect = ()=>{
+            setWindowWidth(window.innerWidth);
+        }
+        firstEffect()
 
         const handleResize = () => {
             const width = window.innerWidth;
@@ -82,12 +85,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         display: isMobile ? 'block' : 'none',
     };
 
-    const mainStyle: React.CSSProperties = {
+    const backmainStyle: React.CSSProperties = {
         flexGrow: 1,
-        marginLeft: isMobile ? '0' : `${SIDEBAR_WIDTH}px`,
+        width: "100%",
+        position: "fixed",
+        zIndex: -2,
         backgroundColor: '#5A8FAC',
         minHeight: '100vh',
     };
+    const mainStyle: React.CSSProperties = {
+        marginLeft: isMobile ? '0' : `${SIDEBAR_WIDTH}px`,
+        width: "100%",
+    };
+    
 
     const mobileHeaderStyle: React.CSSProperties = {
         backgroundColor: '#50789B',
@@ -130,6 +140,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </aside>
 
             <main style={mainStyle}>
+                <div style={backmainStyle}></div>
                 <header style={mobileHeaderStyle}>
                     <button
                         onClick={() => setIsMobileMenuOpen(true)}

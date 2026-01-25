@@ -3,10 +3,6 @@ import ButtonComponent from "@/app/components/button";
 import React, { useState, useEffect, useMemo } from 'react';
 import { X, ChevronDown, Upload } from 'lucide-react';
 import { Product } from "../admin/page";
-import { env } from "../config/env";
-import Image from "next/image";
-import { ElementType } from "./eventDataTable";
-import { DbArticle, DbMedia } from "../admin/dashboard/newsletters/components/Affichage";
 
 export interface FormFieldConfig {
     name: string;
@@ -14,7 +10,7 @@ export interface FormFieldConfig {
     type?: 'text' | 'email' | 'password' | 'select' | 'textarea' | 'file' | 'number' | 'date' | 'time' | 'url';
     placeholder?: string;
     required?: boolean;
-    options?: { value: string; label: string }[];
+    options?: { value: string | number; label: string }[];
 }
 
 export type InitialDataType = { [key: string]: string | number | File | undefined }
@@ -125,7 +121,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                             >
                                 <option value="" disabled className="text-white/50">Sélectionner {field.label.toLowerCase()}</option>
                                 {field.options?.map(option => (
-                                    <option key={option.value} value={option.value}>{option.label}</option>
+                                    <option key={option.label} value={option.value}>{option.label}</option>
                                 ))}
                             </select>
                             <ChevronDown size={20} className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white" />
@@ -159,6 +155,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                                 <div className="mt-2">
                                     {
                                         isImage ?
+                                            // eslint-disable-next-line @next/next/no-img-element
                                             <img src={imageUrl as string} alt="Preview" className="max-w-full h-auto rounded-lg" /> : null
                                     }
 

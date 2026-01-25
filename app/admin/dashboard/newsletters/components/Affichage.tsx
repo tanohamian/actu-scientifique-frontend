@@ -4,12 +4,11 @@ import { Search, Pencil, Trash2 } from 'lucide-react';
 import Filter, { IFilter } from '@/app/components/filter';
 // Importation des Server Actions
 import { FetchNewsletters, DeleteNewsletter } from '@/app/actions/Newsletters';
-import { File } from 'buffer';
 
 export const ArticleRubriques = {
-    HEALTH: "une seule santé",
-    TECHNOLOGY: "tech",
-    ECOHUMANITY: "éco-humanité",
+    TECHNOLOGY : "technology",
+    ONE_HEALTH : "one_health",
+    ECO_HUMANITY : "ecohumanity",
 } as const
 export type ArticleRubriques = typeof ArticleRubriques[keyof typeof ArticleRubriques];
 
@@ -109,9 +108,12 @@ export default function Affichage({
     }, [type]);
 
     useEffect(() => {
-        loadData();
+    
+        const effect = ()=>{
+            loadData();
+        }
+        effect() 
     }, [loadData]);
-
     const handleDelete = async (id: string) => {
 
         try {

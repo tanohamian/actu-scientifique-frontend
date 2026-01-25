@@ -16,8 +16,9 @@ export enum Rubriques {
 
 export enum MediaRubriques {
   TECHNOLOGY = "tech",
-  ONE_HEALTH = "une seule santé",
-  ECO_HUMANITY = 'éco-humanité',
+  ONE_HEALTH = "health",
+  ART = 'art',
+  SCIENCE = "science"
 }
 
 interface FormPropos {
@@ -61,9 +62,9 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
       if (initialData) {
         const title = initialData.title || "";
         const content = initialData.content || "";
-        const rubrique = 'categorie' in initialData
-          ? initialData.categorie
-          : ('rubrique' in initialData ? initialData.rubrique : ArticleRubriques.TECHNOLOGY);
+        const rubrique = ('categorie' in initialData)
+          ? initialData.categorie as ArticleRubriques 
+          : ('rubrique' in initialData ? initialData.rubrique  : ArticleRubriques.TECHNOLOGY);
 
 
         setFormData({ title, content, rubrique });

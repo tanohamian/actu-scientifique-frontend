@@ -10,7 +10,7 @@ import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/compone
 import Filter, { IFilter } from '@/app/components/filter';
 import { DbMedia } from '../newsletters/components/Affichage';
 import { Property } from "csstype"
-import { AddMedia, DeleteMedia, FetchMedias, UpdateMedia } from '@/app/actions/MediasManager';
+import { DeleteMedia, FetchMedias, UpdateMedia } from '@/app/actions/MediasManager';
 import { MediaRubriques } from '@/app/components/FormComponent';
 import { Product } from '../../page';
 
