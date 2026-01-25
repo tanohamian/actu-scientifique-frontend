@@ -4,19 +4,10 @@ import { Search, Pencil, Trash2 } from 'lucide-react';
 import Filter, { IFilter } from '@/app/components/filter';
 // Importation des Server Actions
 import { FetchNewsletters, DeleteNewsletter } from '@/app/actions/Newsletters';
+import { AffichageType, Rubriques } from '@/app/enum/enums';
 
-export const ArticleRubriques = {
-    TECHNOLOGY : "technology",
-    ONE_HEALTH : "one_health",
-    ECO_HUMANITY : "ecohumanity",
-} as const
-export type ArticleRubriques = typeof ArticleRubriques[keyof typeof ArticleRubriques];
 
-export enum AffichageType {
-    ARTICLE = "article",
-    NEWSLETTER = "newsletters",
-    MEDIAS = "medias"
-}
+
 
 
 export interface Newsletter {
@@ -32,7 +23,7 @@ export interface Article {
     title: string;
     illustrationUrl?: string;
     content: string;
-    rubrique?: ArticleRubriques;
+    rubrique?: Rubriques;
     createdAt?: Date | string
 }
 
@@ -51,7 +42,7 @@ export interface DbArticle {
     id: string
     title: string
     content: string
-    rubrique: ArticleRubriques
+    rubrique: Rubriques
     illustrationUrl?: string;
     une: boolean
     createdAt: Date | string

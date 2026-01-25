@@ -7,9 +7,10 @@ import DataTable, { ElementType } from '@/app/components/eventDataTable';
 import React, { useEffect, useState } from 'react'
 import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
-import { Article, ArticleRubriques, DbArticle } from '../newsletters/components/Affichage';
+import { Article, DbArticle } from '../newsletters/components/Affichage';
 import { DeleteArticle, FetchArticles } from '@/app/actions/ArticleManager';
 import FormComponent from '@/app/components/FormComponent';
+import { Rubriques } from '@/app/enum/enums';
 
 
 
@@ -22,9 +23,9 @@ const ArticleFields: FormFieldConfig[] = [
         label: 'Rubrique',
         type: 'select',
         options: [
-            { label: "Santé", value: ArticleRubriques.ONE_HEALTH },
-            { label: 'Technologie', value: ArticleRubriques.TECHNOLOGY },
-            { label: 'Éco-humanité', value: ArticleRubriques.ECO_HUMANITY },
+            { label: "Santé", value: Rubriques.ONE_HEALTH },
+            { label: 'Technologie', value: Rubriques.TECHNOLOGY },
+            { label: 'Éco-humanité', value: Rubriques.ECO_HUMANITY },
         ],
         required: true
     },
@@ -141,7 +142,7 @@ export default function ArticlePage() {
         content: '',
         illustationUrl: "https://via.placeholder.com/150",
         createdAt: (new Date()).toLocaleDateString(),
-        rubrique: ArticleRubriques.TECHNOLOGY as string
+        rubrique: Rubriques.TECHNOLOGY as string
     };
 
     const handleEditArticle = async (item: ElementType) => {
@@ -165,7 +166,7 @@ export default function ArticlePage() {
             title: selectedArticle.title as string || '',
             content: selectedArticle.content as string || '',
             createdAt: selectedArticle.createdAt as string || '',
-            rubrique: selectedArticle.rubrique as ArticleRubriques || '',
+            rubrique: selectedArticle.rubrique as Rubriques || '',
             illustationUrl: selectedArticle.illustrationUrl
         };
     }

@@ -11,14 +11,22 @@ import Filter, { IFilter } from '@/app/components/filter';
 import { DbMedia } from '../newsletters/components/Affichage';
 import { Property } from "csstype"
 import { DeleteMedia, FetchMedias, UpdateMedia } from '@/app/actions/MediasManager';
-import { MediaRubriques } from '@/app/components/FormComponent';
 import { Product } from '../../page';
+import { Rubriques } from '@/app/enum/enums';
 
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', type: 'text', placeholder: 'Entrez le titre du media', required: true },
     { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...', required: false },
     { name : 'file', label : "Fichier", type : "file" , required : true} ,
-    { name: 'rubrique', label: 'Catégorie', type: 'select', options: [{ value: MediaRubriques.TECHNOLOGY, label: 'Technologie' }, { value: MediaRubriques.ART, label: 'Art' }, {value: MediaRubriques.ONE_HEALTH, label : "Santé"}, {value: MediaRubriques.SCIENCE, label: "Science"}], required: true },
+    { 
+        name: 'rubrique', label: 'Catégorie', type: 'select',
+        options: [
+            { label: "Santé", value: Rubriques.ONE_HEALTH },
+            { label: 'Technologie', value: Rubriques.TECHNOLOGY },
+            { label: 'Éco-humanité', value: Rubriques.ECO_HUMANITY },
+        ], 
+        required: true 
+    },
 ];
 
 const mainHeaders = [
