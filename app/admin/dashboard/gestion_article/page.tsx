@@ -127,7 +127,6 @@ export default function ArticlePage() {
         lg:mt-0 
     `;
 
-    //const [article, setArticle] = useState<DbArticle>();
 
     const handleSubmitArticle = (newArticle?: DbArticle) => {
         console.log({ newArticle })
@@ -231,7 +230,7 @@ export default function ArticlePage() {
                             initialArticleData={initialData}
                             fields={ArticleFields}
                             onSuccess={handleSubmitArticle}
-                        //setter={setArticle}
+                        //setter={setArticles}
                         />
                     </article>
                 </article>

@@ -10,7 +10,7 @@ import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
 import { Article } from '../newsletters/components/Affichage';
 import ComponenteFormulaire from '../newsletters/components/ComponenteFormulaire';
-import { MediaRubriques } from '@/app/components/FormComponent';
+import { Rubriques } from '@/app/enum/enums';
 interface ArticleClientPageProps {
     initialArticles: Article[];
 }
@@ -22,7 +22,7 @@ const ArticleFields: FormFieldConfig[] = [
         name: 'rubrique',
         label: 'Rubrique',
         type: 'select',
-        options: [{ value: MediaRubriques.TECHNOLOGY, label: 'Tech' }, { value: MediaRubriques.ONE_HEALTH, label: "Une seule santé" }, { value: MediaRubriques.ECO_HUMANITY, label: "Éco-humanité" }],
+        options: [{ value: Rubriques.TECHNOLOGY, label: 'Tech' }, { value: Rubriques.ONE_HEALTH, label: "Une seule santé" }, { value: Rubriques.ECO_HUMANITY, label: "Éco-humanité" }],
         required: true
     },
 ];

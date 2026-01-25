@@ -21,6 +21,8 @@ interface FormPropos {
 export default function FormComponent({ isArticle = false, initialData, onSuccess, fields, initialArticleData = {} }: FormPropos) {
   const rubriques = Object.values(Rubriques) as string[];
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const [formData, setFormData] = useState<Article | INewsletter>({
     title: "",
     content: "",
@@ -84,6 +86,7 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setIsLoading(true)
     try {
       let result: DbArticle | undefined | { success: boolean };
       const currentId = initialData?.id;
@@ -114,11 +117,11 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
         console.log("✅ Média uploadé:", result);
 
         if (result) {
-
           alert(isEditing ? "Mis à jour !" : "Publié !");
+          const newArticle = result.article as DbArticle;
           console.log(result)
           setFormData({ title: "", content: "", rubrique: Rubriques.TECHNOLOGY });
-          onSuccess(result as DbArticle);
+          onSuccess(newArticle);
         }
         return
       }
@@ -137,6 +140,8 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
       }
     } catch (error) {
       console.error("Erreur:", error);
+    } finally {
+      setIsLoading(false)
     }
   };
 
