@@ -96,6 +96,7 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
         article.append('content', articleFormData["content"] as string)
         article.append('rubrique', articleFormData["rubrique"] as string)
         article.append('file', articleFormData["file"] as File)
+        article.append('une', articleFormData["une"] as string);
         console.log("Aperçu de l'article : ")
         console.log(article)
 

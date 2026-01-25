@@ -26,6 +26,7 @@ const ArticleFields: FormFieldConfig[] = [
             { label: "Santé", value: Rubriques.ONE_HEALTH },
             { label: 'Technologie', value: Rubriques.TECHNOLOGY },
             { label: 'Éco-humanité', value: Rubriques.ECO_HUMANITY },
+            { label: 'Portrait et découvertes', value: Rubriques.PORT_DISCOVERY },
         ],
         required: true
     },

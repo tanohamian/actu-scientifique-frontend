@@ -7,6 +7,7 @@ export enum Rubriques {
   TECHNOLOGY = "technology",
   ONE_HEALTH = "one_health",
   ECO_HUMANITY = "ecohumanity",
+  PORT_DISCOVERY = "port_discovery"
 }
 
 
