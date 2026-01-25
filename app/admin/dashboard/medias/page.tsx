@@ -165,7 +165,7 @@ export default function MediaPage() {
 
             const result = await response.json();
             console.log("✅ Média uploadé:", result);
-
+            
             // Ajouter le nouveau média à la liste
             setMedias(prev => ([...prev, result.file]));
             setIsOpen(false);

@@ -95,7 +95,24 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
         article.append('file', articleFormData["file"] as File)
         console.log("Aperçu de l'article : ")
         console.log(article)
-        result = await AddArticle(article, false)
+
+        console.log("📤 Envoi vers /api/upload-article");
+
+        const response = await fetch('/api/upload-article', {
+            method: 'POST',
+            body: article,
+        });
+
+        console.log("📨 Réponse reçue:", response.status);
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Erreur lors de l\'upload');
+        }
+
+        const result = await response.json();
+        console.log("✅ Média uploadé:", result);
+            
         if (result) {
 
           alert(isEditing ? "Mis à jour !" : "Publié !");
