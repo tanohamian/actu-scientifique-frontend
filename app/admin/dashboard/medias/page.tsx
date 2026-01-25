@@ -10,15 +10,23 @@ import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/compone
 import Filter, { IFilter } from '@/app/components/filter';
 import { DbMedia } from '../newsletters/components/Affichage';
 import { Property } from "csstype"
-import { AddMedia, DeleteMedia, FetchMedias, UpdateMedia } from '@/app/actions/MediasManager';
-import { MediaRubriques } from '@/app/components/FormComponent';
+import { DeleteMedia, FetchMedias, UpdateMedia } from '@/app/actions/MediasManager';
 import { Product } from '../../page';
+import { Rubriques } from '@/app/enum/enums';
 
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', type: 'text', placeholder: 'Entrez le titre du media', required: true },
-    { name: 'type', label: 'Type', type: 'select', options: [{ value: 'photo', label: 'Photo' }, { value: 'video', label: 'Vidéo' }, { value: 'podcast', label: 'Podcast' }], required: true },
-    { name: 'file', label: "Media", type: "file", required: true },
-    { name: 'rubrique', label: 'Rubrique', type: 'select', options: [{ value: MediaRubriques.TECHNOLOGY, label: 'Tech' }, { value: MediaRubriques.ONE_HEALTH, label: "Une seule santé" }, { value: MediaRubriques.ECO_HUMANITY, label: "Éco-humanité" }], required: true },
+    { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...', required: false },
+    { name : 'file', label : "Fichier", type : "file" , required : true} ,
+    { 
+        name: 'rubrique', label: 'Catégorie', type: 'select',
+        options: [
+            { label: "Santé", value: Rubriques.ONE_HEALTH },
+            { label: 'Technologie', value: Rubriques.TECHNOLOGY },
+            { label: 'Éco-humanité', value: Rubriques.ECO_HUMANITY },
+        ], 
+        required: true 
+    },
 ];
 
 const mainHeaders = [
@@ -154,7 +162,7 @@ export default function MediaPage() {
 
             const result = await response.json();
             console.log("✅ Média uploadé:", result);
-
+            
             // Ajouter le nouveau média à la liste
             setMedias(prev => ([...prev, result.file]));
             setIsOpen(false);

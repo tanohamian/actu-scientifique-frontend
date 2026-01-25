@@ -7,9 +7,10 @@ import DataTable, { ElementType } from '@/app/components/eventDataTable';
 import React, { useEffect, useState } from 'react'
 import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
-import { Article, ArticleRubriques, DbArticle } from '../newsletters/components/Affichage';
-import { AddArticle, DeleteArticle, FetchArticles } from '@/app/actions/ArticleManager';
-import FormComponent, { MediaRubriques } from '@/app/components/FormComponent';
+import { Article, DbArticle } from '../newsletters/components/Affichage';
+import { DeleteArticle, FetchArticles } from '@/app/actions/ArticleManager';
+import FormComponent from '@/app/components/FormComponent';
+import { Rubriques } from '@/app/enum/enums';
 
 
 
@@ -21,9 +22,19 @@ const ArticleFields: FormFieldConfig[] = [
         name: 'rubrique',
         label: 'Rubrique',
         type: 'select',
-        options: [{ value: MediaRubriques.TECHNOLOGY, label: 'Tech' }, { value: MediaRubriques.ONE_HEALTH, label: "Une seule santé" }, { value: MediaRubriques.ECO_HUMANITY, label: "Éco-humanité" }],
+        options: [
+            { label: "Santé", value: Rubriques.ONE_HEALTH },
+            { label: 'Technologie', value: Rubriques.TECHNOLOGY },
+            { label: 'Éco-humanité', value: Rubriques.ECO_HUMANITY },
+        ],
         required: true
     },
+    {
+        name: 'une', label: 'Mettre à la une', type: "select", options: [
+            { label: "Oui", value: 1 },
+            { label: "Non", value: 0 }
+        ]
+    }
 
 ];
 
@@ -116,7 +127,7 @@ export default function ArticlePage() {
         lg:mt-0 
     `;
 
-    const [article, setArticle] = useState<DbArticle>();
+    //const [article, setArticle] = useState<DbArticle>();
 
     const handleSubmitArticle = (newArticle?: DbArticle) => {
         console.log({ newArticle })
@@ -133,7 +144,7 @@ export default function ArticlePage() {
         content: '',
         illustationUrl: "https://via.placeholder.com/150",
         createdAt: (new Date()).toLocaleDateString(),
-        rubrique: ArticleRubriques.ECOHUMANITY as string
+        rubrique: Rubriques.TECHNOLOGY as string
     };
 
     const handleEditArticle = async (item: ElementType) => {
@@ -157,7 +168,7 @@ export default function ArticlePage() {
             title: selectedArticle.title as string || '',
             content: selectedArticle.content as string || '',
             createdAt: selectedArticle.createdAt as string || '',
-            rubrique: selectedArticle.rubrique as ArticleRubriques || '',
+            rubrique: selectedArticle.rubrique as Rubriques || '',
             illustationUrl: selectedArticle.illustrationUrl
         };
     }

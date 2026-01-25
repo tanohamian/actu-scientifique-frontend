@@ -3,20 +3,11 @@ import React, { FormEvent, useState, useEffect, useMemo } from 'react';
 import { AddNewsletter, INewsletter, UpdateNewsletter } from "@/app/actions/Newsletters";
 import { ChevronDown, Upload } from 'lucide-react';
 import { FormFieldConfig, InitialDataType, uploadIcon, uploadText } from '@/app/components/addElement';
-import { Article, ArticleRubriques, DbArticle, Newsletter } from '../admin/dashboard/newsletters/components/Affichage';
+import { Article, DbArticle, Newsletter } from '../admin/dashboard/newsletters/components/Affichage';
 import { AddArticle } from '../actions/ArticleManager';
+import { Rubriques } from '../enum/enums';
 
-export enum Rubriques {
-  TECHNOLOGY = "technology",
-  ONE_HEALTH = "one_health",
-  ECO_HUMANITY = 'ecohumanity'
-}
 
-export enum MediaRubriques {
-  TECHNOLOGY = "technology",
-  ONE_HEALTH = "one_health",
-  ECO_HUMANITY = 'ecohumanity',
-}
 
 interface FormPropos {
   isArticle: boolean;
@@ -27,7 +18,7 @@ interface FormPropos {
   setter?: (value: React.SetStateAction<DbArticle | undefined>) => void
 }
 
-export default function FormComponent({ isArticle = false, initialData, onSuccess, fields, initialArticleData = {}, setter }: FormPropos) {
+export default function FormComponent({ isArticle = false, initialData, onSuccess, fields, initialArticleData = {} }: FormPropos) {
   const rubriques = Object.values(Rubriques) as string[];
 
   const [formData, setFormData] = useState<Article | INewsletter>({
@@ -59,14 +50,14 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
       if (initialData) {
         const title = initialData.title || "";
         const content = initialData.content || "";
-        const rubrique = 'categorie' in initialData
-          ? initialData.categorie
-          : ('rubrique' in initialData ? initialData.rubrique : ArticleRubriques.TECHNOLOGY);
+        const rubrique = ('categorie' in initialData)
+          ? initialData.categorie as Rubriques
+          : ('rubrique' in initialData ? initialData.rubrique : Rubriques.TECHNOLOGY);
 
 
         setFormData({ title, content, rubrique });
       } else {
-        setFormData({ title: "", content: "", rubrique: ArticleRubriques.TECHNOLOGY });
+        setFormData({ title: "", content: "", rubrique: Rubriques.TECHNOLOGY });
       }
     }
     initiateDatas()
@@ -104,12 +95,29 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
         article.append('file', articleFormData["file"] as File)
         console.log("Aperçu de l'article : ")
         console.log(article)
-        result = await AddArticle(article, false)
+
+        console.log("📤 Envoi vers /api/upload-article");
+
+        const response = await fetch('/api/upload-article', {
+          method: 'POST',
+          body: article,
+        });
+
+        console.log("📨 Réponse reçue:", response.status);
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Erreur lors de l\'upload');
+        }
+
+        const result = await response.json();
+        console.log("✅ Média uploadé:", result);
+
         if (result) {
 
           alert(isEditing ? "Mis à jour !" : "Publié !");
           console.log(result)
-          setFormData({ title: "", content: "", rubrique: "tech" });
+          setFormData({ title: "", content: "", rubrique: Rubriques.TECHNOLOGY });
           onSuccess(result as DbArticle);
         }
         return
@@ -124,7 +132,7 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
       if (result) {
         alert(isEditing ? "Mis à jour !" : "Publié !");
         console.log(result)
-        setFormData({ title: "", content: "", rubrique: "tech" });
+        setFormData({ title: "", content: "", rubrique: Rubriques.TECHNOLOGY });
         await onSuccess();
       }
     } catch (error) {

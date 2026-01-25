@@ -1,13 +1,10 @@
 "use client"
 import React, { FormEvent, useState, useEffect } from 'react';
-import { Article, Newsletter } from "./Affichage";
+import { Newsletter } from "./Affichage";
 import { AddNewsletter, UpdateNewsletter } from "@/app/actions/Newsletters";
+import { Rubriques } from '@/app/enum/enums';
 
-export enum Rubriques {
-  HEALTH = "une seule santé",
-  TECHNOLOGY = "tech",
-  ECOHUMANITY = "éco-humanité",
-}
+
 
 interface FormPropos {
   isArticle: boolean;
