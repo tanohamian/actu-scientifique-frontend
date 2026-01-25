@@ -29,7 +29,7 @@ const mainHeaders = [
     { key: 'createdAt', label: 'Date de publication', flexBasis: '20%' },
     { key: 'actions', label: 'Actions', flexBasis: '12%' },
 ];
-export type rubriques = "technology" | "health" | "ecohumanity"
+export type rubriques = "technology" | "one_health" | "ecohumanity"
 
 export default function MediaPage() {
     const [inputValue, setInputValue] = useState('');
@@ -139,13 +139,10 @@ export default function MediaPage() {
                 }
             }
 
-            console.log("📤 Envoi vers /api/upload-media");
 
-            // ✅ Utiliser l'API route au lieu de la server action
             const response = await fetch('/api/upload-media', {
                 method: 'POST',
                 body: media,
-                // NE PAS mettre de Content-Type header, le navigateur le fera automatiquement
             });
 
             console.log("📨 Réponse reçue:", response.status);

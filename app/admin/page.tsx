@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react";
-import LoginUser from "@/app/actions/Auth"
+import LoginUser from "../actions/Auth";
 export interface FormState {
     email: string;
     password: string;

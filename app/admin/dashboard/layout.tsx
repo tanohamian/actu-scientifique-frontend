@@ -115,6 +115,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     const contentStyle: React.CSSProperties = {
         padding: isMobile ? '1rem' : '1.5rem',
+        position: 'relative',
     };
 
     return (
@@ -141,7 +142,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </button>
                 </header>
 
-                {/* Contenu */}
                 <div style={contentStyle}>{children}</div>
             </main>
         </div>

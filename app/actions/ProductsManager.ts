@@ -22,6 +22,7 @@ export async function FetchProducts() {
 
         if (response.ok) {
             const responseData = await response.json()
+            console.log("Response fetch products : ", responseData.products)
             revalidatePath('/admin/dashboard/gestion_article')
             return responseData.products as Product[]
         }

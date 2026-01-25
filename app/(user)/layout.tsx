@@ -1,12 +1,10 @@
 'use client'
-import Logo from '@public/images/logo.svg'
 import React, { useState } from 'react';
 import SearchBarComponent from '@components/searchBar';
 import IconComponent from '@components/Icons';
 import ButtonComponent from '@components/button';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import Loupe from "@public/images/loupe.svg"
 import LoginRegisterComponent from '../components/login_register_Component';
 
 const iconSize = 'w-8 h-8';
@@ -55,19 +53,24 @@ export default function RootLayout({
 
       <header className="w-full  relative ">
 
-        {pathname === "/" || pathname === "/susbscription" && (
+        {(pathname === "/" || pathname === "/susbscription") && (
           <div className="absolute right-10 top-20 lg:right-20 lg:top-24 xl:right-10 xl:top-12 2xl:right-20 2xl:top-6 hidden lg:block pointer-events-none z-10">
             <div className="w-80 h-80 lg:w-96 lg:h-96 xl:w-[600px] xl:h-[600px] 2xl:w-[1000px] 2xl:h-[1000px]">
-              <Loupe
+              <img
+                src="/images/Loupe.svg"
+                alt="Loupe"
                 className="w-full h-full opacity-90"
-                style={{ width: '100%', height: '100%' }}
               />
             </div>
           </div>
         )}
         <div className='flex flex-col lg:flex-row items-center justify-between lg:justify-around px-4 py-4 gap-4'>
           <div className='flex flex-row items-center gap-3'>
-            <Logo className="w-30 h-30 flex-shrink-0" />
+            <img
+              src="/images/logo.svg"
+              alt="Logo"
+              className="w-30 h-30 flex-shrink-0"
+            />
             <h3 className='text-white text-sm lg:text-base w-30'>
               Parce que la science est proche de tous
             </h3>
