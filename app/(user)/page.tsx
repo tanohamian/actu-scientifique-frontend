@@ -1,140 +1,14 @@
 'use client'
 import IconComponent, { IconName } from "../components/Icons";
-import ViewElement, { ViewElementProps } from "../components/viewElement";
-import { useState } from "react";
+import ViewElement from "../components/viewElement";
+import { useEffect, useState } from "react";
 import Pagination from "../components/pagination";
 import SocialNetworks from "../components/socialNetworks";
 import { useRouter } from "next/navigation";
 import { ShoppingCart } from 'lucide-react'
-
-const dataFirstInformations: ViewElementProps[] = [
-  {
-    id: 1,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 2,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 3,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 4,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 5,
-    media: "https://www.w3schools.com/html/mov_bbb.mp4",
-    title: "Lutte contre la meningite",
-    type: "video",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 6,
-    media: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-    title: "Lutte contre la meningite",
-    type: "video",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 7,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 8,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 9,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 10,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 11,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 12,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 13,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 14,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 15,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 16,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter.la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 17,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-  {
-    id: 18,
-    media: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3",
-    title: "Lutte contre la meningite",
-    type: "image",
-    description: "la meningite est une maladie contagieuse, il faut la prévenir et la traiter."
-  },
-]
+import { Article, DbMedia } from "../admin/dashboard/newsletters/components/Affichage";
+import { FetchArticles } from "../actions/ArticleManager";
+import { FetchMedias } from "../actions/MediasManager";
 
 
 export default function Home() {
@@ -143,9 +17,34 @@ export default function Home() {
   const itemsPerPage = 6;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = dataFirstInformations.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(dataFirstInformations.length / itemsPerPage);
+  const [articles, setArticles] = useState<(Article | DbMedia)[]>([])
+  const currentItems = articles.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(articles.length / itemsPerPage)
   const socialNetworks: IconName[] = ["YouTubeIcon", "FacebookIcon", "TwitterIcon"]
+
+  useEffect(() => {
+    const loadContent = async () => {
+      try {
+        const [articlesData, mediasData] = await Promise.all([
+          FetchArticles(),
+          FetchMedias()
+        ]);
+
+        const filteredArticles = articlesData.filter(
+          (a) => a.une === true
+        );
+        const filteredMedias = mediasData.filter(
+          (m) => m.une === true
+        );
+
+        setArticles([...filteredArticles, ...filteredMedias]);
+      } catch (error) {
+        console.error("Erreur lors du chargement :", error);
+      }
+    };
+
+    loadContent();
+  }, []);
 
   return (
     <div className="px-4 py-8 md:px-8 md:py-12">
@@ -169,13 +68,10 @@ export default function Home() {
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="w-full lg:w-3/4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {currentItems.map((item) => (
+              {currentItems.map((item: Article | DbMedia) => (
                 <ViewElement
                   key={item.id}
-                  media={item.media}
-                  title={item.title}
-                  type={item.type}
-                  description={item.description}
+                  article={item}
                   onclick={() => router.push(`/${item.id}`)}
                 />
               ))}

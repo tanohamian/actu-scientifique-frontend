@@ -13,6 +13,7 @@ export async function RegisterUser(formData: UserInterface) {
   if (!authToken) {
     console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
     redirect('/admin');
+    return
   }
   try {
     const response = await fetch(`${env.baseUrl}/auth/register`, {
@@ -43,7 +44,6 @@ export default async function LoginUser(formData: FormState) {
 
   const email = formData.email
   const password = formData.password
-  let loginSuccessful = false;
   let authTokenValue: RegExpMatchArray | null = null;
 
   try {
@@ -81,18 +81,19 @@ export default async function LoginUser(formData: FormState) {
       })
 
       if (res.status === 200) {
-        loginSuccessful = true
+        const responseJson = await res.json()
         revalidatePath('/admin/dashboard')
+        return responseJson.user
       } else {
         console.error("Échec de la vérification admin :", res.status);
+        return
       }
     }
 
   } catch (error) {
     console.error("Erreur lors de la connexion : ", error)
+    return
   }
 
-  if (loginSuccessful) {
-    redirect('/admin/dashboard')
-  }
+
 }
