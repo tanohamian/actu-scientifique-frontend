@@ -67,7 +67,7 @@ export default function Page() {
         text-2xl 
         md:text-3xl 
         lg:text-4xl 
-       font-light
+        font-light
         text-white
     `;
     const subTextClasses = `
@@ -82,7 +82,6 @@ export default function Page() {
             <h3 className={subTextClasses}>Avoir une vision globale de l'application</h3>
             
             <DashboardCardContainer 
-
                 subscribers={subscribers}
                 articles={articles}
                 visitors={visitors}

@@ -1,6 +1,4 @@
 import styles from "../styles/Dashboard.module.scss";
-import { Event } from "./eventDataTable";
-
 
 export interface ListItem {
     text ?: string;
@@ -11,7 +9,7 @@ export interface ListItem {
 
 export interface PublicationCardProps {
     cardTitle: string; 
-    items: ListItem[] | Event[]; 
+    items: ListItem[] ; 
 }
 
 const PublicationCard = ({ cardTitle, items }: PublicationCardProps) => {
@@ -22,7 +20,7 @@ const PublicationCard = ({ cardTitle, items }: PublicationCardProps) => {
                 {items.map((item, index) => {
                     const isEvent = 'title' in item;
                     
-                    const displayTitle : string | undefined = isEvent ? item.title : item.titre ? item.titre : item.text;
+                    const displayTitle : string | undefined = isEvent ? item.title : item.title ? item.title : item.text;
                     
                     const rawDate = isEvent ? item.date : item.createdAt;
                     const displayDate = (() => {
