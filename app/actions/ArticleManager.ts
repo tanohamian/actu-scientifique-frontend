@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache'
 
 
 
-export async function AddArticle(formData: Article | FormData , json: boolean =false, ) {
+export async function AddArticle(formData: Article | FormData, json: boolean = false,) {
     console.log(env)
     const authToken = (await cookies()).get('authToken')?.value;
     console.log("payload: ", formData)
@@ -24,21 +24,21 @@ export async function AddArticle(formData: Article | FormData , json: boolean =f
     });
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/articles/`, {
             method: 'POST',
-            headers: json ? 
+            headers: json ?
                 {
-                'Content-Type': 'application/json',
-                'Cookie': `authToken=${authToken}`,
-            } : {
-                
-                'Cookie': `authToken=${authToken}`,
-            },
+                    'Content-Type': 'application/json',
+                    'Cookie': `authToken=${authToken}`,
+                } : {
 
-            body: json? JSON.stringify(formData) : formData as FormData,
+                    'Cookie': `authToken=${authToken}`,
+                },
+
+            body: json ? JSON.stringify(formData) : formData as FormData,
 
         })
 
@@ -55,11 +55,11 @@ export async function AddArticle(formData: Article | FormData , json: boolean =f
         console.log(error)
     }
 
-    redirect('/admin/dashboard/gestion_article')
+    //redirect('/admin/dashboard/gestion_article')
 }
 
 export async function FetchArticles() {
-        console.log(env)
+    console.log(env)
     try {
         const response = await fetch(`${env.baseUrl}/articles`, {
             method: 'GET',
@@ -85,7 +85,7 @@ export async function DeleteArticle(articleId: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/articles/${articleId}`, {
@@ -104,5 +104,26 @@ export async function DeleteArticle(articleId: string) {
     } catch (error) {
         console.log("erreur lors de la suppression de l'article : ", error)
         return []
+    }
+}
+
+export async function FetchArticleById(articleId: string) {
+    try {
+        const response = await fetch(`${env.baseUrl}/articles/${articleId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+
+        if (response.ok) {
+            const responseData = await response.json()
+            console.log(responseData)
+            return responseData.article as Article
+        }
+        return null
+    } catch (error) {
+        console.log("erreur lors de la récupération de l'article : ", error)
+        return null
     }
 }

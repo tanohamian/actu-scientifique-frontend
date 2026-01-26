@@ -12,7 +12,7 @@ export async function CreateFeed(feed: FeedInterface) {
 
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
 
     try {
@@ -41,7 +41,7 @@ export async function DeleteFeed(feed: FeedInterface) {
 
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
 
     try {
@@ -69,7 +69,7 @@ export async function GetFeeds() {
 
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/feeds`, {
@@ -92,14 +92,14 @@ export async function GetFeeds() {
 }
 
 
-export  async function UpdateFeed(id: string, feed: FeedInterface) {
+export async function UpdateFeed(id: string, feed: FeedInterface) {
     console.log("update feed : ", feed)
     console.log("update feed id : ", id)
     const authToken = (await cookies()).get('authToken')?.value;
 
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
 
     try {

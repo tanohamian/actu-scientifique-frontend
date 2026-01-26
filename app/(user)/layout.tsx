@@ -6,6 +6,7 @@ import ButtonComponent from '@components/button';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import LoginRegisterComponent from '../components/login_register_Component';
+import { useAuth, AuthProvider } from '../context/authContext';
 
 
 const iconSize = 'w-8 h-8';
@@ -16,6 +17,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
+  return (
+    <AuthProvider>
+      <LayoutContent>{children}</LayoutContent>
+    </AuthProvider>
+  );
+}
+
+
+function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [inputValue, setInputValue] = useState('')
   const [isRegisterOpen, setIsRegisterOpen] = useState(false)
@@ -23,6 +33,7 @@ export default function RootLayout({
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isLoginOpen, setIsLoginOpen] = useState(false)
   const iconBaseProps = { className: `text-white ${iconSize}` };
@@ -47,8 +58,11 @@ export default function RootLayout({
     { typeInput: 'text', placeholderInput: 'Prenom', inputValue: lastName, setInputValue: setLastName },
     { typeInput: 'email', placeholderInput: 'Email', inputValue: email, setInputValue: setEmail },
     { typeInput: 'password', placeholderInput: 'Mot de passe', inputValue: password, setInputValue: setPassword },
-    { typeInput: 'password', placeholderInput: 'Confirmer le mot de passe', inputValue: password, setInputValue: setPassword },
+    { typeInput: 'password', placeholderInput: 'Confirmer le mot de passe', inputValue: confirmPassword, setInputValue: setConfirmPassword },
   ];
+
+  const { isLoggedIn, login, logout, loading } = useAuth();
+
   return (
     <div className="m-0 p-0 bg-[#50789B] w-full min-h-screen flex flex-col">
 
@@ -94,7 +108,16 @@ export default function RootLayout({
               <IconComponent name='LinkedIn' {...iconBaseProps} />
             </div>
 
-            <ButtonComponent textButton='Connexion' onclick={() => setIsLoginOpen(true)} />
+            {loading ? (
+              // Pendant que l'on vérifie le cookie au rafraîchissement
+              <div className="w-10 h-10 animate-pulse bg-white/20 rounded-full" />
+            ) : isLoggedIn ? (
+              // Si l'utilisateur est connecté, on affiche un bouton Déconnexion (ou rien)
+              <ButtonComponent textButton='Déconnexion' onclick={logout} />
+            ) : (
+              // Si l'utilisateur n'est pas connecté, on affiche le bouton Connexion
+              <ButtonComponent textButton='Connexion' onclick={() => setIsLoginOpen(true)} />
+            )}
             {isLoginOpen && (
               <LoginRegisterComponent
                 type='login'

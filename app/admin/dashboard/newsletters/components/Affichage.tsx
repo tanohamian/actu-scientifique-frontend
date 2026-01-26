@@ -25,6 +25,7 @@ export interface Article {
     content: string;
     rubrique?: Rubriques;
     createdAt?: Date | string
+    une?: boolean
 }
 
 export interface DbMedia {
@@ -36,6 +37,7 @@ export interface DbMedia {
     url: string;
     createdAt: Date | string;
     type: string;
+    une?: boolean
 }
 
 export interface DbArticle {

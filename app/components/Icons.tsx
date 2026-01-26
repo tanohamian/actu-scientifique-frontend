@@ -4,7 +4,7 @@ import React from 'react';
 export type IconName =
     'Search' | 'Settings' | 'Plus' | 'Feed' |
     'List' | 'Video' | 'Envelope' | 'Group' | 'Rss' | 'Chat' |
-    'ControlPanel' | 'Playlist' | 'ShoppingCartIcon' | 'Movie' | 'Schedule' | 'UsersOnline' | 'Product' | 'LogOut' | 'InstagramIcon' | 'FacebookIcon' | 'WhatsAppIcon' | 'YouTubeIcon' | 'Localisation' | 'Phone' | 'LinkedIn' | "TwitterIcon";
+    'ControlPanel' | 'Playlist' | 'ShoppingCartIcon' | 'Movie' | 'Schedule' | 'UsersOnline' | 'Product' | 'LogOut' | 'InstagramIcon' | 'FacebookIcon' | 'WhatsAppIcon' | 'YouTubeIcon' | 'Localisation' | 'Phone' | 'LinkedIn' | "TwitterIcon" | "AudioIcon";
 
 interface IconProps {
     className?: string;
@@ -431,6 +431,23 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
             <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
         </svg>
     ),
+    AudioIcon: ({ className }) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+        >
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="22"></line>
+            <line x1="8" y1="22" x2="16" y2="22"></line>
+        </svg>
+    )
 };
 
 

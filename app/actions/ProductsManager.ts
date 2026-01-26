@@ -9,7 +9,7 @@ export async function FetchProducts() {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/products`, {
@@ -38,7 +38,7 @@ export async function AddProduct(product: FormData) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        // redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/products`, {
@@ -65,7 +65,7 @@ export async function UpdateProduct(product: FormData | Product, id: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        // redirect('/admin');
     }
     const headers: HeadersInit = {
         'Cookie': `authToken=${authToken}`
@@ -101,7 +101,7 @@ export async function DeleteProduct(id: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //  redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/products/${id}`, {

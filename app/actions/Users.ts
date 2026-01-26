@@ -10,7 +10,7 @@ export async function FetchUsers() {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/users/all`, {
@@ -37,7 +37,7 @@ export async function DeleteUser(id: string | undefined) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        // redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/users/${id}`, {
@@ -67,7 +67,7 @@ export async function UpdateRole(userId: string | undefined, role: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        // redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/users/promote/${userId}`, {

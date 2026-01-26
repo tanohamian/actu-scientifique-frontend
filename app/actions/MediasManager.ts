@@ -27,7 +27,7 @@ export async function AddMedia(formData: FormData) {
     });
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/multimedia/`, {
@@ -41,8 +41,8 @@ export async function AddMedia(formData: FormData) {
         if (!response.ok) {
             const errorData = response;
             console.log("Server error response:", JSON.stringify(errorData));
-            if (response.status === 401) redirect('/admin');
-            throw Error(`Échec de l'upload du média : ${response.status} ${response.statusText}`);
+            if (response.status === 401) //redirect('/admin');
+                throw Error(`Échec de l'upload du média : ${response.status} ${response.statusText}`);
         }
 
         const result = await response.json();
@@ -73,7 +73,7 @@ export async function UpdateMedia(formData: FormData, id: string) {
     });
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/multimedia/${id}`, {
@@ -99,13 +99,13 @@ export async function UpdateMedia(formData: FormData, id: string) {
         throw error;
     }
 
-    redirect('/admin/dashboard/medias');
+    //redirect('/admin/dashboard/medias');
 }
 export async function FetchMedias() {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/multimedia`, {
@@ -134,7 +134,7 @@ export async function DeleteMedia(mediaId: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/multimedia/${mediaId}`, {
