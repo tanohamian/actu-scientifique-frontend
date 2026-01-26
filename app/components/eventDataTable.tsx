@@ -3,12 +3,13 @@ import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Article, DbMedia } from '../admin/dashboard/newsletters/components/Affichage';
 import { Property } from "csstype"
+import { Rubriques } from '../enum/enums';
 
 export interface TableData {
     id?: string | number
     title: string;
     name?: string;
-    rubrique?: string
+    rubrique?: Rubriques
     createdAt?: Date | string
     location?: string
     status?: 'en direct' | 'pas en direct';
@@ -41,15 +42,6 @@ interface EventDataTableProps {
     handleDeleteEvent?: (item: ElementType) => void;
 }
 
-/*
-    const DeleteIcon = () => (
-        <button
-            className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-500"
-        >
-            <Trash2 size={20} />
-        </button>
-    );
-*/
 const getStatusClasses = (status: TableData['status']): string => {
     switch (status) {
         case 'en direct':
@@ -58,6 +50,17 @@ const getStatusClasses = (status: TableData['status']): string => {
         default:
             return 'text-white/80 font-medium  px-2 py-0.5 rounded-full text-xs';
     }
+};
+
+const rubriqueTranslations: Record<string, string> = {
+    'one_health': 'Une seule santé',
+    'technology': 'Technologie',
+    'ecohumanity': 'Éco-humanité',
+    'port_discovery': 'Portrait et découvertes'
+};
+
+export const translateRubrique = (rubrique: string): string => {
+    return rubriqueTranslations[rubrique] || rubrique;
 };
 
 export default function DataTable({ tableTitle, data, columnHeaders, handleEditEvent, handleDeleteEvent, isMedia = false }: EventDataTableProps) {
@@ -72,11 +75,9 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                 {columnHeaders.map(header => (
                     <div
                         key={header.key}
-                        // Utilisation du style inline pour flexBasis car Tailwind ne le gère pas directement avec des pourcentages dynamiques
                         style={{ flexBasis: header.flexBasis, textAlign: header?.textAlign || "left" }}
                         className={`flex-shrink-0 flex-grow-0`}
                     >
-
                         <span>{header.label}</span>
                     </div>
                 ))}
@@ -107,13 +108,10 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                         <span className={getStatusClasses((item as TableData).status)}>{(item as TableData).status}</span>
                                     );
                                 }
-                                /*if (header.key === 'url') {
-                                    content = (
-                                        <a href={(item as TableData).url} target="_blank" rel="noopener noreferrer">
-                                            {(item as TableData).url}
-                                        </a>
-                                    );
-                                }*/
+
+                                if (header.key === 'rubrique' && (item as Article).rubrique) {
+                                    content = translateRubrique((item as Article).rubrique as string);
+                                }
 
                                 if (isActionColumn) {
                                     content = (

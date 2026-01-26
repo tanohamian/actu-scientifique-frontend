@@ -23,7 +23,7 @@ const ArticleFields: FormFieldConfig[] = [
         label: 'Rubrique',
         type: 'select',
         options: [
-            { label: "Santé", value: Rubriques.ONE_HEALTH },
+            { label: "Une seule santé", value: Rubriques.ONE_HEALTH },
             { label: 'Technologie', value: Rubriques.TECHNOLOGY },
             { label: 'Éco-humanité', value: Rubriques.ECO_HUMANITY },
             { label: 'Portrait et découvertes', value: Rubriques.PORT_DISCOVERY },
@@ -45,6 +45,8 @@ const mainHeaders = [
     { key: 'createdAt', label: 'Date de publication', flexBasis: '25%' },
     { key: 'actions', label: 'Actions', flexBasis: '15%' },
 ];
+
+
 
 
 //const TABS_INACTIVE_COLOR = '#5A8FAC'; 

@@ -19,9 +19,9 @@ const MediaFields: FormFieldConfig[] = [
     { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...', required: false },
     { name: 'file', label: "Fichier", type: "file", required: true },
     {
-        name: 'rubrique', label: 'Catégorie', type: 'select',
+        name: 'rubrique', label: 'Rubrique', type: 'select',
         options: [
-            { label: "Santé", value: Rubriques.ONE_HEALTH },
+            { label: "Une seule santé", value: Rubriques.ONE_HEALTH },
             { label: 'Technologie', value: Rubriques.TECHNOLOGY },
             { label: 'Éco-humanité', value: Rubriques.ECO_HUMANITY },
             { label: 'Portrait et découvertes', value: Rubriques.PORT_DISCOVERY },
@@ -49,6 +49,7 @@ export type rubriques = "technology" | "one_health" | "ecohumanity"
 export default function MediaPage() {
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false)
     const [editMedia, setEditMedia] = useState(false);
     const [selectedMedia, setSelectedMedia] = useState<ElementType | null>(null);
     const [filters] = useState<IFilter[]>(mainHeaders.map((header) => {
@@ -128,6 +129,7 @@ export default function MediaPage() {
     };
 
     const handleSubmitMedia = async (data: Product | InitialDataType | DbMedia) => {
+        setIsLoading(true)
         try {
             console.log("📋 Données reçues:", data);
 
@@ -180,6 +182,8 @@ export default function MediaPage() {
         } catch (error) {
             console.error("❌ Erreur:", error);
             alert(`Erreur: ${(error as Error).message}`);
+        } finally {
+            setIsLoading(false)
         }
     };
 
@@ -295,6 +299,7 @@ export default function MediaPage() {
                 buttonTitle="Ajouter"
                 fields={MediaFields}
                 initialData={initialData}
+                isLoading={isLoading}
             />
 
             <AddElementModal
