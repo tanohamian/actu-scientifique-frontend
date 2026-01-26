@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
+        protocol: 'http',
+        hostname: 's3.actuscientifique.com',
+        pathname: '/**',
+      },
+      {
         protocol: 'https',
         hostname: 'global.unitednations.entermediadb.net',
         port: '',
