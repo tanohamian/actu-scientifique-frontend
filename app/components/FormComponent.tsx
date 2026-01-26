@@ -21,6 +21,8 @@ interface FormPropos {
 export default function FormComponent({ isArticle = false, initialData, onSuccess, fields, initialArticleData = {} }: FormPropos) {
   const rubriques = Object.values(Rubriques) as string[];
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const [formData, setFormData] = useState<Article | INewsletter>({
     title: "",
     content: "",
@@ -51,8 +53,8 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
         const title = initialData.title || "";
         const content = initialData.content || "";
         const rubrique = ('categorie' in initialData)
-          ? initialData.categorie as Rubriques 
-          : ('rubrique' in initialData ? initialData.rubrique  : Rubriques.TECHNOLOGY);
+          ? initialData.categorie as Rubriques
+          : ('rubrique' in initialData ? initialData.rubrique : Rubriques.TECHNOLOGY);
 
 
         setFormData({ title, content, rubrique });
@@ -84,6 +86,7 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setIsLoading(true)
     try {
       let result: DbArticle | undefined | { success: boolean };
       const currentId = initialData?.id;
@@ -93,32 +96,33 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
         article.append('content', articleFormData["content"] as string)
         article.append('rubrique', articleFormData["rubrique"] as string)
         article.append('file', articleFormData["file"] as File)
+        article.append('une', articleFormData["une"] as string);
         console.log("Aperçu de l'article : ")
         console.log(article)
 
         console.log("📤 Envoi vers /api/upload-article");
 
         const response = await fetch('/api/upload-article', {
-            method: 'POST',
-            body: article,
+          method: 'POST',
+          body: article,
         });
 
         console.log("📨 Réponse reçue:", response.status);
 
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Erreur lors de l\'upload');
+          const error = await response.json();
+          throw new Error(error.error || 'Erreur lors de l\'upload');
         }
 
         const result = await response.json();
         console.log("✅ Média uploadé:", result);
-            
-        if (result) {
 
+        if (result) {
           alert(isEditing ? "Mis à jour !" : "Publié !");
+          const newArticle = result.article as DbArticle;
           console.log(result)
           setFormData({ title: "", content: "", rubrique: Rubriques.TECHNOLOGY });
-          onSuccess(result as DbArticle);
+          onSuccess(newArticle);
         }
         return
       }
@@ -137,6 +141,8 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
       }
     } catch (error) {
       console.error("Erreur:", error);
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -296,9 +302,11 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
                 ))}
               </select>
             </div>
-            <button type="submit" style={buttonStyle}>
+            {isLoading ? <button type="submit" style={buttonStyle}>
+              {isEditing ? "Enregistrement en cours..." : "Publication en cours..."}
+            </button> : <button type="submit" style={buttonStyle}>
               {isEditing ? "Enregistrer les modifications" : "Publier"}
-            </button>
+            </button>}
           </form>
       }
 

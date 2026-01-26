@@ -1,11 +1,12 @@
 'use client'
-import { Article, ArticleRubriques, DbArticle } from "@/app/admin/dashboard/newsletters/components/Affichage";
+import { Article, DbArticle } from "@/app/admin/dashboard/newsletters/components/Affichage";
 import Pagination from "@/app/components/pagination";
 import ViewElement, { ViewElementProps } from "@/app/components/viewElement";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ViewArticleElement from "./view.component";
 import { FetchArticles } from "@/app/actions/ArticleManager";
+import { Rubriques } from "@/app/enum/enums";
 
 const dataFirstInformations: ViewElementProps[] | Article[] = [
     {
@@ -167,9 +168,9 @@ export default function Technologie() {
     const totalPages = Math.ceil(dataFirstInformations.length / itemsPerPage)
     const [articles, setArticles] = useState<Article[]>([])
     useEffect(() => {
-        const fetchArticles = async () =>{
+        const fetchArticles = async () => {
             setArticles((await FetchArticles())
-            .filter((article)=> article.rubrique === ArticleRubriques.TECHNOLOGY ))
+                .filter((article) => article.rubrique === Rubriques.TECHNOLOGY))
         }
         fetchArticles()
     }, [])

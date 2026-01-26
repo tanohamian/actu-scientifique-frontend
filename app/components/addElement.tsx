@@ -3,6 +3,7 @@ import ButtonComponent from "@/app/components/button";
 import React, { useState, useEffect, useMemo } from 'react';
 import { X, ChevronDown, Upload } from 'lucide-react';
 import { Product } from "../admin/page";
+import { Rubriques } from "../enum/enums";
 
 export interface FormFieldConfig {
     name: string;
@@ -13,7 +14,7 @@ export interface FormFieldConfig {
     options?: { value: string | number; label: string }[];
 }
 
-export type InitialDataType = { [key: string]: string | number | File | undefined }
+export type InitialDataType = { [key: string]: string | number | File | undefined | Rubriques }
 
 
 interface AddElementModalProps {
@@ -24,6 +25,7 @@ interface AddElementModalProps {
     buttonTitle: string;
     fields: FormFieldConfig[];
     initialData?: InitialDataType;
+    isLoading?: boolean
 }
 
 
@@ -49,7 +51,7 @@ export const uploadIcon: React.CSSProperties = {
 
 
 
-export default function AddElementModal({ isOpen, onClose, onSubmit, titleComponent, buttonTitle, fields, initialData = {} }: AddElementModalProps) {
+export default function AddElementModal({ isOpen, onClose, onSubmit, titleComponent, buttonTitle, fields, initialData = {}, isLoading }: AddElementModalProps) {
 
 
     const [imageUrl, setImageUrl] = useState<string | ArrayBuffer | null>("")
@@ -216,9 +218,11 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
 
                 <form onSubmit={handleSubmit} className={formClasses}>
                     {fields.map(field => renderField(field))}
-                    <div className="mt-4 flex justify-center">
+                    {isLoading ? <div className="mt-4 flex justify-center">
+                        <ButtonComponent textButton="Chargement..." size="medium" />
+                    </div> : <div className="mt-4 flex justify-center">
                         <ButtonComponent textButton={buttonTitle} size="medium" />
-                    </div>
+                    </div>}
                 </form>
             </div>
 

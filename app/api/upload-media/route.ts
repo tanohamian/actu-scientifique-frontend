@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { env } from '@/app/config/env';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
-
-        console.log("=== 📡 API ROUTE: upload-media ===");
-        console.log("📦 FormData reçu:");
 
         for (const [key, value] of formData.entries()) {
             if (value instanceof File) {
@@ -20,29 +21,28 @@ export async function POST(request: NextRequest) {
         const file = formData.get('file') as File;
 
         if (!file || file.size === 0) {
-            console.error("❌ Aucun fichier reçu");
+            console.error("Aucun fichier reçu");
             return NextResponse.json(
                 { error: 'Aucun fichier sélectionné ou fichier vide' },
                 { status: 400 }
             );
         }
 
-        console.log("✅ Fichier validé:", file.name, file.size);
+        console.log("Fichier validé:", file.name, file.size);
 
         const cookieStore = await cookies();
         const authToken = cookieStore.get('authToken')?.value;
 
         if (!authToken) {
-            console.error("❌ Pas de token d'authentification");
+            console.error("Pas de token d'authentification");
             return NextResponse.json(
                 { error: 'Non authentifié' },
                 { status: 401 }
             );
         }
 
-        console.log("📤 Envoi au backend Express:", `${env.baseUrl}/multimedia/`);
+        console.log("Envoi au backend Express:", `${env.baseUrl}/multimedia/`);
 
-        // Transférer le FormData au backend Express
         const response = await fetch(`${env.baseUrl}/multimedia/`, {
             method: 'POST',
             headers: {
@@ -51,11 +51,11 @@ export async function POST(request: NextRequest) {
             body: formData
         });
 
-        console.log("📨 Réponse backend:", response.status);
+        console.log("Réponse backend:", response.status);
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error("❌ Erreur backend:", errorText);
+            console.error("Erreur backend:", errorText);
             return NextResponse.json(
                 { error: `Erreur backend: ${response.status}` },
                 { status: response.status }
@@ -63,22 +63,15 @@ export async function POST(request: NextRequest) {
         }
 
         const result = await response.json();
-        console.log("✅ Succès:", result);
+        console.log("Succès:", result);
 
         return NextResponse.json(result);
 
     } catch (error) {
-        console.error("❌ Erreur dans l'API route:", error);
+        console.error("Erreur dans l'API route:", error);
         return NextResponse.json(
             { error: 'Erreur serveur' },
             { status: 500 }
         );
     }
 }
-
-// Configuration pour accepter les gros fichiers
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};

@@ -99,11 +99,11 @@ export default function Affichage({
     }, [type]);
 
     useEffect(() => {
-    
-        const effect = ()=>{
+
+        const effect = () => {
             loadData();
         }
-        effect() 
+        effect()
     }, [loadData]);
     const handleDelete = async (id: string) => {
 

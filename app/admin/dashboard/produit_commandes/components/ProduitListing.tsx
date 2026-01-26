@@ -26,9 +26,9 @@ const projectFields: FormFieldConfig[] = [
     {
         name: 'categories', label: 'Catégorie', type: 'select', required: false,
         options: [
-            { value: 'livres', label: 'livres' },
-            { value: 'vêtements', label: 'vêtements' },
-            { value: 'objets tech', label: 'objets tech' },
+            { value: 'books', label: 'livres' },
+            { value: 'clothes', label: 'vêtements' },
+            { value: 'technology_objects', label: 'objets tech' },
         ]
     },
     { name: 'price', label: 'Prix', type: 'number', placeholder: 'Entrez votre prix', required: false },

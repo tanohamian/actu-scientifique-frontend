@@ -30,6 +30,7 @@ export async function FetchOrders() {
                 name: order.items[0]?.product?.name,
                 category: order.items[0]?.product?.categories
             }));
+            console.log("Response fetch orders : ", formattedOrders)
             revalidatePath('/admin/dashboard/produit_commandes')
             return formattedOrders
         }

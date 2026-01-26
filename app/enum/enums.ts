@@ -1,22 +1,18 @@
 export enum UserRole {
-  ADMIN= 'ROLE_ADMIN',
-  EDITOR='ROLE_EDITOR',
-  VIEWER='ROLE_VIEWER'
-} ;
+  ADMIN = 'ROLE_ADMIN',
+  EDITOR = 'ROLE_EDITOR',
+  VIEWER = 'ROLE_VIEWER'
+};
 export enum Rubriques {
-    TECHNOLOGY = "technology",
-    ONE_HEALTH = "one_health",
-    ECO_HUMANITY = "ecohumanity",
+  TECHNOLOGY = "technology",
+  ONE_HEALTH = "one_health",
+  ECO_HUMANITY = "ecohumanity",
+  PORT_DISCOVERY = "port_discovery"
 }
 
-export enum MediaRubriques {
-  TECHNOLOGY = "tech",
-  ONE_HEALTH = "health",
-  ART = 'art',
-  SCIENCE = "science"
-}
+
 export enum AffichageType {
-    ARTICLE = "article",
-    NEWSLETTER = "newsletters",
-    MEDIAS = "medias"
+  ARTICLE = "article",
+  NEWSLETTER = "newsletters",
+  MEDIAS = "medias"
 }

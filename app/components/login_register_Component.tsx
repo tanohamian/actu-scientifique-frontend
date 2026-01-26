@@ -1,6 +1,9 @@
 'use client'
-import LoupeAfrique from '@public/images/loupe_afrique.svg'
 import InputComponent, { InputProps } from './input';
+import LoginUser, { RegisterUser } from '../actions/Auth';
+import { useState } from 'react';
+import { UserInterface } from '../admin/dashboard/users/page';
+
 
 interface LoginRegisterComponentProps {
     type: 'login' | 'register';
@@ -11,6 +14,42 @@ interface LoginRegisterComponentProps {
 }
 
 export default function LoginRegisterComponent({ type, title, inputs, onClose, onSubmit }: LoginRegisterComponentProps) {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const formData = new FormData(e.currentTarget);
+
+            if (type === 'login') {
+                const loginData = {
+                    email: formData.get('email') as string,
+                    password: formData.get('password') as string,
+                };
+                await LoginUser(loginData);
+
+            } else {
+                const registerData = {
+                    first_name: formData.get('first_name') as string,
+                    last_name: formData.get('last_name') as string,
+                    email: formData.get('email') as string,
+                    password: formData.get('password') as string,
+                    username: formData.get('username') as string,
+                    roles: "ROLE_VIEWER",
+                };
+                await RegisterUser(registerData as UserInterface);
+                console.log('Inscription non implémentée');
+                onSubmit();
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+            setIsLoading(false);
+        }
+    };
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
 
@@ -26,7 +65,7 @@ export default function LoginRegisterComponent({ type, title, inputs, onClose, o
                 </button>
 
                 <div className="flex flex-col items-center mb-6">
-                    <LoupeAfrique className="w-20 h-20 mb-2" />
+                    <img src="/images/loupe_afrique.svg" className="w-20 h-20 mb-2" alt="Logo" />
                     <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
                 </div>
 
@@ -36,7 +75,7 @@ export default function LoginRegisterComponent({ type, title, inputs, onClose, o
                     ))}
                 </div>
 
-                <button className="w-full mt-6 bg-[#E65A46] hover:bg-[#d14d3a] text-white font-bold py-3 rounded-lg transition-all">
+                <button className="w-full mt-6 bg-[#E65A46] hover:bg-[#d14d3a] text-white font-bold py-3 rounded-lg transition-all" >
                     {type === 'login' ? 'Se connecter' : "S'inscrire"}
                 </button>
 

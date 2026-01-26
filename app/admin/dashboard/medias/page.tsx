@@ -17,16 +17,23 @@ import { Rubriques } from '@/app/enum/enums';
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', type: 'text', placeholder: 'Entrez le titre du media', required: true },
     { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...', required: false },
-    { name : 'file', label : "Fichier", type : "file" , required : true} ,
-    { 
-        name: 'rubrique', label: 'Catégorie', type: 'select',
+    { name: 'file', label: "Fichier", type: "file", required: true },
+    {
+        name: 'rubrique', label: 'Rubrique', type: 'select',
         options: [
-            { label: "Santé", value: Rubriques.ONE_HEALTH },
+            { label: "Une seule santé", value: Rubriques.ONE_HEALTH },
             { label: 'Technologie', value: Rubriques.TECHNOLOGY },
             { label: 'Éco-humanité', value: Rubriques.ECO_HUMANITY },
-        ], 
-        required: true 
+            { label: 'Portrait et découvertes', value: Rubriques.PORT_DISCOVERY },
+        ],
+        required: true
     },
+    {
+        name: 'une', label: 'Mettre à la une', type: "select", options: [
+            { label: "Oui", value: 1 },
+            { label: "Non", value: 0 }
+        ]
+    }
 ];
 
 const mainHeaders = [
@@ -37,17 +44,18 @@ const mainHeaders = [
     { key: 'createdAt', label: 'Date de publication', flexBasis: '20%' },
     { key: 'actions', label: 'Actions', flexBasis: '12%' },
 ];
+export type rubriques = "technology" | "one_health" | "ecohumanity"
 
 export default function MediaPage() {
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false)
     const [editMedia, setEditMedia] = useState(false);
     const [selectedMedia, setSelectedMedia] = useState<ElementType | null>(null);
     const [filters] = useState<IFilter[]>(mainHeaders.map((header) => {
         return { value: header.key, label: header.label }
     }))
     const [medias, setMedias] = useState<DbMedia[]>([])
-
     const pageContainerClasses = `
         min-h-screen 
         font-sans
@@ -121,6 +129,7 @@ export default function MediaPage() {
     };
 
     const handleSubmitMedia = async (data: Product | InitialDataType | DbMedia) => {
+        setIsLoading(true)
         try {
             console.log("📋 Données reçues:", data);
 
@@ -129,7 +138,8 @@ export default function MediaPage() {
 
             media.append('title', data.title as string);
             media.append('type', data.type as string);
-            media.append('rubrique', data.rubrique as string);
+            media.append('rubrique', data.rubrique as rubriques);
+            media.append('une', data.une as string);
 
             if (data.file instanceof File) {
                 media.append('file', data.file);
@@ -147,13 +157,10 @@ export default function MediaPage() {
                 }
             }
 
-            console.log("📤 Envoi vers /api/upload-media");
 
-            // ✅ Utiliser l'API route au lieu de la server action
             const response = await fetch('/api/upload-media', {
                 method: 'POST',
                 body: media,
-                // NE PAS mettre de Content-Type header, le navigateur le fera automatiquement
             });
 
             console.log("📨 Réponse reçue:", response.status);
@@ -165,7 +172,7 @@ export default function MediaPage() {
 
             const result = await response.json();
             console.log("✅ Média uploadé:", result);
-            
+
             // Ajouter le nouveau média à la liste
             setMedias(prev => ([...prev, result.file]));
             setIsOpen(false);
@@ -175,6 +182,8 @@ export default function MediaPage() {
         } catch (error) {
             console.error("❌ Erreur:", error);
             alert(`Erreur: ${(error as Error).message}`);
+        } finally {
+            setIsLoading(false)
         }
     };
 
@@ -290,6 +299,7 @@ export default function MediaPage() {
                 buttonTitle="Ajouter"
                 fields={MediaFields}
                 initialData={initialData}
+                isLoading={isLoading}
             />
 
             <AddElementModal
