@@ -12,8 +12,7 @@ export async function RegisterUser(formData: UserInterface) {
   const authToken = (await cookies()).get('authToken')?.value;
   if (!authToken) {
     console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-    redirect('/admin');
-    return
+    //redirect('/admin');
   }
   try {
     const response = await fetch(`${env.baseUrl}/auth/register`, {

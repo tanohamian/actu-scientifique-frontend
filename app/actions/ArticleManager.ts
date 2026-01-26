@@ -24,7 +24,7 @@ export async function AddArticle(formData: Article | FormData, json: boolean = f
     });
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/articles/`, {
@@ -55,7 +55,7 @@ export async function AddArticle(formData: Article | FormData, json: boolean = f
         console.log(error)
     }
 
-    redirect('/admin/dashboard/gestion_article')
+    //redirect('/admin/dashboard/gestion_article')
 }
 
 export async function FetchArticles() {
@@ -85,7 +85,7 @@ export async function DeleteArticle(articleId: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/articles/${articleId}`, {

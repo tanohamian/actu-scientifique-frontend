@@ -10,18 +10,18 @@ export interface IReport {
     date: Date;
     reward: number;
     description: string;
-    
+
 }
 
 export async function FetchReports() {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
-        const response = await fetch(`${env.baseUrl}/reports`,{
-            method:'GET',
+        const response = await fetch(`${env.baseUrl}/reports`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Cookie': `authToken=${authToken}`
@@ -29,13 +29,13 @@ export async function FetchReports() {
         })
         console.log("Response fetch reports:", response);
 
-       if(response.ok){
-         const responseData = await response.json()
-         console.log(responseData)
-         revalidatePath('/admin/dashboard/reports')
-         return responseData.reportages
-       }
-       return []
+        if (response.ok) {
+            const responseData = await response.json()
+            console.log(responseData)
+            revalidatePath('/admin/dashboard/reports')
+            return responseData.reportages
+        }
+        return []
     } catch (error) {
         console.log("erreur lors de la récupération des reportages : ", error)
         return []
@@ -49,7 +49,7 @@ export async function AddReport(data: IReport) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/reports`, {
@@ -60,14 +60,14 @@ export async function AddReport(data: IReport) {
             },
             body: JSON.stringify(data)
         });
-        
+
         if (response.ok) {
             const responseData = await response.json()
             console.log(responseData)
             revalidatePath('/admin/dashboard/formations_bourses');
             return { success: true };
         }
-        
+
         const errorData = await response.json();
         return { success: false, error: errorData.message || "Échec de l'ajout" };
     } catch (error) {
@@ -82,7 +82,7 @@ export async function DeleteReport(id: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/reports/${id}`, {
@@ -110,7 +110,7 @@ export async function UpdateReport(id: string, data: IReport) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/reports/${id}`, {

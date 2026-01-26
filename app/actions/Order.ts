@@ -9,7 +9,7 @@ export async function FetchOrders() {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/orders`, {
@@ -46,7 +46,7 @@ export async function UpdateOrderStatus(id: string, status: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/orders/${id}`, {

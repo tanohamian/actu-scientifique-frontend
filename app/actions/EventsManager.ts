@@ -9,7 +9,7 @@ export async function FetchEvents() {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/events`, {
@@ -38,7 +38,7 @@ export async function CreateEvent(event: EventInterface) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/events`, {
@@ -68,7 +68,7 @@ export async function UpdateEvent(status: string, id: string, url: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/events/${id}`, {
@@ -98,7 +98,7 @@ export async function DeleteEvent(id: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/events/${id}`, {
