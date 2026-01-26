@@ -1,8 +1,7 @@
 'use server'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache';
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+import { env } from '../config/env';
 
 export interface ITraining {
     id?: string;
@@ -10,7 +9,7 @@ export interface ITraining {
     lien: string;
     description: string;
     date: string;
-    createdAt?: string;
+    createdAt?: string | Date;
 }
 
 async function getAuthHeaders() {
@@ -23,9 +22,8 @@ async function getAuthHeaders() {
 
 export async function FetchTrainings() {
     try {
-        const response = await fetch(`${BASE_URL}/trainings`, {
+        const response = await fetch(`${env.baseUrl}/trainings`, {
             method: 'GET',
-            headers: await getAuthHeaders(),
             next: { revalidate: 0 }
         });
 
@@ -42,7 +40,7 @@ export async function FetchTrainings() {
 
 export async function AddTraining(data: ITraining) {
     try {
-        const response = await fetch(`${BASE_URL}/trainings`, {
+        const response = await fetch(`${env.baseUrl}/trainings`, {
             method: 'POST',
             headers: await getAuthHeaders(),
             body: JSON.stringify(data)
@@ -62,7 +60,7 @@ export async function AddTraining(data: ITraining) {
 
 export async function UpdateTraining(id: string, data: ITraining) {
     try {
-        const response = await fetch(`${BASE_URL}/trainings/${id}`, {
+        const response = await fetch(`${env.baseUrl}/trainings/${id}`, {
             method: 'PUT',
             headers: await getAuthHeaders(),
             body: JSON.stringify(data)
@@ -75,14 +73,15 @@ export async function UpdateTraining(id: string, data: ITraining) {
         const errorDetail = await response.json();
         return { success: false, error: errorDetail.message || "Erreur lors de la mise à jour" };
     } catch (error) {
-        return { success: false, error: "Erreur réseau" };
+        
         console.log(`Erreur lors de la modification: ${error}`)
+        return { success: false, error: "Erreur réseau" };
     }
 }
 
 export async function DeleteTraining(id: string) {
     try {
-        const response = await fetch(`${BASE_URL}/trainings/${id}`, {
+        const response = await fetch(`${env.baseUrl}/trainings/${id}`, {
             method: 'DELETE',
             headers: await getAuthHeaders(),
         });
@@ -92,7 +91,8 @@ export async function DeleteTraining(id: string) {
         }
         return false;
     } catch (error) {
-        return false;
+        
         console.log(`Erreur lors de la suppression : ${error}`)
+        return false;
     }
 }

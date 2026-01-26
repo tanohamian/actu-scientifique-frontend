@@ -18,17 +18,15 @@ async function getAuthHeaders() {
     
     return {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`,
         'Cookie': `authToken=${authToken}`
     };
 }
 
 export async function FetchScholarships() {
     try {
-        // CORRECTION ICI : Utilise env.baseUrl (qui pointe vers NEXT_PUBLIC_env.baseUrl)
         const response = await fetch(`${env.baseUrl}/scholarships`, {
             method: 'GET',
-            headers: await getAuthHeaders(),
+            //headers: await getAuthHeaders(),
             next: { revalidate: 0 }
         });
 

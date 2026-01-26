@@ -9,9 +9,9 @@ interface OpportunityCardProps {
 export default function OpportunityCard({isScholarship, content}: OpportunityCardProps){
 
     return(
-        <section className="bg-gray rounded-lg shadow-xl max-w-2xl w-50  overflow-y-auto text-white">
+        <article className="rounded-bl-none shadow-xl w-120 max-w-full bg-[#AEB8C1] overflow-y-auto text-black font-bold p-5">
            {isScholarship?  <FontAwesomeIcon icon={faGraduationCap}/> : <FontAwesomeIcon icon={faBookOpen}/>}
            <p>{content}</p>
-        </section>
+        </article>
     )
 }
