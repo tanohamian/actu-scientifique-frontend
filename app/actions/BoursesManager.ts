@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache'
 
 export interface Bourse {
     id?: string;
-    titre: string;
+    title: string;
     lien: string;
     description: string;
     date: Date;

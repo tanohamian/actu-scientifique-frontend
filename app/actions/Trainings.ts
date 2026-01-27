@@ -5,7 +5,7 @@ import { env } from '../config/env';
 
 export interface ITraining {
     id?: string;
-    titre: string;
+    title: string;
     lien: string;
     description: string;
     date: string;
