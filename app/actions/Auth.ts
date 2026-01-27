@@ -81,8 +81,9 @@ export default async function LoginUser(formData: FormState) {
 
       if (res.status === 200) {
         const responseJson = await res.json()
+        console.log("responseJson : ", responseJson)
         revalidatePath('/admin/dashboard')
-        return responseJson.user
+        return responseJson.message
       } else {
         console.error("Échec de la vérification admin :", res.status);
         return

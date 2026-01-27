@@ -9,11 +9,11 @@ import { Rubriques } from "@/app/enum/enums";
 
 export default function Ecohumanity() {
     const router = useRouter();
-    
+
     const [articles, setArticles] = useState<Article[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
-    
+
     const itemsPerPage = 12;
     const loadArticles = useCallback(async () => {
         setIsLoading(true);
@@ -53,11 +53,7 @@ export default function Ecohumanity() {
                     currentItems.map((item: Article) => (
                         <ViewElement
                             key={item.id}
-                            media={item.illustrationUrl || ""}
-                            title={item.title}
-                            type={item.illustrationUrl?.match(/\.(mp4|mkv|webm)$/i) ? "video" : "image"}
-                            description={item.content}
-                            category="Eco-humanité"
+                            article={item}
                             onclick={() => router.push(`/${item.id}`)}
                         />
                     ))
