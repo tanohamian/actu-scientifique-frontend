@@ -6,19 +6,14 @@ import OpportunityCard from "@/app/components/OpportunityCard"
 import OpportunityEventCard from "@/app/components/OpportunityEventCard"
 import { useEffect, useState } from "react"
 
-const today = new Date().toISOString();
-
+interface DisplayedElementInterface{
+    title: string, 
+    lien: string,
+    createdAt?: Date|string
+}
 export default function OpportunitiesPage() {
-    const [scholarships, setScholarships] = useState<{title: string, createdAt?: Date|string}[]>([
-        { title: "Bourse pour la recherche scientifique en Turquie", createdAt: today },
-        { title: "Bourse pour la recherche scientifique en Turquie", createdAt: today },
-        { title: "Bourse pour la recherche scientifique en Turquie", createdAt: today },
-    ])
-    const [trainings, setTrainings] = useState<{title: string, createdAt?: Date|string}[]>([
-        { title: "Rédaction scientifique pour le web", createdAt: today },
-        { title: "Rédaction scientifique pour le web", createdAt: today },
-        { title: "Rédaction scientifique pour le web", createdAt: today },
-    ])
+    const [scholarships, setScholarships] = useState<DisplayedElementInterface[]>([])
+    const [trainings, setTrainings] = useState<DisplayedElementInterface[]>([])
 
     useEffect(() => {
         async function update() {
@@ -47,6 +42,7 @@ export default function OpportunitiesPage() {
                         {trainings.map((item, index) => (
                             <OpportunityCard
                                 key={index}
+                                url={item.lien}
                                 isScholarship={false} 
                                 content={item.title}
                             />
@@ -59,6 +55,7 @@ export default function OpportunitiesPage() {
                     <div className="grid grid-cols-1 gap-4">
                         {scholarships.map((item, index) => (
                             <OpportunityCard
+                                url={item.lien}
                                 key={index}
                                 isScholarship={true} 
                                 content={item.title}
