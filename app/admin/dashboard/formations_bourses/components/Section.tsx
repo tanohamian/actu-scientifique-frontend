@@ -67,7 +67,7 @@ export default function SwitchSection() {
     let res;
     if (activeTab === 'Formations') {
       const payload = {
-        titre: formData.title,
+        title: formData.title,
         lien: formData.url,
         description: formData.description,
         date: formData.date
@@ -77,7 +77,7 @@ export default function SwitchSection() {
         : await AddTraining(payload as ITraining);
     } else if (activeTab === 'Bourses') {
       const payload = {
-        titre: formData.title,
+        title: formData.title,
         lien: formData.url,
         description: formData.description,
         date: formData.date
@@ -135,7 +135,7 @@ export default function SwitchSection() {
     } else {
       const regularItem = item as ITraining | IScholarship;
       setFormData({
-        title: regularItem.titre,
+        title: regularItem.title,
         url: regularItem.lien,
         description: regularItem.description,
         date: regularItem.date,
@@ -217,7 +217,7 @@ export default function SwitchSection() {
           <p style={{ textAlign: 'center', opacity: 0.6 }}>Aucune donnée trouvée.</p>
         ) : (
           items.map((item) => {
-            const displayTitle = isReportage ? (item as IReport).title : (item as ITraining | IScholarship).titre;
+            const displayTitle = isReportage ? (item as IReport).title : (item as ITraining | IScholarship).title;
             const displayDate = isReportage
               ? ((item as IReport).date instanceof Date
                 ? (item as IReport).date.toISOString().split('T')[0]

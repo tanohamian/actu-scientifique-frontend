@@ -9,15 +9,15 @@ import { useEffect, useState } from "react"
 const today = new Date().toISOString();
 
 export default function OpportunitiesPage() {
-    const [scholarships, setScholarships] = useState<{titre: string, createdAt?: Date|string}[]>([
-        { titre: "Bourse pour la recherche scientifique en Turquie", createdAt: today },
-        { titre: "Bourse pour la recherche scientifique en Turquie", createdAt: today },
-        { titre: "Bourse pour la recherche scientifique en Turquie", createdAt: today },
+    const [scholarships, setScholarships] = useState<{title: string, createdAt?: Date|string}[]>([
+        { title: "Bourse pour la recherche scientifique en Turquie", createdAt: today },
+        { title: "Bourse pour la recherche scientifique en Turquie", createdAt: today },
+        { title: "Bourse pour la recherche scientifique en Turquie", createdAt: today },
     ])
-    const [trainings, setTrainings] = useState<{titre: string, createdAt?: Date|string}[]>([
-        { titre: "Rédaction scientifique pour le web", createdAt: today },
-        { titre: "Rédaction scientifique pour le web", createdAt: today },
-        { titre: "Rédaction scientifique pour le web", createdAt: today },
+    const [trainings, setTrainings] = useState<{title: string, createdAt?: Date|string}[]>([
+        { title: "Rédaction scientifique pour le web", createdAt: today },
+        { title: "Rédaction scientifique pour le web", createdAt: today },
+        { title: "Rédaction scientifique pour le web", createdAt: today },
     ])
 
     useEffect(() => {
@@ -48,7 +48,7 @@ export default function OpportunitiesPage() {
                             <OpportunityCard
                                 key={index}
                                 isScholarship={false} 
-                                content={item.titre}
+                                content={item.title}
                             />
                         ))}
                     </div>
@@ -61,7 +61,7 @@ export default function OpportunitiesPage() {
                             <OpportunityCard
                                 key={index}
                                 isScholarship={true} 
-                                content={item.titre}
+                                content={item.title}
                             />
                         ))}
                     </div>

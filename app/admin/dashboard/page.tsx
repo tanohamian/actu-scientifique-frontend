@@ -13,7 +13,7 @@ import { FetchBourses } from '@/app/actions/BoursesManager'
 import { EventInterface } from '@/app/components/eventDataTable'
 
 export default function Page() {
-    const today = new Date().toISOString();
+    //const today = new Date().toISOString();
         
     const [articles, setArticles] = useState<DashboardCardProps>({ label: "Articles", value: 15 })
     const [visitors] = useState<DashboardCardProps>({ label: "Visiteurs", value: 36 })
@@ -22,30 +22,10 @@ export default function Page() {
 
 
 
-    const [publishedContent, setPublishedContent] = useState<ListItem[]>([
-        { title: "Comment utiliser l'IA dans le journalisme", createdAt: today },
-        { title: "Ethique et sources numériques", createdAt: today },
-        { title: "Rapport annuel 2024 des médias", createdAt: today },
-        { title: "Démocratiser l'accès à l'information", createdAt: today }
-    ])
-    const [realizedEvents, setRealizedEvents] = useState<EventInterface[]>([
-        { title: "Conférence sur le futur du journalisme", date: today },
-        { title: "Atelier de fact-checking avancé", date: today },
-        { title: "Webinaire : Sécurité des données", date: today },
-        { title: "Rencontre des professionnels IT", date: today },
-    ])
-    const [scholarshipsAndTraining, setScholarshipsAndTraining] = useState<ListItem[]>([
-        { text: "Bourse journalisme d'investigation 2025", date: today },
-        { text: "Formation : Analyse de données", date: today },
-        { text: "Stage rédaction internationale", date: today },
-        { text: "Programme accéléré éditorial", date: today },
-    ])
-    const [reportages, setReportages] = useState<ListItem[]>([
-        { text: "Quiz du meilleur éditeur - Juillet", date: today },
-        { text: "Défi mensuel : Rédiger en 1h", date: today },
-        { text: "Compétition de vérification des faits", date: today },
-        { text: "Concours de couverture locale", date: today },
-    ])
+    const [publishedContent, setPublishedContent] = useState<ListItem[]>([])
+    const [realizedEvents, setRealizedEvents] = useState<EventInterface[]>([])
+    const [scholarshipsAndTraining, setScholarshipsAndTraining] = useState<ListItem[]>([])
+    const [reportages, setReportages] = useState<ListItem[]>([])
 
     const [tendance] = useState<string>("Vous verrez ici un aperçu de tout ce qui se passe sur l'app")
 
@@ -79,7 +59,7 @@ export default function Page() {
     return (
         <main style={{ padding: '20px' }}>
             <h1 className={textClasses}>Dashboard</h1>
-            <h3 className={subTextClasses}>Avoir une vision globale de l'application</h3>
+            <h3 className={subTextClasses}>{"Avoir une vision globale de l'application"}</h3>
             
             <DashboardCardContainer 
                 subscribers={subscribers}
