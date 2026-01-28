@@ -22,6 +22,15 @@ const activeTabStyle: CSSProperties = { borderBottom: '3px solid #E67E5F', fontW
 const baseInputStyle: CSSProperties = { padding: '12px 16px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.3)', backgroundColor: 'rgba(255, 255, 255, 0.1)', color: 'white', fontSize: '14px', outline: 'none' };
 const buttonStyle: CSSProperties = { padding: '12px 40px', backgroundColor: '#E67E5F', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: '600', cursor: 'pointer' };
 
+const formatDateFR = (dateString: string | Date) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 export default function SwitchSection() {
   const [activeTab, setActiveTab] = useState<'Bourses' | 'Formations' | 'Reportages'>('Bourses');
   const [items, setItems] = useState<DataItem[]>([]);
@@ -165,7 +174,6 @@ export default function SwitchSection() {
         ))}
       </div>
 
-
       <div style={{ marginBottom: '60px' }}>
         <h2 style={{ marginBottom: '30px', fontSize: '24px' }}>
           {editingId ? 'Modifier' : 'Ajouter'} {activeTab === 'Bourses' ? 'une bourse' : activeTab === 'Formations' ? 'une formation' : 'un reportage'}
@@ -208,7 +216,6 @@ export default function SwitchSection() {
         </div>
       </div>
 
-      {/* LISTE DES DONNÉES */}
       <div>
         <h3 style={{ fontSize: '24px', marginBottom: '20px' }}>Liste des {activeTab}</h3>
         {loading && items.length === 0 ? (
@@ -216,29 +223,34 @@ export default function SwitchSection() {
         ) : items.length === 0 ? (
           <p style={{ textAlign: 'center', opacity: 0.6 }}>Aucune donnée trouvée.</p>
         ) : (
-          items.map((item) => {
-            const displayTitle = isReportage ? (item as IReport).title : (item as ITraining | IScholarship).title;
-            const displayDate = isReportage
-              ? ((item as IReport).date instanceof Date
-                ? (item as IReport).date.toISOString().split('T')[0]
-                : new Date((item as IReport).date).toISOString().split('T')[0])
-              : (item as ITraining | IScholarship).date;
+          <>
+            <div style={{ display: 'flex', padding: '10px 0', borderBottom: '2px solid rgba(255, 255, 255, 0.3)', marginBottom: '10px', fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase', opacity: 0.9 }}>
+              <div style={{ flex: 2 }}>Titre</div>
+              <div style={{ flex: 1 }}>Date</div>
+              <div style={{ flex: 0.5, textAlign: 'right' }}>Actions</div>
+            </div>
+            {items.map((item) => {
+              const displayTitle = isReportage ? (item as IReport).title : (item as ITraining | IScholarship).title;
+              const rawDate = isReportage
+                ? (item as IReport).date
+                : (item as ITraining | IScholarship).date;
 
-            return (
-              <div key={item.id} style={{ display: 'flex', padding: '15px 0', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', alignItems: 'center' }}>
-                <div style={{ flex: 2, fontWeight: '500' }}>{displayTitle}</div>
-                <div style={{ flex: 1, opacity: 0.8 }}>{displayDate}</div>
-                <div style={{ flex: 0.5, display: 'flex', gap: '15px', justifyContent: 'flex-end' }}>
-                  <button onClick={() => handleEditClick(item)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }} title="Modifier">
-                    <Pencil size={18} />
-                  </button>
-                  <button onClick={() => item.id && handleDelete(item.id)} style={{ background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer' }} title="Supprimer">
-                    <Trash2 size={18} />
-                  </button>
+              return (
+                <div key={item.id} style={{ display: 'flex', padding: '15px 0', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', alignItems: 'center' }}>
+                  <div style={{ flex: 2, fontWeight: '500' }}>{displayTitle}</div>
+                  <div style={{ flex: 1, opacity: 0.8 }}>{formatDateFR(rawDate)}</div>
+                  <div style={{ flex: 0.5, display: 'flex', gap: '15px', justifyContent: 'flex-end' }}>
+                    <button onClick={() => handleEditClick(item)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }} title="Modifier">
+                      <Pencil size={18} />
+                    </button>
+                    <button onClick={() => item.id && handleDelete(item.id)} style={{ background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer' }} title="Supprimer">
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            );
-          })
+              );
+            })}
+          </>
         )}
       </div>
     </div>
