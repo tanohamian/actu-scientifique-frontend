@@ -1,8 +1,10 @@
-import { Article, DbMedia } from "@/app/admin/dashboard/newsletters/components/Affichage";
+/* eslint-disable @next/next/no-img-element */
 import IconComponent from "@/app/components/Icons";
+import { Article, DbMedia } from "../interfaces";
 
 export interface ViewArticleProps {
     article: Article | DbMedia;
+    media?: string
     onclick?: () => void;
 }
 
@@ -14,8 +16,9 @@ const getMediaType = (url: string) => {
     return 'image';
 };
 
-export default function ViewArticleElement({ article, onclick }: ViewArticleProps) {
+export default function ViewElement({ article, media, onclick }: ViewArticleProps) {
     if (!article) return null;
+    console.log(media)
     const mediaUrl = ('illustrationUrl' in article)
         ? article.illustrationUrl
         : ('url' in article) ? article.url : "";
@@ -39,7 +42,7 @@ export default function ViewArticleElement({ article, onclick }: ViewArticleProp
                             className="w-full h-full object-cover"
                         />
                     ) : mediaType === 'podcast' ? (
-                        <div className="flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-indigo-600 to-[#E85C41] text-white p-4">
+                        <div className="flex flex-col items-center justify-center w-full h-full bg-linear-to-br from-indigo-600 to-[#E85C41] text-white p-4">
                             <IconComponent name="AudioIcon" className="w-16 h-16 mb-2 group-hover:scale-110 transition-transform" />
                             <span className="text-[10px] font-bold uppercase opacity-70">Podcast</span>
                         </div>

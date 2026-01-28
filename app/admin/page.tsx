@@ -16,17 +16,7 @@ export const Categories = {
 } as const
 export type Categories = typeof Categories[keyof typeof Categories]
 
-export interface Product {
-    title?: string
-    id: string,
-    name: string
-    categories: Categories
-    price: number
-    preview_image: string
-    description?: string
-    createdAt: Date
-    stock: number
-}
+
 
 export default function Connexion() {
     const [formData, setFormData] = useState<FormState>({

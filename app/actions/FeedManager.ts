@@ -2,7 +2,7 @@
 import { cookies } from 'next/headers'
 import { env } from '@/app/config/env'
 import { revalidatePath } from 'next/cache'
-import { FeedInterface } from '../admin/dashboard/fil_actualite/page'
+import { FeedInterface } from '../interfaces';
 
 export async function CreateFeed(feed: FeedInterface) {
 

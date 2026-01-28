@@ -5,50 +5,13 @@ import Filter, { IFilter } from '@/app/components/filter';
 // Importation des Server Actions
 import { FetchNewsletters, DeleteNewsletter } from '@/app/actions/Newsletters';
 import { AffichageType, Rubriques } from '@/app/enum/enums';
+import { Article, Newsletter } from '@/app/interfaces';
 
 
 
 
 
-export interface Newsletter {
-    id?: string;
-    title: string;
-    categorie?: string;
-    content?: string;
-    createdAt: string | Date;
-}
 
-export interface Article {
-    id?: string;
-    title: string;
-    illustrationUrl?: string;
-    content: string;
-    rubrique?: Rubriques;
-    createdAt?: Date | string
-    une?: boolean
-}
-
-export interface DbMedia {
-    id: number | string;
-    title: string;
-    name: string;
-    rubrique: Rubriques;
-    mimeType: string;
-    url: string;
-    createdAt: Date | string;
-    type: string;
-    une?: boolean
-}
-
-export interface DbArticle {
-    id: string
-    title: string
-    content: string
-    rubrique: Rubriques
-    illustrationUrl?: string;
-    une: boolean
-    createdAt: Date | string
-}
 
 
 export type ItemType = Newsletter | Article;

@@ -2,16 +2,9 @@
 import { env } from '@/app/config/env'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
+import { Bourse } from '../interfaces';
 
-export interface Bourse {
-    id?: string;
-    title: string;
-    lien: string;
-    description: string;
-    date: Date;
-    createdAt?: Date;
-    updatedAt?: Date;
-}
+
 export async function FetchBourses() {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {

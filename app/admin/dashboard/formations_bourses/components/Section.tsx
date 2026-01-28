@@ -2,9 +2,10 @@
 import React, { useState, CSSProperties, useEffect, useCallback } from 'react';
 import { Pencil, Trash2, Loader2 } from 'lucide-react';
 
-import { FetchTrainings, AddTraining, UpdateTraining, DeleteTraining, ITraining } from '@/app/actions/Trainings';
+import { FetchTrainings, AddTraining, UpdateTraining, DeleteTraining } from '@/app/actions/Trainings';
 import { FetchScholarships, AddScholarship, UpdateScholarship, DeleteScholarship, IScholarship } from '@/app/actions/Scholarships';
 import { FetchReports, AddReport, DeleteReport, UpdateReport, IReport } from '@/app/actions/ReportsManager';
+import { ITraining } from '@/app/interfaces';
 
 type DataItem = ITraining | IScholarship | IReport;
 

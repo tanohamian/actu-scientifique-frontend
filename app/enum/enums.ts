@@ -16,3 +16,9 @@ export enum AffichageType {
   NEWSLETTER = "newsletters",
   MEDIAS = "medias"
 }
+
+export enum OrderStatus {
+    CREATED = "CREATED",
+    CANCELED = "CANCELED",
+    DELIVERED = "DELIVERED"
+}

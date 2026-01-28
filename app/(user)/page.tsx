@@ -1,14 +1,14 @@
 'use client'
-import IconComponent, { IconName } from "../components/Icons";
+import { IconName } from "../components/Icons";
 import ViewElement from "../components/viewElement";
 import { useEffect, useState } from "react";
 import Pagination from "../components/pagination";
 import SocialNetworks from "../components/socialNetworks";
 import { useRouter } from "next/navigation";
 import { ShoppingCart } from 'lucide-react'
-import { Article, DbMedia } from "../admin/dashboard/newsletters/components/Affichage";
 import { FetchArticles } from "../actions/ArticleManager";
 import { FetchMedias } from "../actions/MediasManager";
+import { Article, DbMedia } from "../interfaces";
 
 
 export default function Home() {
@@ -56,7 +56,7 @@ export default function Home() {
           className="bg-[#E65A46] text-white font-medium rounded-lg border-none transition-all duration-200 hover:bg-[#d14a36] whitespace-nowrap flex justify-center items-center font-sans px-6 py-3 text-base md:text-lg lg:text-xl 2xl:text-3xl h-14 lg:h-16 xl:h-18 2xl:h-20 w-full sm:w-auto 2xl:w-[680px]"
           onClick={() => router.push('/susbscription')}
         >
-          S'abonner
+          {"S'abonner"}
         </button>
       </div>
 

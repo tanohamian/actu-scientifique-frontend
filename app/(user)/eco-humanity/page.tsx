@@ -3,9 +3,9 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Pagination from "@/app/components/pagination";
 import ViewElement from "@/app/components/viewElement";
-import { Article } from "@/app/admin/dashboard/newsletters/components/Affichage";
 import { FetchArticles } from "@/app/actions/ArticleManager";
 import { Rubriques } from "@/app/enum/enums";
+import { Article } from "@/app/interfaces";
 
 export default function Ecohumanity() {
     const router = useRouter();

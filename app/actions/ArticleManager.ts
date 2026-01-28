@@ -1,9 +1,9 @@
 'use server'
 import { env } from '@/app/config/env'
 import { redirect } from 'next/navigation'
-import { Article, DbArticle } from '../admin/dashboard/newsletters/components/Affichage'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
+import { Article, DbArticle } from '../interfaces'
 
 
 

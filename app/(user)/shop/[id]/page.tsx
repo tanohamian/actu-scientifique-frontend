@@ -1,27 +1,30 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
-import { useParams } from "next/navigation"
+import { Categories } from "@/app/admin/page";
+import { Product } from "@/app/interfaces";
+//import { useParams } from "next/navigation"
 import { useState } from "react";
-import { Product } from "../page";
 
 export default function DetailsProduct() {
-    const params = useParams()
-    const productId = params.id
+    //const params = useParams()
+    //const productId = params.id
     const [quantity, setQuantity] = useState(1)
 
     const products: Product[] = [
-        { id: 1, name: "Produit 1", price: 10500, image: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3", description: "Découvrez l'élégance et la performance réunies dans ce produit d'exception. Conçu avec des matériaux de haute qualité pour une durabilité maximale." },
-        { id: 2, name: "Produit 2", price: 20000, image: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3", description: "Description du produit 2" },
-        { id: 3, name: "Produit 3", price: 30000, image: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3", description: "Description du produit 3" },
-        { id: 4, name: "Produit 4", price: 40000, image: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3", description: "Description du produit 4" },
-        { id: 5, name: "Produit 5", price: 50000, image: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3", description: "Description du produit 5" },
-        { id: 6, name: "Produit 6", price: 60000, image: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3", description: "Description du produit 6" },
-        { id: 7, name: "Produit 7", price: 70000, image: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3", description: "Description du produit 7" },
-        { id: 8, name: "Produit 8", price: 80000, image: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3", description: "Description du produit 8" },
-        { id: 9, name: "Produit 9", price: 90000, image: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3", description: "Description du produit 9" },
+        { 
+            id: "1", 
+            name: "Produit 1", 
+            price: 10500, 
+            preview_image: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3", 
+            description: "Découvrez l'élégance et la performance réunies dans ce produit d'exception. Conçu avec des matériaux de haute qualité pour une durabilité maximale.",
+            createdAt : "2025/08/11T19:53:44",
+            stock: 1,
+            categories : Categories.CLOTHES
+        }
     ];
 
-    const product = products.find(p => p.id === Number(productId)) || products[0];
+    const product = products[0];
 
     const increaseQuantity = () => setQuantity(prev => prev + 1)
     const decreaseQuantity = () => setQuantity(prev => prev > 1 ? prev - 1 : 1)
@@ -32,7 +35,7 @@ export default function DetailsProduct() {
 
                 <div className="w-full lg:w-1/2 overflow-hidden rounded-2xl shadow-2xl border border-white/10">
                     <img
-                        src={product.image}
+                        src={product.preview_image}
                         alt={product.name}
                         className="w-full h-[500px] lg:h-[700px] object-cover hover:scale-105 transition-transform duration-500"
                     />
@@ -55,7 +58,7 @@ export default function DetailsProduct() {
 
                         <div className="flex flex-col gap-3">
                             <span className="text-[#E85C41] uppercase tracking-widest text-sm font-bold">Quantité</span>
-                            <div className="flex items-center justify-between bg-white rounded-2xl p-2 w-full max-w-[160px] shadow-lg">
+                            <div className="flex items-center justify-between bg-white rounded-2xl p-2 w-full max-w-40 shadow-lg">
                                 <button
                                     onClick={decreaseQuantity}
                                     className="w-10 h-10 rounded-xl bg-gray-100 hover:bg-[#E85C41] hover:text-white text-gray-800 transition-all flex items-center justify-center text-2xl"

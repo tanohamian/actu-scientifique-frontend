@@ -6,14 +6,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import { CreateFeed, DeleteFeed, GetFeeds, UpdateFeed } from '@/app/actions/FeedManager';
+import { FeedInterface } from '@/app/interfaces';
 
-export interface FeedInterface {
-    id?: string
-    title?: string;
-    url?: string;
-    description?: string;
-    type?: string;
-}
+
 
 const filActuFiels: FormFieldConfig[] = [
     { name: 'title', label: 'Titre', type: 'text', placeholder: 'Ecrivez le titre', required: true },

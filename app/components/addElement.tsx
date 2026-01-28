@@ -2,8 +2,8 @@
 import ButtonComponent from "@/app/components/button";
 import React, { useState, useEffect, useMemo } from 'react';
 import { X, ChevronDown, Upload } from 'lucide-react';
-import { Product } from "../admin/page";
 import { Rubriques } from "../enum/enums";
+import { Product } from "../interfaces";
 
 export interface FormFieldConfig {
     name: string;
@@ -18,9 +18,10 @@ export type InitialDataType = { [key: string]: string | number | File | undefine
 
 
 interface AddElementModalProps {
+    id?: string
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: Product | InitialDataType) => Promise<void> | void;
+    onSubmit: (data: Product | InitialDataType, id?:string) => Promise<void> | void;
     titleComponent: string;
     buttonTitle: string;
     fields: FormFieldConfig[];
@@ -51,19 +52,32 @@ export const uploadIcon: React.CSSProperties = {
 
 
 
-export default function AddElementModal({ isOpen, onClose, onSubmit, titleComponent, buttonTitle, fields, initialData = {}, isLoading }: AddElementModalProps) {
+export default function AddElementModal({ isOpen, onClose, onSubmit, titleComponent, buttonTitle, fields, initialData = {}, isLoading, id }: AddElementModalProps) {
 
 
     const [imageUrl, setImageUrl] = useState<string | ArrayBuffer | null>("")
     const initialFormData = useMemo(() => {
-        return fields.reduce((acc, field) => {
-            acc[field.name] = initialData[field.name] !== undefined ? initialData[field.name] : '';
-            if (field.name === 'illustrationUrl') {
-                setImageUrl(initialData[field.name] as string)
+    const data = fields.reduce((acc, field) => {
+        acc[field.name] = initialData[field.name] ?? '';
+        return acc;
+    }, {} as InitialDataType);
+
+    
+    if (id) {
+        data["id"] = id;
+    }
+
+    return data;
+    }, [fields, initialData, id]);
+
+    useEffect(() => {
+        const updateImage = ()=>{
+            if (initialData.illustrationUrl) {
+                setImageUrl(initialData.illustrationUrl as string);
             }
-            return acc;
-        }, {} as InitialDataType);
-    }, [fields, initialData]);
+        }
+        updateImage()
+    }, [initialData.illustrationUrl])
 
     const [isImage, setIsImage] = useState(false)
     const [formData, setFormData] = useState<InitialDataType>(initialFormData);
@@ -89,7 +103,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(formData as InitialDataType);
+        onSubmit(formData as InitialDataType, id);
 
     };
 

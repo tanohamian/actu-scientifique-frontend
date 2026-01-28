@@ -1,17 +1,13 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 import SearchBarComponent from "@/app/components/searchBar";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Pagination from "@/app/components/pagination";
+import { Product } from "@/app/interfaces";
 
-export interface Product {
-    id: number;
-    name: string;
-    price: number;
-    image: string;
-    description?: string;
-}
+
 
 const products: Product[] = [
     { id: 1, name: "Produit 1", price: 10, image: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3" },
@@ -56,7 +52,7 @@ export default function ShopPage() {
 
             <div className="w-full max-w-sm" onClick={() => router.push('/susbscription')}>
                 <button className="w-full bg-[#E85C41] hover:bg-[#d44d35] text-white text-4xl font-bold py-2 px-8 rounded-lg transition-colors">
-                    S'abonner
+                    {"S'abonner"}
                 </button>
             </div>
 

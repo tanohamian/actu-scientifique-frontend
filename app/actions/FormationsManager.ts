@@ -2,16 +2,9 @@
 import { env } from '@/app/config/env'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
+import { Formation } from '../interfaces';
 
-export interface Formation {
-    id?: string;
-    title: string;
-    lien: string;
-    description: string;
-    date: Date | string;
-    createdAt?: Date | string;
-    updatedAt?: Date | string;
-}
+
 export async function FetchFormations() {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {

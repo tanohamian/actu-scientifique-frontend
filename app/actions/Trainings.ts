@@ -2,15 +2,7 @@
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache';
 import { env } from '../config/env';
-
-export interface ITraining {
-    id?: string;
-    title: string;
-    lien: string;
-    description: string;
-    date: string;
-    createdAt?: string | Date;
-}
+import { ITraining } from '../interfaces';
 
 async function getAuthHeaders() {
     const authToken = (await cookies()).get('authToken')?.value;

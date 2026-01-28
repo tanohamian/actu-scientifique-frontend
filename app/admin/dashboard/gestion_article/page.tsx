@@ -4,14 +4,14 @@
 
 import SearchBarComponent from '@/app/components/searchBar';
 import DataTable, { ElementType } from '@/app/components/eventDataTable';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
-import { Article, DbArticle } from '../newsletters/components/Affichage';
 import { DeleteArticle, FetchArticles } from '@/app/actions/ArticleManager';
 import FormComponent, { toast } from '@/app/components/FormComponent';
 import { Rubriques } from '@/app/enum/enums';
 import LoadingComponent from '@/app/components/loadingComponent';
+import { Article, DbArticle, Product } from '@/app/interfaces';
 
 
 
@@ -54,7 +54,6 @@ const mainHeaders = [
 
 export default function ArticlePage() {
     const [inputValue, setInputValue] = useState('');
-    const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true)
     const [editArticle, setEditArticle] = useState(false);
     const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
@@ -139,12 +138,10 @@ export default function ArticlePage() {
             alert("Aucun article à ajouter")
             return
         }
-        console.log("newArticleDate: ", newArticle.createdAt)
         newArticle.createdAt = newArticle.createdAt.toLocaleString('fr-FR', {hour: "2-digit", minute:"2-digit", day:"2-digit", year:"numeric", month:"2-digit"})
         console.log("old_date : ", articles[0].createdAt)
-        console.log("newArticleFormatedDate: ", newArticle.createdAt)
         setArticles(prevState => [...prevState, newArticle]);
-        setIsOpen(false);
+        setEditArticle(false);
     };
 
     let initialData: InitialDataType = {
@@ -168,9 +165,63 @@ export default function ArticlePage() {
         toast(res, false, res ? "Supprimé avec succès !" : "Echec de la suppresion")
     };
 
-    const handleSubmitEditArticle = async () => {
-        setEditArticle(false);
-    };
+    const handleSubmitEditArticle = async (data: InitialDataType | Product) => {
+            setIsLoading(true)
+            try {
+                console.log("📋 Données reçues:", data);
+                data = data as InitialDataType
+                const article = new FormData();
+                article.append('id', selectedArticle?.id as string)
+                article.append('title', data.title as string);
+                article.append("content", data.content as string)
+                article.append('rubrique', data.rubrique as Rubriques);
+                article.append('une', data.une as string);
+    
+                if (data.file instanceof File) {
+                    article.append('file', data.file);
+                    console.log("✅ Fichier ajouté:", data.file.name, data.file.size);
+                } else {
+                    throw new Error("Aucun fichier sélectionné");
+                }
+    
+                console.log("📦 Contenu du FormData:");
+                for (const [key, value] of article.entries()) {
+                    if (value instanceof File) {
+                        console.log(`  ${key}: [File] ${value.name} (${value.size} bytes)`);
+                    } else {
+                        console.log(`  ${key}:`, value);
+                    }
+                }
+    
+    
+                const response = await fetch('/api/upload-article', {
+                    method: 'PUT',
+                    body: article,
+                });
+    
+                console.log("📨 Réponse reçue:", response.status);
+    
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Erreur lors de l\'upload');
+                }
+    
+                const result = await response.json();
+                console.log("✅ Article uploadé:", result);
+    
+                
+                setArticles(prev => ([...prev, result.file]));
+                setEditArticle(false);
+    
+                toast(true, false,"Article uploadé !");
+    
+            } catch (error) {
+                console.error("❌ Erreur:", error);
+                toast(false, false, "Échec de l'upload de l'article");
+            } finally {
+                setIsLoading(false)
+            }
+        };;
 
     if (selectedArticle) {
         initialData = {
@@ -223,7 +274,7 @@ export default function ArticlePage() {
 
                 <div className={searchAndTabsClasses}>
                     <div className={searchBarWrapperClasses}>
-                        <SearchBarComponent placeholder='Rechercher un media....' inputValue={inputValue} setInputValue={setInputValue} />
+                        <SearchBarComponent placeholder='Rechercher un article....' inputValue={inputValue} setInputValue={setInputValue} />
                     </div>
                     <Filter
                         filters={filters}
@@ -261,6 +312,7 @@ export default function ArticlePage() {
                 buttonTitle="Modifier"
                 fields={ArticleFields}
                 initialData={initialData}
+                id={selectedArticle?.id}
             />
         </div>
     );

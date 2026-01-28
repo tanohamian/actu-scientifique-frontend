@@ -2,30 +2,9 @@
 import { env } from '@/app/config/env'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
+import { OrderInterface } from '../interfaces';
 
-export enum OrderStatus {
-    CREATED = "CREATED",
-    CANCELED = "CANCELED",
-    DELIVERED = "DELIVERED"
-}
 
-export interface OrderInterface {
-    id: string
-    totalAmount: number
-    status: OrderStatus
-    email: string
-    items: [
-        { 
-            quantity: string, 
-            product: { 
-                name: string, 
-                categories: string[] 
-            }
-        }
-    ]
-    createdAt: Date
-    updatedAt: Date
-}
 
 export async function FetchOrders() {
     const authToken = (await cookies()).get('authToken')?.value;
