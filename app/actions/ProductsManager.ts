@@ -71,7 +71,7 @@ export async function UpdateProduct(product: FormData | Product, id: string) {
         'Cookie': `authToken=${authToken}`
     }
 
-    let body: any
+    let body
 
     if (product instanceof FormData) {
         body = product

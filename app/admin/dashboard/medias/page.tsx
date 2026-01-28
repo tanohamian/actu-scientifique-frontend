@@ -13,6 +13,7 @@ import { Property } from "csstype"
 import { DeleteMedia, FetchMedias, UpdateMedia } from '@/app/actions/MediasManager';
 import { Product } from '../../page';
 import { Rubriques } from '@/app/enum/enums';
+import { toast } from '@/app/components/FormComponent';
 
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', type: 'text', placeholder: 'Entrez le titre du media', required: true },
@@ -173,15 +174,15 @@ export default function MediaPage() {
             const result = await response.json();
             console.log("✅ Média uploadé:", result);
 
-            // Ajouter le nouveau média à la liste
+            
             setMedias(prev => ([...prev, result.file]));
             setIsOpen(false);
 
-            alert('Média ajouté avec succès !');
+            toast(true, false,"Media uploadé !");
 
         } catch (error) {
             console.error("❌ Erreur:", error);
-            alert(`Erreur: ${(error as Error).message}`);
+            toast(false, false, "Échec de l'upload du media");
         } finally {
             setIsLoading(false)
         }

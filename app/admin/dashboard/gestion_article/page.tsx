@@ -9,7 +9,7 @@ import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/compone
 import Filter, { IFilter } from '@/app/components/filter';
 import { Article, DbArticle } from '../newsletters/components/Affichage';
 import { DeleteArticle, FetchArticles } from '@/app/actions/ArticleManager';
-import FormComponent from '@/app/components/FormComponent';
+import FormComponent, { toast } from '@/app/components/FormComponent';
 import { Rubriques } from '@/app/enum/enums';
 
 
@@ -137,6 +137,10 @@ export default function ArticlePage() {
             alert("Aucun article à ajouter")
             return
         }
+        console.log("newArticleDate: ", newArticle.createdAt)
+        newArticle.createdAt = newArticle.createdAt.toLocaleString('fr-FR', {hour: "2-digit", minute:"2-digit", day:"2-digit", year:"numeric", month:"2-digit"})
+        console.log("old_date : ", articles[0].createdAt)
+        console.log("newArticleFormatedDate: ", newArticle.createdAt)
         setArticles(prevState => [...prevState, newArticle]);
         setIsOpen(false);
     };
@@ -145,7 +149,7 @@ export default function ArticlePage() {
         title: '',
         content: '',
         illustationUrl: "https://via.placeholder.com/150",
-        createdAt: (new Date()).toLocaleDateString(),
+        createdAt: (new Date()).toLocaleDateString('fr-FR', {hour: "2-digit", minute:"2-digit", day:"2-digit", year:"numeric"}),
         rubrique: Rubriques.TECHNOLOGY as string
     };
 
@@ -158,7 +162,8 @@ export default function ArticlePage() {
         console.log('Deleting event:', item);
         setSelectedArticle(item as Article);
         setArticles(articles.filter(newItem => newItem.id !== item.id))
-        await DeleteArticle(item.id as string)
+        const res = await DeleteArticle(item.id as string)
+        toast(res, false, res ? "Supprimé avec succès !" : "Echec de la suppresion")
     };
 
     const handleSubmitEditArticle = async () => {
@@ -217,7 +222,7 @@ export default function ArticlePage() {
                         filters={filters}
                     />
                 </div>
-                <article className="flex flex-col lg:flex-row gap-8 h-full" >
+                <article className="flex flex-col items-start lg:flex-row gap-8 h-fit" >
 
                     <DataTable
                         tableTitle=""

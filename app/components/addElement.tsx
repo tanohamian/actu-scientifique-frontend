@@ -175,6 +175,17 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
             case 'email':
             case 'password':
             case 'textarea':
+                <div key={field.name} className={containerClasses}>
+                    <label className={labelClasses}>{field.label}</label>
+                    <textarea
+                        rows={4}
+                        className={inputClasses}
+                        placeholder={field.placeholder || ''}
+                        value={(formData[field.name] as string) || ''}
+                        onChange={(e) => handleChange(field.name, e.target.value, field.type)}
+                        required={field.required}
+                    />
+                </div>
             case 'number':
             default:
                 return (
