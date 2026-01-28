@@ -13,9 +13,11 @@ import { Property } from "csstype"
 import { DeleteMedia, FetchMedias, UpdateMedia } from '@/app/actions/MediasManager';
 import { Product } from '../../page';
 import { Rubriques } from '@/app/enum/enums';
+import { toast } from '@/app/components/FormComponent';
+import LoadingComponent from '@/app/components/loadingComponent';
 
 const MediaFields: FormFieldConfig[] = [
-    { name: 'title', label: 'Titre du media', type: 'text', placeholder: 'Entrez le titre du media', required: true },
+    { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media', required: true },
     { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...', required: false },
     { name: 'file', label: "Fichier", type: "file", required: true },
     {
@@ -49,7 +51,7 @@ export type rubriques = "technology" | "one_health" | "ecohumanity"
 export default function MediaPage() {
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const [editMedia, setEditMedia] = useState(false);
     const [selectedMedia, setSelectedMedia] = useState<ElementType | null>(null);
     const [filters] = useState<IFilter[]>(mainHeaders.map((header) => {
@@ -173,15 +175,15 @@ export default function MediaPage() {
             const result = await response.json();
             console.log("✅ Média uploadé:", result);
 
-            // Ajouter le nouveau média à la liste
+            
             setMedias(prev => ([...prev, result.file]));
             setIsOpen(false);
 
-            alert('Média ajouté avec succès !');
+            toast(true, false,"Media uploadé !");
 
         } catch (error) {
             console.error("❌ Erreur:", error);
-            alert(`Erreur: ${(error as Error).message}`);
+            toast(false, false, "Échec de l'upload du media");
         } finally {
             setIsLoading(false)
         }
@@ -244,6 +246,7 @@ export default function MediaPage() {
                         const createdAt = new Date(media.createdAt)
                         media.createdAt = createdAt.toLocaleString("fr")
                         console.log("createdAt de création : ", media.createdAt)
+                        setIsLoading(false)
                         return media
                     }))
                 }
@@ -288,6 +291,10 @@ export default function MediaPage() {
                         handleDeleteEvent={handleDeleteMedia}
                     />
                 </article>
+                <LoadingComponent
+                    isOpen={isLoading}
+                    onClose={() => setIsLoading(false)}
+                />
 
             </div>
 

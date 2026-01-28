@@ -6,7 +6,7 @@ import { env } from '../config/env';
 export interface INewsletter {
     id?: string;
     title: string;
-    categorie: string;
+    categorie?: string;
     contenu: string;
     createdAt?: string | Date;
 }

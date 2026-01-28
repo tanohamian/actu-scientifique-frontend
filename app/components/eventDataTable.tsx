@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
-import { Article, DbMedia } from '../admin/dashboard/newsletters/components/Affichage';
+import { Article, DbArticle, DbMedia, ItemType } from '../admin/dashboard/newsletters/components/Affichage';
 import { Property } from "csstype"
 import { Rubriques } from '../enum/enums';
 
@@ -76,7 +76,7 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                     <div
                         key={header.key}
                         style={{ flexBasis: header.flexBasis, textAlign: header?.textAlign || "left" }}
-                        className={`flex-shrink-0 flex-grow-0`}
+                        className={`shrink-0 grow-0`}
                     >
                         <span>{header.label}</span>
                     </div>
@@ -92,6 +92,7 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                         {
                             columnHeaders.map(header => {
                                 const isActionColumn = header.key === 'actions';
+                                const isURLColumn = header.key === 'url';
 
                                 const cellClasses = `
                                 flex 
@@ -131,6 +132,22 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                         </div>
                                     );
                                 }
+                                const rawValue = (item as {[key: string]: string})[header.key];
+
+                                if (header.key === "createdAt" && rawValue) {
+                                    const dateObj = new Date(rawValue);
+                                    
+                                    if (!isNaN(dateObj.getTime())) {
+                                        content = dateObj.toLocaleString('fr-FR', {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            second: "2-digit",
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric"
+                                        });
+                                    }
+                                }
 
                                 return (
                                     <div
@@ -148,7 +165,7 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             >
-                                                {content}
+                                                {(content as string).substring(0, 48)+'...'}
                                             </a>
                                         ) : (
                                             <div style={header.textAlign === "center" ? { margin: "auto auto" } : {}}>
