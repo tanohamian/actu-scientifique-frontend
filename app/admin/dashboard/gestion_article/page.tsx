@@ -11,6 +11,7 @@ import { Article, DbArticle } from '../newsletters/components/Affichage';
 import { DeleteArticle, FetchArticles } from '@/app/actions/ArticleManager';
 import FormComponent, { toast } from '@/app/components/FormComponent';
 import { Rubriques } from '@/app/enum/enums';
+import LoadingComponent from '@/app/components/loadingComponent';
 
 
 
@@ -54,6 +55,7 @@ const mainHeaders = [
 export default function ArticlePage() {
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true)
     const [editArticle, setEditArticle] = useState(false);
     const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
     const [filters] = useState<IFilter[]>(mainHeaders.map((header) => {
@@ -192,6 +194,7 @@ export default function ArticlePage() {
                         console.log("date de création : ", article.createdAt)
                         return article
                     }))
+                    setIsLoading(false)
                 }
 
             } catch (err) {
@@ -204,6 +207,10 @@ export default function ArticlePage() {
 
     return (
         <div className={pageContainerClasses}>
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
             <div className={headerClasses}>
                 <div>
                     <h1 className={textClasses}>Gestion des Articles</h1>

@@ -11,14 +11,17 @@ import { FetchArticles } from '@/app/actions/ArticleManager'
 import { FetchFormations } from '@/app/actions/FormationsManager'
 import { FetchBourses } from '@/app/actions/BoursesManager'
 import { EventInterface } from '@/app/components/eventDataTable'
+import LoadingComponent from '@/app/components/loadingComponent'
 
 export default function Page() {
     //const today = new Date().toISOString();
         
-    const [articles, setArticles] = useState<DashboardCardProps>({ label: "Articles", value: 15 })
+    const [isLoading, setIsLoading] = useState(true)
+    
+    const [articles, setArticles] = useState<DashboardCardProps>({ label: "Articles", value: 0, route: "/gestion_article" })
     const [visitors] = useState<DashboardCardProps>({ label: "Visiteurs", value: 36 })
-    const [products, setProducts] = useState<DashboardCardProps>({ label: "Produits", value: 41 })
-    const [subscribers] = useState<DashboardCardProps>({ label: "Abonnés", value: 15 })
+    const [products, setProducts] = useState<DashboardCardProps>({ label: "Produits", value: 0 })
+    const [subscribers] = useState<DashboardCardProps>({ label: "Abonnés", value: 15, route: "/users" })
 
 
 
@@ -31,17 +34,20 @@ export default function Page() {
 
     useEffect(()=>{
     async function update(){
-        setArticles({label: articles.label, value: (await FetchArticles()).length})
-        setProducts({label: products.label, value: (await FetchProducts()).length})
+        console.log("1. articles.route = " , articles.route)
+        setArticles({label: "Articles", route: "/gestion_article", value: (await FetchArticles()).length})
+        setProducts({label: "Produits", route: "/products", value: (await FetchProducts()).length})
         setRealizedEvents((await FetchEvents()))
         setPublishedContent((await FetchArticles()).slice(0,4))
         setReportages((await FetchReports()).slice(0,4))
         const formations = await FetchFormations()
         const bourses = await FetchBourses()
         setScholarshipsAndTraining([...formations.slice(0,2), ...bourses.slice(0,2)])
+        setIsLoading(false)
+        console.log("2. articles.route = " , articles.route)
     }
     update()
-    }, [])
+    }, [articles.route])
     const textClasses = `
         m-0 
         text-2xl 
@@ -58,6 +64,10 @@ export default function Page() {
     `;
     return (
         <main style={{ padding: '20px' }}>
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
             <h1 className={textClasses}>Dashboard</h1>
             <h3 className={subTextClasses}>{"Avoir une vision globale de l'application"}</h3>
             

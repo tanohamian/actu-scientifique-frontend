@@ -32,7 +32,7 @@ export interface DbMedia {
     id: number | string;
     title: string;
     name: string;
-    rubrique: string;
+    rubrique: Rubriques;
     mimeType: string;
     url: string;
     createdAt: Date | string;
