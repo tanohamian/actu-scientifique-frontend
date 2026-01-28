@@ -2,13 +2,16 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { Search, Pencil, Trash2 } from 'lucide-react';
 import Filter, { IFilter } from '@/app/components/filter';
-// Importation des Server Actions
 import { FetchNewsletters, DeleteNewsletter } from '@/app/actions/Newsletters';
 import { AffichageType, Rubriques } from '@/app/enum/enums';
 
 
-
-
+const RubriqueLabels: Record<string, string> = {
+    [Rubriques.ONE_HEALTH]: "Une seule santé",
+    [Rubriques.TECHNOLOGY]: "Technologie",
+    [Rubriques.ECO_HUMANITY]: "Éco-humanité",
+    [Rubriques.PORT_DISCOVERY]: "Portrait et découvertes",
+};
 
 export interface Newsletter {
     id?: string;
@@ -151,7 +154,7 @@ export default function Affichage({
             return (
                 <>
                     <td style={styles.td}>{article.title?.substring(0, 35)}...</td>
-                    <td style={styles.td}>{article.rubrique}</td>
+                    <td style={styles.td}>{article.rubrique ? (RubriqueLabels[article.rubrique] || article.rubrique) : '-'}</td>
                     <td style={styles.td}>{article.content?.substring(0, 35)}...</td>
                 </>
             );
@@ -160,7 +163,7 @@ export default function Affichage({
             return (
                 <>
                     <td style={styles.td}>{newsletter.title}</td>
-                    <td style={styles.td}>{newsletter.categorie}</td>
+                    <td style={styles.td}>{RubriqueLabels[newsletter.categorie] || newsletter.categorie}</td>
                     <td style={styles.td}>{newsletter.createdAt ? new Date(newsletter.createdAt).toLocaleDateString('fr-FR') : '-'}</td>
                 </>
             );
