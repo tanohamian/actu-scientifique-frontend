@@ -1,10 +1,30 @@
 "use client"
 import React, { useState, CSSProperties, useEffect, useCallback } from 'react';
 import { Pencil, Trash2, Loader2 } from 'lucide-react';
-
+import { showToast }  from "nextjs-toast-notify"
 import { FetchTrainings, AddTraining, UpdateTraining, DeleteTraining, ITraining } from '@/app/actions/Trainings';
 import { FetchScholarships, AddScholarship, UpdateScholarship, DeleteScholarship, IScholarship } from '@/app/actions/Scholarships';
 import { FetchReports, AddReport, DeleteReport, UpdateReport, IReport } from '@/app/actions/ReportsManager';
+import ConfirmModal from './ConfirmModal';
+
+
+export const toast = function (success: boolean, edit: boolean = false, message: string=""){
+  return success ? showToast.success(message ? message : edit ? "Mis à Jour !" : "Publié !", {
+    duration: 4000,
+    progress: true,
+    position: "bottom-center",
+    transition: "bounceIn",
+    icon: '✅',
+    sound: true,
+  }) : showToast.error(message ? message : "Opération échouée", {
+      duration: 4000,
+      progress: true,
+      position: "bottom-center",
+      transition: "bounceIn",
+      icon: '❌',
+      sound: true,
+    });
+}
 
 type DataItem = ITraining | IScholarship | IReport;
 
@@ -22,12 +42,24 @@ const activeTabStyle: CSSProperties = { borderBottom: '3px solid #E67E5F', fontW
 const baseInputStyle: CSSProperties = { padding: '12px 16px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.3)', backgroundColor: 'rgba(255, 255, 255, 0.1)', color: 'white', fontSize: '14px', outline: 'none' };
 const buttonStyle: CSSProperties = { padding: '12px 40px', backgroundColor: '#E67E5F', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: '600', cursor: 'pointer' };
 
+const formatDateFR = (dateString: string | Date) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 export default function SwitchSection() {
   const [activeTab, setActiveTab] = useState<'Bourses' | 'Formations' | 'Reportages'>('Bourses');
   const [items, setItems] = useState<DataItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<FormData>({
     title: '', url: '', description: '', date: '', reward: ''
@@ -41,7 +73,6 @@ export default function SwitchSection() {
         : activeTab === 'Bourses'
           ? await FetchScholarships()
           : await FetchReports();
-      console.log("Données reçues pour", activeTab, ":", data);
       setItems(data || []);
     } catch (error) {
       console.error("Erreur de récupération:", error);
@@ -61,86 +92,69 @@ export default function SwitchSection() {
     loadData();
   }, [loadData]);
 
+  const openDeleteModal = (id: string) => {
+    setItemToDelete(id);
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    
+    setIsModalOpen(false);
+    const success = activeTab === 'Formations'
+      ? await DeleteTraining(itemToDelete)
+      : activeTab === 'Bourses'
+        ? await DeleteScholarship(itemToDelete)
+        : await DeleteReport(itemToDelete);
+    
+    if (success) {
+      toast(true, false, "Élément supprimé !");
+      loadData();
+    } else {
+      toast(false, false, "Erreur lors de la suppression");
+    }
+    setItemToDelete(null);
+  };
+
   const handleSave = async () => {
     setLoading(true);
-
     let res;
+    const isEditing = !!editingId;
+
     if (activeTab === 'Formations') {
-      const payload = {
-        title: formData.title,
-        lien: formData.url,
-        description: formData.description,
-        date: formData.date
-      };
-      res = editingId
-        ? await UpdateTraining(editingId, payload as ITraining)
-        : await AddTraining(payload as ITraining);
+      const payload = { title: formData.title, lien: formData.url, description: formData.description, date: formData.date };
+      res = isEditing ? await UpdateTraining(editingId, payload as ITraining) : await AddTraining(payload as ITraining);
     } else if (activeTab === 'Bourses') {
-      const payload = {
-        title: formData.title,
-        lien: formData.url,
-        description: formData.description,
-        date: formData.date
-      };
-      res = editingId
-        ? await UpdateScholarship(editingId, payload as IScholarship)
-        : await AddScholarship(payload as IScholarship);
+      const payload = { title: formData.title, lien: formData.url, description: formData.description, date: formData.date };
+      res = isEditing ? await UpdateScholarship(editingId, payload as IScholarship) : await AddScholarship(payload as IScholarship);
     } else {
-      const payload = {
-        title: formData.title,
-        reward: Number(formData.reward),
-        description: formData.description,
-        date: new Date(formData.date)
-      };
-      res = editingId
-        ? await UpdateReport(editingId, payload as IReport)
-        : await AddReport(payload as IReport);
+      const payload = { title: formData.title, reward: Number(formData.reward), description: formData.description, date: new Date(formData.date) };
+      res = isEditing ? await UpdateReport(editingId, payload as IReport) : await AddReport(payload as IReport);
     }
 
     if (res?.success) {
+      toast(true, isEditing);
       setEditingId(null);
       setFormData({ title: '', url: '', description: '', date: '', reward: '' });
       await loadData();
     } else {
-      alert("Une erreur est survenue lors de l'enregistrement.");
+      toast(false);
     }
     setLoading(false);
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm(`Supprimer cet élément ?`)) {
-      const success = activeTab === 'Formations'
-        ? await DeleteTraining(id)
-        : activeTab === 'Bourses'
-          ? await DeleteScholarship(id)
-          : await DeleteReport(id);
-      if (success) loadData();
-    }
-  };
-
   const handleEditClick = (item: DataItem) => {
     setEditingId(item.id || null);
-
     if (activeTab === 'Reportages') {
       const reportItem = item as IReport;
       setFormData({
-        title: reportItem.title,
-        url: '',
-        description: reportItem.description,
-        date: reportItem.date instanceof Date
-          ? reportItem.date.toISOString().split('T')[0]
-          : new Date(reportItem.date).toISOString().split('T')[0],
+        title: reportItem.title, url: '', description: reportItem.description,
+        date: reportItem.date instanceof Date ? reportItem.date.toISOString().split('T')[0] : new Date(reportItem.date).toISOString().split('T')[0],
         reward: String(reportItem.reward)
       });
     } else {
       const regularItem = item as ITraining | IScholarship;
-      setFormData({
-        title: regularItem.title,
-        url: regularItem.lien,
-        description: regularItem.description,
-        date: regularItem.date,
-        reward: ''
-      });
+      setFormData({ title: regularItem.title, url: regularItem.lien, description: regularItem.description, date: regularItem.date, reward: '' });
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -149,6 +163,14 @@ export default function SwitchSection() {
 
   return (
     <div style={{ backgroundColor: '#5A8FAC', minHeight: '100vh', padding: isMobile ? '20px' : '40px', color: 'white' }}>
+
+    <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={confirmDelete}
+        title={`Voulez-vous vraiment supprimer cet élément ?`}
+      />
+
       <div style={tabContainer}>
         {(['Bourses', 'Formations', 'Reportages'] as const).map((tab) => (
           <button
@@ -164,7 +186,6 @@ export default function SwitchSection() {
           </button>
         ))}
       </div>
-
 
       <div style={{ marginBottom: '60px' }}>
         <h2 style={{ marginBottom: '30px', fontSize: '24px' }}>
@@ -208,7 +229,6 @@ export default function SwitchSection() {
         </div>
       </div>
 
-      {/* LISTE DES DONNÉES */}
       <div>
         <h3 style={{ fontSize: '24px', marginBottom: '20px' }}>Liste des {activeTab}</h3>
         {loading && items.length === 0 ? (
@@ -216,29 +236,35 @@ export default function SwitchSection() {
         ) : items.length === 0 ? (
           <p style={{ textAlign: 'center', opacity: 0.6 }}>Aucune donnée trouvée.</p>
         ) : (
-          items.map((item) => {
-            const displayTitle = isReportage ? (item as IReport).title : (item as ITraining | IScholarship).title;
-            const displayDate = isReportage
-              ? ((item as IReport).date instanceof Date
-                ? (item as IReport).date.toISOString().split('T')[0]
-                : new Date((item as IReport).date).toISOString().split('T')[0])
-              : (item as ITraining | IScholarship).date;
+          <>
+            <div style={{ display: 'flex', padding: '10px 0', borderBottom: '2px solid rgba(255, 255, 255, 0.3)', marginBottom: '10px', fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase', opacity: 0.9 }}>
+              <div style={{ flex: 2 }}>Titre</div>
+              <div style={{ flex: 1 }}>Date</div>
+              <div style={{ flex: 0.5, textAlign: 'right' }}>Actions</div>
+            </div>
+            {items.map((item) => {
+              const displayTitle = isReportage ? (item as IReport).title : (item as ITraining | IScholarship).title;
+              const rawDate = isReportage ? (item as IReport).date : (item as ITraining | IScholarship).date;
 
-            return (
-              <div key={item.id} style={{ display: 'flex', padding: '15px 0', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', alignItems: 'center' }}>
-                <div style={{ flex: 2, fontWeight: '500' }}>{displayTitle}</div>
-                <div style={{ flex: 1, opacity: 0.8 }}>{displayDate}</div>
-                <div style={{ flex: 0.5, display: 'flex', gap: '15px', justifyContent: 'flex-end' }}>
-                  <button onClick={() => handleEditClick(item)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }} title="Modifier">
-                    <Pencil size={18} />
-                  </button>
-                  <button onClick={() => item.id && handleDelete(item.id)} style={{ background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer' }} title="Supprimer">
-                    <Trash2 size={18} />
-                  </button>
+              return (
+                <div key={item.id} style={{ display: 'flex', padding: '15px 0', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', alignItems: 'center' }}>
+                  <div style={{ flex: 2, fontWeight: '500' }}>{displayTitle}</div>
+                  <div style={{ flex: 1, opacity: 0.8 }}>{formatDateFR(rawDate)}</div>
+                  <div style={{ flex: 0.5, display: 'flex', gap: '15px', justifyContent: 'flex-end' }}>
+                    <button onClick={() => handleEditClick(item)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }} title="Modifier">
+                      <Pencil size={18} />
+                    </button>
+                    <button
+                      onClick={() => item.id && openDeleteModal(item.id)}
+                      style={{ background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer' }}
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            );
-          })
+              );
+            })}
+          </>
         )}
       </div>
     </div>

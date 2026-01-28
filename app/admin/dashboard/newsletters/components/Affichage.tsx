@@ -13,8 +13,8 @@ import { AffichageType, Rubriques } from '@/app/enum/enums';
 export interface Newsletter {
     id?: string;
     title: string;
-    categorie?: string;
-    content?: string;
+    categorie: string;
+    contenu?: string;
     createdAt: string | Date;
 }
 

@@ -18,19 +18,19 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
   const [formData, setFormData] = useState({
     title: "",
     contenu: "",
-    categorie: "tech",
+    categorie: "",
   });
 
   useEffect(() => {
     const initiateDatas = async () => {
       if (initialData) {
         const title = initialData.title || "";
-        const contenu = initialData.content || "";
-        const categorie = initialData.categorie || "tech";
+        const contenu = initialData.contenu || "";
+        const categorie = initialData.categorie || "";
 
         setFormData({ title, contenu, categorie });
       } else {
-        setFormData({ title: "", contenu: "", categorie: "tech" });
+        setFormData({ title: "", contenu: "", categorie: "" });
       }
     }
     initiateDatas()
