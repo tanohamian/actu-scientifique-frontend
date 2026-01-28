@@ -10,13 +10,12 @@ export default function Page() {
         typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT
     );
 
-    // ÉTATS POUR LA COMMUNICATION
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [refreshSignal, setRefreshSignal] = useState(0);
 
     const handleSuccess = () => {
-        setSelectedItem(null); // Reset le formulaire
-        setRefreshSignal(prev => prev + 1); // Notifie Affichage de se recharger
+        setSelectedItem(null);
+        setRefreshSignal(prev => prev + 1);
     };
 
     useEffect(() => {
