@@ -11,9 +11,9 @@ import { AffichageType, Rubriques } from '@/app/enum/enums';
 
 
 export interface Newsletter {
-    id: string;
+    id?: string;
     title: string;
-    categorie: string;
+    categorie?: string;
     content?: string;
     createdAt: string | Date;
 }
@@ -32,7 +32,7 @@ export interface DbMedia {
     id: number | string;
     title: string;
     name: string;
-    rubrique: string;
+    rubrique: Rubriques;
     mimeType: string;
     url: string;
     createdAt: Date | string;
@@ -51,7 +51,7 @@ export interface DbArticle {
 }
 
 
-type ItemType = Newsletter | Article;
+export type ItemType = Newsletter | Article;
 
 interface AffichageProps {
     hasFilter?: boolean;

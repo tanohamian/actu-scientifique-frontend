@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import Affichage, { Newsletter } from './components/Affichage';
+import Affichage, { ItemType, Newsletter } from './components/Affichage';
 import { env } from '@/app/config/env';
 import ComponenteFormulaire from './components/ComponenteFormulaire';
 console.log(env)
@@ -11,7 +11,7 @@ export default function Page() {
     );
 
     // ÉTATS POUR LA COMMUNICATION
-    const [selectedItem, setSelectedItem] = useState<any>(null);
+    const [selectedItem, setSelectedItem] = useState<ItemType|null>(null);
     const [refreshSignal, setRefreshSignal] = useState(0);
 
     const handleSuccess = () => {
@@ -68,7 +68,7 @@ export default function Page() {
             <div style={rightSection}>
                 <ComponenteFormulaire
                     isArticle={false}
-                    initialData={selectedItem}
+                    initialData={selectedItem as Newsletter}
                     onSuccess={handleSuccess}
                 />
             </div>

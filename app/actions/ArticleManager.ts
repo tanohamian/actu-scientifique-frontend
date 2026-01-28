@@ -100,10 +100,10 @@ export async function DeleteArticle(articleId: string) {
             console.log(response)
             revalidatePath('/admin/dashboard/gestion_article')
         }
-        return []
+        return true
     } catch (error) {
         console.log("erreur lors de la suppression de l'article : ", error)
-        return []
+        return false
     }
 }
 
