@@ -1,6 +1,6 @@
 'use client'
 import InputComponent, { InputProps } from './input';
-import LoginUser, { RegisterUser } from '../actions/Auth';
+import { LoginUser, RegisterUser } from '../actions/Auth';
 import { useState } from 'react';
 import { UserInterface } from '../admin/dashboard/users/page';
 import { useAuth } from '../context/authContext';

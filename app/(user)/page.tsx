@@ -62,7 +62,7 @@ export default function Home() {
 
     loadContent();
   }, []);
-  useEffect(() => {
+  {/* useEffect(() => {
     (async () => {
       setIsLoading(true)
       const response = await GetFeeds()
@@ -71,7 +71,7 @@ export default function Home() {
       }
       setIsLoading(false)
     })()
-  }, [])
+  }, [])*/}
 
   return (
     <div className="px-4 py-8 md:px-8 md:py-12">
@@ -133,7 +133,7 @@ export default function Home() {
                 <p className="text-white text-base font-semibold text-center">
                   Nos réseaux sociaux
                 </p>
-                <div className="flex flex-row lg:flex-col gap-2">
+                {/* <div className="flex flex-row lg:flex-col gap-2">
                   {socialNetworks.map((network, index) => {
                     const typeToFind = network.replace('Icon', '').toLowerCase();
                     const matchingFeed = feeds?.find(f => f.type.toLowerCase() === typeToFind);
@@ -149,7 +149,7 @@ export default function Home() {
                     )
                   })}
 
-                </div>
+                </div>*/}
               </div>
             </div>
           </div>

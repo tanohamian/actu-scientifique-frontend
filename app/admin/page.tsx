@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react";
-import LoginUser from "../actions/Auth";
+import { LoginUser, IsAdmin } from "../actions/Auth";
 import { useRouter } from "next/navigation";
 
 export interface FormState {
@@ -51,8 +51,11 @@ export default function Connexion() {
 
         try {
             const response = await LoginUser(formData);
-            if (response) {
+            console.log("response : ", response)
+            if (response == 'ROLE_ADMIN') {
                 router.push('/admin/dashboard')
+            } else {
+                setMessage("Vous n'avez pas les droits pour acceder à cette page")
             }
 
         } catch (err) {

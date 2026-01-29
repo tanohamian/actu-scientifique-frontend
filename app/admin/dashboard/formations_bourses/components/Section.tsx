@@ -1,14 +1,14 @@
 "use client"
 import React, { useState, CSSProperties, useEffect, useCallback } from 'react';
 import { Pencil, Trash2, Loader2 } from 'lucide-react';
-import { showToast }  from "nextjs-toast-notify"
+import { showToast } from "nextjs-toast-notify"
 import { FetchTrainings, AddTraining, UpdateTraining, DeleteTraining, ITraining } from '@/app/actions/Trainings';
 import { FetchScholarships, AddScholarship, UpdateScholarship, DeleteScholarship, IScholarship } from '@/app/actions/Scholarships';
 import { FetchReports, AddReport, DeleteReport, UpdateReport, IReport } from '@/app/actions/ReportsManager';
 import ConfirmModal from './ConfirmModal';
 
 
-export const toast = function (success: boolean, edit: boolean = false, message: string=""){
+export const toast = function (success: boolean, edit: boolean = false, message: string = "") {
   return success ? showToast.success(message ? message : edit ? "Mis à Jour !" : "Publié !", {
     duration: 4000,
     progress: true,
@@ -17,13 +17,13 @@ export const toast = function (success: boolean, edit: boolean = false, message:
     icon: '✅',
     sound: true,
   }) : showToast.error(message ? message : "Opération échouée", {
-      duration: 4000,
-      progress: true,
-      position: "bottom-center",
-      transition: "bounceIn",
-      icon: '❌',
-      sound: true,
-    });
+    duration: 4000,
+    progress: true,
+    position: "bottom-center",
+    transition: "bounceIn",
+    icon: '❌',
+    sound: true,
+  });
 }
 
 type DataItem = ITraining | IScholarship | IReport;
@@ -50,6 +50,8 @@ const formatDateFR = (dateString: string | Date) => {
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 };
+
+
 
 export default function SwitchSection() {
   const [activeTab, setActiveTab] = useState<'Bourses' | 'Formations' | 'Reportages'>('Bourses');
@@ -99,14 +101,14 @@ export default function SwitchSection() {
 
   const confirmDelete = async () => {
     if (!itemToDelete) return;
-    
+
     setIsModalOpen(false);
     const success = activeTab === 'Formations'
       ? await DeleteTraining(itemToDelete)
       : activeTab === 'Bourses'
         ? await DeleteScholarship(itemToDelete)
         : await DeleteReport(itemToDelete);
-    
+
     if (success) {
       toast(true, false, "Élément supprimé !");
       loadData();
@@ -164,7 +166,7 @@ export default function SwitchSection() {
   return (
     <div style={{ backgroundColor: '#5A8FAC', minHeight: '100vh', padding: isMobile ? '20px' : '40px', color: 'white' }}>
 
-    <ConfirmModal
+      <ConfirmModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={confirmDelete}

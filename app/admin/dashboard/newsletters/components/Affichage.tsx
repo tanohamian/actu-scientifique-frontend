@@ -62,6 +62,7 @@ interface AffichageProps {
     type?: AffichageType;
     items?: ItemType[];
     onEdit?: (item: ItemType) => void;
+    setIsLoading?: (value: boolean) => void
 }
 
 const styles = {
@@ -85,7 +86,8 @@ export default function Affichage({
     type = AffichageType.NEWSLETTER,
     hasFilter = false,
     filters = [],
-    onEdit
+    onEdit,
+    setIsLoading
 }: AffichageProps) {
     const [itemList, setItemList] = useState<ItemType[]>(initialItems);
     const [activeFilter, setActiveFilter] = useState<string>("all");
@@ -93,6 +95,7 @@ export default function Affichage({
 
 
     const loadData = useCallback(async () => {
+        setIsLoading?.(true)
         try {
             if (type === AffichageType.NEWSLETTER) {
                 const data = await FetchNewsletters();
@@ -100,6 +103,8 @@ export default function Affichage({
             }
         } catch (error) {
             console.error("Erreur lors de la récupération :", error);
+        } finally {
+            setIsLoading?.(false)
         }
     }, [type]);
 

@@ -1,9 +1,10 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Affichage, { ItemType } from './components/Affichage';
-import { env } from '@/app/config/env';
 import ComponenteFormulaire from './components/ComponenteFormulaire';
-console.log(env)
+import LoadingComponent from '@/app/components/loadingComponent'
+
+
 export default function Page() {
     const MOBILE_BREAKPOINT = 768;
     const [isMobile, setIsMobile] = useState(() =>
@@ -12,7 +13,7 @@ export default function Page() {
 
     const [selectedItem, setSelectedItem] = useState<ItemType | null>(null);
     const [refreshSignal, setRefreshSignal] = useState(0);
-
+    const [isLoading, setIsLoading] = useState(false);
     const handleSuccess = () => {
         setSelectedItem(null);
         setRefreshSignal(prev => prev + 1);
@@ -57,11 +58,16 @@ export default function Page() {
 
     return (
         <div style={container}>
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
             <div style={leftSection}>
                 <h1 style={titre}>Gestion des Newsletters</h1>
                 <Affichage
                     key={refreshSignal}
                     onEdit={(item) => setSelectedItem(item)}
+                    setIsLoading={setIsLoading}
                 />
             </div>
             <div style={rightSection}>
