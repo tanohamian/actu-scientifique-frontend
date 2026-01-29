@@ -28,7 +28,7 @@ export default function OpportunitiesPage() {
     }, [])
 
     return (
-        <div className="min-h-screen bg-[#547794] p-8 md:p-12">
+        <div className="min-h-screen bg-[#54779400] p-8 md:p-12">
             <LoadingComponent
                 isOpen={isLoading}
                 onClose={() => setIsLoading(false)}
