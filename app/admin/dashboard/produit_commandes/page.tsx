@@ -5,7 +5,7 @@ import StatGlobal from './components/StatGlobal';
 import ProduitsTable from './components/ProduitListing';
 import TransactionsTable from './components/TransactionsListing';
 import CommandesTable from './components/CommandesListing';
-import { Product } from '../../page';
+import { Product } from '@/app/interfaces';
 
 export default function Page() {
     const MOBILE_BREAKPOINT = 768;

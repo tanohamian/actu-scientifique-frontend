@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
-import { Article, DbArticle, DbMedia, ItemType } from '../admin/dashboard/newsletters/components/Affichage';
 import { Property } from "csstype"
 import { Rubriques } from '../enum/enums';
+import { Article, DbMedia } from '../interfaces';
 
 export interface TableData {
     id?: string | number

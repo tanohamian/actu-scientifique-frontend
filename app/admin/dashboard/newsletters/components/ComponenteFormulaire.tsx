@@ -1,8 +1,8 @@
 "use client"
 import React, { FormEvent, useState, useEffect } from 'react';
-import { Newsletter } from "./Affichage";
 import { AddNewsletter, UpdateNewsletter } from "@/app/actions/Newsletters";
 import { Rubriques } from '@/app/enum/enums';
+import { Newsletter } from '@/app/interfaces';
 
 
 

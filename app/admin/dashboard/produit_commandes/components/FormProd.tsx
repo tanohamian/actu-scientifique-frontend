@@ -1,11 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 "use client"
 import React from 'react'
 
-import Image from 'next/image';
 import { useState } from 'react';
-import { ChevronDown, Upload } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import { AddProduct } from '@/app/actions/ProductsManager';
-import { Product } from '@/app/admin/page';
+import { Product } from '@/app/interfaces';
 
 interface ComponentFormProdProps {
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;

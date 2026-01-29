@@ -8,9 +8,9 @@ import ArticleDataTable, { ElementType } from '@/app/components/eventDataTable';
 import React, { useState } from 'react'
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import Filter, { IFilter } from '@/app/components/filter';
-import { Article } from '../newsletters/components/Affichage';
 import ComponenteFormulaire from '../newsletters/components/ComponenteFormulaire';
 import { Rubriques } from '@/app/enum/enums';
+import { Article } from '@/app/interfaces';
 interface ArticleClientPageProps {
     initialArticles: Article[];
 }

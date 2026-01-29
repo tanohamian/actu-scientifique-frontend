@@ -1,10 +1,10 @@
 'use client'
 import { FetchArticles } from "@/app/actions/ArticleManager";
 import { FetchMedias } from "@/app/actions/MediasManager";
-import { Article, DbMedia } from "@/app/admin/dashboard/newsletters/components/Affichage";
 import Pagination from "@/app/components/pagination";
 import ViewElement from "@/app/components/viewElement";
 import { Rubriques } from "@/app/enum/enums";
+import { Article, DbMedia } from "@/app/interfaces";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 

@@ -1,8 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { Article } from "@/app/admin/dashboard/newsletters/components/Affichage"
 import { FetchArticles } from "@/app/actions/ArticleManager"
+import { Article } from "@/app/interfaces"
 
 export default function DetailsArticle() {
     const params = useParams()

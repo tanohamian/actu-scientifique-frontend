@@ -7,7 +7,7 @@ import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/compone
 //import { useRouter } from 'next/navigation';
 import { DeleteUser, FetchUsers, UpdateRole } from "@/app/actions/Users";
 import { RegisterUser } from "@/app/actions/Auth";
-import { Product } from "../../page";
+import { Product } from "@/app/interfaces";
 
 export interface UserInterface {
     id?: string

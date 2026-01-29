@@ -1,9 +1,9 @@
 'use client'
-import { useEffect, useState } from "react";
+import { useEffect, } from "react";
 import AffichageTableau from "./ListingTask";
 import { FetchProducts, DeleteProduct, UpdateProduct } from "@/app/actions/ProductsManager";
-import { Product } from "@/app/admin/page";
 import { FormFieldConfig } from '@/app/components/addElement';
+import { Product } from "@/app/interfaces";
 
 
 

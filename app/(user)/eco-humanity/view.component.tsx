@@ -1,5 +1,5 @@
+import { Article } from "@/app/interfaces";
 import Image from "next/image";
-import { Article } from "@/app/admin/dashboard/newsletters/components/Affichage";
 
 
 

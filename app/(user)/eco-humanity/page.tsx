@@ -53,11 +53,12 @@ export default function Ecohumanity() {
                     currentItems.map((item: Article) => (
                         <ViewElement
                             key={item.id}
-                            media={item.illustrationUrl || ""}
-                            title={item.title}
+                            //media={item.illustrationUrl || ""}
+                            article={item}
+                            /*title={item.title}
                             type={item.illustrationUrl?.match(/\.(mp4|mkv|webm)$/i) ? "video" : "image"}
-                            description={item.content}
-                            category="Eco-humanité"
+                            description={item.content}*/
+                            //category="Eco-humanité"
                             onclick={() => router.push(`/${item.id}`)}
                         />
                     ))

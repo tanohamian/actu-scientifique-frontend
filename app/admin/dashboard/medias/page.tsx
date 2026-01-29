@@ -4,17 +4,16 @@
 import ButtonComponent from '@/app/components/button';
 import SearchBarComponent from '@/app/components/searchBar';
 import EventDataTable, { ElementType, TableData } from '@/app/components/eventDataTable';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/components/addElement';
 
 import Filter, { IFilter } from '@/app/components/filter';
 import { Property } from "csstype"
 import { DeleteMedia, FetchMedias, UpdateMedia } from '@/app/actions/MediasManager';
-import { Product } from '../../page';
 import { Rubriques } from '@/app/enum/enums';
 import { toast } from '@/app/components/FormComponent';
 import LoadingComponent from '@/app/components/loadingComponent';
-import { DbMedia } from '@/app/interfaces';
+import { DbMedia, Product } from '@/app/interfaces';
 
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media', required: true },

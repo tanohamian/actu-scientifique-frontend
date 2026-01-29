@@ -1,9 +1,9 @@
 'use server'
 import { env } from '@/app/config/env'
-import { redirect } from 'next/navigation'
+//import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache';
-import { DbMedia } from '../admin/dashboard/newsletters/components/Affichage';
+import { DbMedia } from '../interfaces';
 
 export async function AddMedia(formData: FormData) {
 

@@ -1,8 +1,9 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import Affichage, { ItemType, Newsletter } from './components/Affichage';
+import Affichage, { ItemType } from './components/Affichage';
 import { env } from '@/app/config/env';
 import ComponenteFormulaire from './components/ComponenteFormulaire';
+import { Newsletter } from '@/app/interfaces';
 console.log(env)
 export default function Page() {
     const MOBILE_BREAKPOINT = 768;

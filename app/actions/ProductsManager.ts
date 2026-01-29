@@ -3,7 +3,7 @@ import { env } from '@/app/config/env'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
-import { Product } from '../admin/page'
+import { Product } from '../interfaces'
 
 export async function FetchProducts() {
     const authToken = (await cookies()).get('authToken')?.value;

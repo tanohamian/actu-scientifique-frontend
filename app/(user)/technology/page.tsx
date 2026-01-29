@@ -1,11 +1,11 @@
 'use client'
-import { Article } from "@/app/admin/dashboard/newsletters/components/Affichage";
 import Pagination from "@/app/components/pagination";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ViewArticleElement from "./view.component";
 import { FetchArticles } from "@/app/actions/ArticleManager";
 import { Rubriques } from "@/app/enum/enums";
+import { Article } from "@/app/interfaces";
 
 
 

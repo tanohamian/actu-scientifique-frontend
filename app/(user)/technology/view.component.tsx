@@ -1,5 +1,5 @@
-import { Article } from "@/app/admin/dashboard/newsletters/components/Affichage";
 import IconComponent from "@/app/components/Icons";
+import { Article } from "@/app/interfaces";
 
 
 export interface ViewArticleProps {
