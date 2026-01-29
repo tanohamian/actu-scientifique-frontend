@@ -7,6 +7,7 @@ import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/compone
 import { useRouter } from 'next/navigation';
 import Calendar from '@/app/components/calendarCompenetWithFullCalendar';
 import { CreateEvent, DeleteEvent, FetchEvents, UpdateEvent } from '@/app/actions/EventsManager';
+import LoadingComponent from '@/app/components/loadingComponent'
 
 const now = new Date()
 
@@ -61,6 +62,7 @@ export default function EventPage() {
     const [eventLive, setEventLive] = useState<EventLive[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<TableData | null>(null);
     const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
+    const [isLoading, setIsLoading] = useState(false);
 
     const router = useRouter();
 
@@ -225,14 +227,14 @@ export default function EventPage() {
         }
     };
 
-    let initialData : InitialDataType= {
+    let initialData: InitialDataType = {
         title: '',
         location: '',
         date: '',
         time: '',
         status: '',
     };
-    let initialDataLive : InitialDataType = {
+    let initialDataLive: InitialDataType = {
         title: '',
         url: '',
         status: '',
@@ -282,6 +284,7 @@ export default function EventPage() {
 
     useEffect(() => {
         (async () => {
+            setIsLoading(true)
             const events = await FetchEvents()
             if (events) {
                 const liveEvents = events
@@ -309,6 +312,7 @@ export default function EventPage() {
                 setEventLive(liveEvents)
                 setEvents(regularEvents)
             }
+            setIsLoading(false)
         })()
     }, [])
 
@@ -329,6 +333,10 @@ export default function EventPage() {
 
     return (
         <div className={pageContainerClasses}>
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
             <div className={headerClasses}>
                 <div>
                     <h1 className={textClasses}>Gestion des Évènements</h1>

@@ -10,6 +10,7 @@ import { Article, DbMedia } from "../admin/dashboard/newsletters/components/Affi
 import { FetchArticles } from "../actions/ArticleManager";
 import { FetchMedias } from "../actions/MediasManager";
 import { GetFeeds } from "../actions/FeedManager";
+import LoadingComponent from '@/app/components/loadingComponent'
 
 
 export interface FeedInterface {
@@ -33,8 +34,11 @@ export default function Home() {
   const totalPages = Math.ceil(articles.length / itemsPerPage)
   const socialNetworks: IconName[] = ["YouTubeIcon", "FacebookIcon", "TwitterIcon"]
   const [feeds, setFeeds] = useState<FeedInterface[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+
   useEffect(() => {
     const loadContent = async () => {
+      setIsLoading(true)
       try {
         const [articlesData, mediasData] = await Promise.all([
           FetchArticles(),
@@ -51,6 +55,8 @@ export default function Home() {
         setArticles([...filteredArticles, ...filteredMedias]);
       } catch (error) {
         console.error("Erreur lors du chargement :", error);
+      } finally {
+        setIsLoading(false)
       }
     };
 
@@ -58,15 +64,21 @@ export default function Home() {
   }, []);
   useEffect(() => {
     (async () => {
+      setIsLoading(true)
       const response = await GetFeeds()
       if (response) {
         setFeeds(response)
       }
+      setIsLoading(false)
     })()
   }, [])
 
   return (
     <div className="px-4 py-8 md:px-8 md:py-12">
+      <LoadingComponent
+        isOpen={isLoading}
+        onClose={() => setIsLoading(false)}
+      />
       <div className="flex flex-col lg:flex-row w-full items-center gap-6 lg:gap-8 ">
         <h1 className="text-white text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-tight max-w-xl">
           Décrypter la science, informer le public
@@ -124,7 +136,7 @@ export default function Home() {
                 <div className="flex flex-row lg:flex-col gap-2">
                   {socialNetworks.map((network, index) => {
                     const typeToFind = network.replace('Icon', '').toLowerCase();
-                    const matchingFeed = feeds.find(f => f.type.toLowerCase() === typeToFind);
+                    const matchingFeed = feeds?.find(f => f.type.toLowerCase() === typeToFind);
                     if (!matchingFeed) {
                       return null;
                     }

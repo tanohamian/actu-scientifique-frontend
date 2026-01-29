@@ -18,6 +18,7 @@ interface Commande {
 
 interface CommandesTableProps {
     setOrderLength: React.Dispatch<React.SetStateAction<number>>;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 // Fonction pour traduire le status
 const getStatusLabel = (status: string): string => {
@@ -55,16 +56,18 @@ const editFields: FormFieldConfig[] = [
     }
 ];
 
-export default function CommandesTable({ setOrderLength }: CommandesTableProps) {
+export default function CommandesTable({ setOrderLength, setLoading }: CommandesTableProps) {
     const [donneesCommandes, setDonneesCommandes] = useState<Commande[]>([]);
 
     useEffect(() => {
         (async () => {
+            setLoading(true)
             const commandes = await FetchOrders();
             if (commandes) {
                 setDonneesCommandes(commandes);
                 setOrderLength(commandes.length);
             }
+            setLoading(false)
         })();
     }, []);
 

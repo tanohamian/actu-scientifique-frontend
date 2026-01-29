@@ -8,6 +8,7 @@ import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/compone
 import { DeleteUser, FetchUsers, UpdateRole } from "@/app/actions/Users";
 import { RegisterUser } from "@/app/actions/Auth";
 import { Product } from "../../page";
+import LoadingComponent from '@/app/components/loadingComponent'
 
 export interface UserInterface {
     id?: string
@@ -178,11 +179,12 @@ export default function Utilisateurs() {
         }
     }
 
-
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
+                setIsLoading(true)
                 const response = await FetchUsers()
                 console.log(response)
                 if (response) {
@@ -191,6 +193,8 @@ export default function Utilisateurs() {
 
             } catch (err) {
                 console.log("erreur lors de la recuperations des utilisateurs : ", err)
+            } finally {
+                setIsLoading(false)
             }
         }
         fetchUser()
@@ -204,6 +208,10 @@ export default function Utilisateurs() {
     );
     return (
         <div className="min-h-screen font-sans p-4 md:p-6 lg:p-8">
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-6 gap-4 w-full">
                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-light text-white m-0">Gestion des utilisateurs</h1>

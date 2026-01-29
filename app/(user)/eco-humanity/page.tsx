@@ -7,6 +7,7 @@ import { Article, DbMedia } from "@/app/admin/dashboard/newsletters/components/A
 import { FetchArticles } from "@/app/actions/ArticleManager";
 import { Rubriques } from "@/app/enum/enums";
 import { FetchMedias } from "@/app/actions/MediasManager";
+import LoadingComponent from '@/app/components/loadingComponent'
 
 export default function Ecohumanity() {
     const router = useRouter();
@@ -19,6 +20,7 @@ export default function Ecohumanity() {
     useEffect(() => {
         const loadContent = async () => {
             try {
+                setIsLoading(true)
                 const [articlesData, mediasData] = await Promise.all([
                     FetchArticles(),
                     FetchMedias()
@@ -34,6 +36,8 @@ export default function Ecohumanity() {
                 setArticles([...filteredArticles, ...filteredMedias]);
             } catch (error) {
                 console.error("Erreur lors du chargement :", error);
+            } finally {
+                setIsLoading(false)
             }
         };
 
@@ -49,6 +53,10 @@ export default function Ecohumanity() {
 
     return (
         <div className="w-full min-h-[400px] p-6">
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
             <div className="mb-12">
                 <h1 className="text-5xl md:text-7xl font-bold text-white mb-4"> Eco-humanité </h1>
             </div>

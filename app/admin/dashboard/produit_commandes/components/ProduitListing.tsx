@@ -18,6 +18,7 @@ const colonnesProduits = [
 interface ProduitInterface {
     products: Product[],
     setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const projectFields: FormFieldConfig[] = [
     { name: 'name', label: 'Nom du produit', type: 'text', placeholder: 'Entrez votre nom du produit', required: false },
@@ -36,7 +37,7 @@ const projectFields: FormFieldConfig[] = [
 ]
 
 
-export default function ProduitsTable({ products, setProducts }: ProduitInterface) {
+export default function ProduitsTable({ products, setProducts, setLoading }: ProduitInterface) {
 
     const handleDelete = async (item: Product) => {
         try {
@@ -85,10 +86,12 @@ export default function ProduitsTable({ products, setProducts }: ProduitInterfac
 
     useEffect(() => {
         (async () => {
+            setLoading(true)
             const products: Product[] = await FetchProducts()
             if (products) {
                 setProducts(products)
             }
+            setLoading(false)
         })()
     }, [])
 

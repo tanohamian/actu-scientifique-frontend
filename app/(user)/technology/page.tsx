@@ -7,6 +7,7 @@ import ViewElement from "@/app/components/viewElement";
 import { FetchArticles } from "@/app/actions/ArticleManager";
 import { Rubriques } from "@/app/enum/enums";
 import { FetchMedias } from "@/app/actions/MediasManager";
+import LoadingComponent from '@/app/components/loadingComponent'
 
 
 
@@ -22,9 +23,11 @@ export default function Technologie() {
     const [articles, setArticles] = useState<(Article | DbMedia)[]>([])
     const currentItems = articles.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(articles.length / itemsPerPage)
+    const [isLoading, setIsLoading] = useState(false)
     useEffect(() => {
         const loadContent = async () => {
             try {
+                setIsLoading(true)
                 const [articlesData, mediasData] = await Promise.all([
                     FetchArticles(),
                     FetchMedias()
@@ -40,6 +43,8 @@ export default function Technologie() {
                 setArticles([...filteredArticles, ...filteredMedias]);
             } catch (error) {
                 console.error("Erreur lors du chargement :", error);
+            } finally {
+                setIsLoading(false)
             }
         };
 
@@ -50,6 +55,10 @@ export default function Technologie() {
 
     return (
         <div className="w-full min-h-[400px] rounded-lg p-6">
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {currentItems.map((item: Article | DbMedia) => (
                     <ViewElement

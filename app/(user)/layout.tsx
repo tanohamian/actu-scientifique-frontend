@@ -61,7 +61,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     { typeInput: 'password', placeholderInput: 'Confirmer le mot de passe', inputValue: confirmPassword, setInputValue: setConfirmPassword },
   ];
 
-  const { isLoggedIn, login, logout, loading } = useAuth();
+  const { isLoggedIn } = useAuth();
 
   return (
     <div className="m-0 p-0 bg-[#50789B] w-full min-h-screen flex flex-col">
@@ -108,15 +108,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               <IconComponent name='LinkedIn' {...iconBaseProps} />
             </div>
 
-            {loading ? (
-              // Pendant que l'on vérifie le cookie au rafraîchissement
-              <div className="w-10 h-10 animate-pulse bg-white/20 rounded-full" />
-            ) : isLoggedIn ? (
-              // Si l'utilisateur est connecté, on affiche un bouton Déconnexion (ou rien)
-              <ButtonComponent textButton='Déconnexion' onclick={logout} />
-            ) : (
-              // Si l'utilisateur n'est pas connecté, on affiche le bouton Connexion
-              <ButtonComponent textButton='Connexion' onclick={() => setIsLoginOpen(true)} />
+            {!isLoggedIn && (
+              <ButtonComponent
+                textButton='Connexion'
+                onclick={() => setIsLoginOpen(true)}
+              />
             )}
             {isLoginOpen && (
               <LoginRegisterComponent

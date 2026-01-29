@@ -6,6 +6,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import { CreateFeed, DeleteFeed, GetFeeds, UpdateFeed } from '@/app/actions/FeedManager';
+import LoadingComponent from '@/app/components/loadingComponent'
 
 export interface FeedInterface {
     id?: string
@@ -314,6 +315,10 @@ export default function FilActualite() {
 
     return (
         <div className={containerClasses}>
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
 
             <div className='text-white mb-5 md:mb-8'>
                 <h1 className={mainTitleClasses}>{"Gestion du fil d'actualité"}</h1>
@@ -394,11 +399,7 @@ export default function FilActualite() {
                     <div className="w-1/10 pl-3">Actions</div>
                 </div>
 
-                {isLoading ? (
-                    <div>
-                        <p>Chargement...</p>
-                    </div>
-                ) :
+                {
                     feedData.length < 0 ? (
                         <div>
                             <p>Aucune feed</p>
