@@ -9,6 +9,17 @@ import { ShoppingCart } from 'lucide-react'
 import { Article, DbMedia } from "../admin/dashboard/newsletters/components/Affichage";
 import { FetchArticles } from "../actions/ArticleManager";
 import { FetchMedias } from "../actions/MediasManager";
+import { GetFeeds } from "../actions/FeedManager";
+
+
+export interface FeedInterface {
+  id: string,
+  url: string,
+  title: string,
+  type: string,
+  description: string,
+  createdAt: Date,
+}
 
 
 export default function Home() {
@@ -21,7 +32,7 @@ export default function Home() {
   const currentItems = articles.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(articles.length / itemsPerPage)
   const socialNetworks: IconName[] = ["YouTubeIcon", "FacebookIcon", "TwitterIcon"]
-
+  const [feeds, setFeeds] = useState<FeedInterface[]>([])
   useEffect(() => {
     const loadContent = async () => {
       try {
@@ -45,6 +56,14 @@ export default function Home() {
 
     loadContent();
   }, []);
+  useEffect(() => {
+    (async () => {
+      const response = await GetFeeds()
+      if (response) {
+        setFeeds(response)
+      }
+    })()
+  }, [])
 
   return (
     <div className="px-4 py-8 md:px-8 md:py-12">
@@ -103,12 +122,21 @@ export default function Home() {
                   Nos réseaux sociaux
                 </p>
                 <div className="flex flex-row lg:flex-col gap-2">
-                  {socialNetworks.map((network, index) => (
-                    <SocialNetworks
-                      key={index}
-                      name={network}
-                    />
-                  ))}
+                  {socialNetworks.map((network, index) => {
+                    const typeToFind = network.replace('Icon', '').toLowerCase();
+                    const matchingFeed = feeds.find(f => f.type.toLowerCase() === typeToFind);
+                    if (!matchingFeed) {
+                      return null;
+                    }
+                    return (
+                      <SocialNetworks
+                        key={index}
+                        name={network}
+                        feed={matchingFeed}
+                      />
+                    )
+                  })}
+
                 </div>
               </div>
             </div>

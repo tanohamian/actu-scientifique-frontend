@@ -101,6 +101,12 @@ export default function FilActualite() {
 
 
     const handleSubmitAddFilActu = async (formData: FeedInterface) => {
+        const typeExists = feedData.some(feed => feed.type === formData.type);
+
+        if (typeExists) {
+            alert(`Un flux de type "${formData.type}" existe déjà. Veuillez le supprimer avant d'en ajouter un nouveau.`);
+            return;
+        }
         try {
             const response = await CreateFeed(formData)
             if (response && response.feed) {
@@ -314,7 +320,6 @@ export default function FilActualite() {
                 <h3 className={subTitleClasses}>{"Gérer vos fils d'actualité"}</h3>
             </div>
 
-            {/* Section Ajout d'actualité */}
             <div>
                 <div className={firstInputClasses}>
                     <div className={inputWrapperClasses}>

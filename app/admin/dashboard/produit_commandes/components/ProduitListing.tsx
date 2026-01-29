@@ -40,7 +40,7 @@ export default function ProduitsTable({ products, setProducts }: ProduitInterfac
 
     const handleDelete = async (item: Product) => {
         try {
-            const deletedProduct = await DeleteProduct(item.id)
+            const deletedProduct = await DeleteProduct(item?.id as string)
             if (deletedProduct) {
                 const updatedProducts = products.filter((product) => product.id !== item.id)
                 setProducts(updatedProducts)
@@ -67,7 +67,7 @@ export default function ProduitsTable({ products, setProducts }: ProduitInterfac
                 formData.append('file', file);
             }
 
-            const updatedProduct = await UpdateProduct(formData, item.id);
+            const updatedProduct = await UpdateProduct(formData, item.id as string);
 
             if (updatedProduct) {
                 const updatedProducts = products.map((product) =>

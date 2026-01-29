@@ -39,7 +39,6 @@ const colonnesCommandes = [
     },
     { key: 'totalAmount', header: 'Prix' },
     { key: 'quantity', header: 'Quantité' },
-    { key: 'email', header: 'Acheter par' },
 ];
 
 const editFields: FormFieldConfig[] = [

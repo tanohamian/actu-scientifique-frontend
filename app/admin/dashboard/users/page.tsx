@@ -39,7 +39,9 @@ const roleFields: FormFieldConfig[] = [
             { value: 'ROLE_ADMIN', label: 'Administrateur' },
             { value: 'ROLE_VIEWER', label: 'Utilisateur' },
         ], required: true
-    }
+    },
+    { name: 'password', label: 'Mot de passe', type: 'password', placeholder: 'Entrez le mot de passe', required: false },
+
 ]
 
 export default function Utilisateurs() {
