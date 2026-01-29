@@ -3,21 +3,21 @@ import React, { useState, useEffect } from 'react';
 import Affichage, { ItemType } from './components/Affichage';
 import { env } from '@/app/config/env';
 import ComponenteFormulaire from './components/ComponenteFormulaire';
-import { Newsletter } from '@/app/interfaces';
-console.log(env)
+import LoadingComponent from '@/app/components/loadingComponent'
+
+
 export default function Page() {
     const MOBILE_BREAKPOINT = 768;
     const [isMobile, setIsMobile] = useState(() =>
         typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT
     );
 
-    // ÉTATS POUR LA COMMUNICATION
-    const [selectedItem, setSelectedItem] = useState<ItemType|null>(null);
+    const [selectedItem, setSelectedItem] = useState<ItemType | null>(null);
     const [refreshSignal, setRefreshSignal] = useState(0);
-
+    const [isLoading, setIsLoading] = useState(false);
     const handleSuccess = () => {
-        setSelectedItem(null); // Reset le formulaire
-        setRefreshSignal(prev => prev + 1); // Notifie Affichage de se recharger
+        setSelectedItem(null);
+        setRefreshSignal(prev => prev + 1);
     };
 
     useEffect(() => {
@@ -59,17 +59,22 @@ export default function Page() {
 
     return (
         <div style={container}>
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
             <div style={leftSection}>
                 <h1 style={titre}>Gestion des Newsletters</h1>
                 <Affichage
                     key={refreshSignal}
                     onEdit={(item) => setSelectedItem(item)}
+                    setIsLoading={setIsLoading}
                 />
             </div>
             <div style={rightSection}>
                 <ComponenteFormulaire
                     isArticle={false}
-                    initialData={selectedItem as Newsletter}
+                    initialData={selectedItem && 'categorie' in selectedItem ? selectedItem : undefined}
                     onSuccess={handleSuccess}
                 />
             </div>

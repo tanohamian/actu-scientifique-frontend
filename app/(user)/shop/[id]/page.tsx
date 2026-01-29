@@ -1,33 +1,45 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import { Categories } from "@/app/admin/page";
 import { Product } from "@/app/interfaces";
-//import { useParams } from "next/navigation"
-import { useState } from "react";
+import { CreateOrder } from "@/app/actions/Order";
+import { FetchProductById } from "@/app/actions/ProductsManager";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
 export default function DetailsProduct() {
-    //const params = useParams()
-    //const productId = params.id
+    const params = useParams()
+    const productId = params.id as string
     const [quantity, setQuantity] = useState(1)
+    const [product, setProduct] = useState<Product | null>(null)
 
-    const products: Product[] = [
-        { 
-            id: "1", 
-            name: "Produit 1", 
-            price: 10500, 
-            preview_image: "https://tse1.mm.bing.net/th/id/OIP.gV0E3SwCl171DqO_C8AYaQHaEO?rs=1&pid=ImgDetMain&o=7&rm=3", 
-            description: "Découvrez l'élégance et la performance réunies dans ce produit d'exception. Conçu avec des matériaux de haute qualité pour une durabilité maximale.",
-            createdAt : "2025/08/11T19:53:44",
-            stock: 1,
-            categories : Categories.CLOTHES
+    useEffect(() => {
+        (async () => {
+            const product = await FetchProductById(productId)
+            if (product) {
+                setProduct(product)
+            }
+        })()
+    }, [])
+
+
+    const increaseQuantity = () => {
+        if ((product?.stock as number) > quantity) {
+            setQuantity(prev => prev + 1)
         }
-    ];
+    }
+    const decreaseQuantity = () => {
+        if (quantity > 1) {
+            setQuantity(prev => prev - 1)
+        }
+    }
 
-    const product = products[0];
-
-    const increaseQuantity = () => setQuantity(prev => prev + 1)
-    const decreaseQuantity = () => setQuantity(prev => prev > 1 ? prev - 1 : 1)
+    const handleCreatedOrder = async () => {
+        const order = await CreateOrder({ productId: productId, quantity: quantity })
+        if (order) {
+            console.log("Commande creee : ", order)
+        }
+    }
 
     return (
         <div className="min-h-screen text-white p-6 md:p-12 lg:p-16">
@@ -35,25 +47,31 @@ export default function DetailsProduct() {
 
                 <div className="w-full lg:w-1/2 overflow-hidden rounded-2xl shadow-2xl border border-white/10">
                     <img
-                        src={product.preview_image}
-                        alt={product.name}
+                        src={product?.preview_image}
+                        alt={product?.name}
                         className="w-full h-[500px] lg:h-[700px] object-cover hover:scale-105 transition-transform duration-500"
                     />
                 </div>
 
                 <div className="w-full lg:w-1/2 flex flex-col gap-8">
                     <div>
-                        <h2 className="text-5xl font-extrabold tracking-tight mb-4">{product.name}</h2>
+                        <h2 className="text-5xl font-extrabold tracking-tight mb-4">{product?.name}</h2>
                         <div className="h-1 w-20 bg-[#E85C41] mb-6"></div>
                         <p className="text-white text-lg leading-relaxed max-w-xl">
-                            {product.description}
+                            {product?.description}
                         </p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center bg-white/5 p-8 rounded-3xl border border-white/10 shadow-inner">
-                        <div className="flex flex-col gap-1">
-                            <span className="text-[#E85C41] uppercase tracking-widest text-sm font-bold">Prix Unitaire</span>
-                            <p className="text-4xl font-bold">{product.price.toLocaleString()} <span className="text-lg font-normal opacity-70">FCFA</span></p>
+                        <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-2">
+                                <span className="text-[#E85C41] uppercase tracking-widest text-sm font-bold">Prix Unitaire</span>
+                                <p className="text-4xl font-bold">{product?.price.toLocaleString()} <span className="text-lg font-normal opacity-70">FCFA</span></p>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <span className="text-[#E85C41] uppercase tracking-widest text-sm font-bold">Stock</span>
+                                <p className="text-4xl font-bold">{product?.stock.toLocaleString()}</p>
+                            </div>
                         </div>
 
                         <div className="flex flex-col gap-3">
@@ -79,7 +97,9 @@ export default function DetailsProduct() {
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                        <button className="flex-1 bg-[#E85C41] hover:bg-[#cf4d35] text-white text-xl font-bold py-5 px-8 rounded-2xl transition-all transform hover:-translate-y-1 active:scale-95 shadow-lg shadow-[#E85C41]/20">
+                        <button className="flex-1 bg-[#E85C41] hover:bg-[#cf4d35] text-white text-xl font-bold py-5 px-8 rounded-2xl transition-all transform hover:-translate-y-1 active:scale-95 shadow-lg shadow-[#E85C41]/20"
+                            onClick={handleCreatedOrder}
+                        >
                             Acheter maintenant
                         </button>
                         <button className="flex-1 border-2 border-[#E85C41] text-[#E85C41] hover:bg-[#E85C41]/10 text-xl font-bold py-5 px-8 rounded-2xl transition-all">

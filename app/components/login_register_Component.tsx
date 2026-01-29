@@ -1,6 +1,6 @@
 'use client'
 import InputComponent, { InputProps } from './input';
-import LoginUser, { RegisterUser } from '../actions/Auth';
+import { LoginUser, RegisterUser } from '../actions/Auth';
 import { useState } from 'react';
 import { UserInterface } from '../admin/dashboard/users/page';
 import { useAuth } from '../context/authContext';
@@ -15,9 +15,9 @@ interface LoginRegisterComponentProps {
 
 export default function LoginRegisterComponent({ type, title, inputs, onClose, onSubmit }: LoginRegisterComponentProps) {
     const [error, setError] = useState<string | null>(null);
-    //const { login } = useAuth()
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const { login } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -40,7 +40,7 @@ export default function LoginRegisterComponent({ type, title, inputs, onClose, o
                         email,
                         roles: response.role
                     }
-                    //login(authenticatedUser as UserInterface)
+                    login(authenticatedUser as UserInterface)
                     onClose()
                 }
 

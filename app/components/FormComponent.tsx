@@ -8,7 +8,7 @@ import { Rubriques } from '../enum/enums';
 import { Article, DbArticle, Newsletter } from '../interfaces';
 
 
-export const toast = function (success: boolean, edit: boolean = false, message: string=""){
+export const toast = function (success: boolean, edit: boolean = false, message: string = "") {
   return success ? showToast.success(message ? message : edit ? "Publié!" : "Mis à Jour !", {
       duration: 4000,
       progress: true,
@@ -136,15 +136,15 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
         console.log("✅ Média uploadé:", result);
 
         if (result) {
-          
+
           toast(true, isEditing);
           const newArticle = result.article as DbArticle;
-          newArticle.createdAt = newArticle.createdAt.toLocaleString('fr-FR', {year:"numeric", month: "2-digit", day:"2-digit"})
+          newArticle.createdAt = newArticle.createdAt.toLocaleString('fr-FR', { year: "numeric", month: "2-digit", day: "2-digit" })
           console.log(result)
           setFormData({ title: "", content: "", rubrique: Rubriques.TECHNOLOGY });
           onSuccess(newArticle);
         }
-        else{
+        else {
           toast(false);
         }
         return

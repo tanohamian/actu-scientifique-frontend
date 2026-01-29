@@ -5,13 +5,14 @@ import Pagination from "@/app/components/pagination";
 import { FetchArticles } from "@/app/actions/ArticleManager";
 import { Rubriques } from "@/app/enum/enums";
 import { Article } from "@/app/interfaces";
+import LoadingComponent from '@/app/components/loadingComponent'
 
 export default function PortraitDiscoveryPage() {
     const router = useRouter();
     const [articles, setArticles] = useState<Article[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
-    
+
     const itemsPerPage = 12;
 
     const loadArticles = useCallback(async () => {
@@ -34,10 +35,13 @@ export default function PortraitDiscoveryPage() {
     const currentItems = articles.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const totalPages = Math.ceil(articles.length / itemsPerPage);
 
-    if (isLoading) return <div className="w-full text-center p-10 text-white">Chargement...</div>;
 
     return (
         <div className="w-full min-h-screen p-6 bg-transparent">
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
             <div className="mb-12">
                 <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">
                     Portraits & <br /> Découvertes

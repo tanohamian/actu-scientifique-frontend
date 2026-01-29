@@ -43,18 +43,12 @@ export default function DetailsArticle() {
 
             <div className="max-w-5xl mx-auto flex flex-col gap-8">
                 <header>
-                    <div className="flex items-center gap-3 mb-4">
-                        <span className="px-3 py-1 bg-[#E85C41] text-white text-xs font-bold rounded-full uppercase">
-                            {article.rubrique?.replace('_', ' ')}
-                        </span>
-                    </div>
                     <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-tight">
                         {article.title}
                     </h1>
                 </header>
 
                 <div className="relative w-full overflow-hidden rounded-3xl shadow-2xl border border-white/10 bg-white/5">
-                    {/* Détection vidéo ou image basée sur l'URL */}
                     {article.illustrationUrl && article.illustrationUrl.match(/\.(mp4|mkv|webm)$/i) ? (
                         <video
                             src={article.illustrationUrl}

@@ -1,211 +1,134 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import frLocale from '@fullcalendar/core/locales/fr'
+import { FetchEvents } from '@/app/actions/EventsManager'
+import LoadingComponent from '@/app/components/loadingComponent'
+
+export interface Event {
+    id: string;
+    title: string;
+    date: string;
+    location: string;
+    time: string;
+    url?: string;
+    description: string;
+    status: "NOT_LIVE" | "LIVE";
+    createdAt: string;
+}
 
 export default function AgendaPage() {
+    const [isLoading, setIsLoading] = useState(false)
+    const [liveEvents, setLiveEvents] = useState<Event[]>([])
+    const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([])
+    const [formattedCalendarEvents, setFormattedCalendarEvents] = useState<any[]>([])
 
-    const liveEvent = {
-        title: "Conférence sur l'IA",
-        time: "14:30 - 16:00",
-        location: "Salle A"
-    }
+    useEffect(() => {
+        (async () => {
+            setIsLoading(true)
+            try {
+                const response = await FetchEvents()
+                if (response) {
+                    const data = response as Event[]
+                    const now = new Date()
 
-    const upcomingEvents = [
-        {
-            id: 1,
-            title: "Réunion d'équipe",
-            date: "15 Oct 2024",
-            time: "09:00",
-            color: "bg-blue-500"
-        },
-        {
-            id: 2,
-            title: "Présentation projet",
-            date: "18 Oct 2024",
-            time: "14:00",
-            color: "bg-green-500"
-        },
-        {
-            id: 3,
-            title: "Formation React",
-            date: "20 Oct 2024",
-            time: "10:30",
-            color: "bg-purple-500"
-        }
-    ]
+                    const lives = data.filter(e => e.status === "LIVE")
+                    setLiveEvents(lives)
 
-    // Événements pour FullCalendar
-    const calendarEvents = [
-        {
-            title: "Conférence sur l'IA",
-            start: '2024-10-12',
-            backgroundColor: '#f97316',
-            borderColor: '#f97316'
-        },
-        {
-            title: "Réunion d'équipe",
-            start: '2024-10-15',
-            backgroundColor: '#3b82f6',
-            borderColor: '#3b82f6'
-        },
-        {
-            title: "Présentation projet",
-            start: '2024-10-18',
-            backgroundColor: '#22c55e',
-            borderColor: '#22c55e'
-        },
-        {
-            title: "Formation React",
-            start: '2024-10-20',
-            backgroundColor: '#a855f7',
-            borderColor: '#a855f7'
-        }
-    ]
+                    const upcoming = data.filter(e => {
+                        const eventDate = new Date(e.date)
+                        return e.status === "NOT_LIVE" && eventDate > now
+                    })
+                    setUpcomingEvents(upcoming)
+
+                    const calendar = data.map(e => ({
+                        id: e.id,
+                        title: e.title,
+                        start: e.date.split('T')[0],
+                        backgroundColor: '#f97316',
+                        borderColor: '#ea580c',
+                        textColor: '#ffffff',
+                        extendedProps: { ...e }
+                    }))
+                    setFormattedCalendarEvents(calendar)
+                }
+            } catch (error) {
+                console.error("Erreur lors de la récupération des événements:", error)
+            } finally {
+                setIsLoading(false)
+            }
+        })()
+    }, [])
 
     return (
         <div className="min-h-screen p-6">
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
+
             <div className="max-w-7xl mx-auto">
                 <div className="grid lg:grid-cols-3 gap-6">
+
                     <div className="lg:col-span-2">
                         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
                             <style jsx global>{`
-                                .fc {
-                                    font-family: inherit;
-                                }
-                                .fc .fc-toolbar-title {
-                                    font-size: 1.5rem;
-                                    font-weight: bold;
-                                    color: white;
-                                    text-transform: uppercase;
-                                }
-                                .fc .fc-toolbar {
-                                    background: linear-gradient(to right, #475569, #334155);
-                                    padding: 1.5rem;
-                                    margin-bottom: 0;
-                                }
-                                .fc .fc-button {
-                                    background-color: transparent;
-                                    border: none;
-                                    color: white;
-                                    font-weight: 600;
-                                    padding: 0.5rem 1rem;
-                                    transition: all 0.2s;
-                                }
-                                .fc .fc-button:hover {
-                                    background-color: rgba(255, 255, 255, 0.2);
-                                    border-radius: 0.5rem;
-                                }
-                                .fc .fc-button:focus {
-                                    box-shadow: none;
-                                }
-                                .fc .fc-col-header {
-                                    background: linear-gradient(to right, #475569, #334155);
-                                }
-                                .fc .fc-col-header-cell {
-                                    color: white;
-                                    font-weight: 600;
-                                    padding: 0.75rem 0;
-                                    text-transform: uppercase;
-                                    font-size: 0.875rem;
-                                }
-                                .fc .fc-daygrid-body {
-                                    background: linear-gradient(to bottom right, #f9fafb, #f3f4f6);
-                                }
-                                .fc .fc-daygrid-day {
-                                    transition: all 0.2s;
-                                }
-                                .fc .fc-daygrid-day:hover {
-                                    background-color: #f1f5f9;
-                                }
-                                .fc .fc-daygrid-day-frame {
-                                    padding: 0.5rem;
-                                    min-height: 80px;
-                                }
-                                .fc .fc-daygrid-day-number {
-                                    font-size: 1.125rem;
-                                    font-weight: 600;
-                                    color: #1e293b;
-                                    padding: 0.25rem;
-                                }
-                                .fc .fc-daygrid-day-top {
-                                    flex-direction: row;
-                                    justify-content: center;
-                                }
-                                .fc .fc-day-today {
-                                    background-color: #fed7aa !important;
-                                }
-                                .fc .fc-day-today .fc-daygrid-day-number {
-                                    background-color: #f97316;
-                                    color: white;
-                                    border-radius: 0.5rem;
-                                    padding: 0.25rem 0.5rem;
-                                    font-weight: bold;
-                                }
-                                .fc .fc-event {
-                                    border-radius: 0.375rem;
-                                    padding: 0.125rem 0.25rem;
-                                    font-size: 0.75rem;
-                                    margin-bottom: 0.125rem;
-                                    cursor: pointer;
-                                }
-                                .fc .fc-event:hover {
-                                    opacity: 0.8;
-                                }
-                                .fc .fc-scrollgrid {
-                                    border: none;
-                                }
-                                .fc .fc-scrollgrid td {
-                                    border-color: #e5e7eb;
-                                }
-                                .fc-theme-standard td, 
-                                .fc-theme-standard th {
-                                    border-color: #e5e7eb;
-                                }
+                                .fc .fc-toolbar-title { font-size: 1.5rem; font-weight: bold; color: white; text-transform: uppercase; }
+                                .fc .fc-toolbar { background: linear-gradient(to right, #475569, #334155); padding: 1.5rem; margin-bottom: 0; }
+                                .fc .fc-button { background-color: transparent; border: none; color: white; font-weight: 600; }
+                                .fc .fc-button:hover { background-color: rgba(255, 255, 255, 0.2); border-radius: 0.5rem; }
+                                .fc .fc-col-header { background: linear-gradient(to right, #475569, #334155); }
+                                .fc .fc-col-header-cell { color: white; padding: 0.75rem 0; text-transform: uppercase; font-size: 0.875rem; }
+                                .fc .fc-day-today { background-color: #fed7aa !important; }
+                                .fc .fc-event { border-radius: 0.375rem; padding: 0.25rem; cursor: pointer; border: none; }
                             `}</style>
 
                             <FullCalendar
                                 plugins={[dayGridPlugin, interactionPlugin]}
                                 initialView="dayGridMonth"
                                 locale={frLocale}
-                                events={calendarEvents}
+                                events={formattedCalendarEvents}
                                 height="auto"
-                                headerToolbar={{
-                                    left: 'prev',
-                                    center: 'title',
-                                    right: 'next'
+                                headerToolbar={{ left: 'prev', center: 'title', right: 'next' }}
+                                eventClick={(info) => {
+                                    if (info.event.extendedProps.url) {
+                                        window.open(info.event.extendedProps.url, "_blank")
+                                    } else {
+                                        alert(`${info.event.title}\nLieu: ${info.event.extendedProps.location}\nHeure: ${info.event.extendedProps.time}`)
+                                    }
                                 }}
-                                buttonText={{
-                                    today: "Aujourd'hui"
-                                }}
-                                eventDisplay="block"
-                                dayMaxEvents={3}
-                                fixedWeekCount={false}
                             />
                         </div>
                     </div>
 
                     <div className="space-y-6">
+
                         <div className="bg-gradient-to-br from-slate-600 to-slate-700 rounded-2xl shadow-xl overflow-hidden">
                             <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-4">
-                                <h3 className="text-white text-xl font-bold text-center">
-                                    En direct
-                                </h3>
+                                <h3 className="text-white text-xl font-bold text-center">En direct</h3>
                             </div>
-
-                            <div className="p-6 bg-gray-100 min-h-[200px] flex flex-col justify-center">
-                                <div className="bg-white rounded-xl p-4 shadow-lg">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                                        <span className="text-red-500 font-semibold text-sm">LIVE</span>
+                            <div className="p-6 bg-gray-100 min-h-[150px] space-y-4">
+                                {liveEvents.length > 0 ? liveEvents.map(event => (
+                                    <div key={event.id} className="bg-white rounded-xl p-4 shadow-lg border-l-4 border-orange-500">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                                            <span className="text-orange-500 font-bold text-xs">LIVE MAINTENANT</span>
+                                        </div>
+                                        <h4 className="font-bold text-slate-800">{event.title}</h4>
+                                        <p className="text-slate-500 text-xs mt-1">📍 {event.location} - {event.time}</p>
+                                        <a href={event.url} target="_blank" rel="noopener noreferrer"
+                                            className="mt-3 block text-center text-xs bg-orange-500 text-white py-2 rounded-lg font-bold hover:bg-orange-600 transition-colors">
+                                            REJOINDRE LE DIRECT
+                                        </a>
                                     </div>
-                                    <h4 className="font-bold text-lg mb-2">{liveEvent.title}</h4>
-                                    <p className="text-gray-600 text-sm mb-1">⏰ {liveEvent.time}</p>
-                                    <p className="text-gray-600 text-sm">📍 {liveEvent.location}</p>
-                                </div>
+                                )) : (
+                                    <div className="flex flex-col items-center justify-center text-gray-400 py-8">
+                                        <p className="text-sm italic">Aucun direct pour le moment</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -213,29 +136,21 @@ export default function AgendaPage() {
                             <div className="p-4 bg-slate-600 border-b border-slate-500">
                                 <h3 className="text-white text-xl font-bold">À venir</h3>
                             </div>
-
-                            <div className="p-4 bg-gray-100 space-y-3 min-h-[300px]">
-                                {upcomingEvents.map(event => (
-                                    <div
-                                        key={event.id}
-                                        className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow cursor-pointer"
-                                    >
-                                        <div className="flex items-start gap-3">
-                                            <div className={`${event.color} w-1 h-full rounded-full`}></div>
-                                            <div className="flex-1">
-                                                <h4 className="font-bold text-gray-900 mb-2">
-                                                    {event.title}
-                                                </h4>
-                                                <div className="flex items-center gap-4 text-sm text-gray-600">
-                                                    <span>📅 {event.date}</span>
-                                                    <span>⏰ {event.time}</span>
-                                                </div>
-                                            </div>
+                            <div className="p-4 bg-gray-100 space-y-3 min-h-[250px]">
+                                {upcomingEvents.length > 0 ? upcomingEvents.map(event => (
+                                    <div key={event.id} className="bg-white rounded-xl p-4 shadow-md border-l-4 border-blue-500 hover:scale-[1.02] transition-transform">
+                                        <h4 className="font-bold text-slate-800 text-sm">{event.title}</h4>
+                                        <div className="text-[11px] text-slate-500 mt-2 flex justify-between items-center">
+                                            <span className="flex items-center gap-1">📅 {new Date(event.date).toLocaleDateString('fr-FR')}</span>
+                                            <span className="flex items-center gap-1">⏰ {event.time}</span>
                                         </div>
                                     </div>
-                                ))}
+                                )) : (
+                                    <p className="text-center text-gray-400 text-sm italic py-10">Aucun événement prévu</p>
+                                )}
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>

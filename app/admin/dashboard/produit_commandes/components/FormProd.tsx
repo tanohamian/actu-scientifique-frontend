@@ -6,19 +6,29 @@ import { useState } from 'react';
 import { Upload } from 'lucide-react';
 import { AddProduct } from '@/app/actions/ProductsManager';
 import { Product } from '@/app/interfaces';
+import { toast } from '@/app/components/FormComponent';
 
 interface ComponentFormProdProps {
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
 }
 
+export interface Categories {
+  id: string;
+  label: string;
+}
+
 export default function ComponentFormProd({ setProducts }: ComponentFormProdProps) {
-  const categories = ['livres', 'vêtements', 'objets tech'];
+  const categories: Categories[] = [
+    { id: "books", label: "Livres" },
+    { id: "clothes", label: "Vêtements" },
+    { id: "technology_objects", label: "Objets Tech" }
+  ];
 
   const [nomProduit, setNomProduit] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [description, setDescription] = useState('');
-  const [categorie, setCategorie] = useState(categories[0]);
+  const [categorie, setCategorie] = useState(categories[0].id);
   const [prix, setPrix] = useState(0);
   const [stock, setStock] = useState(0);
 
@@ -46,12 +56,31 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
       if (imageFile) {
         product.append('file', imageFile)
       }
-      const response = await AddProduct(product)
+      const response = await fetch('/api/upload-product', {
+        method: 'POST',
+        body: product
+      })
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Erreur lors de l\'upload');
+      }
+      const result = await response.json();
+      console.log("✅ Produit uploadé:", result);
       if (response) {
-        setProducts((prevProducts) => [...prevProducts, response as Product])
+        const newProduct = result.product as Product;
+        setProducts((prevProducts) => [...prevProducts, newProduct])
+        toast(true, true, "Produit ajouté avec succès")
+        setNomProduit('')
+        setDescription('')
+        setCategorie('')
+        setPrix(0)
+        setStock(0)
+        //setImageFile(null)
+        setImagePreview(null)
       }
     } catch (error) {
       console.log("erreur lors de l'ajout du produit : ", error)
+      toast(true, false, "Erreur lors de l'ajout du produit")
     }
   };
 
@@ -229,8 +258,8 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
             style={select}
           >
             {categories.map((cat) => (
-              <option key={cat} value={cat} style={{ backgroundColor: '#2c4f63' }}>
-                {cat}
+              <option key={cat.id} value={cat.id} style={{ backgroundColor: '#2c4f63' }}>
+                {cat.label}
               </option>
             ))}
           </select>

@@ -6,6 +6,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
 import { CreateFeed, DeleteFeed, GetFeeds, UpdateFeed } from '@/app/actions/FeedManager';
+import LoadingComponent from '@/app/components/loadingComponent'
 import { FeedInterface } from '@/app/interfaces';
 
 
@@ -96,6 +97,12 @@ export default function FilActualite() {
 
 
     const handleSubmitAddFilActu = async (formData: FeedInterface) => {
+        const typeExists = feedData.some(feed => feed.type === formData.type);
+
+        if (typeExists) {
+            alert(`Un flux de type "${formData.type}" existe déjà. Veuillez le supprimer avant d'en ajouter un nouveau.`);
+            return;
+        }
         try {
             const response = await CreateFeed(formData)
             if (response && response.feed) {
@@ -303,13 +310,16 @@ export default function FilActualite() {
 
     return (
         <div className={containerClasses}>
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
 
             <div className='text-white mb-5 md:mb-8'>
                 <h1 className={mainTitleClasses}>{"Gestion du fil d'actualité"}</h1>
                 <h3 className={subTitleClasses}>{"Gérer vos fils d'actualité"}</h3>
             </div>
 
-            {/* Section Ajout d'actualité */}
             <div>
                 <div className={firstInputClasses}>
                     <div className={inputWrapperClasses}>
@@ -384,11 +394,7 @@ export default function FilActualite() {
                     <div className="w-1/10 pl-3">Actions</div>
                 </div>
 
-                {isLoading ? (
-                    <div>
-                        <p>Chargement...</p>
-                    </div>
-                ) :
+                {
                     feedData.length < 0 ? (
                         <div>
                             <p>Aucune feed</p>

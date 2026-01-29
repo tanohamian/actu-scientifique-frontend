@@ -8,27 +8,21 @@ import { UserInterface } from '../admin/dashboard/users/page'
 
 
 export async function RegisterUser(formData: UserInterface) {
-  const authToken = (await cookies()).get('authToken')?.value;
-  if (!authToken) {
-    console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-    //redirect('/admin');
-  }
   try {
     const response = await fetch(`${env.baseUrl}/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Cookie': `authToken=${authToken}`,
       },
 
-      body: JSON.stringify({ first_name: formData.first_name, last_name: formData.first_name, roles: formData.roles == "Administrateur" ? 'ROLE_ADMIN' : 'ROLE_VIEWER', email: formData.email, password: formData.password, username: formData.username })
+      body: JSON.stringify({ first_name: formData.first_name, last_name: formData.last_name, roles: formData.roles == "Administrateur" ? 'ROLE_ADMIN' : 'ROLE_VIEWER', email: formData.email, password: formData.password, username: formData.username })
     })
     if (!response.ok) {
       console.log(response)
       throw new Error(`Echec de creation utilisateur : ${response}`)
     }
     const responseJson = await response.json()
-    revalidatePath('/admin/dashboard/users')
+    //revalidatePath('/admin/dashboard/users')
     return responseJson.user
 
   } catch (err) {
@@ -38,12 +32,11 @@ export async function RegisterUser(formData: UserInterface) {
 
 }
 
-export default async function LoginUser(formData: FormState) {
+export async function LoginUser(formData: FormState) {
 
   const email = formData.email
   const password = formData.password
   let authTokenValue: RegExpMatchArray | null = null;
-
   try {
     const response = await fetch(`${env.baseUrl}/auth/login`, {
       method: 'POST',
@@ -56,37 +49,23 @@ export default async function LoginUser(formData: FormState) {
       throw new Error(`Échec de la connexion : ${response.status}`);
     }
 
+
     const setCookieHeader = response.headers.get('set-cookie');
-    console.log("setCookieHeader : ", setCookieHeader)
     if (setCookieHeader) {
-      authTokenValue = setCookieHeader.match(/authToken=([^;]*)/);
-      if (authTokenValue && authTokenValue[1]) {
-        (await cookies()).set('authToken', authTokenValue[1], {
-          httpOnly: true,
-          maxAge: 3600,
-          path: '/',
-          sameSite: 'lax'
-        });
-      }
+      const token = setCookieHeader.split(';')[0].split('=')[1];
+      const cookieStore = await cookies();
+      cookieStore.set('authToken', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 3600
+      });
     }
-
-
-    if (authTokenValue && authTokenValue[1]) {
-      const res = await fetch(`${env.baseUrl}/auth/admin`, {
-        headers: {
-          'Cookie': `authToken=${authTokenValue[1]}`
-        }
-      })
-
-      if (res.status === 200) {
-        const responseJson = await res.json()
-        revalidatePath('/admin/dashboard')
-        return responseJson.user
-      } else {
-        console.error("Échec de la vérification admin :", res.status);
-        return
-      }
-    }
+    console.log("response : ", response)
+    const responseJson = await response.json()
+    console.log("responseJson : ", responseJson)
+    return responseJson.role
 
   } catch (error) {
     console.error("Erreur lors de la connexion : ", error)
@@ -94,4 +73,34 @@ export default async function LoginUser(formData: FormState) {
   }
 
 
+}
+
+
+export async function IsAdmin() {
+  const authToken = (await cookies()).get('authToken')?.value;
+  if (!authToken) {
+    console.error("Cookie d'authentification manquant");
+    return
+  }
+  console.log("authToken : ", authToken)
+  try {
+    const response = await fetch(`${env.baseUrl}/auth/admin`, {
+      method: 'GET',
+      headers: {
+        'Cookie': `authToken=${authToken}`
+      }
+    })
+    if (response.status === 200) {
+      const responseJson = await response.json()
+      console.log("responseJson : ", responseJson)
+      revalidatePath('/admin/dashboard')
+      return responseJson.message
+    } else {
+      console.error("Échec de la vérification admin :", response.status);
+      return
+    }
+  } catch (error) {
+    console.error("Erreur lors de la vérification admin : ", error)
+    return
+  }
 }

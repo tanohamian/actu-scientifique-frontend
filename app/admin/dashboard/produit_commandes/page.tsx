@@ -6,6 +6,8 @@ import ProduitsTable from './components/ProduitListing';
 import TransactionsTable from './components/TransactionsListing';
 import CommandesTable from './components/CommandesListing';
 import { Product } from '@/app/interfaces';
+import LoadingComponent from '@/app/components/loadingComponent'
+
 
 export default function Page() {
     const MOBILE_BREAKPOINT = 768;
@@ -63,17 +65,23 @@ export default function Page() {
         marginBottom: '30px'
     };
 
+    const [isLoading, setIsLoading] = useState(true)
+
     const [products, setProducts] = useState<Product[]>([])
     return (
         <div style={container}>
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
             <div style={leftSection}>
                 <h1 style={title}>Gestion des produits et commandes</h1>
                 <h1 style={Soustitre}>Gérer les produits et suivez les commandes en temps réel</h1>
                 <StatGlobal numberOrder={orderLength} numberValidated={validatedLength} revenue={revenue} />
                 <h1 style={Soustitre}>Produits</h1>
-                <ProduitsTable products={products} setProducts={setProducts} />
+                <ProduitsTable products={products} setProducts={setProducts} setLoading={setIsLoading} />
                 <h1 style={Soustitre}>Commandes</h1>
-                <CommandesTable setOrderLength={setOrderLength} />
+                <CommandesTable setOrderLength={setOrderLength} setLoading={setIsLoading} />
                 <h1 style={Soustitre}>Transactions</h1>
                 <TransactionsTable />
             </div>

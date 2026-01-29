@@ -8,6 +8,7 @@ import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/compone
 import { DeleteUser, FetchUsers, UpdateRole } from "@/app/actions/Users";
 import { RegisterUser } from "@/app/actions/Auth";
 import { Product } from "@/app/interfaces";
+import LoadingComponent from '@/app/components/loadingComponent'
 
 export interface UserInterface {
     id?: string
@@ -39,7 +40,9 @@ const roleFields: FormFieldConfig[] = [
             { value: 'ROLE_ADMIN', label: 'Administrateur' },
             { value: 'ROLE_VIEWER', label: 'Utilisateur' },
         ], required: true
-    }
+    },
+    { name: 'password', label: 'Mot de passe', type: 'password', placeholder: 'Entrez le mot de passe', required: false },
+
 ]
 
 export default function Utilisateurs() {
@@ -176,11 +179,12 @@ export default function Utilisateurs() {
         }
     }
 
-
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
+                setIsLoading(true)
                 const response = await FetchUsers()
                 console.log(response)
                 if (response) {
@@ -189,6 +193,8 @@ export default function Utilisateurs() {
 
             } catch (err) {
                 console.log("erreur lors de la recuperations des utilisateurs : ", err)
+            } finally {
+                setIsLoading(false)
             }
         }
         fetchUser()
@@ -202,6 +208,10 @@ export default function Utilisateurs() {
     );
     return (
         <div className="min-h-screen font-sans p-4 md:p-6 lg:p-8">
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-6 gap-4 w-full">
                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-light text-white m-0">Gestion des utilisateurs</h1>

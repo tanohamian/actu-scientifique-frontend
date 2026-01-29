@@ -108,3 +108,7 @@ export interface DbArticle {
     createdAt: Date | string
 }
 
+export interface OrderPayload {
+    productId: string,
+    quantity: number
+}

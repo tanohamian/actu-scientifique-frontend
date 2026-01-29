@@ -148,7 +148,7 @@ export default function ArticlePage() {
         title: '',
         content: '',
         illustationUrl: "https://via.placeholder.com/150",
-        createdAt: (new Date()).toLocaleDateString('fr-FR', {hour: "2-digit", minute:"2-digit", day:"2-digit", year:"numeric"}),
+        createdAt: (new Date()).toLocaleDateString('fr-FR', { hour: "2-digit", minute: "2-digit", day: "2-digit", year: "numeric" }),
         rubrique: Rubriques.TECHNOLOGY as string
     };
 

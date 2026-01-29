@@ -18,6 +18,7 @@ const colonnesProduits = [
 interface ProduitInterface {
     products: Product[],
     setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const projectFields: FormFieldConfig[] = [
     { name: 'name', label: 'Nom du produit', type: 'text', placeholder: 'Entrez votre nom du produit', required: false },
@@ -36,11 +37,11 @@ const projectFields: FormFieldConfig[] = [
 ]
 
 
-export default function ProduitsTable({ products, setProducts }: ProduitInterface) {
+export default function ProduitsTable({ products, setProducts, setLoading }: ProduitInterface) {
 
     const handleDelete = async (item: Product) => {
         try {
-            const deletedProduct = await DeleteProduct(item.id)
+            const deletedProduct = await DeleteProduct(item?.id as string)
             if (deletedProduct) {
                 const updatedProducts = products.filter((product) => product.id !== item.id)
                 setProducts(updatedProducts)
@@ -67,7 +68,7 @@ export default function ProduitsTable({ products, setProducts }: ProduitInterfac
                 formData.append('file', file);
             }
 
-            const updatedProduct = await UpdateProduct(formData, item.id);
+            const updatedProduct = await UpdateProduct(formData, item.id as string);
 
             if (updatedProduct) {
                 const updatedProducts = products.map((product) =>
@@ -85,10 +86,12 @@ export default function ProduitsTable({ products, setProducts }: ProduitInterfac
 
     useEffect(() => {
         (async () => {
+            setLoading(true)
             const products: Product[] = await FetchProducts()
             if (products) {
                 setProducts(products)
             }
+            setLoading(false)
         })()
     }, [])
 
