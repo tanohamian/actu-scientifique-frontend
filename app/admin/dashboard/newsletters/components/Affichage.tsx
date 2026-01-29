@@ -14,7 +14,7 @@ export interface Newsletter {
     id?: string;
     title: string;
     categorie: string;
-    contenu?: string;
+    content?: string;
     createdAt: string | Date;
 }
 

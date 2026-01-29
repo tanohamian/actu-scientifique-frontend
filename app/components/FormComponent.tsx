@@ -4,11 +4,11 @@ import { AddNewsletter, INewsletter, UpdateNewsletter } from "@/app/actions/News
 import { ChevronDown, Upload } from 'lucide-react';
 import { FormFieldConfig, InitialDataType, uploadIcon, uploadText } from '@/app/components/addElement';
 import { Article, DbArticle, Newsletter } from '../admin/dashboard/newsletters/components/Affichage';
-import { showToast }  from "nextjs-toast-notify"
+import { showToast } from "nextjs-toast-notify"
 import { Rubriques } from '../enum/enums';
 
 
-export const toast = function (success: boolean, edit: boolean = false, message: string=""){
+export const toast = function (success: boolean, edit: boolean = false, message: string = "") {
   return success ? showToast.success(message ? message : edit ? "Publié!" : "Mis à Jour !", {
     duration: 4000,
     progress: true,
@@ -17,13 +17,13 @@ export const toast = function (success: boolean, edit: boolean = false, message:
     icon: '✅',
     sound: true,
   }) : showToast.error("Opération échouée", {
-      duration: 4000,
-      progress: true,
-      position: "bottom-center",
-      transition: "bounceIn",
-      icon: '❌',
-      sound: true,
-    });
+    duration: 4000,
+    progress: true,
+    position: "bottom-center",
+    transition: "bounceIn",
+    icon: '❌',
+    sound: true,
+  });
 }
 interface FormPropos {
   isArticle: boolean;
@@ -135,15 +135,15 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
         console.log("✅ Média uploadé:", result);
 
         if (result) {
-          
+
           toast(true, isEditing);
           const newArticle = result.article as DbArticle;
-          newArticle.createdAt = newArticle.createdAt.toLocaleString('fr-FR', {year:"numeric", month: "2-digit", day:"2-digit"})
+          newArticle.createdAt = newArticle.createdAt.toLocaleString('fr-FR', { year: "numeric", month: "2-digit", day: "2-digit" })
           console.log(result)
           setFormData({ title: "", content: "", rubrique: Rubriques.TECHNOLOGY });
           onSuccess(newArticle);
         }
-        else{
+        else {
           toast(false);
         }
         return

@@ -140,7 +140,7 @@ export default function ArticlePage() {
             return
         }
         console.log("newArticleDate: ", newArticle.createdAt)
-        newArticle.createdAt = newArticle.createdAt.toLocaleString('fr-FR', {hour: "2-digit", minute:"2-digit", day:"2-digit", year:"numeric", month:"2-digit"})
+        newArticle.createdAt = newArticle.createdAt.toLocaleString('fr-FR', { hour: "2-digit", minute: "2-digit", day: "2-digit", year: "numeric", month: "2-digit" })
         console.log("old_date : ", articles[0].createdAt)
         console.log("newArticleFormatedDate: ", newArticle.createdAt)
         setArticles(prevState => [...prevState, newArticle]);
@@ -151,7 +151,7 @@ export default function ArticlePage() {
         title: '',
         content: '',
         illustationUrl: "https://via.placeholder.com/150",
-        createdAt: (new Date()).toLocaleDateString('fr-FR', {hour: "2-digit", minute:"2-digit", day:"2-digit", year:"numeric"}),
+        createdAt: (new Date()).toLocaleDateString('fr-FR', { hour: "2-digit", minute: "2-digit", day: "2-digit", year: "numeric" }),
         rubrique: Rubriques.TECHNOLOGY as string
     };
 

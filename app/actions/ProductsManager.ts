@@ -48,8 +48,10 @@ export async function AddProduct(product: FormData) {
             },
             body: product
         })
+        console.log(response)
         if (response.ok) {
             const responseData = await response.json()
+            console.log("Response add product : ", responseData)
             revalidatePath('/admin/dashboard/gestion_article')
             return responseData.product as Product
         }

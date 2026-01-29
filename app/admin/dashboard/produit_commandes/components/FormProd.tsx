@@ -46,9 +46,19 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
       if (imageFile) {
         product.append('file', imageFile)
       }
-      const response = await AddProduct(product)
+      const response = await fetch('/api/upload-product', {
+        method: 'POST',
+        body: product
+      })
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Erreur lors de l\'upload');
+      }
+      const result = await response.json();
+      console.log("✅ Produit uploadé:", result);
       if (response) {
-        setProducts((prevProducts) => [...prevProducts, response as Product])
+        const newProduct = result.product as Product;
+        setProducts((prevProducts) => [...prevProducts, newProduct])
       }
     } catch (error) {
       console.log("erreur lors de l'ajout du produit : ", error)

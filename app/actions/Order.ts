@@ -15,11 +15,11 @@ export interface OrderInterface {
     status: OrderStatus
     email: string
     items: [
-        { 
-            quantity: string, 
-            product: { 
-                name: string, 
-                categories: string[] 
+        {
+            quantity: string,
+            product: {
+                name: string,
+                categories: string[]
             }
         }
     ]
