@@ -130,9 +130,9 @@ export default function Home() {
               </button>
 
               <div className="flex flex-col gap-2 flex-1">
-                <p className="text-white text-base font-semibold text-center">
+                {/*<p className="text-white text-base font-semibold text-center">
                   Nos réseaux sociaux
-                </p>
+                </p>*/}
                 {/* <div className="flex flex-row lg:flex-col gap-2">
                   {socialNetworks.map((network, index) => {
                     const typeToFind = network.replace('Icon', '').toLowerCase();
