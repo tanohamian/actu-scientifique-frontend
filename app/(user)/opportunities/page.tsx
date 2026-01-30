@@ -71,8 +71,8 @@ export default function OpportunitiesPage() {
                 </section>
                 <div className="grid grid-cols-1 gap-4">
                     <OpportunityEventCard
-                        title="Événement à venir"
-                        content="Description de l'événement spécial."
+                        title="Reportage"
+                        content="La vie scientifique de Akoua"
                     />
                 </div>
             </div>
