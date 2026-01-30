@@ -62,16 +62,7 @@ export default function Home() {
 
     loadContent();
   }, []);
-  {/* useEffect(() => {
-    (async () => {
-      setIsLoading(true)
-      const response = await GetFeeds()
-      if (response) {
-        setFeeds(response)
-      }
-      setIsLoading(false)
-    })()
-  }, [])*/}
+
 
   return (
     <div className="px-4 py-8 md:px-8 md:py-12">
@@ -90,8 +81,14 @@ export default function Home() {
           {"S'abonner"}
         </button>
       </div>
-
-      <div className="bg-white w-full rounded-lg p-6 md:p-8 lg:p-12 shadow-xl mt-35">
+      {/* Bannière publicitaire horizontale - 80% width x 128px height */}
+      <div className="w-[80%] mx-auto h-32 border-2 border-white mt-35 items-center justify-center flex text-white text-2xl md:text-3xl lg:text-4xl font-bold mb-5">
+        <div className="flex flex-col items-center gap-1">
+          <span>Publicité</span>
+          <span className="text-sm font-normal">728 x 90 ou 970 x 90</span>
+        </div>
+      </div>
+      <div className="bg-white w-full rounded-lg p-6 md:p-8 lg:p-12 shadow-xl">
         <h2 className="text-black text-2xl md:text-3xl lg:text-4xl font-bold mb-6">
           À la une
         </h2>
@@ -128,28 +125,11 @@ export default function Home() {
                   <span className="text-white text-base font-bold">Boutique</span>
                 </div>
               </button>
-
-              <div className="flex flex-col gap-2 flex-1">
-                {/*<p className="text-white text-base font-semibold text-center">
-                  Nos réseaux sociaux
-                </p>*/}
-                {/* <div className="flex flex-row lg:flex-col gap-2">
-                  {socialNetworks.map((network, index) => {
-                    const typeToFind = network.replace('Icon', '').toLowerCase();
-                    const matchingFeed = feeds?.find(f => f.type.toLowerCase() === typeToFind);
-                    if (!matchingFeed) {
-                      return null;
-                    }
-                    return (
-                      <SocialNetworks
-                        key={index}
-                        name={network}
-                        feed={matchingFeed}
-                      />
-                    )
-                  })}
-
-                </div>*/}
+              <div className="w-full h-[300px] border-2 border-white rounded-lg flex items-center justify-center text-white text-2xl md:text-3xl lg:text-4xl font-bold">
+                <div className="flex flex-col items-center gap-1">
+                  <span>Publicité</span>
+                  <span className="text-sm font-normal">300 x 250 ou 300 x 600</span>
+                </div>
               </div>
             </div>
           </div>

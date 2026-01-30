@@ -150,9 +150,3 @@ export async function PUT(request: NextRequest) {
     }
 }
 
-// Configuration pour accepter les gros fichiers
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};

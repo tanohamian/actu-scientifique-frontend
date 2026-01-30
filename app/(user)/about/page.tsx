@@ -6,20 +6,28 @@ export default function AboutPage() {
         <main className="min-h-screen bg-transparent text-white font-sans">
             <section className="container mx-auto px-6 pt-24 pb-12 relative">
                 <div className="absolute inset-0 bg-[#50789B] opacity-[0.15] rounded-3xl blur-3xl"></div>
-                
+
                 <div className="max-w-5xl relative">
                     <h1 className="text-5xl md:text-7xl font-bold mb-8 text-white">
-                        À propos d&apos; <span className="text-[#E65A46]">Actu Scientifiques</span>
+                        À propos d&apos; <span className="text-[#E65A46]">Actu Scientifique</span>
                     </h1>
                     <div className="h-1.5 w-32 bg-[#E65A46] mb-8 rounded-full"></div>
                     <p className="text-xl md:text-2xl leading-relaxed text-white/90">
-                        <span className="font-semibold text-white">actuscientifiques.com</span> est un média africain de
+                        <span className="font-semibold text-white">actuscientifique.com</span> est un média africain de
                         <span className="font-bold text-[#50789B] bg-white px-2 mx-1 rounded">journalisme scientifique</span>
                         dont la vocation est de rendre la science accessible au plus grand nombre.
-                        Le projet est né d’un constat simple : en Afrique, une grande partie des informations scientifiques
-                        reste difficilement accessible au grand public, alors même qu’elles sont essentielles pour comprendre
+                        Le projet est né d'un constat simple : en Afrique, une grande partie des informations scientifiques
+                        reste difficilement accessible au grand public, alors même qu'elles sont essentielles pour comprendre
                         le monde, faire des choix éclairés et améliorer durablement le bien-être des populations.
                     </p>
+                    <a
+                        href="/charte-editoriale.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block mt-6 text-[#E65A46] text-lg hover:text-white font-semibold underline hover:no-underline transition-all duration-200"
+                    >
+                        Lire notre charte éditoriale et commerciale →
+                    </a>
                 </div>
             </section>
 
@@ -81,7 +89,7 @@ export default function AboutPage() {
                                 <h4 className="font-bold text-2xl mb-4 text-[#50789B]">{title}</h4>
                                 <p className="text-base leading-relaxed text-slate-600 font-medium">
                                     {idx === 0 && "Vulgarisation des études et résultats de recherche"}
-                                    {idx === 1 && "Décryptage de l'actualité scientifique mondiale"}
+                                    {idx === 1 && "Décryptage de l'actualité scientifique"}
                                     {idx === 2 && "Mise en lumière des travaux de chercheurs africains"}
                                 </p>
                             </div>
@@ -136,7 +144,7 @@ export default function AboutPage() {
             </section>
 
             <section className="container mx-auto px-6 pb-20">
-                <div className="text-center border-t border-white/10 pt-10">
+                <div className="text-center  border-white/10 pt-10">
                     <p className="text-[#E65A46] font-bold tracking-widest uppercase text-xs">
                         Journalisme Scientifique • Éthique • Indépendant
                     </p>
