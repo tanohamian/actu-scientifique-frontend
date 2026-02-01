@@ -55,7 +55,7 @@ const formatDateFR = (dateString: string | Date) => {
 
 
 export default function SwitchSection() {
-  const [activeTab, setActiveTab] = useState<'Bourses' | 'Formations' | 'Reportages'>('Bourses');
+  const [activeTab, setActiveTab] = useState<'Bourses' | 'Formations' | 'Science journalism academy'>('Bourses');
   const [items, setItems] = useState<DataItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -148,7 +148,7 @@ export default function SwitchSection() {
 
   const handleEditClick = (item: DataItem) => {
     setEditingId(item.id || null);
-    if (activeTab === 'Reportages') {
+    if (activeTab === 'Science journalism academy') {
       const reportItem = item as IReport;
       setFormData({
         title: reportItem.title, url: '', description: reportItem.description,
@@ -162,7 +162,7 @@ export default function SwitchSection() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const isReportage = activeTab === 'Reportages';
+  const isReportage = activeTab === 'Science journalism academy';
 
   return (
     <div style={{ backgroundColor: '#5A8FAC', minHeight: '100vh', padding: isMobile ? '20px' : '40px', color: 'white' }}>
@@ -175,7 +175,7 @@ export default function SwitchSection() {
       />
 
       <div style={tabContainer}>
-        {(['Bourses', 'Formations', 'Reportages'] as const).map((tab) => (
+        {(['Bourses', 'Formations', 'Science journalism academy'] as const).map((tab) => (
           <button
             key={tab}
             style={{ ...tabStyle, ...(activeTab === tab ? activeTabStyle : {}) }}
