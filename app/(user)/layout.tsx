@@ -22,6 +22,19 @@ export default function RootLayout({
   );
 }
 
+export interface NavItemsProps {
+  label: string;
+  href: string;
+  subItems?: NavItemsProps[];
+}
+
+export interface InputsProps {
+  typeInput: string;
+  placeholderInput: string;
+  inputValue: string;
+  setInputValue: (value: string) => void;
+}
+
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [inputValue, setInputValue] = useState('');
@@ -50,7 +63,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const navItems = [
+  const navItems: NavItemsProps[] = [
     { label: 'Accueil', href: "/" },
     { label: 'Une seule santé', href: "/one-health" },
     { label: 'Tech', href: "/technology" },
@@ -69,11 +82,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     { label: 'À propos', href: "/about" }
   ];
 
-  const inputs = [
+  const inputs: InputsProps[] = [
     { typeInput: 'email', placeholderInput: 'Email', inputValue: email, setInputValue: setEmail },
     { typeInput: 'password', placeholderInput: 'Mot de passe', inputValue: password, setInputValue: setPassword },
   ];
-  const inputsRegister = [
+  const inputsRegister: InputsProps[] = [
     { typeInput: 'text', placeholderInput: 'Nom', inputValue: firstName, setInputValue: setFirstName },
     { typeInput: 'text', placeholderInput: 'Prenom', inputValue: lastName, setInputValue: setLastName },
     { typeInput: 'email', placeholderInput: 'Email', inputValue: email, setInputValue: setEmail },
@@ -122,6 +135,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               <LoginRegisterComponent type='register' title='Inscription' inputs={inputsRegister} onClose={() => setIsRegisterOpen(false)}
                 onSubmit={() => { setIsRegisterOpen(false); setIsLoginOpen(true) }} />
             )}
+
           </div>
         </div>
 

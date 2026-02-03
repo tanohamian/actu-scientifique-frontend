@@ -126,7 +126,8 @@ export default function MediaPage() {
         title: "",
         type: "",
         file: undefined,
-
+        description: "",
+        rubrique: "",
     };
 
     const handleSubmitMedia = async (data: Product | InitialDataType | DbMedia) => {
@@ -138,9 +139,10 @@ export default function MediaPage() {
             const media = new FormData();
 
             media.append('title', data.title as string);
-            media.append('type', data.type as string);
+            //media.append('type', data.type as string);
             media.append('rubrique', data.rubrique as rubriques);
             media.append('une', data.une as string);
+            media.append('description', data.description as string);
 
             if (data.file instanceof File) {
                 media.append('file', data.file);
@@ -174,11 +176,11 @@ export default function MediaPage() {
             const result = await response.json();
             console.log("✅ Média uploadé:", result);
 
-            
+
             setMedias(prev => ([...prev, result.file]));
             setIsOpen(false);
 
-            toast(true, false,"Media uploadé !");
+            toast(true, false, "Media uploadé !");
 
         } catch (error) {
             console.error("❌ Erreur:", error);
@@ -203,27 +205,30 @@ export default function MediaPage() {
     };
 
     const handleSubmitEditMedia = async (data: Product | InitialDataType | DbMedia) => {
-
+        setIsLoading(true)
         try {
             data = data as InitialDataType
             const media = new FormData()
-            media.append('title', data["title"] as string)
-            media.append('name', data["name"] as string)
-            media.append('type', data["type"] as string)
-            media.append('rubrique', data["rubrique"] as string)
-            if (data["file"]) {
-                media.append('file', data['file'] as File)
+            media.append('title', data.title as string)
+            media.append('name', data.name as string)
+            media.append('type', data.type as string)
+            media.append('rubrique', data.rubrique as string)
+            media.append('une', data.une as string)
+            media.append('description', data.description as string)
+            if (data.file) {
+                media.append('file', data.file as File)
                 console.log("file found !")
             }
-            console.log(media)
-            console.log(data)
-            await UpdateMedia(media, selectedMedia?.id as string)
-
-            setIsOpen(false);
+            const updatedMedia = await UpdateMedia(media, selectedMedia?.id as string)
+            setMedias(prev => prev.map(m => m.id === updatedMedia.id ? updatedMedia : m));
+            toast(true, false, "Média mis à jour !");
+            setEditMedia(false);
         } catch (error) {
             console.log((error as Error).message)
+        } finally {
+            setIsLoading(false);
         }
-        setEditMedia(false);
+
     };
 
     if (selectedMedia) {
@@ -231,7 +236,8 @@ export default function MediaPage() {
             name: (selectedMedia as DbMedia).name as string || '',
             createdAt: (selectedMedia as DbMedia).createdAt as string || '',
             type: (selectedMedia as DbMedia).type,
-            title: (selectedMedia as DbMedia).title
+            title: (selectedMedia as DbMedia).title,
+            description: (selectedMedia as DbMedia).description || '',
         };
     }
 
@@ -244,14 +250,14 @@ export default function MediaPage() {
                     setMedias(response.map(media => {
                         const createdAt = new Date(media.createdAt)
                         media.createdAt = createdAt.toLocaleString("fr")
-                        console.log("createdAt de création : ", media.createdAt)
-                        setIsLoading(false)
                         return media
                     }))
                 }
 
             } catch (err) {
                 console.log("erreur lors de la recuperations des utilisateurs : ", err)
+            } finally {
+                setIsLoading(false)
             }
         }
 

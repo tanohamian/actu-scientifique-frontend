@@ -27,10 +27,10 @@ export default function Ecohumanity() {
                 ]);
 
                 const filteredArticles = articlesData.filter(
-                    (a) => a.rubrique === Rubriques.ONE_HEALTH
+                    (a) => a.rubrique === Rubriques.ECO_HUMANITY
                 );
                 const filteredMedias = mediasData.filter(
-                    (m) => m.rubrique === Rubriques.ONE_HEALTH
+                    (m) => m.rubrique === Rubriques.ECO_HUMANITY
                 );
 
                 setArticles([...filteredArticles, ...filteredMedias]);
