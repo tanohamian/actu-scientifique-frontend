@@ -40,6 +40,30 @@ const ArticleFields: FormFieldConfig[] = [
 
 ];
 
+const articleUpdateFields: FormFieldConfig[] = [
+    { name: 'title', label: "Titre de l'article", placeholder: "Entrez le titre de l'article" },
+    { name: 'content', label: 'Contenu', type: 'textarea' },
+    { name: 'file', label: "Image", placeholder: 'Ajoutez une illustration', type: 'file' },
+    {
+        name: 'rubrique',
+        label: 'Rubrique',
+        type: 'select',
+        options: [
+            { label: "Une seule santé", value: Rubriques.ONE_HEALTH },
+            { label: 'Technologie', value: Rubriques.TECHNOLOGY },
+            { label: 'Éco-humanité', value: Rubriques.ECO_HUMANITY },
+            { label: 'Portrait et découvertes', value: Rubriques.PORT_DISCOVERY },
+        ],
+    },
+    {
+        name: 'une', label: 'Mettre à la une', type: "select", options: [
+            { label: "Oui", value: 1 },
+            { label: "Non", value: 0 }
+        ]
+    }
+
+];
+
 const mainHeaders = [
     { key: 'title', label: 'Titre', flexBasis: '38%' },
     { key: 'rubrique', label: 'Rubrique', flexBasis: '20%' },
@@ -138,7 +162,7 @@ export default function ArticlePage() {
             alert("Aucun article à ajouter")
             return
         }
-        newArticle.createdAt = newArticle.createdAt.toLocaleString('fr-FR', {hour: "2-digit", minute:"2-digit", day:"2-digit", year:"numeric", month:"2-digit"})
+        newArticle.createdAt = newArticle.createdAt.toLocaleString('fr-FR', { hour: "2-digit", minute: "2-digit", day: "2-digit", year: "numeric", month: "2-digit" })
         console.log("old_date : ", articles[0].createdAt)
         setArticles(prevState => [...prevState, newArticle]);
         setEditArticle(false);
@@ -149,7 +173,8 @@ export default function ArticlePage() {
         content: '',
         illustationUrl: "https://via.placeholder.com/150",
         createdAt: (new Date()).toLocaleDateString('fr-FR', { hour: "2-digit", minute: "2-digit", day: "2-digit", year: "numeric" }),
-        rubrique: Rubriques.TECHNOLOGY as string
+        rubrique: Rubriques.TECHNOLOGY as string,
+        une: false
     };
 
     const handleEditArticle = async (item: ElementType) => {
@@ -164,74 +189,72 @@ export default function ArticlePage() {
         const res = await DeleteArticle(item.id as string)
         toast(res, false, res ? "Supprimé avec succès !" : "Echec de la suppresion")
     };
-
-    const handleSubmitEditArticle = async (data: InitialDataType | Product) => {
-            setIsLoading(true)
-            try {
-                console.log("📋 Données reçues:", data);
-                data = data as InitialDataType
-                const article = new FormData();
-                article.append('id', selectedArticle?.id as string)
-                article.append('title', data.title as string);
-                article.append("content", data.content as string)
-                article.append('rubrique', data.rubrique as Rubriques);
-                article.append('une', data.une as string);
-    
-                if (data.file instanceof File) {
-                    article.append('file', data.file);
-                    console.log("✅ Fichier ajouté:", data.file.name, data.file.size);
-                } else {
-                    throw new Error("Aucun fichier sélectionné");
-                }
-    
-                console.log("📦 Contenu du FormData:");
-                for (const [key, value] of article.entries()) {
-                    if (value instanceof File) {
-                        console.log(`  ${key}: [File] ${value.name} (${value.size} bytes)`);
-                    } else {
-                        console.log(`  ${key}:`, value);
-                    }
-                }
-    
-    
-                const response = await fetch('/api/upload-article', {
-                    method: 'PUT',
-                    body: article,
-                });
-    
-                console.log("📨 Réponse reçue:", response.status);
-    
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || 'Erreur lors de l\'upload');
-                }
-    
-                const result = await response.json();
-                console.log("✅ Article uploadé:", result);
-    
-                
-                setArticles(prev => ([...prev, result.file]));
-                setEditArticle(false);
-    
-                toast(true, false,"Article uploadé !");
-    
-            } catch (error) {
-                console.error("❌ Erreur:", error);
-                toast(false, false, "Échec de l'upload de l'article");
-            } finally {
-                setIsLoading(false)
-            }
-        };;
-
     if (selectedArticle) {
         initialData = {
             title: selectedArticle.title as string || '',
             content: selectedArticle.content as string || '',
             createdAt: selectedArticle.createdAt as string || '',
             rubrique: selectedArticle.rubrique as Rubriques || '',
+            une: selectedArticle.une as boolean || false,
             illustationUrl: selectedArticle.illustrationUrl
         };
     }
+
+    const handleSubmitEditArticle = async (data: InitialDataType | Product) => {
+        setIsLoading(true)
+        try {
+            console.log("📋 Données reçues:", data);
+            data = data as InitialDataType
+            const article = new FormData();
+            article.append('id', selectedArticle?.id as string)
+            article.append('title', data.title as string);
+            article.append("content", data.content as string)
+            article.append('rubrique', data.rubrique as Rubriques);
+            article.append('une', data.une as string);
+
+            if (data.file instanceof File) {
+                article.append('file', data.file);
+                console.log("✅ Fichier ajouté:", data.file.name, data.file.size);
+            }
+
+            console.log("📦 Contenu du FormData:");
+            for (const [key, value] of article.entries()) {
+                if (value instanceof File) {
+                    console.log(`  ${key}: [File] ${value.name} (${value.size} bytes)`);
+                } else {
+                    console.log(`  ${key}:`, value);
+                }
+            }
+
+
+            const response = await fetch('/api/upload-article', {
+                method: 'PUT',
+                body: article,
+            });
+
+            console.log("📨 Réponse reçue:", response.status);
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Erreur lors de l\'upload');
+            }
+
+            const result = await response.json();
+
+
+            setArticles(prev => prev.map(art => art.id === result.id ? result : art));
+            setEditArticle(false);
+            toast(true, false, "Article mis à jour !");
+
+        } catch (error) {
+            console.error("❌ Erreur:", error);
+            toast(false, false, "Échec de l'upload de l'article");
+        } finally {
+            setIsLoading(false)
+        }
+    };;
+
+
 
     useEffect(() => {
         const fetchArtcicles = async () => {
@@ -310,7 +333,7 @@ export default function ArticlePage() {
                 onSubmit={handleSubmitEditArticle}
                 titleComponent="Modifier un article"
                 buttonTitle="Modifier"
-                fields={ArticleFields}
+                fields={articleUpdateFields}
                 initialData={initialData}
                 id={selectedArticle?.id}
             />

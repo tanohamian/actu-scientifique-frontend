@@ -18,7 +18,7 @@ import { DbMedia, Product } from '@/app/interfaces';
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media', required: true },
     { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...', required: false },
-    { name: 'file', label: "Fichier", type: "file", required: true },
+    { name: 'file', label: "Fichier", type: "file" },
     {
         name: 'rubrique', label: 'Rubrique', type: 'select',
         options: [
@@ -37,6 +37,26 @@ const MediaFields: FormFieldConfig[] = [
     }
 ];
 
+const updateMediaFields: FormFieldConfig[] = [
+    { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media' },
+    { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...' },
+    { name: 'file', label: "Fichier", type: "file" },
+    {
+        name: 'rubrique', label: 'Rubrique', type: 'select',
+        options: [
+            { label: "Une seule santé", value: Rubriques.ONE_HEALTH },
+            { label: 'Technologie', value: Rubriques.TECHNOLOGY },
+            { label: 'Éco-humanité', value: Rubriques.ECO_HUMANITY },
+            { label: 'Portrait et découvertes', value: Rubriques.PORT_DISCOVERY },
+        ],
+    },
+    {
+        name: 'une', label: 'Mettre à la une', type: "select", options: [
+            { label: "Oui", value: 1 },
+            { label: "Non", value: 0 }
+        ]
+    }
+];
 const mainHeaders = [
     { key: 'title', label: 'Titre', flexBasis: '15%' },
     { key: 'type', label: 'Type', flexBasis: '9%' },
@@ -139,7 +159,6 @@ export default function MediaPage() {
             const media = new FormData();
 
             media.append('title', data.title as string);
-            //media.append('type', data.type as string);
             media.append('rubrique', data.rubrique as rubriques);
             media.append('une', data.une as string);
             media.append('description', data.description as string);
@@ -204,14 +223,26 @@ export default function MediaPage() {
 
     };
 
+
+
+    if (selectedMedia) {
+        const media = selectedMedia as DbMedia;
+        initialData = {
+            name: media.name as string || '',
+            createdAt: media.createdAt as string || '',
+            type: media.type as string,
+            title: media.title as string,
+            description: media.description as string || '',
+            rubrique: media.rubrique as string || '',
+            une: media.une ? 1 : 0,
+        };
+    }
+
     const handleSubmitEditMedia = async (data: Product | InitialDataType | DbMedia) => {
-        setIsLoading(true)
         try {
             data = data as InitialDataType
             const media = new FormData()
             media.append('title', data.title as string)
-            media.append('name', data.name as string)
-            media.append('type', data.type as string)
             media.append('rubrique', data.rubrique as string)
             media.append('une', data.une as string)
             media.append('description', data.description as string)
@@ -220,26 +251,18 @@ export default function MediaPage() {
                 console.log("file found !")
             }
             const updatedMedia = await UpdateMedia(media, selectedMedia?.id as string)
-            setMedias(prev => prev.map(m => m.id === updatedMedia.id ? updatedMedia : m));
-            toast(true, false, "Média mis à jour !");
-            setEditMedia(false);
+            if (updatedMedia) {
+                setMedias(prev => prev.map(m => m.id === updatedMedia.id ? updatedMedia : m));
+                toast(true, false, "Média mis à jour !");
+                setEditMedia(false);
+            } else {
+                toast(false, false, "Échec de la mise à jour du média");
+            }
         } catch (error) {
             console.log((error as Error).message)
-        } finally {
-            setIsLoading(false);
         }
 
     };
-
-    if (selectedMedia) {
-        initialData = {
-            name: (selectedMedia as DbMedia).name as string || '',
-            createdAt: (selectedMedia as DbMedia).createdAt as string || '',
-            type: (selectedMedia as DbMedia).type,
-            title: (selectedMedia as DbMedia).title,
-            description: (selectedMedia as DbMedia).description || '',
-        };
-    }
 
     useEffect(() => {
         const fetchMedias = async () => {
@@ -320,7 +343,7 @@ export default function MediaPage() {
                 onSubmit={handleSubmitEditMedia}
                 titleComponent="Modifier un média"
                 buttonTitle="Modifier"
-                fields={MediaFields}
+                fields={updateMediaFields}
                 initialData={initialData}
             />
         </div>

@@ -14,14 +14,14 @@ export interface FormFieldConfig {
     options?: { value: string | number; label: string }[];
 }
 
-export type InitialDataType = { [key: string]: string | number | File | undefined | Rubriques }
+export type InitialDataType = { [key: string]: string | number | File | undefined | Rubriques | boolean }
 
 
 interface AddElementModalProps {
     id?: string
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: Product | InitialDataType, id?:string) => Promise<void> | void;
+    onSubmit: (data: Product | InitialDataType, id?: string) => Promise<void> | void;
     titleComponent: string;
     buttonTitle: string;
     fields: FormFieldConfig[];
@@ -57,21 +57,21 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
 
     const [imageUrl, setImageUrl] = useState<string | ArrayBuffer | null>("")
     const initialFormData = useMemo(() => {
-    const data = fields.reduce((acc, field) => {
-        acc[field.name] = initialData[field.name] ?? '';
-        return acc;
-    }, {} as InitialDataType);
+        const data = fields.reduce((acc, field) => {
+            acc[field.name] = initialData[field.name] ?? '';
+            return acc;
+        }, {} as InitialDataType);
 
-    
-    if (id) {
-        data["id"] = id;
-    }
 
-    return data;
+        if (id) {
+            data["id"] = id;
+        }
+
+        return data;
     }, [fields, initialData, id]);
 
     useEffect(() => {
-        const updateImage = ()=>{
+        const updateImage = () => {
             if (initialData.illustrationUrl) {
                 setImageUrl(initialData.illustrationUrl as string);
             }
@@ -189,7 +189,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
             case 'email':
             case 'password':
             case 'textarea':
-                return(<div key={field.name} className={containerClasses}>
+                return (<div key={field.name} className={containerClasses}>
                     <label className={labelClasses}>{field.label}</label>
                     <textarea
                         rows={4}
