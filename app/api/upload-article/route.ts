@@ -30,7 +30,6 @@ export async function POST(request: NextRequest) {
         const authToken = cookieStore.get('authToken')?.value;
 
         if (!authToken) {
-            console.error("❌ Pas de token d'authentification");
             return NextResponse.json(
                 { error: 'Non authentifié' },
                 { status: 401 }
@@ -46,10 +45,10 @@ export async function POST(request: NextRequest) {
             body: formData
         });
 
+        console.log(response)
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error("❌ Erreur backend:", errorText);
             return NextResponse.json(
                 { error: `Erreur backend: ${response.status}` },
                 { status: response.status }
@@ -62,7 +61,6 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(result);
 
     } catch (error) {
-        console.error("❌ Erreur dans l'API route:", error);
         return NextResponse.json(
             { error: 'Erreur serveur' },
             { status: 500 }
@@ -73,6 +71,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
     try {
         const formData = await request.formData();
+        console.log(formData)
         const id = formData.get('id')
 
 
@@ -99,7 +98,6 @@ export async function PUT(request: NextRequest) {
         const authToken = cookieStore.get('authToken')?.value;
 
         if (!authToken) {
-            console.error("❌ Pas de token d'authentification");
             return NextResponse.json(
                 { error: 'Non authentifié' },
                 { status: 401 }
@@ -108,17 +106,17 @@ export async function PUT(request: NextRequest) {
 
 
         const response = await fetch(`${env.baseUrl}/articles/${id}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Cookie': `authToken=${authToken}`,
             },
             body: formData
         });
 
+        console.log(response)
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error("❌ Erreur backend:", errorText);
             return NextResponse.json(
                 { error: `Erreur backend: ${response.status}` },
                 { status: response.status }
@@ -130,7 +128,6 @@ export async function PUT(request: NextRequest) {
         return NextResponse.json(result);
 
     } catch (error) {
-        console.error("❌ Erreur dans l'API route:", error);
         return NextResponse.json(
             { error: 'Erreur serveur' },
             { status: 500 }

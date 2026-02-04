@@ -212,7 +212,7 @@ export default function ArticlePage() {
             article.append('rubrique', data.rubrique as Rubriques);
             article.append('une', data.une as string);
 
-            if (data.file instanceof File) {
+            if (data.file && data.file instanceof File) {
                 article.append('file', data.file);
                 console.log("✅ Fichier ajouté:", data.file.name, data.file.size);
             }
@@ -247,7 +247,7 @@ export default function ArticlePage() {
             toast(true, false, "Article mis à jour !");
 
         } catch (error) {
-            console.error("❌ Erreur:", error);
+            console.log("❌ Erreur:", error);
             toast(false, false, "Échec de l'upload de l'article");
         } finally {
             setIsLoading(false)
