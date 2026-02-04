@@ -217,7 +217,6 @@ export default function ArticlePage() {
                 console.log("✅ Fichier ajouté:", data.file.name, data.file.size);
             }
 
-            console.log("📦 Contenu du FormData:");
             for (const [key, value] of article.entries()) {
                 if (value instanceof File) {
                     console.log(`  ${key}: [File] ${value.name} (${value.size} bytes)`);

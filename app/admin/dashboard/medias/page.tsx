@@ -242,24 +242,30 @@ export default function MediaPage() {
         try {
             data = data as InitialDataType
             const media = new FormData()
+            media.append('id', selectedMedia?.id as string)
             media.append('title', data.title as string)
             media.append('rubrique', data.rubrique as string)
             media.append('une', data.une as string)
             media.append('description', data.description as string)
-            if (data.file) {
-                media.append('file', data.file as File)
+            if (data.file && data.file instanceof File) {
+                media.append('file', data.file)
                 console.log("file found !")
             }
-            const updatedMedia = await UpdateMedia(media, selectedMedia?.id as string)
-            if (updatedMedia) {
-                setMedias(prev => prev.map(m => m.id === updatedMedia.id ? updatedMedia : m));
-                toast(true, false, "Média mis à jour !");
-                setEditMedia(false);
-            } else {
-                toast(false, false, "Échec de la mise à jour du média");
+            const response = await fetch('/api/upload-media', {
+                method: 'PUT',
+                body: media,
+            });
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Erreur lors de l\'upload');
             }
+            const updatedMedia = await response.json();
+            setMedias(prev => prev.map(m => m.id === updatedMedia.id ? updatedMedia : m));
+            toast(true, false, "Média mis à jour !");
+            setEditMedia(false);
         } catch (error) {
             console.log((error as Error).message)
+            toast(false, false, "Échec de la mise à jour du média");
         }
 
     };
