@@ -5,6 +5,7 @@ import { env } from '../config/env';
 import { ITraining } from '../interfaces';
 import { redirect } from 'next/navigation';
 
+
 async function getAuthHeaders() {
     const authToken = (await cookies()).get('authToken')?.value;
     return {

@@ -39,7 +39,7 @@ export interface ITraining {
     lien: string;
     description: string;
     date: string;
-    createdAt?: string | Date;
+    type: 'CLASSIC' | 'ACADEMY';
 }
 
 export interface OrderInterface {
