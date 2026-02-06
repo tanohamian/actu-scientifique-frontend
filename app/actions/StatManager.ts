@@ -5,7 +5,9 @@ import { revalidatePath } from 'next/cache'
 import { Article, DbArticle } from '../interfaces'
 
 
+
 export async function AddArticle(formData: Article | FormData, json: boolean = false,) {
+    console.log(env)
     const authToken = (await cookies()).get('authToken')?.value;
     console.log("payload: ", formData)
     const file = (formData as FormData).get('file') as File;
@@ -21,7 +23,7 @@ export async function AddArticle(formData: Article | FormData, json: boolean = f
     });
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/articles/`, {
@@ -52,18 +54,17 @@ export async function AddArticle(formData: Article | FormData, json: boolean = f
         console.log(error)
     }
 
+    //redirect('/admin/dashboard/gestion_article')
 }
 
 export async function FetchArticles() {
-    const authToken = (await cookies()).get('authToken')?.value;
+    console.log(env)
     try {
         const response = await fetch(`${env.baseUrl}/articles`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': `authToken=${authToken}`,
-            },
-            cache: 'no-store',
+            }
         })
 
         if (response.ok) {
@@ -83,7 +84,7 @@ export async function DeleteArticle(articleId: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
+        //redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/articles/${articleId}`, {
@@ -106,15 +107,12 @@ export async function DeleteArticle(articleId: string) {
 }
 
 export async function FetchArticleById(articleId: string) {
-    const authToken = (await cookies()).get('authToken')?.value;
     try {
         const response = await fetch(`${env.baseUrl}/articles/${articleId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': `authToken=${authToken}`,
-            },
-            cache: 'no-store',
+            }
         })
 
         if (response.ok) {
