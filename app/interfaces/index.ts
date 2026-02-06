@@ -110,7 +110,11 @@ export interface DbArticle {
     une: boolean
     createdAt: Date | string
 }
-
+export interface Stat{
+    id: string;
+    endpoint: string
+    createdAt: Date | string
+}
 export interface OrderPayload {
     productId: string,
     quantity: number

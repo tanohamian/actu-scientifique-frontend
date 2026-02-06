@@ -1,9 +1,7 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from '../../../styles/Dashboard.module.scss'
-import DashboardCardContainer from '@/app/components/dashboardCardsContainer'
 import { DashboardCardProps } from '@/app/components/dashboardCards'
-import {FetchProducts} from '@/app/actions/ProductsManager'
 
 import { FetchArticles } from '@/app/actions/ArticleManager'
 
@@ -27,7 +25,6 @@ export default function Page() {
     async function update(){
         console.log("1. articles.route = " , articles.route)
         setArticles({label: "Articles", route: "/gestion_article", value: (await FetchArticles()).length})
-        setProducts({label: "Produits", route: "/products", value: (await FetchProducts()).length})
         setIsLoading(false)
         console.log("2. articles.route = " , articles.route)
     }
