@@ -18,7 +18,7 @@ import { DbMedia, Product } from '@/app/interfaces';
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media', required: true },
     { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...', required: false },
-    { name: 'file', label: "Fichier", type: "file", required: true },
+    { name: 'file', label: "Fichier", type: "file" },
     {
         name: 'rubrique', label: 'Rubrique', type: 'select',
         options: [
@@ -37,6 +37,26 @@ const MediaFields: FormFieldConfig[] = [
     }
 ];
 
+const updateMediaFields: FormFieldConfig[] = [
+    { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media' },
+    { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...' },
+    { name: 'file', label: "Fichier", type: "file" },
+    {
+        name: 'rubrique', label: 'Rubrique', type: 'select',
+        options: [
+            { label: "Une seule santé", value: Rubriques.ONE_HEALTH },
+            { label: 'Technologie', value: Rubriques.TECHNOLOGY },
+            { label: 'Éco-humanité', value: Rubriques.ECO_HUMANITY },
+            { label: 'Portrait et découvertes', value: Rubriques.PORT_DISCOVERY },
+        ],
+    },
+    {
+        name: 'une', label: 'Mettre à la une', type: "select", options: [
+            { label: "Oui", value: 1 },
+            { label: "Non", value: 0 }
+        ]
+    }
+];
 const mainHeaders = [
     { key: 'title', label: 'Titre', flexBasis: '15%' },
     { key: 'type', label: 'Type', flexBasis: '9%' },
@@ -126,7 +146,8 @@ export default function MediaPage() {
         title: "",
         type: "",
         file: undefined,
-
+        description: "",
+        rubrique: "",
     };
 
     const handleSubmitMedia = async (data: Product | InitialDataType | DbMedia) => {
@@ -138,9 +159,9 @@ export default function MediaPage() {
             const media = new FormData();
 
             media.append('title', data.title as string);
-            media.append('type', data.type as string);
             media.append('rubrique', data.rubrique as rubriques);
             media.append('une', data.une as string);
+            media.append('description', data.description as string);
 
             if (data.file instanceof File) {
                 media.append('file', data.file);
@@ -174,11 +195,11 @@ export default function MediaPage() {
             const result = await response.json();
             console.log("✅ Média uploadé:", result);
 
-            
+
             setMedias(prev => ([...prev, result.file]));
             setIsOpen(false);
 
-            toast(true, false,"Media uploadé !");
+            toast(true, false, "Media uploadé !");
 
         } catch (error) {
             console.error("❌ Erreur:", error);
@@ -202,38 +223,52 @@ export default function MediaPage() {
 
     };
 
-    const handleSubmitEditMedia = async (data: Product | InitialDataType | DbMedia) => {
 
+
+    if (selectedMedia) {
+        const media = selectedMedia as DbMedia;
+        initialData = {
+            name: media.name as string || '',
+            createdAt: media.createdAt as string || '',
+            type: media.type as string,
+            title: media.title as string,
+            description: media.description as string || '',
+            rubrique: media.rubrique as string || '',
+            une: media.une ? 1 : 0,
+        };
+    }
+
+    const handleSubmitEditMedia = async (data: Product | InitialDataType | DbMedia) => {
         try {
             data = data as InitialDataType
             const media = new FormData()
-            media.append('title', data["title"] as string)
-            media.append('name', data["name"] as string)
-            media.append('type', data["type"] as string)
-            media.append('rubrique', data["rubrique"] as string)
-            if (data["file"]) {
-                media.append('file', data['file'] as File)
+            media.append('id', selectedMedia?.id as string)
+            media.append('title', data.title as string)
+            media.append('rubrique', data.rubrique as string)
+            media.append('une', data.une as string)
+            media.append('description', data.description as string)
+            if (data.file && data.file instanceof File) {
+                media.append('file', data.file)
                 console.log("file found !")
             }
-            console.log(media)
-            console.log(data)
-            await UpdateMedia(media, selectedMedia?.id as string)
-
-            setIsOpen(false);
+            const response = await fetch('/api/upload-media', {
+                method: 'PUT',
+                body: media,
+            });
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Erreur lors de l\'upload');
+            }
+            const updatedMedia = await response.json();
+            setMedias(prev => prev.map(m => m.id === updatedMedia.id ? updatedMedia : m));
+            toast(true, false, "Média mis à jour !");
+            setEditMedia(false);
         } catch (error) {
             console.log((error as Error).message)
+            toast(false, false, "Échec de la mise à jour du média");
         }
-        setEditMedia(false);
-    };
 
-    if (selectedMedia) {
-        initialData = {
-            name: (selectedMedia as DbMedia).name as string || '',
-            createdAt: (selectedMedia as DbMedia).createdAt as string || '',
-            type: (selectedMedia as DbMedia).type,
-            title: (selectedMedia as DbMedia).title
-        };
-    }
+    };
 
     useEffect(() => {
         const fetchMedias = async () => {
@@ -244,14 +279,14 @@ export default function MediaPage() {
                     setMedias(response.map(media => {
                         const createdAt = new Date(media.createdAt)
                         media.createdAt = createdAt.toLocaleString("fr")
-                        console.log("createdAt de création : ", media.createdAt)
-                        setIsLoading(false)
                         return media
                     }))
                 }
 
             } catch (err) {
                 console.log("erreur lors de la recuperations des utilisateurs : ", err)
+            } finally {
+                setIsLoading(false)
             }
         }
 
@@ -314,7 +349,7 @@ export default function MediaPage() {
                 onSubmit={handleSubmitEditMedia}
                 titleComponent="Modifier un média"
                 buttonTitle="Modifier"
-                fields={MediaFields}
+                fields={updateMediaFields}
                 initialData={initialData}
             />
         </div>

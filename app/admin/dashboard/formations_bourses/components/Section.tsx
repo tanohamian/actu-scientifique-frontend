@@ -4,10 +4,16 @@ import { Pencil, Trash2, Loader2 } from 'lucide-react';
 import { showToast } from "nextjs-toast-notify"
 import { FetchTrainings, AddTraining, UpdateTraining, DeleteTraining } from '@/app/actions/Trainings';
 import { FetchScholarships, AddScholarship, UpdateScholarship, DeleteScholarship, IScholarship } from '@/app/actions/Scholarships';
-import { FetchReports, AddReport, DeleteReport, UpdateReport, IReport } from '@/app/actions/ReportsManager';
 import ConfirmModal from './ConfirmModal';
 
+export interface IReport {
+  id?: string;
+  title: string;
+  date: Date;
+  reward: number;
+  description: string;
 
+}
 export const toast = function (success: boolean, edit: boolean = false, message: string = "") {
   return success ? showToast.success(message ? message : edit ? "Mis à Jour !" : "Publié !", {
     duration: 4000,
@@ -55,7 +61,7 @@ const formatDateFR = (dateString: string | Date) => {
 
 
 export default function SwitchSection() {
-  const [activeTab, setActiveTab] = useState<'Bourses' | 'Formations' | 'Reportages'>('Bourses');
+  const [activeTab, setActiveTab] = useState<'Bourses' | 'Formations' | 'Science journalism academy'>('Bourses');
   const [items, setItems] = useState<DataItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -73,9 +79,7 @@ export default function SwitchSection() {
     try {
       const data = activeTab === 'Formations'
         ? await FetchTrainings()
-        : activeTab === 'Bourses'
-          ? await FetchScholarships()
-          : await FetchReports();
+        : await FetchScholarships()
       setItems(data || []);
     } catch (error) {
       console.error("Erreur de récupération:", error);
@@ -106,9 +110,7 @@ export default function SwitchSection() {
     setIsModalOpen(false);
     const success = activeTab === 'Formations'
       ? await DeleteTraining(itemToDelete)
-      : activeTab === 'Bourses'
-        ? await DeleteScholarship(itemToDelete)
-        : await DeleteReport(itemToDelete);
+      : await DeleteScholarship(itemToDelete)
 
     if (success) {
       toast(true, false, "Élément supprimé !");
@@ -127,12 +129,9 @@ export default function SwitchSection() {
     if (activeTab === 'Formations') {
       const payload = { title: formData.title, lien: formData.url, description: formData.description, date: formData.date };
       res = isEditing ? await UpdateTraining(editingId, payload as ITraining) : await AddTraining(payload as ITraining);
-    } else if (activeTab === 'Bourses') {
+    } else {
       const payload = { title: formData.title, lien: formData.url, description: formData.description, date: formData.date };
       res = isEditing ? await UpdateScholarship(editingId, payload as IScholarship) : await AddScholarship(payload as IScholarship);
-    } else {
-      const payload = { title: formData.title, reward: Number(formData.reward), description: formData.description, date: new Date(formData.date) };
-      res = isEditing ? await UpdateReport(editingId, payload as IReport) : await AddReport(payload as IReport);
     }
 
     if (res?.success) {
@@ -148,7 +147,7 @@ export default function SwitchSection() {
 
   const handleEditClick = (item: DataItem) => {
     setEditingId(item.id || null);
-    if (activeTab === 'Reportages') {
+    if (activeTab === 'Science journalism academy') {
       const reportItem = item as IReport;
       setFormData({
         title: reportItem.title, url: '', description: reportItem.description,
@@ -162,7 +161,7 @@ export default function SwitchSection() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const isReportage = activeTab === 'Reportages';
+  const isReportage = activeTab === 'Science journalism academy';
 
   return (
     <div style={{ backgroundColor: '#5A8FAC', minHeight: '100vh', padding: isMobile ? '20px' : '40px', color: 'white' }}>
@@ -175,7 +174,7 @@ export default function SwitchSection() {
       />
 
       <div style={tabContainer}>
-        {(['Bourses', 'Formations', 'Reportages'] as const).map((tab) => (
+        {(['Bourses', 'Formations', 'Science journalism academy'] as const).map((tab) => (
           <button
             key={tab}
             style={{ ...tabStyle, ...(activeTab === tab ? activeTabStyle : {}) }}
@@ -246,8 +245,8 @@ export default function SwitchSection() {
               <div style={{ flex: 0.5, textAlign: 'right' }}>Actions</div>
             </div>
             {items.map((item) => {
-              const displayTitle = isReportage ? (item as IReport).title : (item as ITraining | IScholarship).title;
-              const rawDate = isReportage ? (item as IReport).date : (item as ITraining | IScholarship).date;
+              const displayTitle = (item as ITraining | IScholarship).title;
+              const rawDate = (item as ITraining | IScholarship).date;
 
               return (
                 <div key={item.id} style={{ display: 'flex', padding: '15px 0', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', alignItems: 'center' }}>

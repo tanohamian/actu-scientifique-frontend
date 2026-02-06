@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache';
 import { env } from '../config/env';
 import { ITraining } from '../interfaces';
+import { redirect } from 'next/navigation';
 
 async function getAuthHeaders() {
     const authToken = (await cookies()).get('authToken')?.value;
@@ -31,6 +32,11 @@ export async function FetchTrainings() {
 }
 
 export async function AddTraining(data: ITraining) {
+    const authToken = (await cookies()).get('authToken')?.value;
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin');
+    }
     try {
         const response = await fetch(`${env.baseUrl}/trainings`, {
             method: 'POST',
@@ -51,6 +57,11 @@ export async function AddTraining(data: ITraining) {
 }
 
 export async function UpdateTraining(id: string, data: ITraining) {
+    const authToken = (await cookies()).get('authToken')?.value;
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin');
+    }
     try {
         const response = await fetch(`${env.baseUrl}/trainings/${id}`, {
             method: 'PUT',
@@ -65,13 +76,18 @@ export async function UpdateTraining(id: string, data: ITraining) {
         const errorDetail = await response.json();
         return { success: false, error: errorDetail.message || "Erreur lors de la mise à jour" };
     } catch (error) {
-        
+
         console.log(`Erreur lors de la modification: ${error}`)
         return { success: false, error: "Erreur réseau" };
     }
 }
 
 export async function DeleteTraining(id: string) {
+    const authToken = (await cookies()).get('authToken')?.value;
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin');
+    }
     try {
         const response = await fetch(`${env.baseUrl}/trainings/${id}`, {
             method: 'DELETE',
@@ -83,7 +99,7 @@ export async function DeleteTraining(id: string) {
         }
         return false;
     } catch (error) {
-        
+
         console.log(`Erreur lors de la suppression : ${error}`)
         return false;
     }

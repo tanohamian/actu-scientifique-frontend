@@ -48,11 +48,11 @@ export interface OrderInterface {
     status: OrderStatus
     email: string
     items: [
-        { 
-            quantity: string, 
-            product: { 
-                name: string, 
-                categories: string[] 
+        {
+            quantity: string,
+            product: {
+                name: string,
+                categories: string[]
             }
         }
     ]
@@ -84,6 +84,7 @@ export interface Article {
     rubrique?: Rubriques;
     createdAt?: Date | string
     une?: boolean
+    withToken?: boolean
 }
 
 export interface DbMedia {
@@ -93,9 +94,11 @@ export interface DbMedia {
     rubrique: Rubriques;
     mimeType: string;
     url: string;
+    description: string;
     createdAt: Date | string;
     type: string;
     une?: boolean
+    withToken?: boolean
 }
 
 export interface DbArticle {

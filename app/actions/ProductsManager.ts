@@ -7,10 +7,6 @@ import { Product } from '../interfaces'
 
 export async function FetchProducts() {
     const authToken = (await cookies()).get('authToken')?.value;
-    if (!authToken) {
-        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //redirect('/admin');
-    }
     try {
         const response = await fetch(`${env.baseUrl}/products`, {
             method: 'GET',
@@ -26,10 +22,10 @@ export async function FetchProducts() {
             revalidatePath('/admin/dashboard/gestion_article')
             return responseData.products as Product[]
         }
-        return []
+        return
     } catch (error) {
         console.log("erreur lors de la récupération des produits : ", error)
-        return []
+        return
     }
 }
 
@@ -38,7 +34,7 @@ export async function AddProduct(product: FormData) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        // redirect('/admin');
+        redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/products`, {
@@ -55,10 +51,10 @@ export async function AddProduct(product: FormData) {
             revalidatePath('/admin/dashboard/gestion_article')
             return responseData.product as Product
         }
-        return []
+        return
     } catch (error) {
         console.log("erreur lors de l'ajout d'un produit : ", error)
-        return []
+        return
     }
 }
 
@@ -67,7 +63,7 @@ export async function UpdateProduct(product: FormData | Product, id: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        // redirect('/admin');
+        redirect('/admin');
     }
     const headers: HeadersInit = {
         'Cookie': `authToken=${authToken}`
@@ -103,7 +99,7 @@ export async function DeleteProduct(id: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //  redirect('/admin');
+        redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/products/${id}`, {
@@ -119,19 +115,15 @@ export async function DeleteProduct(id: string) {
             revalidatePath('/admin/dashboard/gestion_article')
             return responseData
         }
-        return []
+        return
     } catch (error) {
         console.log("erreur lors de la suppression d'un produit : ", error)
-        return []
+        return
     }
 }
 
 export async function FetchProductById(id: string) {
     const authToken = (await cookies()).get('authToken')?.value;
-    if (!authToken) {
-        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        // redirect('/admin');
-    }
     try {
         const response = await fetch(`${env.baseUrl}/products/${id}`, {
             method: 'GET',
@@ -144,7 +136,6 @@ export async function FetchProductById(id: string) {
         if (response.ok) {
             const responseData = await response.json()
             console.log("Response fetch product by id : ", responseData)
-            //revalidatePath('/admin/dashboard/gestion_article')
             return responseData.product as Product
         }
         return

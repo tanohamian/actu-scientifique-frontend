@@ -2,6 +2,7 @@
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache';
 import { env } from '../config/env';
+import { redirect } from 'next/navigation';
 
 export interface INewsletter {
     id?: string;
@@ -18,7 +19,6 @@ async function getAuthHeaders() {
     const authToken = cookieStore.get('authToken')?.value;
     return {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`,
         'Cookie': `authToken=${authToken}`
     };
 }
@@ -43,6 +43,11 @@ export async function FetchNewsletters() {
 }
 
 export async function AddNewsletter(data: INewsletter) {
+    const authToken = (await cookies()).get('authToken')?.value;
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin');
+    }
     try {
         const response = await fetch(`${BASE_URL}/newsletters`, {
             method: 'POST',
@@ -62,6 +67,11 @@ export async function AddNewsletter(data: INewsletter) {
 
 
 export async function UpdateNewsletter(id: string, data: INewsletter) {
+    const authToken = (await cookies()).get('authToken')?.value;
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin');
+    }
     try {
         const response = await fetch(`${BASE_URL}/newsletters/${id}`, {
             method: 'PUT',
@@ -81,6 +91,11 @@ export async function UpdateNewsletter(id: string, data: INewsletter) {
 }
 
 export async function DeleteNewsletter(id: string) {
+    const authToken = (await cookies()).get('authToken')?.value;
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin');
+    }
     try {
         const response = await fetch(`${BASE_URL}/newsletters/${id}`, {
             method: 'DELETE',

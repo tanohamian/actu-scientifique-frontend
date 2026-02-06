@@ -2,6 +2,7 @@
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache';
 import { env } from '../config/env';
+import { redirect } from 'next/navigation';
 
 export interface IScholarship {
     id?: string;
@@ -15,7 +16,7 @@ export interface IScholarship {
 async function getAuthHeaders() {
     const cookieStore = await cookies();
     const authToken = cookieStore.get('authToken')?.value;
-    
+
     return {
         'Content-Type': 'application/json',
         'Cookie': `authToken=${authToken}`
@@ -26,7 +27,7 @@ export async function FetchScholarships() {
     try {
         const response = await fetch(`${env.baseUrl}/scholarships`, {
             method: 'GET',
-            //headers: await getAuthHeaders(),
+            headers: await getAuthHeaders(),
             next: { revalidate: 0 }
         });
 
@@ -34,7 +35,7 @@ export async function FetchScholarships() {
             const data = await response.json();
             return data.bourses || [];
         }
-        
+
         console.error(`FetchScholarships a échoué avec le statut : ${response.status}`);
         return [];
     } catch (error) {
@@ -44,18 +45,23 @@ export async function FetchScholarships() {
 }
 
 export async function AddScholarship(data: IScholarship) {
+    const authToken = (await cookies()).get('authToken')?.value;
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin');
+    }
     try {
         const response = await fetch(`${env.baseUrl}/scholarships`, {
             method: 'POST',
             headers: await getAuthHeaders(),
             body: JSON.stringify(data)
         });
-        
+
         if (response.ok) {
             revalidatePath('/admin/dashboard/formations_bourses');
             return { success: true };
         }
-        
+
         const errorData = await response.json();
         return { success: false, error: errorData.message || "Échec de l'ajout" };
     } catch (error) {
@@ -65,6 +71,11 @@ export async function AddScholarship(data: IScholarship) {
 }
 
 export async function UpdateScholarship(id: string, data: IScholarship) {
+    const authToken = (await cookies()).get('authToken')?.value;
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin');
+    }
     try {
         const response = await fetch(`${env.baseUrl}/scholarships/${id}`, {
             method: 'PUT',
@@ -84,6 +95,11 @@ export async function UpdateScholarship(id: string, data: IScholarship) {
 }
 
 export async function DeleteScholarship(id: string) {
+    const authToken = (await cookies()).get('authToken')?.value;
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin');
+    }
     try {
         const response = await fetch(`${env.baseUrl}/scholarships/${id}`, {
             method: 'DELETE',

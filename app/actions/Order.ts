@@ -3,14 +3,12 @@ import { env } from '@/app/config/env'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { OrderInterface, OrderPayload } from '../interfaces';
+import { redirect } from 'next/navigation';
 
 
 
 export async function FetchOrders() {
     const authToken = (await cookies()).get('authToken')?.value;
-    if (!authToken) {
-        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-    }
     try {
         const response = await fetch(`${env.baseUrl}/orders`, {
             method: 'GET',
@@ -25,13 +23,11 @@ export async function FetchOrders() {
                 id: order.id,
                 totalAmount: order.totalAmount,
                 status: order.status,
-                //email: order.email,
                 quantity: order.items[0]?.quantity,
                 name: order.items[0]?.product?.name,
                 category: order.items[0]?.product?.categories
             }));
             console.log("Response fetch orders : ", formattedOrders)
-            //revalidatePath('/admin/dashboard/produit_commandes')
             return formattedOrders
         }
         return []
@@ -46,6 +42,7 @@ export async function UpdateOrderStatus(id: string, status: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/orders/${id}`, {
@@ -75,6 +72,7 @@ export async function CreateOrder(payload: OrderPayload) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/orders`, {

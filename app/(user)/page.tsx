@@ -81,7 +81,6 @@ export default function Home() {
           {"S'abonner"}
         </button>
       </div>
-      {/* Bannière publicitaire horizontale - 80% width x 128px height */}
       <div className="w-[80%] mx-auto h-32 border-2 border-white mt-35 items-center justify-center flex text-white text-2xl md:text-3xl lg:text-4xl font-bold mb-5">
         <div className="flex flex-col items-center gap-1">
           <span>Publicité</span>

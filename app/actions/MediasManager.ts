@@ -4,6 +4,7 @@ import { env } from '@/app/config/env'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache';
 import { DbMedia } from '../interfaces';
+import { redirect } from 'next/navigation';
 
 export async function AddMedia(formData: FormData) {
 
@@ -27,7 +28,7 @@ export async function AddMedia(formData: FormData) {
     });
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //redirect('/admin');
+        redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/multimedia/`, {
@@ -60,20 +61,23 @@ export async function UpdateMedia(formData: FormData, id: string) {
 
     const authToken = (await cookies()).get('authToken')?.value;
     console.log("payload: ", formData)
-    const file = (formData as FormData).get('file') as File;
+    console.log("idMedia update: ", id)
+    const file = formData.get('file') as File | null;
 
-    if (!file || file.size === 0) {
-        throw Error("Aucun fichier sélectionné ou fichier vide");
+    if (file && file.size > 0) {
+        console.log("Nouveau fichier détecté:", file.name);
+    } else {
+        console.log("Mise à jour textuelle uniquement (pas de nouveau fichier).");
+        formData.delete('file');
     }
-
     console.log("File details:", {
-        name: file.name,
-        size: file.size,
-        type: file.type
+        name: file?.name,
+        size: file?.size,
+        type: file?.type
     });
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //redirect('/admin');
+        redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/multimedia/${id}`, {
@@ -85,13 +89,14 @@ export async function UpdateMedia(formData: FormData, id: string) {
         });
 
         if (!response.ok) {
-            const errorData = response;
-            console.log("Server error response:", JSON.stringify(errorData));
-            throw Error(`Échec de l'upload du média : ${response.status} ${response.statusText}`);
+            const errorText = await response.text();
+            console.error("Erreur Backend:", errorText);
+            throw Error(`Erreur ${response.status}: ${response.statusText}`);
         }
 
         const result = await response.json();
         console.log("Update successful:", result);
+        return result as DbMedia;
 
     } catch (error) {
         console.error("Erreur lors de l'upload du média:");
@@ -99,28 +104,23 @@ export async function UpdateMedia(formData: FormData, id: string) {
         throw error;
     }
 
-    //redirect('/admin/dashboard/medias');
 }
 export async function FetchMedias() {
     const authToken = (await cookies()).get('authToken')?.value;
-    if (!authToken) {
-        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //redirect('/admin');
-    }
     try {
         const response = await fetch(`${env.baseUrl}/multimedia`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Cookie': `authToken=${authToken}`
-            }
+            },
+            cache: 'no-store',
         })
         console.log("Response fetch medias:", response);
 
         if (response.ok) {
             const responseData = await response.json()
             console.log(responseData)
-            revalidatePath('/admin/dashboard/medias')
             return responseData as DbMedia[]
         }
         return []
@@ -134,7 +134,7 @@ export async function DeleteMedia(mediaId: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //redirect('/admin');
+        redirect('/admin');
     }
     try {
         const response = await fetch(`${env.baseUrl}/multimedia/${mediaId}`, {
@@ -153,5 +153,30 @@ export async function DeleteMedia(mediaId: string) {
     } catch (error) {
         console.log("erreur lors de la suppression du media : ", error)
         return []
+    }
+}
+
+export async function FetchMediaById(mediaId: string) {
+    const authToken = (await cookies()).get('authToken')?.value;
+    try {
+        const response = await fetch(`${env.baseUrl}/multimedia/${mediaId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Cookie': `authToken=${authToken}`
+            },
+            cache: 'no-store',
+        })
+        console.log("Response fetch medias:", response);
+
+        if (response.ok) {
+            const responseData = await response.json()
+            console.log(responseData)
+            return responseData as DbMedia
+        }
+        return
+    } catch (error) {
+        console.log("erreur lors de la récupération des médias : ", error)
+        return
     }
 }

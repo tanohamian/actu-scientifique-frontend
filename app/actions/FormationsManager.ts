@@ -7,10 +7,6 @@ import { Formation } from '../interfaces';
 
 export async function FetchFormations() {
     const authToken = (await cookies()).get('authToken')?.value;
-    if (!authToken) {
-        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //redirect('/admin'); 
-    }
     try {
         const response = await fetch(`${env.baseUrl}/trainings`, {
             method: 'GET',

@@ -7,10 +7,6 @@ import { EventInterface } from '../components/eventDataTable'
 
 export async function FetchEvents() {
     const authToken = (await cookies()).get('authToken')?.value;
-    if (!authToken) {
-        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //redirect('/admin');
-    }
     try {
         const response = await fetch(`${env.baseUrl}/events`, {
             method: 'GET',
@@ -26,10 +22,10 @@ export async function FetchEvents() {
             revalidatePath('/admin/dashboard/events')
             return responseData.events as EventInterface[]
         }
-        return []
+        return
     } catch (error) {
         console.log("erreur lors de la récupération des évènements : ", error)
-        return []
+        return
     }
 }
 
@@ -38,7 +34,7 @@ export async function CreateEvent(event: EventInterface) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //redirect('/admin');
+        redirect('/admin')
     }
     try {
         const response = await fetch(`${env.baseUrl}/events`, {
@@ -56,19 +52,18 @@ export async function CreateEvent(event: EventInterface) {
             revalidatePath('/admin/dashboard/events')
             return responseData.event as EventInterface
         }
-        return null
+        return
     } catch (error) {
         console.log("erreur lors de la création de l'évènement : ", error)
-        return null
+        return
     }
 }
 
 export async function UpdateEvent(status: string, id: string, url: string) {
-    console.log(status, id, url)
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //redirect('/admin');
+        redirect('/admin')
     }
     try {
         const response = await fetch(`${env.baseUrl}/events/${id}`, {
@@ -94,11 +89,10 @@ export async function UpdateEvent(status: string, id: string, url: string) {
 }
 
 export async function DeleteEvent(id: string) {
-    console.log(id)
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //redirect('/admin');
+        redirect('/admin')
     }
     try {
         const response = await fetch(`${env.baseUrl}/events/${id}`, {

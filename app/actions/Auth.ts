@@ -4,6 +4,7 @@ import { FormState } from "../admin/page"
 import { env } from '@/app/config/env'
 import { cookies } from 'next/headers'
 import { UserInterface } from '../admin/dashboard/users/page'
+import { redirect } from 'next/navigation'
 
 
 
@@ -22,7 +23,6 @@ export async function RegisterUser(formData: UserInterface) {
       throw new Error(`Echec de creation utilisateur : ${response}`)
     }
     const responseJson = await response.json()
-    //revalidatePath('/admin/dashboard/users')
     return responseJson.user
 
   } catch (err) {
@@ -36,7 +36,6 @@ export async function LoginUser(formData: FormState) {
 
   const email = formData.email
   const password = formData.password
-  let authTokenValue: RegExpMatchArray | null = null;
   try {
     const response = await fetch(`${env.baseUrl}/auth/login`, {
       method: 'POST',
@@ -80,9 +79,8 @@ export async function IsAdmin() {
   const authToken = (await cookies()).get('authToken')?.value;
   if (!authToken) {
     console.error("Cookie d'authentification manquant");
-    return
+    redirect('/admin')
   }
-  console.log("authToken : ", authToken)
   try {
     const response = await fetch(`${env.baseUrl}/auth/admin`, {
       method: 'GET',

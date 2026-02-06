@@ -4,7 +4,7 @@ import React from 'react';
 export type IconName =
     'Search' | 'Settings' | 'Plus' | 'Feed' | 'Analytics' |
     'List' | 'Video' | 'Envelope' | 'Group' | 'Rss' | 'Chat' |
-    'ControlPanel' | 'Playlist' | 'ShoppingCartIcon' | 'Movie' | 'Schedule' | 'UsersOnline' | 'Product' | 'LogOut' | 'InstagramIcon' | 'FacebookIcon' | 'WhatsAppIcon' | 'YouTubeIcon' | 'Localisation' | 'Phone' | 'LinkedIn' | "TwitterIcon" | "AudioIcon";
+    'ControlPanel' | 'Playlist' | 'ShoppingCartIcon' | 'Movie' | 'Schedule' | 'UsersOnline' | 'Product' | 'LogOut' | 'InstagramIcon' | 'FacebookIcon' | 'WhatsAppIcon' | 'YouTubeIcon' | 'Localisation' | 'Phone' | 'LinkedIn' | "TwitterIcon" | "AudioIcon" | "PromoIcon";
 
 interface IconProps {
     className?: string;
@@ -460,6 +460,21 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
             <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
             <line x1="12" y1="19" x2="12" y2="22"></line>
             <line x1="8" y1="22" x2="16" y2="22"></line>
+        </svg>
+    ),
+    PromoIcon: ({ className }) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+        >
+            <path d="m3 11 18-5v12L3 14v-3z" />
+            <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
         </svg>
     )
 };

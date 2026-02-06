@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { env } from '@/app/config/env'
 import { revalidatePath } from 'next/cache'
 import { FeedInterface } from '../interfaces';
+import { redirect } from 'next/navigation';
 
 export async function CreateFeed(feed: FeedInterface) {
 
@@ -11,7 +12,7 @@ export async function CreateFeed(feed: FeedInterface) {
 
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //redirect('/admin');
+        redirect('/admin');
     }
 
     try {
@@ -40,7 +41,7 @@ export async function DeleteFeed(feed: FeedInterface) {
 
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //redirect('/admin');
+        redirect('/admin');
     }
 
     try {
@@ -65,11 +66,6 @@ export async function DeleteFeed(feed: FeedInterface) {
 
 export async function GetFeeds() {
     const authToken = (await cookies()).get('authToken')?.value;
-
-    if (!authToken) {
-        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //redirect('/admin');
-    }
     try {
         const response = await fetch(`${env.baseUrl}/feeds`, {
             method: 'GET',
@@ -82,7 +78,6 @@ export async function GetFeeds() {
         if (!response.ok) {
             console.log("aucune feed")
         }
-        //revalidatePath('/admin/dashboard/fil_actualite')
         return response.json()
     } catch (error) {
         console.log("erreur lors de la récupération des feeds : ", error)
@@ -98,7 +93,7 @@ export async function UpdateFeed(id: string, feed: FeedInterface) {
 
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        //redirect('/admin');
+        redirect('/admin');
     }
 
     try {

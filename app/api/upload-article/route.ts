@@ -6,8 +6,6 @@ export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
 
-        console.log("=== 📡 API ROUTE: upload-article ===");
-        console.log("📦 FormData reçu:");
 
         for (const [key, value] of formData.entries()) {
             if (value instanceof File) {
@@ -17,32 +15,28 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        const file = formData.get('file') as File;
+        const file = formData.get('file') as File | null;
 
-        if (!file || file.size === 0) {
-            console.error("❌ Aucun fichier reçu");
-            return NextResponse.json(
-                { error: 'Aucun fichier sélectionné ou fichier vide' },
-                { status: 400 }
-            );
+        if (file && file.size > 0) {
+            console.log("Nouveau fichier détecté:", file.name);
+        } else {
+            console.log("Mise à jour textuelle uniquement (pas de nouveau fichier).");
+            formData.delete('file');
         }
 
-        console.log("✅ Fichier validé:", file.name, file.size);
+        console.log("✅ Fichier validé:", file?.name, file?.size);
 
         const cookieStore = await cookies();
         const authToken = cookieStore.get('authToken')?.value;
 
         if (!authToken) {
-            console.error("❌ Pas de token d'authentification");
             return NextResponse.json(
                 { error: 'Non authentifié' },
                 { status: 401 }
             );
         }
 
-        console.log("📤 Envoi au backend Express:", `${env.baseUrl}/articles/`);
 
-        // Transférer le FormData au backend Express
         const response = await fetch(`${env.baseUrl}/articles/`, {
             method: 'POST',
             headers: {
@@ -51,11 +45,10 @@ export async function POST(request: NextRequest) {
             body: formData
         });
 
-        console.log("📨 Réponse backend:", response.status);
+        console.log(response)
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error("❌ Erreur backend:", errorText);
             return NextResponse.json(
                 { error: `Erreur backend: ${response.status}` },
                 { status: response.status }
@@ -68,7 +61,6 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(result);
 
     } catch (error) {
-        console.error("❌ Erreur dans l'API route:", error);
         return NextResponse.json(
             { error: 'Erreur serveur' },
             { status: 500 }
@@ -79,10 +71,9 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
     try {
         const formData = await request.formData();
+        console.log(formData)
         const id = formData.get('id')
 
-        console.log("=== 📡 API ROUTE: upload-article ===");
-        console.log("📦 FormData reçu:");
 
         for (const [key, value] of formData.entries()) {
             if (value instanceof File) {
@@ -92,44 +83,40 @@ export async function PUT(request: NextRequest) {
             }
         }
 
-        const file = formData.get('file') as File;
+        const file = formData.get('file') as File | null;
 
-        if (!file || file.size === 0) {
-            console.error("❌ Aucun fichier reçu");
-            return NextResponse.json(
-                { error: 'Aucun fichier sélectionné ou fichier vide' },
-                { status: 400 }
-            );
+        if (file && file.size > 0) {
+            console.log("Nouveau fichier détecté:", file.name);
+        } else {
+            console.log("Mise à jour textuelle uniquement (pas de nouveau fichier).");
+            formData.delete('file');
         }
 
-        console.log("✅ Fichier validé:", file.name, file.size);
+        console.log("✅ Fichier validé:", file?.name, file?.size);
 
         const cookieStore = await cookies();
         const authToken = cookieStore.get('authToken')?.value;
 
         if (!authToken) {
-            console.error("❌ Pas de token d'authentification");
             return NextResponse.json(
                 { error: 'Non authentifié' },
                 { status: 401 }
             );
         }
 
-        console.log("📤 Envoi au backend Express:", `${env.baseUrl}/articles/`);
 
         const response = await fetch(`${env.baseUrl}/articles/${id}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Cookie': `authToken=${authToken}`,
             },
             body: formData
         });
 
-        console.log("📨 Réponse backend:", response.status);
+        console.log(response)
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error("❌ Erreur backend:", errorText);
             return NextResponse.json(
                 { error: `Erreur backend: ${response.status}` },
                 { status: response.status }
@@ -137,12 +124,10 @@ export async function PUT(request: NextRequest) {
         }
 
         const result = await response.json();
-        console.log("✅ Succès:", result);
 
         return NextResponse.json(result);
 
     } catch (error) {
-        console.error("❌ Erreur dans l'API route:", error);
         return NextResponse.json(
             { error: 'Erreur serveur' },
             { status: 500 }
