@@ -15,23 +15,18 @@ import LoadingComponent from '@/app/components/loadingComponent'
 import IndexLineChart from '@/app/components/IndexLineChart'
 
 export default function Page() {
-    //const today = new Date().toISOString();
         
     const [isLoading, setIsLoading] = useState(true)
     
     const [articles, setArticles] = useState<DashboardCardProps>({ label: "Articles", value: 0, route: "/gestion_article" })
-    const [visitors] = useState<DashboardCardProps>({ label: "Visiteurs", value: 36 })
+    const [visitors] = useState<DashboardCardProps>({ label: "Visites par jour", value: 36 })
     const [products, setProducts] = useState<DashboardCardProps>({ label: "Produits", value: 0 })
     const [subscribers] = useState<DashboardCardProps>({ label: "Abonnés", value: 15, route: "/users" })
-
-
 
     const [publishedContent, setPublishedContent] = useState<ListItem[]>([])
     const [realizedEvents, setRealizedEvents] = useState<EventInterface[]>([])
     const [scholarshipsAndTraining, setScholarshipsAndTraining] = useState<ListItem[]>([])
     const [reportages, setReportages] = useState<ListItem[]>([])
-
-    const [tendance] = useState<string>("Vous verrez ici un aperçu de tout ce qui se passe sur l'app")
 
     useEffect(()=>{
     async function update(){

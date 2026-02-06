@@ -1,41 +1,47 @@
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
+import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { RechartsDevtools } from '@recharts/devtools';
 
 const data = [
   {
-    name: 'A',
+    name: 'Lundi',
     uv: 400,
     pv: 240,
     amt: 2400,
   },
   {
-    name: 'B',
+    name: 'Mardi',
     uv: 300,
     pv: 456,
     amt: 2400,
   },
   {
-    name: 'C',
+    name: 'Mercredi',
     uv: 300,
     pv: 139,
     amt: 2400,
   },
   {
-    name: 'D',
+    name: 'Jeudi',
     uv: 200,
     pv: 980,
     amt: 2400,
   },
   {
-    name: 'E',
+    name: 'Vendredi',
     uv: 278,
     pv: 390,
     amt: 2400,
   },
   {
-    name: 'F',
+    name: 'Samedi',
     uv: 189,
     pv: 480,
+    amt: 2400,
+  },
+  {
+    name: 'Dimanche',
+    uv: 655,
+    pv: 241,
     amt: 2400,
   },
 ];
@@ -43,12 +49,23 @@ const data = [
 
 export default function IndexLineChart() {
   return (
-    <LineChart style={{ width: '100%', aspectRatio: 1.618, maxWidth: 800, margin: 'auto' }} responsive data={data}>
-      <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-      <XAxis dataKey="name" />
-      <YAxis width="auto" />
-      <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-      <Line type="monotone" dataKey="pv" stroke="#82ca9d" />
+    <LineChart
+      style={{ width: '100%', aspectRatio: 1.9, maxWidth: 1200, marginLeft: 'auto', marginRight: 'auto' }}
+      responsive
+      data={data}
+      margin={{
+        top: 20,
+        right: 20,
+        bottom: 5,
+        left: 0,
+      }}
+    >
+      <CartesianGrid stroke="#aaa" strokeDasharray="5 5" />
+      <Line type="monotone" dataKey="uv" stroke="#EF7B96" strokeWidth={2} name="Visites par jour" />
+      <XAxis dataKey="name" stroke='white' />
+      <YAxis width="auto" stroke='white' label={{ value: 'UV', position: 'insideLeft', angle: -90 }} />
+      <Legend align="right" />
+      <Tooltip />
       <RechartsDevtools />
     </LineChart>
   );
