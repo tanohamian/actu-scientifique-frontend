@@ -12,6 +12,7 @@ import { FetchFormations } from '@/app/actions/FormationsManager'
 import { FetchBourses } from '@/app/actions/BoursesManager'
 import { EventInterface } from '@/app/components/eventDataTable'
 import LoadingComponent from '@/app/components/loadingComponent'
+import IndexLineChart from '@/app/components/IndexLineChart'
 
 export default function Page() {
     //const today = new Date().toISOString();
@@ -80,7 +81,7 @@ export default function Page() {
             
             {/* Section aperçu (Tendance) */}
             <section className={styles.tendance}>
-                <p>{tendance}</p>
+                <IndexLineChart/>
             </section>
             
             {/* Grille 2x2 des Publications Cards */}

@@ -2,7 +2,7 @@
 import React from 'react';
 
 export type IconName =
-    'Search' | 'Settings' | 'Plus' | 'Feed' |
+    'Search' | 'Settings' | 'Plus' | 'Feed' | 'Analytics' |
     'List' | 'Video' | 'Envelope' | 'Group' | 'Rss' | 'Chat' |
     'ControlPanel' | 'Playlist' | 'ShoppingCartIcon' | 'Movie' | 'Schedule' | 'UsersOnline' | 'Product' | 'LogOut' | 'InstagramIcon' | 'FacebookIcon' | 'WhatsAppIcon' | 'YouTubeIcon' | 'Localisation' | 'Phone' | 'LinkedIn' | "TwitterIcon" | "AudioIcon";
 
@@ -11,6 +11,20 @@ interface IconProps {
 }
 
 const IconMap: Record<IconName, React.FC<IconProps>> = {
+    Analytics : ({ className }) =>(
+        <svg 
+            /*width="800px" 
+            height="800px"*/ 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+            className={className}
+        >
+            <path d="M3 3V21" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M21 21H3" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M7 16L12.25 10.75L15.75 14.25L21 9" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    ),
     Search: ({ className }) => (
         <svg
             xmlns="http://www.w3.org/2000/svg"
