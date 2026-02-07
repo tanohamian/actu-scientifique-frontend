@@ -3,20 +3,21 @@ import React, { FormEvent, useState, useEffect, useMemo } from 'react';
 import { AddNewsletter, INewsletter, UpdateNewsletter } from "@/app/actions/Newsletters";
 import { ChevronDown, Upload } from 'lucide-react';
 import { FormFieldConfig, InitialDataType, uploadIcon, uploadText } from '@/app/components/addElement';
-import { showToast }  from "nextjs-toast-notify"
+import { showToast } from "nextjs-toast-notify"
 import { Rubriques } from '../enum/enums';
 import { Article, DbArticle, Newsletter } from '../interfaces';
+import TipTapComponent from './titap';
 
 
 export const toast = function (success: boolean, edit: boolean = false, message: string = "") {
   return success ? showToast.success(message ? message : edit ? "Publié!" : "Mis à Jour !", {
-      duration: 4000,
-      progress: true,
-      position: "bottom-center",
-      transition: "bounceIn",
-      icon: '✅',
-      sound: true,
-    }) : 
+    duration: 4000,
+    progress: true,
+    position: "bottom-center",
+    transition: "bounceIn",
+    icon: '✅',
+    sound: true,
+  }) :
     showToast.error("Opération échouée", {
       duration: 4000,
       progress: true,
@@ -239,6 +240,7 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
             </label>
           </div>
         );
+
       case 'text':
       case 'email':
       case 'password':

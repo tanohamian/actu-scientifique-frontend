@@ -8,7 +8,7 @@ import { Product } from "../interfaces";
 export interface FormFieldConfig {
     name: string;
     label: string;
-    type?: 'text' | 'email' | 'password' | 'select' | 'textarea' | 'file' | 'number' | 'date' | 'time' | 'url';
+    type?: 'text' | 'email' | 'password' | 'select' | 'textarea' | 'file' | 'number' | 'date' | 'time' | 'url' | 'description';
     placeholder?: string;
     required?: boolean;
     options?: { value: string | number; label: string }[];

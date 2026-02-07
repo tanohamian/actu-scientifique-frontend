@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 import LoginRegisterComponent from '../components/login_register_Component';
 import { useAuth, AuthProvider } from '../context/authContext';
 
+
 const iconSize = 'w-8 h-8';
 
 export default function RootLayout({
@@ -74,7 +75,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       label: 'Opportunités',
       href: "/opportunities/science-academy",
       subItems: [
-        { label: 'Science journalism academy', href: '/opportunities/science-academy' },
+        { label: 'Science Journalism Academy', href: '/opportunities/science-academy' },
         { label: 'Bourses', href: '/opportunities/scholarships' },
         { label: 'Formations', href: '/opportunities/training' }
       ]

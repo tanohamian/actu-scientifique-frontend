@@ -31,7 +31,7 @@ export default function SidebarComponent({ onClose, isMobile }: { onClose?: () =
         { name: "Boutiques", path: "/admin/dashboard/produit_commandes", icon: <IconComponent name='Product' {...iconBaseProps} /> },
         { name: "Utilisateurs", path: "/admin/dashboard/users", icon: <IconComponent name='UsersOnline' {...iconBaseProps} /> },
         { name: "Agenda", path: "/admin/dashboard/event", icon: <IconComponent name='Schedule' {...iconBaseProps} /> },
-        { name: "Advertising", path: "/admin/dashboard/advertising", icon: <IconComponent name='PromoIcon' {...iconBaseProps} /> }
+        { name: "Publicité", path: "/admin/dashboard/advertising", icon: <IconComponent name='PromoIcon' {...iconBaseProps} /> }
     ];
 
     const NavLinkItem = ({ item }: { item: NavItems }) => {
