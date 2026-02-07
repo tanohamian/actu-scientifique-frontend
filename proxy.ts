@@ -8,11 +8,12 @@ async function check(req: NextRequest) {
   const url = req.nextUrl.pathname;
   if (
     req.method !== 'GET' ||
-    url.startsWith('/api/stats/check') || 
-    url.startsWith('/_next/static') || 
+    url.startsWith('/api') || 
+    url.startsWith('/_next') || 
     url.startsWith('/.well-known') || 
     url.startsWith('/favicon.ico') ||
-    url.startsWith('/images/')
+    url.startsWith('/images/') ||
+    url.startsWith('/assets')
     ) {
     return;
   }

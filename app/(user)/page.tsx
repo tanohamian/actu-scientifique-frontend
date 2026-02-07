@@ -3,17 +3,16 @@ import { IconName } from "../components/Icons";
 import ViewElement from "../components/viewElement";
 import { useEffect, useState } from "react";
 import Pagination from "../components/pagination";
-import SocialNetworks from "../components/socialNetworks";
 import { useRouter } from "next/navigation";
 import { ShoppingCart } from 'lucide-react'
 import { FetchArticles } from "../actions/ArticleManager";
 import { FetchMedias } from "../actions/MediasManager";
 import { Article, DbMedia } from "../interfaces";
-import { GetFeeds } from "../actions/FeedManager";
 import LoadingComponent from '@/app/components/loadingComponent'
+import Script from "next/script";
+import AdBanner from "../components/AdBanner";
 import { Product } from "@/app/interfaces";
 import { FetchProducts } from "@/app/actions/ProductsManager";
-import Image from "next/image";
 
 export interface FeedInterface {
   id: string,
@@ -34,8 +33,6 @@ export default function Home() {
   const [articles, setArticles] = useState<(Article | DbMedia)[]>([])
   const currentItems = articles.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(articles.length / itemsPerPage)
-  const socialNetworks: IconName[] = ["YouTubeIcon", "FacebookIcon", "TwitterIcon"]
-  const [feeds, setFeeds] = useState<FeedInterface[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [products, setProducts] = useState<Product[]>([])
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -91,6 +88,12 @@ export default function Home() {
 
   return (
     <div className="px-4 py-8 md:px-8 md:py-12">
+      <Script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7800085793195104"
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
       <LoadingComponent
         isOpen={isLoading}
         onClose={() => setIsLoading(false)}
@@ -108,8 +111,10 @@ export default function Home() {
       </div>
       <div className="w-[80%] mx-auto h-32 border-2 border-white mt-35 items-center justify-center flex text-white text-2xl md:text-3xl lg:text-4xl font-bold mb-5">
         <div className="flex flex-col items-center gap-1">
-          <span>Publicité</span>
-          <span className="text-sm font-normal">728 x 90 ou 970 x 90</span>
+          <div className="w-[80%] mx-auto mt-35 mb-5 overflow-hidden">
+            <AdBanner dataAdSlot="1234567890" dataAdFormat="horizontal" />
+          </div>
+          {/*<span className="text-sm font-normal">728 x 90 ou 970 x 90</span>*/}
         </div>
       </div>
       <div className="bg-white w-full rounded-lg p-6 md:p-8 lg:p-12 shadow-xl">
