@@ -35,4 +35,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/actusciences-front-app:latest
-            docker compose -f /git/actuscience/docker-compose.yml up -d --force-recreate --
+            docker compose -f /git/actuscience/docker-compose.yml up -d --force-recreate
