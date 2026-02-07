@@ -14,6 +14,10 @@ export default function RootLayout({
     
     return (
         <html lang="fr">
+            <header>
+                <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg"></link>
+                <title>{"L'actualité scientifique"}</title>
+            </header>
             <body>
             <main>
                  {children}

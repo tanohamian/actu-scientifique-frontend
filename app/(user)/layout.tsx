@@ -109,7 +109,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
         <div className='flex flex-col lg:flex-row items-center justify-between lg:justify-around px-4 py-4 gap-4'>
           <div className='flex flex-row items-center gap-3'>
-            <img src="/images/logo.svg" alt="Logo" className="w-30 h-30 flex-shrink-0" />
+            <img src="/images/favicon.svg" alt="Logo" className="w-30 h-30 flex-shrink-0" />
             <h3 className='text-white text-sm lg:text-base w-25 font-bold'>Actu Scientifique</h3>
           </div>
 
