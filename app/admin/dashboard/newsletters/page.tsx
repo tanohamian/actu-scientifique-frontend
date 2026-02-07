@@ -1,29 +1,30 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import ComponenteFormulaire from './components/ComponenteFormulaire';
-import Affichage, { Newsletter } from './components/Affichage';
+import Affichage, { ItemType } from './components/Affichage';
 import { env } from '@/app/config/env';
-console.log(env)
+import ComponenteFormulaire from './components/ComponenteFormulaire';
+import LoadingComponent from '@/app/components/loadingComponent'
+
+
 export default function Page() {
     const MOBILE_BREAKPOINT = 768;
-    const [isMobile, setIsMobile] = useState(() => 
+    const [isMobile, setIsMobile] = useState(() =>
         typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT
     );
 
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-        };
+    const [selectedItem, setSelectedItem] = useState<ItemType | null>(null);
+    const [refreshSignal, setRefreshSignal] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
+    const handleSuccess = () => {
+        setSelectedItem(null);
+        setRefreshSignal(prev => prev + 1);
+    };
 
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
-
-    const newsletters: Newsletter[] = [
-        { id: 1, title: "Utilisation de l'IA dans le journalisme", category: 'Technologie', publication: '14/10/2025' },
-        { id: 2, title: "Utilisation de l'IA dans le journalisme", category: 'Une seule santé', publication: '14/10/2025' },
-        { id: 3, title: "Utilisation de l'IA dans le journalisme", category: 'Technologie', publication: '14/10/2025' }
-    ];
 
     const container: React.CSSProperties = {
         minHeight: '100vh',
@@ -41,15 +42,15 @@ export default function Page() {
         gap: '30px',
         width: isMobile ? '100%' : 'auto'
     };
-    
+
     const rightSection: React.CSSProperties = {
         width: isMobile ? '100%' : '350px',
         height: 'fit-content',
-        alignItems:'flex-start',
-        padding:"27px"
+        alignItems: 'flex-start',
+        padding: "0px"
     };
-    
-    const title: React.CSSProperties = {
+
+    const titre: React.CSSProperties = {
         color: 'white',
         fontSize: isMobile ? '28px' : '36px',
         fontWeight: 'bold',
@@ -58,14 +59,24 @@ export default function Page() {
 
     return (
         <div style={container}>
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
             <div style={leftSection}>
-                <h1 style={title}>Gestion des Newsletters</h1>
+                <h1 style={titre}>Gestion des Newsletters</h1>
                 <Affichage
-                    items={newsletters}
+                    key={refreshSignal}
+                    onEdit={(item) => setSelectedItem(item)}
+                    setIsLoading={setIsLoading}
                 />
             </div>
             <div style={rightSection}>
-                <ComponenteFormulaire isArticle={false}/>
+                <ComponenteFormulaire
+                    isArticle={false}
+                    initialData={selectedItem && 'categorie' in selectedItem ? selectedItem : undefined}
+                    onSuccess={handleSuccess}
+                />
             </div>
         </div>
     )

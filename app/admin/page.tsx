@@ -1,40 +1,31 @@
 'use client'
 
 import { useState } from "react";
-import LoginUser from "@/app/actions/Auth"
+import { LoginUser } from "../actions/Auth";
+import { useRouter } from "next/navigation";
+
 export interface FormState {
     email: string;
     password: string;
 }
 
 export const Categories = {
-    EBOOK : "livres",
-    CLOTHES : "vêtements",
-    TECHNOLOGYOBJECT : "objets tech"
+    EBOOK: "livres",
+    CLOTHES: "vêtements",
+    TECHNOLOGYOBJECT: "objets tech"
 } as const
-export type Categories = typeof Categories [keyof typeof Categories]
+export type Categories = typeof Categories[keyof typeof Categories]
 
-export interface Product {
-    id :string,
-    name : string
-    categories:Categories
-    price:number
-    preview_image:string
-    createdAt:Date
-    stock:number
-}
+
 
 export default function Connexion() {
-
-
-
-
     const [formData, setFormData] = useState<FormState>({
         email: "",
         password: ""
     });
-    const [loading,setLoading] = useState<boolean>(false)
-    const [message,setMessage] = useState<string>('')
+    const [loading, setLoading] = useState<boolean>(false)
+    const [message, setMessage] = useState<string>('')
+    const router = useRouter()
 
     const handleInputChange = (field: keyof FormState, value: string) => {
         setFormData(prev => ({
@@ -43,31 +34,27 @@ export default function Connexion() {
         }));
     };
 
-    
-    /*const handleSubmit = async () => {
-        setLoading(true)
-        setMessage('')
-        try{
-            const response = await fetch(`${baseUrl}/auth/login`,{
-                method:'POST',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body:JSON.stringify({email : formData.email,password :formData.password})
-            })
-            if(response.ok){
-                console.log("Connexion avec:", formData);
-                router.push('/admin/dashboard');
-            }
-            
-        }catch(err){
-            console.log("erreur lors de l'inscription : ", err),
-            setMessage((err as any).message)
-        }finally{
-            setLoading(false)
-        }
-    };*/
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setLoading(true);
+        setMessage('');
 
+        try {
+            const response = await LoginUser(formData);
+            console.log("response : ", response)
+            if (response == 'ROLE_ADMIN') {
+                router.push('/admin/dashboard')
+            } else {
+                setMessage("Vous n'avez pas les droits pour acceder à cette page")
+            }
+
+        } catch (err) {
+            console.error("Erreur lors de la connexion : ", err);
+            setMessage(err instanceof Error ? err.message : 'Erreur de connexion');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const containerClasses = `
         min-h-screen 
@@ -92,7 +79,6 @@ export default function Connexion() {
         max-w-md
     `;
 
-    
     const titleClasses = `
         text-[#588DA9] 
         text-2xl 
@@ -110,7 +96,6 @@ export default function Connexion() {
         text-center
     `;
 
-  
     const inputClasses = `
         w-full 
         p-3 
@@ -123,9 +108,10 @@ export default function Connexion() {
         transition-all 
         duration-300 
         focus:border-[#588DA9]
+        disabled:bg-gray-100
+        disabled:cursor-not-allowed
     `;
 
-  
     const buttonClasses = `
         w-full 
         p-3 
@@ -142,8 +128,14 @@ export default function Connexion() {
         mt-3 
         shadow-md 
         hover:bg-[#4a7390]
+        disabled:bg-gray-400
+        disabled:cursor-not-allowed
+        flex
+        items-center
+        justify-center
+        gap-2
     `;
-    
+
     const inputGroupClasses = "mb-6";
     const labelClasses = "block text-gray-700 text-sm font-medium mb-2";
     const linkContainerClasses = "text-center mt-6";
@@ -156,14 +148,13 @@ export default function Connexion() {
         transition-colors
     `;
 
-
     return (
         <div className={containerClasses}>
             <div className={formContainerClasses}>
                 <h1 className={titleClasses}>Connexion</h1>
                 <p className={subtitleClasses}>Accédez à votre tableau de bord</p>
 
-                <div>
+                <form onSubmit={handleSubmit}>
                     <div className={inputGroupClasses}>
                         <label className={labelClasses} htmlFor="email">
                             Adresse e-mail
@@ -171,10 +162,14 @@ export default function Connexion() {
                         <input
                             id="email"
                             type="email"
+                            name="email"
                             placeholder="exemple@email.com"
                             value={formData.email}
                             onChange={(e) => handleInputChange('email', e.target.value)}
                             className={inputClasses}
+                            required
+                            disabled={loading}
+                            autoComplete="email"
                         />
                     </div>
 
@@ -185,28 +180,47 @@ export default function Connexion() {
                         <input
                             id="password"
                             type="password"
+                            name="password"
                             placeholder="••••••••"
                             value={formData.password}
                             onChange={(e) => handleInputChange('password', e.target.value)}
                             className={inputClasses}
+                            required
+                            disabled={loading}
+                            autoComplete="current-password"
                         />
                     </div>
 
+                    {message && (
+                        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <p className="text-sm text-red-600 text-center">{message}</p>
+                        </div>
+                    )}
+
                     <button
-                        onClick={()=>LoginUser(formData)}
+                        type="submit"
                         className={buttonClasses}
+                        disabled={loading}
                     >
-                        {loading ? <p>••••••</p> :<p>Se connecter</p>}
+                        {loading ? (
+                            <>
+                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Connexion en cours...</span>
+                            </>
+                        ) : (
+                            <span>Se connecter</span>
+                        )}
                     </button>
-                </div>
+                </form>
 
                 <div className={linkContainerClasses}>
                     <span className={linkClasses}>
                         Mot de passe oublié ?
                     </span>
                 </div>
-
-                {message && <p>{message}</p>}
             </div>
         </div>
     );

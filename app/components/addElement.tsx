@@ -1,27 +1,34 @@
 'use client'
 import ButtonComponent from "@/app/components/button";
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, ChevronDown } from 'lucide-react';
+import { X, ChevronDown, Upload } from 'lucide-react';
+import { Rubriques } from "../enum/enums";
+import { Product } from "../interfaces";
 
-// Maintenir l'interface d'exportation pour l'utilisation dans d'autres fichiers
 export interface FormFieldConfig {
     name: string;
     label: string;
-    type?: 'text' | 'email' | 'password' | 'select' | 'textarea';
+    type?: 'text' | 'email' | 'password' | 'select' | 'textarea' | 'file' | 'number' | 'date' | 'time' | 'url' | 'description';
     placeholder?: string;
     required?: boolean;
-    options?: { value: string; label: string }[];
+    options?: { value: string | number; label: string }[];
 }
 
+export type InitialDataType = { [key: string]: string | number | File | undefined | Rubriques | boolean }
+
+
 interface AddElementModalProps {
+    id?: string
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: any) => void;
+    onSubmit: (data: Product | InitialDataType, id?: string) => Promise<void> | void;
     titleComponent: string;
     buttonTitle: string;
     fields: FormFieldConfig[];
-    initialData?: { [key: string]: string };
+    initialData?: InitialDataType;
+    isLoading?: boolean
 }
+
 
 const customStyles = `
     .custom-select option {
@@ -33,20 +40,52 @@ const customStyles = `
     }
 `;
 
+export const uploadText: React.CSSProperties = {
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: '14px'
+}
 
-export default function AddElementModal({ isOpen, onClose, onSubmit, titleComponent, buttonTitle, fields, initialData = {} }: AddElementModalProps) {
+export const uploadIcon: React.CSSProperties = {
+    color: 'rgba(255, 255, 255, 0.6)',
+    marginBottom: '10px'
+};
 
+
+
+export default function AddElementModal({ isOpen, onClose, onSubmit, titleComponent, buttonTitle, fields, initialData = {}, isLoading, id }: AddElementModalProps) {
+
+
+    const [imageUrl, setImageUrl] = useState<string | ArrayBuffer | null>("")
     const initialFormData = useMemo(() => {
-        return fields.reduce((acc, field) => {
-            acc[field.name] = initialData[field.name] !== undefined ? initialData[field.name] : '';
+        const data = fields.reduce((acc, field) => {
+            acc[field.name] = initialData[field.name] ?? '';
             return acc;
-        }, {} as { [key: string]: string });
-    }, [fields, initialData]);
+        }, {} as InitialDataType);
 
-    const [formData, setFormData] = useState(initialFormData);
+
+        if (id) {
+            data["id"] = id;
+        }
+
+        return data;
+    }, [fields, initialData, id]);
 
     useEffect(() => {
-        setFormData(initialFormData);
+        const updateImage = () => {
+            if (initialData.illustrationUrl) {
+                setImageUrl(initialData.illustrationUrl as string);
+            }
+        }
+        updateImage()
+    }, [initialData.illustrationUrl])
+
+    const [isImage, setIsImage] = useState(false)
+    const [formData, setFormData] = useState<InitialDataType>(initialFormData);
+    useEffect(() => {
+        const set = async () => {
+            setFormData(initialFormData);
+        }
+        set()
     }, [initialFormData, isOpen]);
 
     useEffect(() => {
@@ -64,14 +103,18 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(formData);
+        onSubmit(formData as InitialDataType, id);
 
     };
 
-    const handleChange = (name: string, value: string) => {
+    const handleChange = (name: string, value: string | File, type?: string) => {
         setFormData(prevData => ({
             ...prevData,
-            [name]: value,
+            [name]: value instanceof File
+                ? value
+                : type === 'number'
+                    ? Number(value)
+                    : value
         }));
     };
 
@@ -88,23 +131,76 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                         <div className="relative w-full">
                             <select
                                 className={`${inputClasses} appearance-none cursor-pointer custom-select`}
-                                value={formData[field.name] || ''}
+                                value={(formData[field.name] as string) || ''}
                                 onChange={(e) => handleChange(field.name, e.target.value)}
                                 required={field.required}
                             >
                                 <option value="" disabled className="text-white/50">Sélectionner {field.label.toLowerCase()}</option>
                                 {field.options?.map(option => (
-                                    <option key={option.value} value={option.value}>{option.label}</option>
+                                    <option key={option.label} value={option.value}>{option.label}</option>
                                 ))}
                             </select>
                             <ChevronDown size={20} className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white" />
                         </div>
                     </div>
                 );
+            case 'file':
+                return (
+                    <div key={field.name} className={containerClasses}>
+                        <label className={labelClasses}>{field.label}</label>
+                        <label className="cursor-pointer">
+                            <input
+                                type={field.type}
+                                accept="image/*,video/*,audio/*,application/pdf"
+                                style={{ display: 'none' }}
+                                placeholder={field.placeholder || ''}
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    console.log("file in addElementModal")
+                                    console.log(file)
+                                    if (file) {
+                                        handleChange(field.name, file);
+                                        setIsImage(file.type.startsWith('image/'))
+                                        const objectUrl = URL.createObjectURL(file);
+                                        setImageUrl(objectUrl);
+                                    }
+                                }}
+                                required={field.required}
+                            />
+                            {formData[field.name] || field.name === 'illustrationUrl' ? (
+                                <div className="mt-2">
+                                    {
+                                        isImage ?
+                                            // eslint-disable-next-line @next/next/no-img-element
+                                            <img src={imageUrl as string} alt="Preview" className="max-w-full h-auto rounded-lg" /> : null
+                                    }
+
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center bg-[#00283C99] rounded-lg p-10 cursor-pointer">
+                                    <Upload size={40} style={uploadIcon} />
+                                    <div style={uploadText}>cliquez pour uploader une image</div>
+                                </div>
+                            )}
+                        </label>
+                    </div>
+                );
             case 'text':
             case 'email':
             case 'password':
             case 'textarea':
+                return (<div key={field.name} className={containerClasses}>
+                    <label className={labelClasses}>{field.label}</label>
+                    <textarea
+                        rows={4}
+                        className={inputClasses}
+                        placeholder={field.placeholder || ''}
+                        value={(formData[field.name] as string) || ''}
+                        onChange={(e) => handleChange(field.name, e.target.value, field.type)}
+                        required={field.required}
+                    />
+                </div>)
+            case 'number':
             default:
                 return (
                     <div key={field.name} className={containerClasses}>
@@ -113,8 +209,8 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                             type={field.type}
                             className={inputClasses}
                             placeholder={field.placeholder || ''}
-                            value={formData[field.name] || ''}
-                            onChange={(e) => handleChange(field.name, e.target.value)}
+                            value={(formData[field.name] as string) || ''}
+                            onChange={(e) => handleChange(field.name, e.target.value, field.type)}
                             required={field.required}
                         />
                     </div>
@@ -147,9 +243,11 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
 
                 <form onSubmit={handleSubmit} className={formClasses}>
                     {fields.map(field => renderField(field))}
-                    <div className="mt-4 flex justify-center">
+                    {isLoading ? <div className="mt-4 flex justify-center">
+                        <ButtonComponent textButton="Chargement..." size="medium" />
+                    </div> : <div className="mt-4 flex justify-center">
                         <ButtonComponent textButton={buttonTitle} size="medium" />
-                    </div>
+                    </div>}
                 </form>
             </div>
 

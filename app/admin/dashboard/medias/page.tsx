@@ -4,63 +4,79 @@
 import ButtonComponent from '@/app/components/button';
 import SearchBarComponent from '@/app/components/searchBar';
 import EventDataTable, { ElementType, TableData } from '@/app/components/eventDataTable';
-import React, { useEffect, useState } from 'react'
-import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
+import { useEffect, useState } from 'react'
+import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/components/addElement';
 
 import Filter, { IFilter } from '@/app/components/filter';
-import { DbMedia, Media } from '../newsletters/components/Affichage';
-
-import ComponenteFormulaire, { Rubriques } from '../newsletters/components/ComponenteFormulaire';
-import { DeleteMedia, FetchMedias } from '@/app/actions/Medias';
-import { it } from 'node:test';
-
-const formatTimestampToDate = (timestamp: string): string => {
-  const createdAt = new Date(parseInt(timestamp, 10)); // Convertir la chaîne en nombre puis en objet Date
-  
-  // Utiliser Intl.DateTimeFormat pour un format Jours/Mois/Année (français)
-  return new Intl.DateTimeFormat('fr-FR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-
-    hour : '2-digit',
-    minute: '2-digit'
-  }).format(createdAt);
-};
-
-const now = Date.now().toString()
-
+import { Property } from "csstype"
+import { DeleteMedia, FetchMedias, UpdateMedia } from '@/app/actions/MediasManager';
+import { Rubriques } from '@/app/enum/enums';
+import { toast } from '@/app/components/FormComponent';
+import LoadingComponent from '@/app/components/loadingComponent';
+import { DbMedia, Product } from '@/app/interfaces';
 
 const MediaFields: FormFieldConfig[] = [
-    { name: 'title', label: 'Titre du media', type: 'text', placeholder: 'Entrez le titre du media', required: true },
-    { name: 'type', label: 'Type', type: 'select', options: [{ value: 'photo', label: 'Photo' }, { value: 'video', label: 'Vidéo' }, { value: 'podcast', label: 'Podcast' }], required: true },
-    { name: 'rubrique', label: 'Catégorie', type: 'select', options: [{ value: Rubriques.TECHNOLOGY, label: 'Technologie' }, { value: 'Matériel', label: 'Matériel' }], required: true },
+    { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media', required: true },
+    { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...', required: false },
+    { name: 'file', label: "Fichier", type: "file" },
+    {
+        name: 'rubrique', label: 'Rubrique', type: 'select',
+        options: [
+            { label: "Une seule santé", value: Rubriques.ONE_HEALTH },
+            { label: 'Technologie', value: Rubriques.TECHNOLOGY },
+            { label: 'Éco-humanité', value: Rubriques.ECO_HUMANITY },
+            { label: 'Portrait et découvertes', value: Rubriques.PORT_DISCOVERY },
+        ],
+        required: true
+    },
+    {
+        name: 'une', label: 'Mettre à la une', type: "select", options: [
+            { label: "Oui", value: 1 },
+            { label: "Non", value: 0 }
+        ]
+    }
 ];
 
+const updateMediaFields: FormFieldConfig[] = [
+    { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media' },
+    { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...' },
+    { name: 'file', label: "Fichier", type: "file" },
+    {
+        name: 'rubrique', label: 'Rubrique', type: 'select',
+        options: [
+            { label: "Une seule santé", value: Rubriques.ONE_HEALTH },
+            { label: 'Technologie', value: Rubriques.TECHNOLOGY },
+            { label: 'Éco-humanité', value: Rubriques.ECO_HUMANITY },
+            { label: 'Portrait et découvertes', value: Rubriques.PORT_DISCOVERY },
+        ],
+    },
+    {
+        name: 'une', label: 'Mettre à la une', type: "select", options: [
+            { label: "Oui", value: 1 },
+            { label: "Non", value: 0 }
+        ]
+    }
+];
 const mainHeaders = [
-    { key: 'title', label: 'Titre', flexBasis: '38%' },
-    { key: 'type', label: 'Type', flexBasis: '12%' },
-    { key: 'rubrique', label: 'Categorie', flexBasis: '15%' },
+    { key: 'title', label: 'Titre', flexBasis: '15%' },
+    { key: 'type', label: 'Type', flexBasis: '9%' },
+    { key: 'rubrique', label: 'Rubrique', flexBasis: '15%', textAlign: "center" as Property.TextAlign },
+    { key: 'url', label: 'URL', flexBasis: '29%', type: 'url' },
     { key: 'createdAt', label: 'Date de publication', flexBasis: '20%' },
-    { key: 'actions', label: 'Actions', flexBasis: '15%' },
+    { key: 'actions', label: 'Actions', flexBasis: '12%' },
 ];
-
-
-const TABS_INACTIVE_COLOR = '#5A8FAC'; 
-const TABS_ACTIVE_COLOR = '#374151';
+export type rubriques = "technology" | "one_health" | "ecohumanity"
 
 export default function MediaPage() {
-  const formattedDatedNow = formatTimestampToDate(now)
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true)
     const [editMedia, setEditMedia] = useState(false);
-    const [selectedMedia, setSelectedMedia] = useState<TableData | null>(null);
-    const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
-    const [filters] = useState<IFilter[]>(mainHeaders.map((header, index)=>{
-      return {value: header.key, label: header.label}
+    const [selectedMedia, setSelectedMedia] = useState<ElementType | null>(null);
+    const [filters] = useState<IFilter[]>(mainHeaders.map((header) => {
+        return { value: header.key, label: header.label }
     }))
     const [medias, setMedias] = useState<DbMedia[]>([])
-    
     const pageContainerClasses = `
         min-h-screen 
         font-sans
@@ -88,7 +104,7 @@ export default function MediaPage() {
        font-light
         text-white
     `;
-    
+
     const subTextClasses = `
         text-white 
         text-sm 
@@ -113,47 +129,84 @@ export default function MediaPage() {
         justify-center 
         md:justify-between
     `;
-    
+
     const searchBarWrapperClasses = `
         flex-grow 
         w-full 
         md:max-w-xl
     `;
 
-    const tabsClasses = `
-        flex 
-        gap-0 
-        bg-[${TABS_INACTIVE_COLOR.replace('#', '')}] 
-        rounded-lg 
-        overflow-hidden 
-        p-1
-    `;
-
-
-    const rightSectionClasses = `
-        w-full 
-        lg:w-1/3 
-        h-fit 
-        ml-auto
-        flex-shrink-0 
-        mt-8 
-        lg:mt-0 
-    `;
-
     const handleMedia = () => {
         setIsOpen(true);
     };
 
-    const handleSubmitMedia = () => {
-        setIsOpen(false);
+    let initialData: InitialDataType = {
+        name: '',
+        createdAt: '',
+        title: "",
+        type: "",
+        file: undefined,
+        description: "",
+        rubrique: "",
     };
 
-    let initialData = {
-        name: '',
-        lieu: '',
-        createdAt: '',
-        heure: '',
-        status: '',
+    const handleSubmitMedia = async (data: Product | InitialDataType | DbMedia) => {
+        setIsLoading(true)
+        try {
+            console.log("📋 Données reçues:", data);
+
+            data = data as InitialDataType;
+            const media = new FormData();
+
+            media.append('title', data.title as string);
+            media.append('rubrique', data.rubrique as rubriques);
+            media.append('une', data.une as string);
+            media.append('description', data.description as string);
+
+            if (data.file instanceof File) {
+                media.append('file', data.file);
+                console.log("✅ Fichier ajouté:", data.file.name, data.file.size);
+            } else {
+                throw new Error("Aucun fichier sélectionné");
+            }
+
+            console.log("📦 Contenu du FormData:");
+            for (const [key, value] of media.entries()) {
+                if (value instanceof File) {
+                    console.log(`  ${key}: [File] ${value.name} (${value.size} bytes)`);
+                } else {
+                    console.log(`  ${key}:`, value);
+                }
+            }
+
+
+            const response = await fetch('/api/upload-media', {
+                method: 'POST',
+                body: media,
+            });
+
+            console.log("📨 Réponse reçue:", response.status);
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Erreur lors de l\'upload');
+            }
+
+            const result = await response.json();
+            console.log("✅ Média uploadé:", result);
+
+
+            setMedias(prev => ([...prev, result.file]));
+            setIsOpen(false);
+
+            toast(true, false, "Media uploadé !");
+
+        } catch (error) {
+            console.error("❌ Erreur:", error);
+            toast(false, false, "Échec de l'upload du media");
+        } finally {
+            setIsLoading(false)
+        }
     };
 
     const handleEditMedia = async (item: ElementType) => {
@@ -167,44 +220,78 @@ export default function MediaPage() {
         setSelectedMedia(item as TableData);
         await DeleteMedia(item.id as string)
         setMedias(medias.filter((media) => media.id !== item.id))
-        
+
     };
 
-    const handleSubmitEditMedia = () => {
-        setEditMedia(false);
-    };
+
 
     if (selectedMedia) {
+        const media = selectedMedia as DbMedia;
         initialData = {
-            name: selectedMedia.name as string || '',
-            lieu: selectedMedia.lieu as string || '',
-            createdAt: selectedMedia.createdAt as string || '',
-            heure: selectedMedia.heure as string || '',
-            status: selectedMedia.status as string || '',
+            name: media.name as string || '',
+            createdAt: media.createdAt as string || '',
+            type: media.type as string,
+            title: media.title as string,
+            description: media.description as string || '',
+            rubrique: media.rubrique as string || '',
+            une: media.une ? 1 : 0,
         };
     }
 
-        useEffect(() => {
-            const fetchMedias = async () => {
-                try {
-                    const response = await FetchMedias() as DbMedia[]
-                    console.log({response})
-                    if (response) {
-                        setMedias(response.map(media =>{
-                            const createdAt  = new Date(media.createdAt)
-                            media.createdAt = createdAt.toLocaleString("fr")
-                            console.log("createdAt de création : ", media.createdAt)
-                            return media
-                        }))
-                    }
-    
-                } catch (err) {
-                    console.log("erreur lors de la recuperations des utilisateurs : ", err)
-                }
+    const handleSubmitEditMedia = async (data: Product | InitialDataType | DbMedia) => {
+        try {
+            data = data as InitialDataType
+            const media = new FormData()
+            media.append('id', selectedMedia?.id as string)
+            media.append('title', data.title as string)
+            media.append('rubrique', data.rubrique as string)
+            media.append('une', data.une as string)
+            media.append('description', data.description as string)
+            if (data.file && data.file instanceof File) {
+                media.append('file', data.file)
+                console.log("file found !")
             }
-            
-            fetchMedias()
-        }, [])
+            const response = await fetch('/api/upload-media', {
+                method: 'PUT',
+                body: media,
+            });
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Erreur lors de l\'upload');
+            }
+            const updatedMedia = await response.json();
+            setMedias(prev => prev.map(m => m.id === updatedMedia.id ? updatedMedia : m));
+            toast(true, false, "Média mis à jour !");
+            setEditMedia(false);
+        } catch (error) {
+            console.log((error as Error).message)
+            toast(false, false, "Échec de la mise à jour du média");
+        }
+
+    };
+
+    useEffect(() => {
+        const fetchMedias = async () => {
+            try {
+                const response = await FetchMedias() as DbMedia[]
+                console.log({ response })
+                if (response) {
+                    setMedias(response.map(media => {
+                        const createdAt = new Date(media.createdAt)
+                        media.createdAt = createdAt.toLocaleString("fr")
+                        return media
+                    }))
+                }
+
+            } catch (err) {
+                console.log("erreur lors de la recuperations des utilisateurs : ", err)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchMedias()
+    }, [])
 
     return (
         <div className={pageContainerClasses}>
@@ -223,24 +310,25 @@ export default function MediaPage() {
                         <SearchBarComponent placeholder='Rechercher un media....' inputValue={inputValue} setInputValue={setInputValue} />
                     </div>
                     <Filter
-                      filters={filters}
+                        filters={filters}
                     />
                 </div>
 
                 <article className="flex flex-col lg:flex-row gap-8" >
-                
-                <EventDataTable
-                    tableTitle=""
-                    data={medias as Media[]}
-                    columnHeaders={mainHeaders}
-                    handleEditEvent={handleEditMedia}
-                    handleDeleteEvent={handleDeleteMedia}
-                />
 
-                <article className={rightSectionClasses}>
-                <ComponenteFormulaire isMedia={true} setMedias={setMedias}/>
+                    <EventDataTable
+                        tableTitle=""
+                        isMedia={true}
+                        data={medias as DbMedia[]}
+                        columnHeaders={mainHeaders}
+                        handleEditEvent={handleEditMedia}
+                        handleDeleteEvent={handleDeleteMedia}
+                    />
                 </article>
-            </article>
+                <LoadingComponent
+                    isOpen={isLoading}
+                    onClose={() => setIsLoading(false)}
+                />
 
             </div>
 
@@ -252,6 +340,7 @@ export default function MediaPage() {
                 buttonTitle="Ajouter"
                 fields={MediaFields}
                 initialData={initialData}
+                isLoading={isLoading}
             />
 
             <AddElementModal
@@ -260,7 +349,7 @@ export default function MediaPage() {
                 onSubmit={handleSubmitEditMedia}
                 titleComponent="Modifier un média"
                 buttonTitle="Modifier"
-                fields={MediaFields}
+                fields={updateMediaFields}
                 initialData={initialData}
             />
         </div>

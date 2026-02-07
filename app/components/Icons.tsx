@@ -1,25 +1,39 @@
 'use client'
 import React from 'react';
 
-export type IconName = 
-    'Search' | 'Settings' | 'Plus' | 'Feed' | 
+export type IconName =
+    'Search' | 'Settings' | 'Plus' | 'Feed' | 'Analytics' |
     'List' | 'Video' | 'Envelope' | 'Group' | 'Rss' | 'Chat' |
-    'ControlPanel' | 'Playlist' | 'ShoppingCartIcon'| 'Movie' | 'Schedule' | 'UsersOnline' | 'Product' | 'LogOut' | 'InstagramIcon' | 'FacebookIcon' | 'WhatsAppIcon' | 'YouTubeIcon' | 'Localisation' | 'Phone' | 'LinkedIn';
+    'ControlPanel' | 'Playlist' | 'ShoppingCartIcon' | 'Movie' | 'Schedule' | 'UsersOnline' | 'Product' | 'LogOut' | 'InstagramIcon' | 'FacebookIcon' | 'WhatsAppIcon' | 'YouTubeIcon' | 'Localisation' | 'Phone' | 'LinkedIn' | "TwitterIcon" | "AudioIcon" | "PromoIcon";
 
 interface IconProps {
-    className?: string; 
+    className?: string;
 }
 
 const IconMap: Record<IconName, React.FC<IconProps>> = {
-    Search: ({ className }) => (
+    Analytics : ({ className }) =>(
         <svg 
-            xmlns="http://www.w3.org/2000/svg" 
+            /*width="800px" 
+            height="800px"*/ 
             viewBox="0 0 24 24" 
-            // Note: width et height sont définis via className (ex: w-6 h-6)
             fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+            xmlns="http://www.w3.org/2000/svg"
+            className={className}
+        >
+            <path d="M3 3V21" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M21 21H3" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M7 16L12.25 10.75L15.75 14.25L21 9" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    ),
+    Search: ({ className }) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            // Note: width et height sont définis via className (ex: w-6 h-6)
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className} // Utilisation de className
         >
@@ -29,13 +43,13 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
     ),
 
     Settings: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -43,15 +57,15 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.82.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
     ),
-    
+
     Plus: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -61,13 +75,13 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
     ),
 
     Feed: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -79,13 +93,13 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
     ),
 
     List: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -99,13 +113,13 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
     ),
 
     Video: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -114,13 +128,13 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
     ),
 
     Envelope: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -130,13 +144,13 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
     ),
 
     Group: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -148,13 +162,13 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
     ),
 
     Rss: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -165,13 +179,13 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
     ),
 
     Chat: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -180,13 +194,13 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
     ),
 
     ControlPanel: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -198,13 +212,13 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
     ),
 
     Playlist: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -220,13 +234,13 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
     ),
 
     Movie: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -238,13 +252,13 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
     ),
 
     Schedule: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -255,14 +269,14 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
         </svg>
     ),
 
-    LogOut : ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+    LogOut: ({ className }) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -273,13 +287,13 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
     ),
 
     UsersOnline: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -293,13 +307,13 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
     ),
 
     Product: ({ className }) => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
         >
@@ -308,7 +322,7 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
             <line x1="7" y1="2" x2="7" y2="22"></line>
         </svg>
     ),
-    
+
     InstagramIcon: ({ className }) => (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -326,11 +340,11 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
         </svg>
     ),
 
-    FacebookIcon : ({ className }) => (
+    FacebookIcon: ({ className }) => (
         <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            fill="currentColor" 
+            fill="currentColor"
             stroke="none"
             className={className}
         >
@@ -338,12 +352,12 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
         </svg>
     ),
 
-    WhatsAppIcon : ({ className }) => (
+    WhatsAppIcon: ({ className }) => (
         <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="currentColor" 
+            stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -354,7 +368,7 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
         </svg>
     ),
 
-    YouTubeIcon : ({ className }) => (
+    YouTubeIcon: ({ className }) => (
         <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -366,69 +380,116 @@ const IconMap: Record<IconName, React.FC<IconProps>> = {
         </svg>
     ),
 
-    Localisation : ({className}) =>(
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
+    Localisation: ({ className }) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
             fill="currentColor"
             stroke="none"
             className={className}
         >
-            <path d="M12 2C8.686 2 6 4.686 6 8c0 4.418 6 12 6 12s6-7.582 6-12c0-3.314-2.686-6-6-6zm0 8.5A2.5 2.5 0 1 1 12 5a2.5 2.5 0 0 1 0 5z"/>
+            <path d="M12 2C8.686 2 6 4.686 6 8c0 4.418 6 12 6 12s6-7.582 6-12c0-3.314-2.686-6-6-6zm0 8.5A2.5 2.5 0 1 1 12 5a2.5 2.5 0 0 1 0 5z" />
         </svg>
     ),
 
-    Phone:({className}) =>(
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
+    Phone: ({ className }) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
             fill="currentColor"
             stroke="none"
             className={className}
         >
-            <path d="M6.62 10.79a15.053 15.053 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V21a1 1 0 0 1-1 1C10.07 22 2 13.93 2 3a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.58a1 1 0 0 1-.24 1.01l-2.21 2.2z"/>
+            <path d="M6.62 10.79a15.053 15.053 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V21a1 1 0 0 1-1 1C10.07 22 2 13.93 2 3a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.58a1 1 0 0 1-.24 1.01l-2.21 2.2z" />
         </svg>
     ),
-    LinkedIn:({className}) => (
-    <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        viewBox="0 0 24 24" 
-        fill="currentColor"
-        stroke="none"
-        className={className}
-    >
-        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.235-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-    </svg>
-),
-    ShoppingCartIcon : ({ className }) => (
-    <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        strokeWidth="2.5" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
-        className={className}
-    >
-        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-        <line x1="3" y1="6" x2="21" y2="6"></line>
-        <path d="M16 10a4 4 0 0 1-8 0"></path>
-    </svg>
-)
+    LinkedIn: ({ className }) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            stroke="none"
+            className={className}
+        >
+            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.235-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+        </svg>
+    ),
+    ShoppingCartIcon: ({ className }) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+        >
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+    ),
+    TwitterIcon: ({ className }) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+        >
+            <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
+            <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+        </svg>
+    ),
+    AudioIcon: ({ className }) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+        >
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="22"></line>
+            <line x1="8" y1="22" x2="16" y2="22"></line>
+        </svg>
+    ),
+    PromoIcon: ({ className }) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+        >
+            <path d="m3 11 18-5v12L3 14v-3z" />
+            <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+        </svg>
+    )
 };
 
 
 interface IconComponentProps {
-    name: IconName; 
-    className?: string; 
+    name: IconName;
+    className?: string;
 }
 
 export default function IconComponent({ name, className }: IconComponentProps) {
     const Icon = IconMap[name];
 
     if (!Icon) {
-        
+
         return <div className={`border border-red-500 border-dashed ${className}`} />;
     }
 

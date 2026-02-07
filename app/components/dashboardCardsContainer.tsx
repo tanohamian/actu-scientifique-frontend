@@ -12,19 +12,23 @@ const DashboardCardContainer = ({ articles, products, visitors, subscribers }: D
         <section className={styles.firstline}>
                 <DashboardCard 
                     label={articles.label}
-                    value={articles.value} 
+                    value={articles.value}
+                    route={articles.route}
                 />
                 <DashboardCard 
                     label={products.label}
-                    value={products.value} 
+                    value={products.value}
+                    route={products.route} 
                 />
                 <DashboardCard 
                     label={visitors.label}
-                    value={visitors.value} 
+                    value={visitors.value}
+                    route={visitors.route}
                 />
                 <DashboardCard 
                     label={subscribers.label}
-                    value={subscribers.value} 
+                    value={subscribers.value}
+                    route={subscribers.route}
                 />
         </section>
     )

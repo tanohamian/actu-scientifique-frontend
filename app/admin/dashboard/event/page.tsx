@@ -1,39 +1,36 @@
 'use client'
 import ButtonComponent from '@/app/components/button';
 import SearchBarComponent from '@/app/components/searchBar';
-import EventDataTable, { TableData } from '@/app/components/eventDataTable';
-import React, { useState } from 'react'
-import AddElementModal, { FormFieldConfig } from '@/app/components/addElement';
+import EventDataTable, { EventInterface, TableData } from '@/app/components/eventDataTable';
+import React, { useEffect, useState } from 'react'
+import AddElementModal, { FormFieldConfig, InitialDataType } from '@/app/components/addElement';
 import { useRouter } from 'next/navigation';
 import Calendar from '@/app/components/calendarCompenetWithFullCalendar';
+import { CreateEvent, DeleteEvent, FetchEvents, UpdateEvent } from '@/app/actions/EventsManager';
+import LoadingComponent from '@/app/components/loadingComponent'
 
 const now = new Date()
-const mainEventData: TableData[] = [
-    { title: 'IA dans le journalisme', lieu: 'Dakar', status: 'pas en direct', createdAt: now },
-    { title: 'IA dans le journalisme', lieu: 'Bouaké', status: 'pas en direct', createdAt: now },
-];
-
 
 const EventFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre de l\'évènement', type: 'text', placeholder: 'Entrez le titre de l\'évènement', required: true },
-    { name: 'lieu', label: 'Lieu', type: 'text', placeholder: 'Entrez le lieu de l\'évènement', required: true },
-    { name: 'date', label: 'Date', type: 'text', placeholder: 'Entrez la date de l\'évènement', required: true },
-    { name: 'heure', label: 'Heure', type: 'text', placeholder: 'Entrez l\'heure de l\'évènement', required: true },
-    { name: 'status', label: 'Statut', type: 'select', options: [{ value: 'live', label: 'En direct' }, { value: 'not_live', label: 'Pas en direct' }], required: true },
+    { name: 'location', label: 'Lieu', type: 'text', placeholder: 'Entrez le lieu de l\'évènement', required: true },
+    { name: 'date', label: 'Date', type: 'date', placeholder: 'Entrez la date de l\'évènement', required: true },
+    { name: 'time', label: 'Heure', type: 'time', placeholder: 'Entrez l\'heure de l\'évènement', required: true },
+    { name: "description", label: "Description", type: "textarea", placeholder: "Entrez la description de l\'évènement", required: false }
+];
+
+const EventFieldsLive: FormFieldConfig[] = [
+    { name: 'title', label: 'Titre de l\'évènement', type: 'text', placeholder: 'Entrez le titre de l\'évènement', required: true },
+    { name: 'url', label: 'Url', type: 'text', placeholder: 'Entrez l\'url de l\'évènement', required: true },
 ];
 
 const mainHeaders = [
     { key: 'title', label: 'Titre de l\'evenement', flexBasis: '25%' },
-    { key: 'lieu', label: 'lieu', flexBasis: '15%' },
+    { key: 'location', label: 'lieu', flexBasis: '15%' },
     { key: 'status', label: 'Statut', flexBasis: '15%' },
     { key: 'date', label: 'Date', flexBasis: '15%' },
-    { key: 'heure', label: 'heure', flexBasis: '15%' },
+    { key: 'time', label: 'heure', flexBasis: '15%' },
     { key: 'actions', label: 'Actions', flexBasis: '15%' },
-];
-
-const liveEventData: TableData[] = [
-    { title: 'IA dans le journalisme', status: 'en direct', url: 'https://ghhddd.com', createdAt: now },
-    { title: 'IA dans le journalisme', status: 'en direct', url: 'https://vubu.com', createdAt: now },
 ];
 
 const liveHeaders = [
@@ -42,19 +39,33 @@ const liveHeaders = [
     { key: 'url', label: 'Url', flexBasis: '30%' },
 ];
 
-const TABS_INACTIVE_COLOR = '#5A8FAC'; 
+const TABS_INACTIVE_COLOR = '#5A8FAC';
 const TABS_ACTIVE_COLOR = '#374151';
 
-export default function EventPage() {
+export interface EventLive {
+    id?: string | undefined,
+    title: string | undefined,
+    url: string | undefined,
+    status: string | undefined
+}
 
+const STATUS_LABELS: Record<string, string> = {
+    'NOT_LIVE': 'pas en direct',
+    'LIVE': 'en direct',
+};
+export default function EventPage() {
+    const [allEvents, setAllEvents] = useState<EventInterface[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [editEvent, setEditEvent] = useState(false);
+    const [events, setEvents] = useState<EventInterface[]>([]);
+    const [eventLive, setEventLive] = useState<EventLive[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<TableData | null>(null);
     const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
+    const [isLoading, setIsLoading] = useState(false);
 
     const router = useRouter();
-    
+
     const pageContainerClasses = `
         min-h-screen 
         font-sans
@@ -82,7 +93,7 @@ export default function EventPage() {
        font-light
         text-white
     `;
-    
+
     const subTextClasses = `
         text-white 
         text-sm 
@@ -107,7 +118,7 @@ export default function EventPage() {
         justify-center 
         md:justify-between
     `;
-    
+
     const searchBarWrapperClasses = `
         flex-grow 
         w-full 
@@ -122,7 +133,7 @@ export default function EventPage() {
         overflow-hidden 
         p-1
     `;
-    
+
     const tabButtonBaseClasses = `
         py-2 
         px-5 
@@ -142,35 +153,114 @@ export default function EventPage() {
     const handleEvent = () => {
         setIsOpen(true);
     };
+    const handleSubmitEvent = async (data: EventInterface) => {
+        try {
+            const newEvent = await CreateEvent(data);
 
-    const handleSubmitEvent = () => {
-        setIsOpen(false);
+            if (newEvent) {
+                setIsOpen(false);
+
+                const formattedEvent = {
+                    ...newEvent,
+                    status: newEvent.status ? STATUS_LABELS[newEvent.status] || newEvent.status : 'pas en direct',
+                    date: newEvent.date || ''
+                };
+
+                setEvents((prevEvents) => [...prevEvents, formattedEvent as EventInterface]);
+                setAllEvents((prevAll) => [...prevAll, formattedEvent as EventInterface]);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la création de l'événement : ", error);
+        }
     };
 
-    let initialData = {
+    const handleSubmitEditEvent = async (data: EventInterface) => {
+        try {
+            const eventId = selectedEvent?.id as string;
+            const currentStatus = data.status || selectedEvent?.status as string;
+
+            const technicalStatus = currentStatus === 'en direct' ? 'NOT_LIVE' : 'LIVE';
+
+            const updatedEvent = await UpdateEvent(technicalStatus, eventId, data.url || '');
+
+            if (updatedEvent && !Array.isArray(updatedEvent)) {
+                const formattedEvent = {
+                    ...updatedEvent,
+                    status: updatedEvent.status ? STATUS_LABELS[updatedEvent.status] || updatedEvent.status : 'pas en direct',
+                    url: updatedEvent.url || '',
+                };
+
+                // Mettre à jour allEvents
+                setAllEvents((prevAll) => {
+                    const exists = prevAll.find(e => e.id === updatedEvent.id);
+                    return exists
+                        ? prevAll.map(e => e.id === updatedEvent.id ? formattedEvent as EventInterface : e)
+                        : [...prevAll, formattedEvent as EventInterface];
+                });
+
+                if (updatedEvent.status === 'LIVE') {
+                    setEventLive((prevLive) => {
+                        const exists = prevLive.find(e => e.id === updatedEvent.id);
+                        return exists
+                            ? prevLive.map(e => e.id === updatedEvent.id ? formattedEvent as EventLive : e)
+                            : [...prevLive, formattedEvent as EventLive];
+                    });
+
+                    setEvents((prevEvents) => prevEvents.filter(e => e.id !== updatedEvent.id));
+
+                } else {
+                    setEvents((prevEvents) => {
+                        const exists = prevEvents.find(e => e.id === updatedEvent.id);
+                        return exists
+                            ? prevEvents.map(e => e.id === updatedEvent.id ? formattedEvent as EventInterface : e)
+                            : [...prevEvents, formattedEvent as EventInterface];
+                    });
+
+                    setEventLive((prevLive) => prevLive.filter(e => e.id !== updatedEvent.id));
+                }
+
+                setEditEvent(false);
+                setSelectedEvent(null);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour de l'événement : ", error);
+        }
+    };
+
+    let initialData: InitialDataType = {
         title: '',
-        lieu: '',
+        location: '',
         date: '',
-        heure: '',
+        time: '',
+        status: '',
+    };
+    let initialDataLive: InitialDataType = {
+        title: '',
+        url: '',
         status: '',
     };
 
     const handleEditEvent = (item: TableData) => {
-        console.log('Editing event:', item);
         setSelectedEvent(item);
         setEditEvent(true);
     };
 
-    const handleSubmitEditEvent = () => {
-        setEditEvent(false);
-    };
+
 
     if (selectedEvent) {
         initialData = {
             title: selectedEvent.title as string || '',
-            lieu: selectedEvent.lieu as string || '',
+            location: selectedEvent.location as string || '',
             date: selectedEvent.date as string || '',
-            heure: selectedEvent.heure as string || '',
+            time: selectedEvent.time as string || '',
+            status: selectedEvent.status as string || '',
+        };
+    }
+
+    if (selectedEvent) {
+        initialDataLive = {
+            title: selectedEvent.title as string || '',
+            url: selectedEvent.url as string || '',
             status: selectedEvent.status as string || '',
         };
     }
@@ -179,8 +269,74 @@ export default function EventPage() {
         setViewMode(mode);
     };
 
+    const handleDeleteEvent = async (data: TableData) => {
+        try {
+            const deletedEvent = await DeleteEvent(data?.id as string);
+            if (deletedEvent) {
+                setEvents((prevEvents) => prevEvents.filter(event => event.id !== data.id));
+                setEventLive((prevLive) => prevLive.filter(event => event.id !== data.id));
+                setAllEvents((prevAll) => prevAll.filter(event => event.id !== data.id));
+            }
+        } catch (error) {
+            console.error("Erreur lors de la suppression de l'événement : ", error);
+        }
+    };
+
+    useEffect(() => {
+        (async () => {
+            setIsLoading(true)
+            const events = await FetchEvents()
+            if (events) {
+                const liveEvents = events
+                    .filter(event => event.status === 'LIVE')
+                    .map(event => ({
+                        id: event.id,
+                        title: event.title,
+                        url: event.url,
+                        status: 'en direct'
+                    }))
+
+                const regularEvents = events
+                    .filter(event => event.status !== 'LIVE')
+                    .map(event => ({
+                        ...event,
+                        status: event.status === 'LIVE' ? 'en direct' : 'pas en direct'
+                    }))
+
+                const allFormattedEvents = events.map(event => ({
+                    ...event,
+                    status: event.status === 'LIVE' ? 'en direct' : 'pas en direct'
+                }))
+
+                setAllEvents(allFormattedEvents)
+                setEventLive(liveEvents)
+                setEvents(regularEvents)
+            }
+            setIsLoading(false)
+        })()
+    }, [])
+
+    const filteredEvents = events.filter(event =>
+        event && (event?.title?.toLowerCase().includes(inputValue.toLowerCase()) ||
+            event?.location?.toLowerCase().includes(inputValue.toLowerCase()) ||
+            event?.time?.toLowerCase().includes(inputValue.toLowerCase()) ||
+            event?.status?.toLowerCase().includes(inputValue.toLowerCase())
+        )
+    )
+
+    const filteredLiveEvents = eventLive.filter(event =>
+        event && (event?.title?.toLowerCase().includes(inputValue.toLowerCase()) ||
+            event?.url?.toLowerCase().includes(inputValue.toLowerCase()) ||
+            event?.status?.toLowerCase().includes(inputValue.toLowerCase())
+        )
+    )
+
     return (
         <div className={pageContainerClasses}>
+            <LoadingComponent
+                isOpen={isLoading}
+                onClose={() => setIsLoading(false)}
+            />
             <div className={headerClasses}>
                 <div>
                     <h1 className={textClasses}>Gestion des Évènements</h1>
@@ -197,14 +353,14 @@ export default function EventPage() {
                     </div>
 
                     <div className={tabsClasses}>
-                        <button 
+                        <button
                             className={`${tabButtonBaseClasses} ${viewMode === 'list' ? `bg-[${TABS_ACTIVE_COLOR.replace('#', '')}] shadow-md text-white` : 'bg-transparent text-white/90 hover:bg-white/10'}`}
                             onClick={() => { handleTabClick('list'); router.push('/admin/dashboard/event'); }}
                         >
                             Liste
                         </button>
 
-                        <button 
+                        <button
                             className={`${tabButtonBaseClasses} ${viewMode === 'calendar' ? `bg-[${TABS_ACTIVE_COLOR.replace('#', '')}] shadow-md text-white` : 'bg-transparent text-white/90 hover:bg-white/10'}`}
                             onClick={() => handleTabClick('calendar')}
                         >
@@ -218,20 +374,22 @@ export default function EventPage() {
                         <>
                             <EventDataTable
                                 tableTitle=""
-                                data={mainEventData}
+                                data={filteredEvents}
                                 columnHeaders={mainHeaders}
                                 handleEditEvent={handleEditEvent}
+                                handleDeleteEvent={handleDeleteEvent}
                             />
 
                             <EventDataTable
                                 tableTitle="Evènements en direct"
-                                data={liveEventData}
+                                data={filteredLiveEvents}
                                 columnHeaders={liveHeaders}
+                                handleDeleteEvent={handleDeleteEvent}
                             />
 
                         </>
                     ) : (
-                        <Calendar />
+                        <Calendar events={allEvents} />
                     )
                 }
 
@@ -253,8 +411,8 @@ export default function EventPage() {
                 onSubmit={handleSubmitEditEvent}
                 titleComponent="Modifier un évènement"
                 buttonTitle="Modifier"
-                fields={EventFields}
-                initialData={initialData}
+                fields={EventFieldsLive}
+                initialData={initialDataLive}
             />
         </div>
     );

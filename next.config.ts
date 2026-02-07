@@ -1,40 +1,75 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    experimental: {
-        serverActions: {
-            bodySizeLimit: '5mb',
-        },
+  output: "standalone",
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '100mb',
     },
-     
-  /* config options here */
+    proxyClientMaxBodySize: '100mb',
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 's3.actuscientifique.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'global.unitednations.entermediadb.net',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'tse2.mm.bing.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'tse1.mm.bing.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.cameroon-tribune.cm',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.bing.com',
+        pathname: '/**',
+      }
+    ],
+  },
+
+  turbopack: {
+
+  },
   webpack(config) {
     config.module.rules.push({
-            test: /\.svg$/i,
-            issuer: { and: [/\.(js|ts|md)x?$/] }, // S'assure que cela ne s'applique qu'aux imports JS/TS
-            use: [
-                {
-                    loader: '@svgr/webpack',
-                    options: {
-                        // Options pour nettoyer le SVG (optionnel mais recommandé)
-                        svgoConfig: {
-                            plugins: [
-                                { name: 'removeViewBox', active: false },
-                                { name: 'removeDimensions', active: true },
-                            ],
-                        },
-                        // Permet d'injecter des props comme 'style' et 'onClick'
-                        typescript: true, 
-                        ext: 'tsx', // Utiliser l'extension TSX pour les composants
-                    },
-                },
-            ],
-        });
+      test: /\.svg$/i,
+      issuer: { and: [/\.(js|ts|md)x?$/] },
+      use: [
+        {
+          loader: '@svgr/webpack',
+          options: {
+            svgoConfig: {
+              plugins: [
+                { name: 'removeViewBox', active: false },
+                { name: 'removeDimensions', active: true },
+              ],
+            },
+            typescript: true,
+            ext: 'tsx',
+          },
+        },
+      ],
+    });
 
-        return config;
-  }
+    return config;
+  },
 };
-
-
 
 export default nextConfig;

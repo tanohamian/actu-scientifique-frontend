@@ -1,6 +1,6 @@
 import React from 'react'
 import SwitchSection from './components/Section';
-
+//à ne pas supprimer
   const container: React.CSSProperties = {
         minHeight: '100vh',
         padding: '40px',
@@ -34,7 +34,7 @@ export default function page() {
     <div style={container}>
       <div style={entete}>
         <h1 style={title}> Gestion de contenu </h1>
-        <h2 style={soustitre}> Gérer les bourses, les formations et les jeux </h2>
+        <h2 style={soustitre}> Gérer les bourses, les formations et les Reportages </h2>
       </div>
       <SwitchSection/>
     </div>
