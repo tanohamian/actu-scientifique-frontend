@@ -35,6 +35,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/actusciences-front-app:latest
-            docker stop actusciences-front-app || true
-            docker rm actusciences-front-app || true
-            docker run -d --name actusciences-front-app -p 12000:3000 ${{ secrets.DOCKER_HUB_USERNAME }}/actusciences-front-app:latest
+            docker compose /git/actuscience/docker-compose.yml up -d --force-recreate --
