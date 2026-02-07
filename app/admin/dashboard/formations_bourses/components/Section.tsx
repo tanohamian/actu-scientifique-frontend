@@ -4,16 +4,9 @@ import { Pencil, Trash2, Loader2 } from 'lucide-react';
 import { showToast } from "nextjs-toast-notify"
 import { FetchTrainings, AddTraining, UpdateTraining, DeleteTraining } from '@/app/actions/Trainings';
 import { FetchScholarships, AddScholarship, UpdateScholarship, DeleteScholarship, IScholarship } from '@/app/actions/Scholarships';
+import { ITraining } from '@/app/interfaces';
 import ConfirmModal from './ConfirmModal';
 
-export interface IReport {
-  id?: string;
-  title: string;
-  date: Date;
-  reward: number;
-  description: string;
-
-}
 export const toast = function (success: boolean, edit: boolean = false, message: string = "") {
   return success ? showToast.success(message ? message : edit ? "Mis à Jour !" : "Publié !", {
     duration: 4000,
@@ -31,9 +24,9 @@ export const toast = function (success: boolean, edit: boolean = false, message:
     sound: true,
   });
 }
-import { ITraining } from '@/app/interfaces';
 
-type DataItem = ITraining | IScholarship | IReport;
+type TabType = 'Bourses' | 'Formations';
+type DataItem = ITraining | IScholarship;
 
 interface FormData {
   title: string;
@@ -41,11 +34,12 @@ interface FormData {
   description: string;
   date: string;
   reward: string;
+  type: 'CLASSIC' | 'ACADEMY';
 }
 
 const tabContainer: CSSProperties = { display: 'flex', gap: '30px', marginBottom: '40px', borderBottom: '2px solid rgba(255, 255, 255, 0.3)' };
-const tabStyle: CSSProperties = { color: 'white', fontSize: '16px', padding: '12px 0', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '500', borderBottom: '3px solid transparent', };
-const activeTabStyle: CSSProperties = { borderBottom: '3px solid #E67E5F', fontWeight: 'bold', borderBottomColor: '#E67E5F', };
+const tabStyle: CSSProperties = { color: 'white', fontSize: '16px', padding: '12px 0', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '500', borderBottom: '3px solid transparent' };
+const activeTabStyle: CSSProperties = { borderBottom: '3px solid #E67E5F', fontWeight: 'bold', borderBottomColor: '#E67E5F' };
 const baseInputStyle: CSSProperties = { padding: '12px 16px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.3)', backgroundColor: 'rgba(255, 255, 255, 0.1)', color: 'white', fontSize: '14px', outline: 'none' };
 const buttonStyle: CSSProperties = { padding: '12px 40px', backgroundColor: '#E67E5F', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: '600', cursor: 'pointer' };
 
@@ -58,31 +52,33 @@ const formatDateFR = (dateString: string | Date) => {
   return `${day}/${month}/${year}`;
 };
 
-
-
 export default function SwitchSection() {
-  const [activeTab, setActiveTab] = useState<'Bourses' | 'Formations' | 'Science journalism academy'>('Bourses');
+  const [activeTab, setActiveTab] = useState<TabType>('Bourses');
   const [items, setItems] = useState<DataItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+  
+  const [inputMode, setInputMode] = useState<'url' | 'reward'>('url');
 
   const [formData, setFormData] = useState<FormData>({
-    title: '', url: '', description: '', date: '', reward: ''
+    title: '', url: '', description: '', date: '', reward: '', type: 'CLASSIC'
   });
 
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const data = activeTab === 'Formations'
-        ? await FetchTrainings()
-        : await FetchScholarships()
-      setItems(data || []);
+      if (activeTab === 'Bourses') {
+        const data = await FetchScholarships();
+        setItems(data || []);
+      } else {
+        const data = await FetchTrainings();
+        setItems(data || []);
+      }
     } catch (error) {
-      console.error("Erreur de récupération:", error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -99,19 +95,10 @@ export default function SwitchSection() {
     loadData();
   }, [loadData]);
 
-  const openDeleteModal = (id: string) => {
-    setItemToDelete(id);
-    setIsModalOpen(true);
-  };
-
   const confirmDelete = async () => {
     if (!itemToDelete) return;
-
     setIsModalOpen(false);
-    const success = activeTab === 'Formations'
-      ? await DeleteTraining(itemToDelete)
-      : await DeleteScholarship(itemToDelete)
-
+    const success = activeTab === 'Bourses' ? await DeleteScholarship(itemToDelete) : await DeleteTraining(itemToDelete);
     if (success) {
       toast(true, false, "Élément supprimé !");
       loadData();
@@ -122,66 +109,84 @@ export default function SwitchSection() {
   };
 
   const handleSave = async () => {
+    if (!formData.title.trim() || !formData.description.trim()) {
+      toast(false, false, "Veuillez remplir le titre et la description");
+      return;
+    }
     setLoading(true);
     let res;
     const isEditing = !!editingId;
 
-    if (activeTab === 'Formations') {
-      const payload = { title: formData.title, lien: formData.url, description: formData.description, date: formData.date };
-      res = isEditing ? await UpdateTraining(editingId, payload as ITraining) : await AddTraining(payload as ITraining);
+    if (activeTab === 'Bourses') {
+      const payload: IScholarship = {
+        title: formData.title,
+        description: formData.description,
+        date: formData.date,
+        ...(inputMode === 'url' ? { lien: formData.url } : {}),
+        ...(inputMode === 'reward' ? { reward: Number(formData.reward) } : {})
+      };
+      res = isEditing ? await UpdateScholarship(editingId as string, payload) : await AddScholarship(payload);
     } else {
-      const payload = { title: formData.title, lien: formData.url, description: formData.description, date: formData.date };
-      res = isEditing ? await UpdateScholarship(editingId, payload as IScholarship) : await AddScholarship(payload as IScholarship);
+      const payload: ITraining = {
+        title: formData.title,
+        lien: formData.url || "",
+        description: formData.description,
+        date: formData.date,
+        type: formData.type
+      };
+      res = isEditing ? await UpdateTraining(editingId as string, payload) : await AddTraining(payload);
     }
 
     if (res?.success) {
       toast(true, isEditing);
       setEditingId(null);
-      setFormData({ title: '', url: '', description: '', date: '', reward: '' });
+      setFormData({ title: '', url: '', description: '', date: '', reward: '', type: 'CLASSIC' });
       await loadData();
     } else {
-      toast(false);
+      // @ts-expect-error: res may not have an 'error' property depending on the API response shape
+      toast(false, false, res?.error || "Opération échouée");
     }
     setLoading(false);
   };
 
   const handleEditClick = (item: DataItem) => {
     setEditingId(item.id || null);
-    if (activeTab === 'Science journalism academy') {
-      const reportItem = item as IReport;
-      setFormData({
-        title: reportItem.title, url: '', description: reportItem.description,
-        date: reportItem.date instanceof Date ? reportItem.date.toISOString().split('T')[0] : new Date(reportItem.date).toISOString().split('T')[0],
-        reward: String(reportItem.reward)
-      });
+    
+    if ('reward' in item && item.reward) {
+        setInputMode('reward');
     } else {
-      const regularItem = item as ITraining | IScholarship;
-      setFormData({ title: regularItem.title, url: regularItem.lien, description: regularItem.description, date: regularItem.date, reward: '' });
+        setInputMode('url');
     }
+
+    setFormData({
+      title: item.title,
+      url: item.lien || '',
+      description: item.description,
+      date: typeof item.date === 'string' ? item.date.split('T')[0] : new Date(item.date).toISOString().split('T')[0],
+      reward: 'reward' in item && item.reward ? String(item.reward) : '',
+      type: 'type' in item ? (item as ITraining).type : 'CLASSIC'
+    });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const isReportage = activeTab === 'Science journalism academy';
-
   return (
     <div style={{ backgroundColor: '#5A8FAC', minHeight: '100vh', padding: isMobile ? '20px' : '40px', color: 'white' }}>
-
       <ConfirmModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={confirmDelete}
-        title={`Voulez-vous vraiment supprimer cet élément ?`}
+        title="Confirmer la suppression ?"
       />
 
       <div style={tabContainer}>
-        {(['Bourses', 'Formations', 'Science journalism academy'] as const).map((tab) => (
+        {(['Bourses', 'Formations'] as const).map((tab) => (
           <button
             key={tab}
             style={{ ...tabStyle, ...(activeTab === tab ? activeTabStyle : {}) }}
             onClick={() => {
               setActiveTab(tab);
               setEditingId(null);
-              setFormData({ title: '', url: '', description: '', date: '', reward: '' });
+              setFormData({ title: '', url: '', description: '', date: '', reward: '', type: 'CLASSIC' });
             }}
           >
             {tab}
@@ -191,7 +196,7 @@ export default function SwitchSection() {
 
       <div style={{ marginBottom: '60px' }}>
         <h2 style={{ marginBottom: '30px', fontSize: '24px' }}>
-          {editingId ? 'Modifier' : 'Ajouter'} {activeTab === 'Bourses' ? 'une bourse' : activeTab === 'Formations' ? 'une formation' : 'un reportage'}
+          {editingId ? 'Modifier' : 'Ajouter'} {activeTab === 'Bourses' ? 'une bourse' : 'une formation'}
         </h2>
 
         <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '20px', marginBottom: '20px' }}>
@@ -200,13 +205,51 @@ export default function SwitchSection() {
             <input type="text" placeholder="Entrez le titre" style={baseInputStyle}
               value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
           </div>
+          
+          {activeTab === 'Formations' && (
+            <div style={{ flex: 0.5, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <label style={{ fontSize: '14px' }}>Type de formation</label>
+              <select
+                style={{ ...baseInputStyle, color: 'white', backgroundColor: 'rgba(255, 255, 255, 0.1)', appearance: 'none', cursor: 'pointer' }}
+                value={formData.type}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value as 'CLASSIC' | 'ACADEMY' })}
+              >
+                <option value="CLASSIC" style={{ color: 'black', backgroundColor: 'white' }}>Classique</option>
+                <option value="ACADEMY" style={{ color: 'black', backgroundColor: 'white' }}>Science Journalism Academy</option>
+              </select>
+            </div>
+          )}
+
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label style={{ fontSize: '14px' }}>{isReportage ? 'Récompense (FCFA)' : 'Lien (YouTube ou Web)'}</label>
-            {isReportage ? (
-              <input type="number" placeholder="Montant de la récompense" style={baseInputStyle}
-                value={formData.reward} onChange={(e) => setFormData({ ...formData, reward: e.target.value })} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <label style={{ fontSize: '14px' }}>
+                {activeTab === 'Bourses' ? 'Information à fournir' : 'Lien de la formation'}
+              </label>
+              
+              {activeTab === 'Bourses' && (
+                <div style={{ display: 'flex', gap: '12px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', fontSize: '12px', opacity: 0.9 }}>
+                      <input type="radio" checked={inputMode === 'url'} onChange={() => setInputMode('url')} />
+                      Lien
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', fontSize: '12px', opacity: 0.9 }}>
+                      <input type="radio" checked={inputMode === 'reward'} onChange={() => setInputMode('reward')} />
+                      Montant
+                    </label>
+                </div>
+              )}
+            </div>
+            
+            {activeTab === 'Bourses' ? (
+                inputMode === 'url' ? (
+                  <input type="text" placeholder="Entrez le lien vers la bourse et ses informations" style={baseInputStyle}
+                    value={formData.url} onChange={(e) => setFormData({ ...formData, url: e.target.value })} />
+                ) : (
+                  <input type="number" placeholder="Entrez le montant de la bourse (FCFA)" style={baseInputStyle}
+                    value={formData.reward} onChange={(e) => setFormData({ ...formData, reward: e.target.value })} />
+                )
             ) : (
-              <input type="text" placeholder="https://..." style={baseInputStyle}
+              <input type="text" placeholder="Lien YouTube ou site web" style={baseInputStyle}
                 value={formData.url} onChange={(e) => setFormData({ ...formData, url: e.target.value })} />
             )}
           </div>
@@ -238,35 +281,31 @@ export default function SwitchSection() {
         ) : items.length === 0 ? (
           <p style={{ textAlign: 'center', opacity: 0.6 }}>Aucune donnée trouvée.</p>
         ) : (
-          <>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex', padding: '10px 0', borderBottom: '2px solid rgba(255, 255, 255, 0.3)', marginBottom: '10px', fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase', opacity: 0.9 }}>
               <div style={{ flex: 2 }}>Titre</div>
+              {activeTab === 'Formations' && <div style={{ flex: 1 }}>Type</div>}
               <div style={{ flex: 1 }}>Date</div>
               <div style={{ flex: 0.5, textAlign: 'right' }}>Actions</div>
             </div>
-            {items.map((item) => {
-              const displayTitle = (item as ITraining | IScholarship).title;
-              const rawDate = (item as ITraining | IScholarship).date;
-
-              return (
-                <div key={item.id} style={{ display: 'flex', padding: '15px 0', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', alignItems: 'center' }}>
-                  <div style={{ flex: 2, fontWeight: '500' }}>{displayTitle}</div>
-                  <div style={{ flex: 1, opacity: 0.8 }}>{formatDateFR(rawDate)}</div>
-                  <div style={{ flex: 0.5, display: 'flex', gap: '15px', justifyContent: 'flex-end' }}>
-                    <button onClick={() => handleEditClick(item)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }} title="Modifier">
-                      <Pencil size={18} />
-                    </button>
-                    <button
-                      onClick={() => item.id && openDeleteModal(item.id)}
-                      style={{ background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer' }}
-                    >
-                      <Trash2 size={18} />
-                    </button>
+            {items.map((item) => (
+              <div key={item.id} style={{ display: 'flex', padding: '15px 0', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', alignItems: 'center' }}>
+                <div style={{ flex: 2, fontWeight: '500' }}>{item.title}</div>
+                {activeTab === 'Formations' && (
+                  <div style={{ flex: 1, fontSize: '12px' }}>
+                    <span style={{ backgroundColor: (item as ITraining).type === 'ACADEMY' ? '#E67E5F' : 'rgba(255,255,255,0.2)', padding: '4px 8px', borderRadius: '4px' }}>
+                      {(item as ITraining).type === 'ACADEMY' ? 'Academy' : 'Classique'}
+                    </span>
                   </div>
+                )}
+                <div style={{ flex: 1, opacity: 0.8 }}>{formatDateFR(item.date)}</div>
+                <div style={{ flex: 0.5, display: 'flex', gap: '15px', justifyContent: 'flex-end' }}>
+                  <button onClick={() => handleEditClick(item)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}><Pencil size={18} /></button>
+                  <button onClick={() => item.id && (setItemToDelete(item.id), setIsModalOpen(true))} style={{ background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer' }}><Trash2 size={18} /></button>
                 </div>
-              );
-            })}
-          </>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>

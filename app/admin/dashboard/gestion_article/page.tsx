@@ -12,8 +12,12 @@ import FormComponent, { toast } from '@/app/components/FormComponent';
 import { Rubriques } from '@/app/enum/enums';
 import LoadingComponent from '@/app/components/loadingComponent';
 import { Article, DbArticle, Product } from '@/app/interfaces';
+import dynamic from 'next/dynamic'
 
-
+const EditorText = dynamic(
+    () => import('@/app/components/editor'),
+    { ssr: false }
+)
 
 const ArticleFields: FormFieldConfig[] = [
     { name: 'title', label: "Titre de l'article", placeholder: "Entrez le titre de l'article", required: true },
@@ -36,7 +40,8 @@ const ArticleFields: FormFieldConfig[] = [
             { label: "Oui", value: 1 },
             { label: "Non", value: 0 }
         ]
-    }
+    },
+
 
 ];
 
@@ -60,6 +65,8 @@ const articleUpdateFields: FormFieldConfig[] = [
             { label: "Oui", value: 1 },
             { label: "Non", value: 0 }
         ]
+    }, {
+        name: 'description', label: 'description', type: 'description'
     }
 
 ];
@@ -84,6 +91,8 @@ export default function ArticlePage() {
     const [filters] = useState<IFilter[]>(mainHeaders.map((header) => {
         return { value: header.key, label: header.label }
     }))
+
+    const [editorText, setEditorText] = useState<string>('')
     const [articles, setArticles] = useState<DbArticle[]>([])
 
     const pageContainerClasses = `
@@ -323,6 +332,8 @@ export default function ArticlePage() {
                     </article>
                 </article>
 
+
+                <EditorText value={editorText} onChange={setEditorText} />
 
             </div>
 

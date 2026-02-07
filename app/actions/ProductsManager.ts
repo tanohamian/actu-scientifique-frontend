@@ -19,10 +19,9 @@ export async function FetchProducts() {
         if (response.ok) {
             const responseData = await response.json()
             console.log("Response fetch products : ", responseData.products)
-            revalidatePath('/admin/dashboard/gestion_article')
-            return responseData.products as Product[]
+            return responseData.products as Product[] || []
         }
-        return
+        return []
     } catch (error) {
         console.log("erreur lors de la récupération des produits : ", error)
         return

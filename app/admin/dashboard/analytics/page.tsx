@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 import styles from '../../../styles/Dashboard.module.scss'
 import { DashboardCardProps } from '@/app/components/dashboardCards'
-
 import { FetchArticles } from '@/app/actions/ArticleManager'
 
 import LoadingComponent from '@/app/components/loadingComponent'
@@ -10,13 +9,11 @@ import IndexLineChart from '@/app/components/IndexLineChart'
 
 export default function Page() {
     //const today = new Date().toISOString();
-        
+
     const [isLoading, setIsLoading] = useState(true)
-    
+
     const [articles, setArticles] = useState<DashboardCardProps>({ label: "Articles", value: 0, route: "/gestion_article" })
-    const [visitors] = useState<DashboardCardProps>({ label: "Visiteurs", value: 36 })
-    const [products, setProducts] = useState<DashboardCardProps>({ label: "Produits", value: 0 })
-    const [subscribers] = useState<DashboardCardProps>({ label: "Abonnés", value: 15, route: "/users" })
+
 
 
     const [tendance] = useState<string>("Vous verrez ici un aperçu de tout ce qui se passe sur l'app")
@@ -52,15 +49,15 @@ export default function Page() {
             />
             <h1 className={textClasses}>Stat</h1>
             <h3 className={subTextClasses}>{"Avoir une vision du traffic sur l'application"}</h3>
-            
+
             <IndexLineChart />
-            
+
             {/* Section aperçu (Tendance) */}
             <section className={styles.tendance}>
                 <p>{tendance}</p>
             </section>
-            
-            
+
+
         </main>
     )
 }

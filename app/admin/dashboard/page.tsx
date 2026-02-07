@@ -28,6 +28,7 @@ export default function Page() {
     const [publishedContent, setPublishedContent] = useState<ListItem[]>([])
     const [realizedEvents, setRealizedEvents] = useState<EventInterface[]>([])
     const [scholarshipsAndTraining, setScholarshipsAndTraining] = useState<ListItem[]>([])
+    const [reportages, setReportages] = useState<ListItem[]>([])
 
     useEffect(() => {
         async function update() {
@@ -92,7 +93,7 @@ export default function Page() {
             <section className={styles.tendance}>
                 <IndexLineChart
                     
-                />
+                 />
             </section>
 
             {/* Grille 2x2 des Publications Cards */}

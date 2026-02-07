@@ -7,7 +7,8 @@ import { redirect } from 'next/navigation';
 export interface IScholarship {
     id?: string;
     title: string;
-    lien: string;
+    lien?: string;
+    reward?: number;
     description: string;
     date: string;
 }
@@ -50,11 +51,17 @@ export async function AddScholarship(data: IScholarship) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
         redirect('/admin');
     }
+
+
+    const payload: Record<string, unknown> = { ...data };
+    if (!payload.lien || (typeof payload.lien === "string" && payload.lien.trim() === "")) delete payload.lien;
+    if (!payload.reward || Number(payload.reward) <= 0) delete payload.reward;
+
     try {
         const response = await fetch(`${env.baseUrl}/scholarships`, {
             method: 'POST',
             headers: await getAuthHeaders(),
-            body: JSON.stringify(data)
+            body: JSON.stringify(payload)
         });
 
         if (response.ok) {
@@ -63,6 +70,7 @@ export async function AddScholarship(data: IScholarship) {
         }
 
         const errorData = await response.json();
+        console.error("Erreur API AddScholarship:", errorData);
         return { success: false, error: errorData.message || "Échec de l'ajout" };
     } catch (error) {
         console.error("Erreur AddScholarship:", error);
@@ -76,17 +84,26 @@ export async function UpdateScholarship(id: string, data: IScholarship) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
         redirect('/admin');
     }
+
+
+    const payload: Record<string, unknown> = { ...data };
+    if (!payload.lien || (typeof payload.lien === "string" && payload.lien.trim() === "")) delete payload.lien;
+    if (!payload.reward || Number(payload.reward) <= 0) delete payload.reward;
+
     try {
         const response = await fetch(`${env.baseUrl}/scholarships/${id}`, {
             method: 'PUT',
             headers: await getAuthHeaders(),
-            body: JSON.stringify(data)
+            body: JSON.stringify(payload)
         });
 
         if (response.ok) {
             revalidatePath('/admin/dashboard/formations_bourses');
             return { success: true };
         }
+        
+        const errorData = await response.json();
+        console.error("Erreur API UpdateScholarship:", errorData);
         return { success: false };
     } catch (error) {
         console.error("Erreur UpdateScholarship:", error);

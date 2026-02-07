@@ -3,17 +3,16 @@ import { IconName } from "../components/Icons";
 import ViewElement from "../components/viewElement";
 import { useEffect, useState } from "react";
 import Pagination from "../components/pagination";
-import SocialNetworks from "../components/socialNetworks";
 import { useRouter } from "next/navigation";
 import { ShoppingCart } from 'lucide-react'
 import { FetchArticles } from "../actions/ArticleManager";
 import { FetchMedias } from "../actions/MediasManager";
 import { Article, DbMedia } from "../interfaces";
-import { GetFeeds } from "../actions/FeedManager";
 import LoadingComponent from '@/app/components/loadingComponent'
 import Script from "next/script";
 import AdBanner from "../components/AdBanner";
-
+import { Product } from "@/app/interfaces";
+import { FetchProducts } from "@/app/actions/ProductsManager";
 
 export interface FeedInterface {
   id: string,
@@ -34,9 +33,20 @@ export default function Home() {
   const [articles, setArticles] = useState<(Article | DbMedia)[]>([])
   const currentItems = articles.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(articles.length / itemsPerPage)
-  const socialNetworks: IconName[] = ["YouTubeIcon", "FacebookIcon", "TwitterIcon"]
-  const [feeds, setFeeds] = useState<FeedInterface[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [products, setProducts] = useState<Product[]>([])
+  const [currentSlide, setCurrentSlide] = useState(0)
+
+  // Auto-slide effect
+  useEffect(() => {
+    if (products.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % Math.min(products.length, 2))
+      }, 4000) // Change slide every 4 seconds
+
+      return () => clearInterval(interval)
+    }
+  }, [products.length])
 
   useEffect(() => {
     const loadContent = async () => {
@@ -65,6 +75,16 @@ export default function Home() {
     loadContent();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      const response = await FetchProducts()
+      if (response) {
+        setProducts(response)
+      }
+    })()
+  }, [])
+
+  const firstTwoProducts = products.slice(0, 2)
 
   return (
     <div className="px-4 py-8 md:px-8 md:py-12">
@@ -124,15 +144,43 @@ export default function Home() {
           </div>
 
           <div className="w-full lg:w-1/4">
+
             <div className="flex flex-col bg-[#50789B] min-h-[400px] rounded-lg p-4 gap-4 sticky top-6">
+              <h1 className="text-xl text-white">Boutique</h1>
               <button
-                className="bg-white/10 hover:bg-white/20 transition-all duration-200 rounded-lg p-4 flex items-center justify-center min-h-[120px] group"
+                className="bg-white/10 hover:bg-white/20 transition-all duration-200 rounded-lg p-4 flex  min-h-[300px] group relative overflow-hidden"
                 onClick={() => router.push('/shop')}
               >
-                <div className="flex flex-col items-center justify-center gap-2">
-                  <ShoppingCart className="text-white w-10 h-10 group-hover:scale-110 transition-transform" />
-                  <span className="text-white text-base font-bold">Boutique</span>
-                </div>
+                {firstTwoProducts.length > 0 ? (
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    {firstTwoProducts.map((product, index) => (
+                      <div
+                        key={product.id}
+                        className={`absolute inset-0 transition-all duration-500 ease-in-out ${index === currentSlide
+                          ? 'opacity-100 translate-x-0'
+                          : index < currentSlide
+                            ? 'opacity-0 -translate-x-full'
+                            : 'opacity-0 translate-x-full'
+                          }`}
+                      >
+                        {product.preview_image && (
+                          <div className="relative w-full h-full">
+                            <img
+                              src={product.preview_image}
+                              alt={product.name}
+                              className="object-contain group-hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <ShoppingCart className="text-white w-10 h-10 group-hover:scale-110 transition-transform" />
+                    <span className="text-white text-base font-bold">Boutique</span>
+                  </div>
+                )}
               </button>
               <div className="w-full h-[300px] border-2 border-white rounded-lg flex items-center justify-center text-white text-2xl md:text-3xl lg:text-4xl font-bold">
                 <div className="flex flex-col items-center gap-1">
