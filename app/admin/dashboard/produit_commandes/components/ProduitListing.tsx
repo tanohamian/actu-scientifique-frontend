@@ -87,7 +87,7 @@ export default function ProduitsTable({ products, setProducts, setLoading }: Pro
     useEffect(() => {
         (async () => {
             setLoading(true)
-            const products: Product[] = await FetchProducts()
+            const products: Product[] | undefined = await FetchProducts()
             if (products) {
                 setProducts(products)
             }

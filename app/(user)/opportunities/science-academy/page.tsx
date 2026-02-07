@@ -1,3 +1,5 @@
+'use client'
+
 export default function ScienceAcademy() {
     return (
         <div className="min-h-screen  text-slate-50 relative overflow-hidden">

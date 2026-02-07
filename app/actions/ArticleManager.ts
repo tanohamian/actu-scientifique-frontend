@@ -3,7 +3,7 @@ import { env } from '@/app/config/env'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { Article, DbArticle } from '../interfaces'
-
+import { redirect } from 'next/navigation'
 
 export async function AddArticle(formData: Article | FormData, json: boolean = false,) {
     const authToken = (await cookies()).get('authToken')?.value;

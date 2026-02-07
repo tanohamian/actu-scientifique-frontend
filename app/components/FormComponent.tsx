@@ -6,7 +6,6 @@ import { FormFieldConfig, InitialDataType, uploadIcon, uploadText } from '@/app/
 import { showToast } from "nextjs-toast-notify"
 import { Rubriques } from '../enum/enums';
 import { Article, DbArticle, Newsletter } from '../interfaces';
-import TipTapComponent from './titap';
 
 
 export const toast = function (success: boolean, edit: boolean = false, message: string = "") {
