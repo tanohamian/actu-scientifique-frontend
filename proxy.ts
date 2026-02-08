@@ -47,6 +47,7 @@ const testHost = (request: NextRequest) =>{
     if (hostname === adminDomain) {
         if (!url.pathname.startsWith('/admin')) {
             const newUrl = new URL(`/admin${url.pathname}`, request.url);
+            console.log("newUrl : ",newUrl)
             return NextResponse.rewrite(newUrl); 
         }
     }
@@ -64,11 +65,12 @@ export default async function middleware(request: NextRequest) {
     await check(request);
 
     const authToken = request.cookies.get('authToken')?.value;
+    testHost(request)
     if (!authToken && request.nextUrl.pathname.startsWith('/admin') && request.nextUrl.pathname !== '/admin') {
       return NextResponse.redirect(new URL('/admin', request.url));
     }
 
-    testHost(request)
+    
   } catch(error) {
     console.log(error)
   }
@@ -77,6 +79,7 @@ export default async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api).*)',
     '/:path*'
   ],
 };
