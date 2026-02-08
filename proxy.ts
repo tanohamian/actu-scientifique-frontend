@@ -47,6 +47,10 @@ const testHost = (request: NextRequest) => {
       console.log("Redirection vers:", newUrl.toString());
       return NextResponse.rewrite(newUrl); 
     }
+    else {
+      const newUrl = new URL(`/${url.pathname.substring(6, url.pathname.length)}`, request.url);
+      return NextResponse.rewrite(newUrl);
+    }
   }
 
   if (hostname !== adminDomain && url.pathname.startsWith('/admin')) {
