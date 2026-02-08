@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LoginUser } from "../actions/Auth";
 import { useRouter } from "next/navigation";
+import { env } from "../config/env";
 
 export interface FormState {
     email: string;
@@ -43,7 +44,7 @@ export default function Connexion() {
             const response = await LoginUser(formData);
             console.log("response : ", response)
             if (response == 'ROLE_ADMIN') {
-                router.push('/admin/dashboard')
+                router.push(`${env.production? "":"/admin"}/dashboard`)
             } else {
                 setMessage("Vous n'avez pas les droits pour acceder à cette page")
             }
