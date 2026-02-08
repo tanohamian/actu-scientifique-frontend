@@ -23,7 +23,7 @@ export default function SidebarComponent({ onClose, isMobile }: { onClose?: () =
 
     const navItems: NavItems[] = [
         { name: "Tableau de bord", path: "/admin/dashboard", icon: <IconComponent name='ControlPanel' {...iconBaseProps} /> },
-        { name: "Statistiques", path: "/admin/dashboard/stats", icon: <IconComponent name='Analytics' {...iconBaseProps} /> },
+        { name: "Statistiques", path: "/admin/dashboard/analytics", icon: <IconComponent name='Analytics' {...iconBaseProps} /> },
         { name: "Gestion des articles", path: "/admin/dashboard/gestion_article", icon: <IconComponent name='List' {...iconBaseProps} /> },
         { name: "Medias (Vidéos,Podcasts)", path: "/admin/dashboard/medias", icon: <IconComponent name='Video' {...iconBaseProps} /> },
         { name: "Opportunités", path: "/admin/dashboard/formations_bourses", icon: <IconComponent name='Feed' {...iconBaseProps} /> },

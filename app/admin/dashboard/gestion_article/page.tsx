@@ -172,7 +172,7 @@ export default function ArticlePage() {
             return
         }
         newArticle.createdAt = newArticle.createdAt.toLocaleString('fr-FR', { hour: "2-digit", minute: "2-digit", day: "2-digit", year: "numeric", month: "2-digit" })
-        console.log("old_date : ", articles[0].createdAt)
+        console.log("old_date : ", articles[0]?.createdAt)
         setArticles(prevState => [...prevState, newArticle]);
         setEditArticle(false);
     };
