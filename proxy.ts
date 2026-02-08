@@ -11,7 +11,7 @@ async function check(req: NextRequest) {
     !url.startsWith('/eco-humanity') &&
     !url.startsWith('/portrait-discovery') &&
     !url.startsWith('/agenda') &&
-    !url.startsWith(`${env.production? "": "/admin/"}/dashboard`) &&
+    !url.startsWith(`${env.onProduction? "": "/admin/"}/dashboard`) &&
     !url.startsWith('/opportunities/') &&
     !url.startsWith('/about')
   ) {
