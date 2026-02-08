@@ -9,11 +9,13 @@ async function check(req: NextRequest) {
   if (
     req.method !== 'GET' ||
     url.startsWith('/api') || 
-    url.startsWith('/_next') || 
+    url.includes('next') || 
     url.startsWith('/.well-known') || 
     url.startsWith('/favicon.ico') ||
     url.startsWith('/images/') ||
-    url.startsWith('/assets')
+    url.startsWith('/admin') ||
+    url.startsWith('/assets') ||
+    url.endsWith('.js')
     ) {
     return;
   }
@@ -32,7 +34,28 @@ async function check(req: NextRequest) {
     console.log(error);
   }
 }
+const testHost = (request: NextRequest) =>{
+    const url = request.nextUrl;
+    const hostname = request.headers.get('host');
 
+    console.log(`--- Middleware --- Host: ${hostname} | Path: ${url.pathname}`);
+
+    const adminDomain = 'admin.actuscientifique.com';
+
+    if (hostname === adminDomain) {
+        if (!url.pathname.startsWith('/admin')) {
+            const newUrl = new URL(`/admin${url.pathname}`, request.url);
+            return NextResponse.rewrite(newUrl);
+        }
+        return NextResponse.next();
+    }
+
+    if (hostname !== adminDomain && url.pathname.startsWith('/admin')) {
+        return NextResponse.redirect(new URL(`https://${adminDomain}`, request.url));
+    }
+
+    return NextResponse.next();
+}
 export default async function middleware(request: NextRequest) {
 
 
@@ -44,7 +67,7 @@ export default async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/admin', request.url));
     }
 
-    return NextResponse.next();
+    testHost(request)
   } catch(error) {
     console.log(error)
   }
