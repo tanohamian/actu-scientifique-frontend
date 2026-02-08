@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
             const newUrl = new URL(`/admin${url.pathname}`, request.url);
             return NextResponse.rewrite(newUrl);
         }
-        if (!url.pathname.startsWith('/admin')) {
+        if (url.pathname.startsWith('/admin')) {
             const newUrl = new URL(`/${url.pathname.substring(6, url.pathname.length)}`, request.url);
             return NextResponse.rewrite(newUrl);
         }
