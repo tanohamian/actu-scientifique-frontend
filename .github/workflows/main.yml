@@ -23,6 +23,7 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/actusciences-front-app:${{github.sha}}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/actusciences-front-app:latest
 
   deploy:
     runs-on: ubuntu-latest
