@@ -39,4 +39,4 @@ jobs:
             export TAG=${{ github.sha }}
 
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/actusciences-front-app:$TAG
-            docker stack deploy -c ./stack.yml actuscientifique
+            docker stack deploy -c /git/actuscience/stack.yml actuscientifique
