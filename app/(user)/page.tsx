@@ -1,5 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
-import { IconName } from "../components/Icons";
 import ViewElement from "../components/viewElement";
 import { useEffect, useState } from "react";
 import Pagination from "../components/pagination";
