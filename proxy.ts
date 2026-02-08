@@ -43,8 +43,11 @@ const testHost = (request: NextRequest) =>{
     const adminDomain = 'admin.actuscientifique.com';
 
     if (hostname === adminDomain) {
+      
         if (!url.pathname.startsWith('/admin')) {
+          console.log("url.pathname", url.pathname)
             const newUrl = new URL(`/admin${url.pathname}`, request.url);
+            console.log("newUrl", newUrl);
             return NextResponse.redirect(newUrl); // NextResponse.rewrite(newUrl);
         }
         return NextResponse.next();
