@@ -45,15 +45,10 @@ const testHost = (request: NextRequest) =>{
     const adminDomain = 'admin.actuscientifique.com';
 
     if (hostname === adminDomain) {
-      
         if (!url.pathname.startsWith('/admin')) {
-            console.log("url.pathname", url.pathname)
             const newUrl = new URL(`/admin${url.pathname}`, request.url);
-            
-            console.log("newUrl", newUrl);
-            return NextResponse.redirect(new URL('/admin', request.url)); //NextResponse.redirect(newUrl); // NextResponse.rewrite(newUrl);
+            return NextResponse.rewrite(newUrl); 
         }
-        return NextResponse.next();
     }
 
     if (hostname !== adminDomain && url.pathname.startsWith('/admin')) {
@@ -80,5 +75,8 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: '/:path*',
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
+    '/:path*'
+  ],
 };
