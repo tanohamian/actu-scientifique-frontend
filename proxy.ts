@@ -41,20 +41,18 @@ const testHost = (request: NextRequest) => {
 
   const adminDomain = 'admin.actuscientifique.com';
 
-  // Si on est sur le domaine admin MAIS PAS sur /admin
   if (hostname === adminDomain) {
     if (!url.pathname.startsWith('/admin')) {
       const newUrl = new URL(`/admin${url.pathname}`, request.url);
       console.log("Redirection vers:", newUrl.toString());
-      return NextResponse.redirect(newUrl); 
+      return NextResponse.rewrite(newUrl); 
     }
   }
 
-  // Si on n'est PAS sur le domaine admin MAIS on accède à /admin
   if (hostname !== adminDomain && url.pathname.startsWith('/admin')) {
     const newUrl = new URL(`https://${adminDomain}${url.pathname}`, request.url);
     console.log("Redirection cross-domain vers:", newUrl.toString());
-    return NextResponse.rewrite(newUrl);
+    return NextResponse.redirect(newUrl);
   }
 
   return null; 
@@ -79,7 +77,7 @@ export default async function middleware(request: NextRequest) {
     
   } catch(error) {
     console.log(error);
-    return NextResponse.next(); // En cas d'erreur, continuer quand même
+    return NextResponse.next();
   }
 }
 
