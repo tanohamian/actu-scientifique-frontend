@@ -1,8 +1,6 @@
-
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { env } from '@/app/config/env';
-
 
 async function check(req: NextRequest) {
   const url = req.nextUrl.pathname;
@@ -16,7 +14,7 @@ async function check(req: NextRequest) {
     url.startsWith('/admin') ||
     url.startsWith('/assets') ||
     url.endsWith('.js')
-    ) {
+  ) {
     return;
   }
   const reqBody = { url } as { url: string };
@@ -34,52 +32,59 @@ async function check(req: NextRequest) {
     console.log(error);
   }
 }
-const testHost = (request: NextRequest) =>{
-    const url = request.nextUrl;
-    console.log("url: ", url)
-    console.log("request.url : ", request.url)
-    const hostname = request.headers.get('host');
 
-    console.log(`--- Middleware --- Host: ${hostname} | Path: ${url.pathname}`);
+const testHost = (request: NextRequest) => {
+  const url = request.nextUrl;
+  const hostname = request.headers.get('host');
 
-    const adminDomain = 'admin.actuscientifique.com';
+  console.log(`--- Middleware --- Host: ${hostname} | Path: ${url.pathname}`);
 
-    if (hostname === adminDomain) {
-        if (!url.pathname.startsWith('/admin')) {
-            const newUrl = new URL(`/admin${url.pathname}`, request.url);
-            console.log("newUrl : ",newUrl)
-            return NextResponse.redirect(newUrl); 
-        }
+  const adminDomain = 'admin.actuscientifique.com';
+
+  // Si on est sur le domaine admin MAIS PAS sur /admin
+  if (hostname === adminDomain) {
+    if (!url.pathname.startsWith('/admin')) {
+      const newUrl = new URL(`/admin${url.pathname}`, request.url);
+      console.log("Redirection vers:", newUrl.toString());
+      return NextResponse.redirect(newUrl); 
     }
+  }
 
-    if (hostname !== adminDomain && url.pathname.startsWith('/admin')) {
-        return NextResponse.redirect(new URL(`https://${adminDomain}`, request.url));
-    }
+  // Si on n'est PAS sur le domaine admin MAIS on accède à /admin
+  if (hostname !== adminDomain && url.pathname.startsWith('/admin')) {
+    const newUrl = new URL(`https://${adminDomain}${url.pathname}`, request.url);
+    console.log("Redirection cross-domain vers:", newUrl.toString());
+    return NextResponse.rewrite(newUrl);
+  }
 
-    return NextResponse.next();
+  return null; 
 }
+
 export default async function middleware(request: NextRequest) {
-
-
   try {
     await check(request);
 
+    
+    const hostRedirect = testHost(request);
+    if (hostRedirect) {
+      return hostRedirect; 
+    }
+
     const authToken = request.cookies.get('authToken')?.value;
-    testHost(request)
     if (!authToken && request.nextUrl.pathname.startsWith('/admin') && request.nextUrl.pathname !== '/admin') {
       return NextResponse.redirect(new URL('/admin', request.url));
     }
 
+    return NextResponse.next();
     
   } catch(error) {
-    console.log(error)
+    console.log(error);
+    return NextResponse.next(); // En cas d'erreur, continuer quand même
   }
 }
 
 export const config = {
   matcher: [
     '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
-    '/((?!_next/static|_next/image|favicon.ico|api).*)',
-    '/:path*'
   ],
 };
