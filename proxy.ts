@@ -42,14 +42,15 @@ const testHost = (request: NextRequest) => {
   const adminDomain = 'admin.actuscientifique.com';
 
   if (hostname === adminDomain) {
-    if (!url.pathname.startsWith('/admin')) {
-      const newUrl = new URL(`/admin${url.pathname}`, request.url);
+    let newUrlPathName = url.pathname;
+    // Remove '/admin
+    if (url.pathname.startsWith('/admin')){
+      newUrlPathName = url.pathname.split('admin')[1]
+    }
+    if (!newUrlPathName.startsWith('/admin')) {
+      const newUrl = new URL(`/admin${newUrlPathName}`, request.url);
       console.log("Redirection vers:", newUrl.toString());
       return NextResponse.rewrite(newUrl); 
-    }
-    else {
-      const newUrl = new URL(`/${url.pathname.substring(6, url.pathname.length)}`, request.url);
-      return NextResponse.rewrite(newUrl);
     }
   }
 
