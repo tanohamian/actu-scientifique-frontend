@@ -4,6 +4,7 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
     const url = request.nextUrl;
     const hostname = request.headers.get('host');
+    console.log(`--- Middleware --- Host: ${hostname} | Path: ${url.pathname}`);
 
     const adminDomain = 'admin.actuscientifique.com';
 
