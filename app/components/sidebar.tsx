@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from 'next/navigation';
 import { X } from 'lucide-react';
 import IconComponent from '@components/Icons';
+import { env } from '../config/env';
 
 interface NavItems {
     name: string,
@@ -22,16 +23,16 @@ export default function SidebarComponent({ onClose, isMobile }: { onClose?: () =
     const iconBaseProps = { className: `text-white ${iconSize}` };
 
     const navItems: NavItems[] = [
-        { name: "Tableau de bord", path: "/admin/dashboard", icon: <IconComponent name='ControlPanel' {...iconBaseProps} /> },
-        { name: "Statistiques", path: "/admin/dashboard/analytics", icon: <IconComponent name='Analytics' {...iconBaseProps} /> },
-        { name: "Gestion des articles", path: "/admin/dashboard/gestion_article", icon: <IconComponent name='List' {...iconBaseProps} /> },
-        { name: "Medias (Vidéos,Podcasts)", path: "/admin/dashboard/medias", icon: <IconComponent name='Video' {...iconBaseProps} /> },
-        { name: "Opportunités", path: "/admin/dashboard/formations_bourses", icon: <IconComponent name='Feed' {...iconBaseProps} /> },
-        { name: "Newsletters", path: "/admin/dashboard/newsletters", icon: <IconComponent name='Envelope' {...iconBaseProps} /> },
-        { name: "Boutiques", path: "/admin/dashboard/produit_commandes", icon: <IconComponent name='Product' {...iconBaseProps} /> },
-        { name: "Utilisateurs", path: "/admin/dashboard/users", icon: <IconComponent name='UsersOnline' {...iconBaseProps} /> },
-        { name: "Agenda", path: "/admin/dashboard/event", icon: <IconComponent name='Schedule' {...iconBaseProps} /> },
-        { name: "Publicité", path: "/admin/dashboard/advertising", icon: <IconComponent name='PromoIcon' {...iconBaseProps} /> }
+        { name: "Tableau de bord", path: `${env.production  ? "admin": ""}/dashboard`, icon: <IconComponent name='ControlPanel' {...iconBaseProps} /> },
+        { name: "Statistiques", path: `${env.production  ? "admin": ""}/dashboard/analytics`, icon: <IconComponent name='Analytics' {...iconBaseProps} /> },
+        { name: "Gestion des articles", path: `${env.production  ? "admin": ""}/dashboard/gestion_article`, icon: <IconComponent name='List' {...iconBaseProps} /> },
+        { name: "Medias (Vidéos,Podcasts)", path: `${env.production  ? "admin": ""}/dashboard/medias`, icon: <IconComponent name='Video' {...iconBaseProps} /> },
+        { name: "Opportunités", path: `${env.production  ? "admin": ""}/dashboard/formations_bourses`, icon: <IconComponent name='Feed' {...iconBaseProps} /> },
+        { name: "Newsletters", path: `${env.production  ? "admin": ""}/dashboard/newsletters`, icon: <IconComponent name='Envelope' {...iconBaseProps} /> },
+        { name: "Boutiques", path: `${env.production  ? "admin": ""}/dashboard/produit_commandes`, icon: <IconComponent name='Product' {...iconBaseProps} /> },
+        { name: "Utilisateurs", path: `${env.production  ? "admin": ""}/dashboard/users`, icon: <IconComponent name='UsersOnline' {...iconBaseProps} /> },
+        { name: "Agenda", path: `${env.production  ? "admin": ""}/dashboard/event`, icon: <IconComponent name='Schedule' {...iconBaseProps} /> },
+        { name: "Publicité", path: `${env.production  ? "admin": ""}/dashboard/advertising`, icon: <IconComponent name='PromoIcon' {...iconBaseProps} /> }
     ];
 
     const NavLinkItem = ({ item }: { item: NavItems }) => {
