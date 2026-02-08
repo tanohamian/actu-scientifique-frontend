@@ -31,7 +31,7 @@ export default function Page() {
             '/portrait-discovery', '/agenda', '/about', '/opportunities/'
         ];
         
-        
+        console.log({rowData})
         const dashboardPath = env.production ? "/dashboard" : "/admin/dashboard";
         allowedPrefixes.push(dashboardPath);
 
@@ -85,7 +85,7 @@ export default function Page() {
                 onClose={() => setIsLoading(false)}
             />
             <h1 className={textClasses}>Stat</h1>
-            <h3 className={subTextClasses}>{"Avoir une vision du traffic sur l'application"}</h3>
+            <h3 className={subTextClasses}>{"Avoir une vision du traffic sur l'application HIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"}</h3>
 
             <IndexLineChart />
 
