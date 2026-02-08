@@ -36,7 +36,8 @@ async function check(req: NextRequest) {
 }
 const testHost = (request: NextRequest) =>{
     const url = request.nextUrl;
-    console.log("url", url)
+    console.log("url: ", url)
+    console.log("request.url : ", request.url)
     const hostname = request.headers.get('host');
 
     console.log(`--- Middleware --- Host: ${hostname} | Path: ${url.pathname}`);
@@ -48,6 +49,7 @@ const testHost = (request: NextRequest) =>{
         if (!url.pathname.startsWith('/admin')) {
             console.log("url.pathname", url.pathname)
             const newUrl = new URL(`/admin${url.pathname}`, request.url);
+            
             console.log("newUrl", newUrl);
             return NextResponse.redirect(new URL('/admin', request.url)); //NextResponse.redirect(newUrl); // NextResponse.rewrite(newUrl);
         }
