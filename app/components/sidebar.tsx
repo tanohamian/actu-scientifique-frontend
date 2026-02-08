@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { X } from 'lucide-react';
 import IconComponent from '@components/Icons';
 import { env } from '../config/env';
+import { DisconnectButton } from './DisconnectButton';
 
 interface NavItems {
     name: string,
@@ -23,16 +24,16 @@ export default function SidebarComponent({ onClose, isMobile }: { onClose?: () =
     const iconBaseProps = { className: `text-white ${iconSize}` };
 
     const navItems: NavItems[] = [
-        { name: "Tableau de bord", path: `${env.production  ? "admin": ""}/dashboard`, icon: <IconComponent name='ControlPanel' {...iconBaseProps} /> },
-        { name: "Statistiques", path: `${env.production  ? "admin": ""}/dashboard/analytics`, icon: <IconComponent name='Analytics' {...iconBaseProps} /> },
-        { name: "Gestion des articles", path: `${env.production  ? "admin": ""}/dashboard/gestion_article`, icon: <IconComponent name='List' {...iconBaseProps} /> },
-        { name: "Medias (Vidéos,Podcasts)", path: `${env.production  ? "admin": ""}/dashboard/medias`, icon: <IconComponent name='Video' {...iconBaseProps} /> },
-        { name: "Opportunités", path: `${env.production  ? "admin": ""}/dashboard/formations_bourses`, icon: <IconComponent name='Feed' {...iconBaseProps} /> },
-        { name: "Newsletters", path: `${env.production  ? "admin": ""}/dashboard/newsletters`, icon: <IconComponent name='Envelope' {...iconBaseProps} /> },
-        { name: "Boutiques", path: `${env.production  ? "admin": ""}/dashboard/produit_commandes`, icon: <IconComponent name='Product' {...iconBaseProps} /> },
-        { name: "Utilisateurs", path: `${env.production  ? "admin": ""}/dashboard/users`, icon: <IconComponent name='UsersOnline' {...iconBaseProps} /> },
-        { name: "Agenda", path: `${env.production  ? "admin": ""}/dashboard/event`, icon: <IconComponent name='Schedule' {...iconBaseProps} /> },
-        { name: "Publicité", path: `${env.production  ? "admin": ""}/dashboard/advertising`, icon: <IconComponent name='PromoIcon' {...iconBaseProps} /> }
+        { name: "Tableau de bord", path: `${env.production  ?  "":"admin"}/dashboard`, icon: <IconComponent name='ControlPanel' {...iconBaseProps} /> },
+        { name: "Statistiques", path: `${env.production  ?  "":"admin"}/dashboard/analytics`, icon: <IconComponent name='Analytics' {...iconBaseProps} /> },
+        { name: "Gestion des articles", path: `${env.production  ?  "":"admin"}/dashboard/gestion_article`, icon: <IconComponent name='List' {...iconBaseProps} /> },
+        { name: "Medias (Vidéos,Podcasts)", path: `${env.production  ?  "":"admin"}/dashboard/medias`, icon: <IconComponent name='Video' {...iconBaseProps} /> },
+        { name: "Opportunités", path: `${env.production  ?  "":"admin"}/dashboard/formations_bourses`, icon: <IconComponent name='Feed' {...iconBaseProps} /> },
+        { name: "Newsletters", path: `${env.production  ?  "":"admin"}/dashboard/newsletters`, icon: <IconComponent name='Envelope' {...iconBaseProps} /> },
+        { name: "Boutiques", path: `${env.production  ?  "":"admin"}/dashboard/produit_commandes`, icon: <IconComponent name='Product' {...iconBaseProps} /> },
+        { name: "Utilisateurs", path: `${env.production  ?  "":"admin"}/dashboard/users`, icon: <IconComponent name='UsersOnline' {...iconBaseProps} /> },
+        { name: "Agenda", path: `${env.production  ?  "":"admin"}/dashboard/event`, icon: <IconComponent name='Schedule' {...iconBaseProps} /> },
+        { name: "Publicité", path: `${env.production  ?  "":"admin"}/dashboard/advertising`, icon: <IconComponent name='PromoIcon' {...iconBaseProps} /> }
     ];
 
     const NavLinkItem = ({ item }: { item: NavItems }) => {
@@ -73,27 +74,7 @@ export default function SidebarComponent({ onClose, isMobile }: { onClose?: () =
         );
     };
 
-    const DisconnectButton = () => {
-        const buttonClasses = `
-            flex items-center p-3 w-full rounded-lg transition-colors duration-150
-            bg-transparent border-none text-white cursor-pointer
-            hover:bg-white/10 hover:shadow-lg
-            focus:outline-none focus:ring-2 focus:ring-white/50
-        `;
-        const iconWrapperClasses = "mr-3 flex items-center justify-center w-6 h-6 flex-shrink-0";
-        const linkTextClasses = "whitespace-nowrap overflow-hidden text-ellipsis font-sans text-[0.95rem] font-medium";
 
-        return (
-            <button
-                className={buttonClasses}
-            >
-                <span className={iconWrapperClasses}>
-                    <IconComponent name='LogOut' className={`text-white ${iconSize}`} />
-                </span>
-                <span className={linkTextClasses}>Déconnexion</span>
-            </button>
-        );
-    };
 
     const sidebarContainerClasses = `
         w-64 // sidebarWidth: 256px
