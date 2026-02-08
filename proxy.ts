@@ -48,7 +48,7 @@ const testHost = (request: NextRequest) =>{
         if (!url.pathname.startsWith('/admin')) {
             const newUrl = new URL(`/admin${url.pathname}`, request.url);
             console.log("newUrl : ",newUrl)
-            return NextResponse.rewrite(newUrl); 
+            return NextResponse.redirect(newUrl); 
         }
     }
 
