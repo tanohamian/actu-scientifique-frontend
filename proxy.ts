@@ -67,7 +67,7 @@ export default async function middleware(request: NextRequest) {
   try {
     await check(request);
     console.log(env)
-    if (env.production) {
+    if (env.onProduction) {
       const hostRedirect = testHost(request);
       if (hostRedirect) {
         return hostRedirect; 

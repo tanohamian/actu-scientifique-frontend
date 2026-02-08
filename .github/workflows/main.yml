@@ -21,7 +21,8 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/actusciences-front-app:latest
+          tags: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/actusciences-front-app:${{github.sha}}
 
   deploy:
     runs-on: ubuntu-latest
@@ -34,5 +35,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/actusciences-front-app:latest
+            export TAG=${{ github.sha }}
+
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/actusciences-front-app:$TAG
             docker compose -f /git/actuscience/docker-compose.yml up -d --force-recreate

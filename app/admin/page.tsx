@@ -44,7 +44,7 @@ export default function Connexion() {
             const response = await LoginUser(formData);
             console.log("response : ", response)
             if (response == 'ROLE_ADMIN') {
-                router.push(`${env.production? "":"/admin"}/dashboard`)
+                router.push(`${env.onProduction? "":"/admin"}/dashboard`)
             } else {
                 setMessage("Vous n'avez pas les droits pour acceder à cette page")
             }
