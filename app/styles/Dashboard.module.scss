@@ -58,13 +58,18 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
     & .title {
-        font-size: 1.3em;
+        
+        font-size: 1em;
         font-weight: bold;
         margin-top: 0;
         margin-bottom: 20px;
         padding-bottom: 10px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        @media (min-width: 1000px) {
+            font-size:1.7vw;
+        }
     }
+    
 
     & .content-list {
         list-style: none;

@@ -6,14 +6,14 @@ async function check(req: NextRequest) {
   const url = req.nextUrl.pathname;
   if (
     req.method !== 'GET' ||
-    url.startsWith('/api') || 
-    url.includes('next') || 
-    url.startsWith('/.well-known') || 
-    url.startsWith('/favicon.ico') ||
-    url.startsWith('/images/') ||
-    url.startsWith('/admin') ||
-    url.startsWith('/assets') ||
-    url.endsWith('.js')
+    !url.startsWith('/one-health') &&
+    !url.startsWith('/technology') &&
+    !url.startsWith('/eco-humanity') &&
+    !url.startsWith('/portrait-discovery') &&
+    !url.startsWith('/agenda') &&
+    !url.startsWith(`${env.production? "": "/admin/"}/dashboard`) &&
+    !url.startsWith('/opportunities/') &&
+    !url.startsWith('/about')
   ) {
     return;
   }
@@ -66,12 +66,14 @@ const testHost = (request: NextRequest) => {
 export default async function middleware(request: NextRequest) {
   try {
     await check(request);
-
-    
-    const hostRedirect = testHost(request);
-    if (hostRedirect) {
-      return hostRedirect; 
+    console.log(env)
+    if (env.production) {
+      const hostRedirect = testHost(request);
+      if (hostRedirect) {
+        return hostRedirect; 
+      }
     }
+    
 
     const authToken = request.cookies.get('authToken')?.value;
     if (!authToken && request.nextUrl.pathname.startsWith('/admin') && request.nextUrl.pathname !== '/admin') {

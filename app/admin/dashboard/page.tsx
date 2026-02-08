@@ -89,10 +89,9 @@ export default function Page() {
                 products={products}
             />
 
-            {/* Section aperçu (Tendance) */}
             <section className={styles.tendance}>
                 <IndexLineChart
-                    
+                    data={analytics}
                  />
             </section>
 

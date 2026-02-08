@@ -1,4 +1,6 @@
+import { mockData } from "../constant";
 import styles from "../styles/Dashboard.module.scss";
+import IndexLineChart from "./IndexLineChart";
 
 export interface ListItem {
     text ?: string;
@@ -9,15 +11,18 @@ export interface ListItem {
 
 export interface PublicationCardProps {
     cardTitle: string; 
-    items: ListItem[] ; 
+    items: ListItem[] ;
+    isAnalytics ?: boolean ;
+    data?: {date: string, count: number}[] 
 }
 
-const PublicationCard = ({ cardTitle, items }: PublicationCardProps) => {
+const PublicationCard = ({ cardTitle, items, data=mockData, isAnalytics=false }: PublicationCardProps) => {
     return (
         <article className={styles.card}> 
             <h2 className={styles.title}>{cardTitle}</h2>
             <ul className={styles['content-list']}>
-                {items.map((item, index) => {
+                {isAnalytics? 
+                    (<IndexLineChart data={data}></IndexLineChart>) : items.map((item, index) => {
                     const isEvent = 'title' in item;
                     
                     const displayTitle : string | undefined = isEvent ? item.title : item.title ? item.title : item.text;
