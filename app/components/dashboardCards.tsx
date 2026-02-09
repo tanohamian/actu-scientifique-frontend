@@ -8,7 +8,7 @@ export interface DashboardCardProps {
 
 const DashboardCard = ({ label, value, route }: DashboardCardProps) => {
     return (
-        <a className={styles.card} href={`${env.onProduction ? "" : "/admin" }/dashboard`+ (route||"")}>
+        <a className={styles.card} href={`${!env.onProduction ? "" : "/admin" }/dashboard`+ (route||"")}>
             <h3>{label}</h3>
             <p><strong>{value}</strong></p>
         </a>

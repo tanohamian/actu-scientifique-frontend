@@ -2,7 +2,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { env } from "@config/env"; 
 
-console.log({env})
+
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function ask(question: string) {

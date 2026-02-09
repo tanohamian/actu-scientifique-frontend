@@ -63,6 +63,7 @@ const testHost = (request: NextRequest) => {
 export default async function middleware(request: NextRequest) {
   try {
     await check(request);
+    console.log("VOICI LA CONSTANTE ENV", env)
     if (env.onProduction) {
       const hostRedirect = testHost(request);
       if (hostRedirect) {

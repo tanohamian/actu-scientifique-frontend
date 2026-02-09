@@ -35,7 +35,7 @@ export default function Page() {
             console.log("1. articles.route = ", articles.route)
             setVisitors({ label: "Visites par jour", route: "/analytics", value: (await FetchStats()).count })
             setArticles({ label: "Articles", route: "/gestion_article", value: (await FetchArticles()).length })
-            setProducts({ label: "Produits", route: "/products", value: (await FetchProducts())?.length as number })
+            setProducts({ label: "Produits", route: "/produit_commandes", value: (await FetchProducts())?.length as number })
             const rowAnalytics = (await FetchStats()).data
             const grouped = rowAnalytics.reduce((acc: Record<string, number>, current) => {
                 const date = new Date(current.createdAt).toLocaleDateString('fr-FR');
