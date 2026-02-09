@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoginUser } from "../actions/Auth";
 import { useRouter } from "next/navigation";
 import { env } from "../config/env";
@@ -34,6 +34,9 @@ export default function Connexion() {
             [field]: value
         }));
     };
+    useEffect(()=>{
+        console.log({env})
+    })
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -44,7 +47,7 @@ export default function Connexion() {
             const response = await LoginUser(formData);
             console.log("response : ", response)
             if (response == 'ROLE_ADMIN') {
-                const dashboardRoute = env.onProduction? "/dashboard" : "/admin/dashboard"
+                const dashboardRoute = env.devMode? "/admin/dashboard": "/dashboard" 
                 router.push(dashboardRoute)
             } else {
                 setMessage("Vous n'avez pas les droits pour acceder à cette page")

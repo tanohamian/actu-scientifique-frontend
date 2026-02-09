@@ -28,15 +28,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-push
-    steps:
-      - name: Executing remote ssh commands
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.VPS_IP }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            export TAG=${{ github.sha }}
-
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/actusciences-front-app:$TAG
-            docker stack deploy -c /git/actuscience/stack.yml actuscientifique
+    steps:         
+      - name: Trigger Portainer Webhook
+        run: |
+          curl -X POST "${{ secrets.PORTAINER_WEBHOOK_URL }}"
