@@ -120,7 +120,6 @@ export async function FetchMedias() {
 
         if (response.ok) {
             const responseData = await response.json()
-            console.log(responseData)
             return responseData as DbMedia[]
         }
         return []

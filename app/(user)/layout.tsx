@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 import LoginRegisterComponent from '../components/login_register_Component';
 import { useAuth, AuthProvider } from '../context/authContext';
 
+export const dynamic = 'force-dynamic';
 
 const iconSize = 'w-8 h-8';
 

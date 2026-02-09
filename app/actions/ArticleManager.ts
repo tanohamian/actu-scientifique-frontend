@@ -7,7 +7,6 @@ import { redirect } from 'next/navigation'
 
 export async function AddArticle(formData: Article | FormData, json: boolean = false,) {
     const authToken = (await cookies()).get('authToken')?.value;
-    console.log("payload: ", formData)
     const file = (formData as FormData).get('file') as File;
 
     if (!file || file.size === 0) {
@@ -68,7 +67,6 @@ export async function FetchArticles() {
 
         if (response.ok) {
             const responseData = await response.json()
-            console.log(responseData)
             revalidatePath('/admin/dashboard/gestion_article')
             return responseData.articles as Article[]
         }
