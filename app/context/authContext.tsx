@@ -4,6 +4,7 @@ import { env } from '../config/env';
 import { UserInterface } from '../admin/dashboard/users/page';
 import { LogoutUser } from '../actions/Auth';
 import { useRouter } from 'next/navigation';
+import { getMe } from '../actions/Users';
 
 
 interface AuthContextType {
@@ -25,13 +26,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     
     const checkAuth = async () => {
         try {
-            const response = await fetch(`${env.baseUrl}/users/me`,{
-                method: 'GET',
-                credentials: 'include',
-            })
-            if (response.ok) {
-                const data = await response.json();
-                setUser(data as UserInterface);
+           const response = await getMe()
+            if (response) {
+                console.log('Utilisateur authentifié', response);
+                setUser(response as UserInterface);
                 setIsLoggedIn(true);
             }else{
                 setUser(null);

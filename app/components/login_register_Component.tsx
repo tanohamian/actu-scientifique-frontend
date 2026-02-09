@@ -4,6 +4,7 @@ import { LoginUser, RegisterUser } from '../actions/Auth';
 import { useState } from 'react';
 import { UserInterface } from '../admin/dashboard/users/page';
 import { useAuth } from '../context/authContext';
+import { useRouter } from 'next/navigation';
 
 interface LoginRegisterComponentProps {
     type: 'login' | 'register';
@@ -16,7 +17,7 @@ interface LoginRegisterComponentProps {
 export default function LoginRegisterComponent({ type, title, inputs, onClose, onSubmit }: LoginRegisterComponentProps) {
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-
+    const router = useRouter()
     const { login } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -42,6 +43,7 @@ export default function LoginRegisterComponent({ type, title, inputs, onClose, o
                     }
                     login(authenticatedUser as UserInterface)
                     onClose()
+                    router.refresh()
                 }
 
             } else {

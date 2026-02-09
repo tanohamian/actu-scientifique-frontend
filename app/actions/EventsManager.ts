@@ -18,7 +18,7 @@ export async function FetchEvents() {
 
         if (response.ok) {
             const responseData = await response.json()
-            console.log(responseData)
+            console.log("event :",responseData)
             revalidatePath('/admin/dashboard/events')
             return responseData.events as EventInterface[]
         }
