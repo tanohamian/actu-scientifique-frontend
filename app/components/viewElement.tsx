@@ -23,7 +23,7 @@ export default function ViewElement({ article, media, onclick }: ViewArticleProp
         ? article.illustrationUrl
         : ('url' in article) ? article.url : "";
 
-    const contentText = ('content' in article) ? article.content : "";
+    const contentText = ('content' in article) ? article.content : article.description || "";
 
     const mediaType = getMediaType(mediaUrl || "");
 

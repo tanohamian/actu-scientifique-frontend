@@ -59,7 +59,7 @@ export async function CreateEvent(event: EventInterface) {
     }
 }
 
-export async function UpdateEvent(status: string, id: string, url: string) {
+export async function UpdateEvent(status: boolean, id: string, url: string) {
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");

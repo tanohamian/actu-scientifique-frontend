@@ -70,7 +70,7 @@ export default function LoginRegisterComponent({ type, title, inputs, onClose, o
                         email,
                         roles: response.role
                     }
-                    //login(authenticatedUser as UserInterface)
+                    login(authenticatedUser as UserInterface)
                     onClose()
                 }
 

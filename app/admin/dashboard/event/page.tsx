@@ -8,8 +8,7 @@ import { useRouter } from 'next/navigation';
 import Calendar from '@/app/components/calendarCompenetWithFullCalendar';
 import { CreateEvent, DeleteEvent, FetchEvents, UpdateEvent } from '@/app/actions/EventsManager';
 import LoadingComponent from '@/app/components/loadingComponent'
-
-const now = new Date()
+import { toast } from '@/app/components/FormComponent';
 
 const EventFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre de l\'évènement', type: 'text', placeholder: 'Entrez le titre de l\'évènement', required: true },
@@ -27,7 +26,6 @@ const EventFieldsLive: FormFieldConfig[] = [
 const mainHeaders = [
     { key: 'title', label: 'Titre de l\'evenement', flexBasis: '25%' },
     { key: 'location', label: 'lieu', flexBasis: '15%' },
-    { key: 'status', label: 'Statut', flexBasis: '15%' },
     { key: 'date', label: 'Date', flexBasis: '15%' },
     { key: 'time', label: 'heure', flexBasis: '15%' },
     { key: 'actions', label: 'Actions', flexBasis: '15%' },
@@ -35,7 +33,6 @@ const mainHeaders = [
 
 const liveHeaders = [
     { key: 'title', label: 'Titre de l\'evenement', flexBasis: '40%' },
-    { key: 'status', label: 'Statut', flexBasis: '30%' },
     { key: 'url', label: 'Url', flexBasis: '30%' },
 ];
 
@@ -46,13 +43,10 @@ export interface EventLive {
     id?: string | undefined,
     title: string | undefined,
     url: string | undefined,
-    status: string | undefined
+    status?: boolean
 }
 
-const STATUS_LABELS: Record<string, string> = {
-    'NOT_LIVE': 'pas en direct',
-    'LIVE': 'en direct',
-};
+
 export default function EventPage() {
     const [allEvents, setAllEvents] = useState<EventInterface[]>([]);
     const [inputValue, setInputValue] = useState('');
@@ -162,12 +156,14 @@ export default function EventPage() {
 
                 const formattedEvent = {
                     ...newEvent,
-                    status: newEvent.status ? STATUS_LABELS[newEvent.status] || newEvent.status : 'pas en direct',
+                    status: newEvent.status,
                     date: newEvent.date || ''
                 };
 
                 setEvents((prevEvents) => [...prevEvents, formattedEvent as EventInterface]);
+
                 setAllEvents((prevAll) => [...prevAll, formattedEvent as EventInterface]);
+                toast(true,false, "Évènement créé avec succès !");
             }
         } catch (error) {
             console.error("Erreur lors de la création de l'événement : ", error);
@@ -177,20 +173,21 @@ export default function EventPage() {
     const handleSubmitEditEvent = async (data: EventInterface) => {
         try {
             const eventId = selectedEvent?.id as string;
-            const currentStatus = data.status || selectedEvent?.status as string;
+            
+           if(!data?.url){
+             throw new Error("L'URL est requise pour les événements en direct.");
+           }
 
-            const technicalStatus = currentStatus === 'en direct' ? 'NOT_LIVE' : 'LIVE';
 
-            const updatedEvent = await UpdateEvent(technicalStatus, eventId, data.url || '');
+            const updatedEvent = await UpdateEvent(true, eventId, data.url || '');
 
             if (updatedEvent && !Array.isArray(updatedEvent)) {
                 const formattedEvent = {
                     ...updatedEvent,
-                    status: updatedEvent.status ? STATUS_LABELS[updatedEvent.status] || updatedEvent.status : 'pas en direct',
+                    status: updatedEvent.status,
                     url: updatedEvent.url || '',
                 };
 
-                // Mettre à jour allEvents
                 setAllEvents((prevAll) => {
                     const exists = prevAll.find(e => e.id === updatedEvent.id);
                     return exists
@@ -198,7 +195,7 @@ export default function EventPage() {
                         : [...prevAll, formattedEvent as EventInterface];
                 });
 
-                if (updatedEvent.status === 'LIVE') {
+                if (updatedEvent.status === true) {
                     setEventLive((prevLive) => {
                         const exists = prevLive.find(e => e.id === updatedEvent.id);
                         return exists
@@ -221,6 +218,7 @@ export default function EventPage() {
 
                 setEditEvent(false);
                 setSelectedEvent(null);
+                toast(true,false, "Évènement mis à jour avec succès !");
             }
         } catch (error) {
             console.error("Erreur lors de la mise à jour de l'événement : ", error);
@@ -232,12 +230,12 @@ export default function EventPage() {
         location: '',
         date: '',
         time: '',
-        status: '',
+        status: false,
     };
     let initialDataLive: InitialDataType = {
         title: '',
         url: '',
-        status: '',
+        status: false,
     };
 
     const handleEditEvent = (item: TableData) => {
@@ -253,7 +251,7 @@ export default function EventPage() {
             location: selectedEvent.location as string || '',
             date: selectedEvent.date as string || '',
             time: selectedEvent.time as string || '',
-            status: selectedEvent.status as string || '',
+            status: selectedEvent.status || false,
         };
     }
 
@@ -261,7 +259,7 @@ export default function EventPage() {
         initialDataLive = {
             title: selectedEvent.title as string || '',
             url: selectedEvent.url as string || '',
-            status: selectedEvent.status as string || '',
+            status: selectedEvent.status || false,
         };
     }
 
@@ -288,24 +286,24 @@ export default function EventPage() {
             const events = await FetchEvents()
             if (events) {
                 const liveEvents = events
-                    .filter(event => event.status === 'LIVE')
+                    .filter(event => event.status)
                     .map(event => ({
                         id: event.id,
                         title: event.title,
                         url: event.url,
-                        status: 'en direct'
+                        status: true
                     }))
 
                 const regularEvents = events
-                    .filter(event => event.status !== 'LIVE')
+                    .filter(event => !event.status)
                     .map(event => ({
                         ...event,
-                        status: event.status === 'LIVE' ? 'en direct' : 'pas en direct'
+                        status: event.status
                     }))
 
                 const allFormattedEvents = events.map(event => ({
                     ...event,
-                    status: event.status === 'LIVE' ? 'en direct' : 'pas en direct'
+                    status: event.status
                 }))
 
                 setAllEvents(allFormattedEvents)
@@ -320,14 +318,14 @@ export default function EventPage() {
         event && (event?.title?.toLowerCase().includes(inputValue.toLowerCase()) ||
             event?.location?.toLowerCase().includes(inputValue.toLowerCase()) ||
             event?.time?.toLowerCase().includes(inputValue.toLowerCase()) ||
-            event?.status?.toLowerCase().includes(inputValue.toLowerCase())
+            event?.status
         )
     )
 
     const filteredLiveEvents = eventLive.filter(event =>
         event && (event?.title?.toLowerCase().includes(inputValue.toLowerCase()) ||
             event?.url?.toLowerCase().includes(inputValue.toLowerCase()) ||
-            event?.status?.toLowerCase().includes(inputValue.toLowerCase())
+            event?.status
         )
     )
 

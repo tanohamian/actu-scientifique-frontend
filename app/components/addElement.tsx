@@ -118,6 +118,8 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
         }));
     };
 
+   
+
     const renderField = (field: FormFieldConfig) => {
         const inputClasses = "w-full p-3 md:p-3.5 rounded-lg border-none bg-[#2d4f6b] text-white text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-blue-300 custom-input";
         const labelClasses = "text-white text-sm md:text-base mb-1 font-medium font-sans";
@@ -144,6 +146,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                         </div>
                     </div>
                 );
+           
             case 'file':
                 return (
                     <div key={field.name} className={containerClasses}>
@@ -200,6 +203,32 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                         required={field.required}
                     />
                 </div>)
+            case 'date':
+                return (<div key={field.name} className={containerClasses}>
+                    <label className={labelClasses}>{field.label}</label>
+                    <input
+                        type="date"
+                        className={inputClasses}
+                        placeholder={field.placeholder || ''}
+                        value={(formData[field.name] as string) || ''}
+                        onChange={(e) => handleChange(field.name, e.target.value, field.type)}
+                        required={field.required}
+                        lang="fr-FR"
+                    />
+                </div>);
+            case 'time':
+                return (<div key={field.name} className={containerClasses}>
+                    <label className={labelClasses}>{field.label}</label>   
+                    <input
+                        type="time"
+                        className={inputClasses}
+                        placeholder={field.placeholder || ''}
+                        value={(formData[field.name] as string) || ''}
+                        onChange={(e) => handleChange(field.name, e.target.value, field.type)}
+                        required={field.required}
+                        lang="fr-FR"
+                    />
+                </div>);
             case 'number':
             default:
                 return (
