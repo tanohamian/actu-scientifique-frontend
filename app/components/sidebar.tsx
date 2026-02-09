@@ -22,7 +22,7 @@ export default function SidebarComponent({ onClose, isMobile }: { onClose?: () =
     const pathname = usePathname();
 
     const iconBaseProps = { className: `text-white ${iconSize}` };
-    const basePath = env.onProduction ?"/dashboard": "/admin/dashboard"
+    const basePath = !env.devMode ?"/dashboard": "/admin/dashboard"
     const navItems: NavItems[] = [
         { name: "Tableau de bord", path: `${basePath}`, icon: <IconComponent name='ControlPanel' {...iconBaseProps} /> },
         { name: "Statistiques", path: `${basePath}/analytics`, icon: <IconComponent name='Analytics' {...iconBaseProps} /> },

@@ -32,7 +32,7 @@ export default function Page() {
         ];
         
         console.log({rowData})
-        const dashboardPath = env.onProduction ? "/dashboard" : "/admin/dashboard";
+        const dashboardPath = !env.devMode ? "/dashboard" : "/admin/dashboard";
         allowedPrefixes.push(dashboardPath);
 
         
