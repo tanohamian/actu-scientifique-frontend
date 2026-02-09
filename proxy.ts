@@ -37,7 +37,6 @@ const testHost = (request: NextRequest) => {
   const url = request.nextUrl;
   const hostname = request.headers.get('host');
 
-  console.log(`--- Middleware --- Host: ${hostname} | Path: ${url.pathname}`);
 
   const adminDomain = env.adminUrl;
 
@@ -49,14 +48,12 @@ const testHost = (request: NextRequest) => {
     }
     if (!newUrlPathName.startsWith('/admin')) {
       const newUrl = new URL(`/admin${newUrlPathName}`, request.url);
-      console.log("Redirection vers:", newUrl.toString());
       return NextResponse.rewrite(newUrl);
     }
   }
 
   if (hostname !== adminDomain && url.pathname.startsWith('/admin')) {
     const newUrl = new URL(`https://${adminDomain}${url.pathname}`, request.url);
-    console.log("Redirection cross-domain vers:", newUrl.toString());
     return NextResponse.redirect(newUrl);
   }
 
@@ -66,7 +63,6 @@ const testHost = (request: NextRequest) => {
 export default async function middleware(request: NextRequest) {
   try {
     await check(request);
-    console.log(env)
     if (env.onProduction) {
       const hostRedirect = testHost(request);
       if (hostRedirect) {

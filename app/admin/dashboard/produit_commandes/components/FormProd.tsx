@@ -65,11 +65,9 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
         throw new Error(error.error || 'Erreur lors de l\'upload');
       }
       const result = await response.json();
-      console.log("✅ Produit uploadé:", result);
       if (response) {
         const newProduct = result.product as Product;
         setProducts((prevProducts) => [...prevProducts, newProduct])
-        toast(true, true, "Produit ajouté avec succès")
         setNomProduit('')
         setDescription('')
         setCategorie('')
@@ -77,6 +75,7 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
         setStock(0)
         //setImageFile(null)
         setImagePreview(null)
+        toast(true, false, "Produit ajouté avec succès")
       }
     } catch (error) {
       console.log("erreur lors de l'ajout du produit : ", error)
