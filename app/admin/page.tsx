@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoginUser } from "../actions/Auth";
 import { useRouter } from "next/navigation";
 import { env } from "../config/env";
@@ -34,6 +34,9 @@ export default function Connexion() {
             [field]: value
         }));
     };
+    useEffect(()=>{
+        console.log({env})
+    })
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
