@@ -51,8 +51,8 @@ export default function Calendar({ events }: CalendarProps) {
         date: event.date,
         time: event.time
       },
-      backgroundColor: event.status === 'en direct' ? '#10b981' : '#3b82f6',
-      borderColor: event.status === 'en direct' ? '#059669' : '#2563eb'
+      backgroundColor: event.status ? '#10b981' : '#3b82f6',
+      borderColor: event.status  ? '#059669' : '#2563eb'
     };
   });
 
