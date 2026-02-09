@@ -186,7 +186,6 @@ export default function Utilisateurs() {
             try {
                 setIsLoading(true)
                 const response = await FetchUsers()
-                console.log(response)
                 if (response) {
                     setUsers(response)
                 }

@@ -9,6 +9,7 @@ import { Article, DbMedia } from "@/app/interfaces";
 import { FetchMedias } from "@/app/actions/MediasManager";
 import LoadingComponent from '@/app/components/loadingComponent'
 
+
 export default function Ecohumanity() {
     const router = useRouter();
 
@@ -48,7 +49,6 @@ export default function Ecohumanity() {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = articles.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(articles.length / itemsPerPage);
-
 
 
     return (

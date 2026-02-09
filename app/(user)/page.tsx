@@ -75,6 +75,8 @@ export default function Home() {
     loadContent();
   }, []);
 
+  console.log("articles : ", articles)
+
   useEffect(() => {
     (async () => {
       const response = await FetchProducts()

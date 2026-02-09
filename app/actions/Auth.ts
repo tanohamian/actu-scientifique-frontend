@@ -102,3 +102,27 @@ export async function IsAdmin() {
     return
   }
 }
+
+export async function LogoutUser() {
+  const authToken = (await cookies()).get('authToken')?.value;
+  if (!authToken) {
+    console.log("Cookie d'authentification manquant");
+  }
+  try {
+    const response = await fetch(`${env.baseUrl}/auth/logout`, {
+      method: 'POST',
+      headers: {
+        'Cookie': `authToken=${authToken}`
+      }
+    })
+    if (response.ok) {
+      const cookieStore = await cookies();
+      cookieStore.delete('authToken');
+    } else {
+      console.error("Échec de la déconnexion :", response.status);
+    }
+  } catch (error) {
+    console.log("Erreur lors de la déconnexion : ", error)
+    return
+  }
+}

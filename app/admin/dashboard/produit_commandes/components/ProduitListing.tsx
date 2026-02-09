@@ -4,6 +4,7 @@ import AffichageTableau from "./ListingTask";
 import { FetchProducts, DeleteProduct, UpdateProduct } from "@/app/actions/ProductsManager";
 import { FormFieldConfig } from '@/app/components/addElement';
 import { Product } from "@/app/interfaces";
+import { toast } from "@/app/components/FormComponent";
 
 
 
@@ -45,6 +46,7 @@ export default function ProduitsTable({ products, setProducts, setLoading }: Pro
             if (deletedProduct) {
                 const updatedProducts = products.filter((product) => product.id !== item.id)
                 setProducts(updatedProducts)
+                toast(true,false,"Produit supprimé avec succès")
             }
         } catch (error) {
             console.log("erreur lors de la suppression du produit", error)
@@ -53,28 +55,36 @@ export default function ProduitsTable({ products, setProducts, setLoading }: Pro
 
     const handleEdit = async (item: Product) => {
         try {
-            console.log("Données reçues pour modification:", item);
 
             const formData = new FormData();
+            formData.append('id', item.id);
             formData.append('name', item.name);
             formData.append('categories', item.categories);
             formData.append('price', item.price.toString());
             formData.append('stock', item.stock.toString());
             formData.append('description', item?.description || '');
 
-            if (item.preview_image && item.preview_image.startsWith('data:')) {
-                const blob = await fetch(item.preview_image).then(r => r.blob());
-                const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
-                formData.append('file', file);
+            if (item.preview_image && item.preview_image) {
+                formData.append('file',item.preview_image);
             }
 
-            const updatedProduct = await UpdateProduct(formData, item.id as string);
+            const response = await fetch('/api/upload-product', {
+                method: 'PUT',
+                body: formData,
+            });
 
-            if (updatedProduct) {
-                const updatedProducts = products.map((product) =>
-                    product.id === updatedProduct.id ? updatedProduct : product
-                );
-                setProducts(updatedProducts);
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Erreur lors de l\'upload');
+            }
+
+            const result = await response.json();
+
+            if (result) {
+                
+                setProducts((prevProducts) => prevProducts.map((product) => product.id === item.id ?result.product: product));
+                toast(true,false,"Produit modifié avec succès")
             }
         } catch (error) {
             console.log("erreur lors de la modification du produit", error);

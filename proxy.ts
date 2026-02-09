@@ -11,7 +11,7 @@ async function check(req: NextRequest) {
     !url.startsWith('/eco-humanity') &&
     !url.startsWith('/portrait-discovery') &&
     !url.startsWith('/agenda') &&
-    !url.startsWith(`${env.onProduction? "": "/admin/"}/dashboard`) &&
+    !url.startsWith(`${env.onProduction ? "" : "/admin/"}/dashboard`) &&
     !url.startsWith('/opportunities/') &&
     !url.startsWith('/about')
   ) {
@@ -37,43 +37,39 @@ const testHost = (request: NextRequest) => {
   const url = request.nextUrl;
   const hostname = request.headers.get('host');
 
-  console.log(`--- Middleware --- Host: ${hostname} | Path: ${url.pathname}`);
 
-  const adminDomain = 'admin.actuscientifique.com';
+  const adminDomain = env.adminUrl;
 
   if (hostname === adminDomain) {
     let newUrlPathName = url.pathname;
     // Remove '/admin
-    if (url.pathname.startsWith('/admin')){
+    if (url.pathname.startsWith('/admin')) {
       newUrlPathName = url.pathname.split('admin')[1]
     }
     if (!newUrlPathName.startsWith('/admin')) {
       const newUrl = new URL(`/admin${newUrlPathName}`, request.url);
-      console.log("Redirection vers:", newUrl.toString());
-      return NextResponse.rewrite(newUrl); 
+      return NextResponse.rewrite(newUrl);
     }
   }
 
   if (hostname !== adminDomain && url.pathname.startsWith('/admin')) {
     const newUrl = new URL(`https://${adminDomain}${url.pathname}`, request.url);
-    console.log("Redirection cross-domain vers:", newUrl.toString());
     return NextResponse.redirect(newUrl);
   }
 
-  return null; 
+  return null;
 }
 
 export default async function middleware(request: NextRequest) {
   try {
     await check(request);
-    console.log("VOICI LA CONSTANTE ENV", env)
     if (env.onProduction) {
       const hostRedirect = testHost(request);
       if (hostRedirect) {
-        return hostRedirect; 
+        return hostRedirect;
       }
     }
-    
+
 
     const authToken = request.cookies.get('authToken')?.value;
     if (!authToken && request.nextUrl.pathname.startsWith('/admin') && request.nextUrl.pathname !== '/admin') {
@@ -81,8 +77,8 @@ export default async function middleware(request: NextRequest) {
     }
 
     return NextResponse.next();
-    
-  } catch(error) {
+
+  } catch (error) {
     console.log(error);
     return NextResponse.next();
   }

@@ -90,3 +90,27 @@ export async function UpdateRole(userId: string | undefined, role: string) {
         console.error('Error updating user role:', error);
     }
 };
+
+export async function getMe(){
+    const authToken = (await cookies()).get('authToken')?.value;
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+
+    }
+    try {
+        const response = await fetch(`${env.baseUrl}/users/me`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Cookie': `authToken=${authToken}`,
+            }
+        })
+        if (response.ok) {
+            const data = await response.json();
+            return data as UserInterface;
+        }
+    } catch (error) {
+        console.log("erreur lors de la récupération de l'utilisateur connecté : ", error)
+        return
+    }
+}

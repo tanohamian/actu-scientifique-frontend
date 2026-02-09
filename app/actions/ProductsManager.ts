@@ -18,7 +18,6 @@ export async function FetchProducts() {
 
         if (response.ok) {
             const responseData = await response.json()
-            console.log("Response fetch products : ", responseData.products)
             return responseData.products as Product[] || []
         }
         return []

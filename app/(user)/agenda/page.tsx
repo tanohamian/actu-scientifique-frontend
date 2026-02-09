@@ -16,7 +16,7 @@ export interface Event {
     time: string;
     url?: string;
     description: string;
-    status: "NOT_LIVE" | "LIVE";
+    status: boolean;
     createdAt: string;
 }
 
@@ -35,12 +35,12 @@ export default function AgendaPage() {
                     const data = response as Event[]
                     const now = new Date()
 
-                    const lives = data.filter(e => e.status === "LIVE")
+                    const lives = data.filter(e => e.status === true)
                     setLiveEvents(lives)
 
                     const upcoming = data.filter(e => {
                         const eventDate = new Date(e.date)
-                        return e.status === "NOT_LIVE" && eventDate > now
+                        return !e.status && eventDate > now
                     })
                     setUpcomingEvents(upcoming)
 

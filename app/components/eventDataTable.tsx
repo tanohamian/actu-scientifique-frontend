@@ -27,7 +27,7 @@ export interface EventInterface {
     createdAt?: Date | string
     time?: string
     url?: string
-    status?: string
+    status?: boolean
 }
 
 export type ElementType = DbMedia | Article | TableData
@@ -132,11 +132,11 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                         </div>
                                     );
                                 }
-                                const rawValue = (item as {[key: string]: string})[header.key];
+                                const rawValue = (item as { [key: string]: string })[header.key];
 
                                 if (header.key === "createdAt" && rawValue) {
                                     const dateObj = new Date(rawValue);
-                                    
+
                                     if (!isNaN(dateObj.getTime())) {
                                         content = dateObj.toLocaleString('fr-FR', {
                                             hour: "2-digit",
@@ -165,7 +165,7 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             >
-                                                {(content as string).substring(0, 48)+'...'}
+                                                {(content as string).substring(0, 48) + '...'}
                                             </a>
                                         ) : (
                                             <div style={header.textAlign === "center" ? { margin: "auto auto" } : {}}>
