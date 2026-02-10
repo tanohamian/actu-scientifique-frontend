@@ -10,8 +10,6 @@ import { useEffect, useState } from "react";
 import LoadingComponent from '@/app/components/loadingComponent'
 
 
-
-
 export default function OneHealthPage() {
     const router = useRouter()
     const [currentPage, setCurrentPage] = useState(1);

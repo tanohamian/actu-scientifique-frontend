@@ -7,6 +7,7 @@ import { Article, DbMedia } from "@/app/interfaces"
 import { FetchMediaById } from "@/app/actions/MediasManager"
 import LoginRegisterComponent from "@/app/components/login_register_Component"
 import { InputsProps } from "../layout"
+import { ArticleDisplay } from "@/app/components/viewElement"
 
 
 export default function DetailsArticle() {
@@ -118,12 +119,8 @@ export default function DetailsArticle() {
 
                 <article className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 md:p-10 rounded-3xl shadow-inner relative">
                     <div className="text-gray-200 text-lg md:text-xl leading-relaxed space-y-6">
-                        {textContent && textContent !== "undefined..." ? (
-                            textContent.split('. ').map((sentence: string, index: number) => (
-                                <p key={index} className="opacity-90 hover:opacity-100 transition-opacity">
-                                    {sentence}{sentence.endsWith('.') ? '' : '.'}
-                                </p>
-                            ))
+                        {textContent  ? (
+                           ArticleDisplay({ htmlContent: textContent })
                         ) : (
                             <p className="italic text-white">Aucune description disponible.</p>
                         )}

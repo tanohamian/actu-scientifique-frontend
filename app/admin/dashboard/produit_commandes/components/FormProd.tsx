@@ -4,9 +4,15 @@ import React from 'react'
 
 import { useState } from 'react';
 import { Upload } from 'lucide-react';
-import { AddProduct } from '@/app/actions/ProductsManager';
 import { Product } from '@/app/interfaces';
 import { toast } from '@/app/components/FormComponent';
+import dynamic from 'next/dynamic'
+
+
+const EditorText = dynamic(
+    () => import('@/app/components/titap'),
+    { ssr: false }
+)
 
 interface ComponentFormProdProps {
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
@@ -237,11 +243,9 @@ export default function ComponentFormProd({ setProducts }: ComponentFormProdProp
 
       <div style={formGroup}>
         <label style={label}>Description</label>
-        <textarea
-          placeholder="Ecrivez votre article ici....."
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          style={textarea}
+        <EditorText
+          content={description}
+          onChange={(html) => setDescription(html)}
         />
       </div>
 

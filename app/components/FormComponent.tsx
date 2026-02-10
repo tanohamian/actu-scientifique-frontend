@@ -6,7 +6,13 @@ import { FormFieldConfig, InitialDataType, uploadIcon, uploadText } from '@/app/
 import { showToast } from "nextjs-toast-notify"
 import { Rubriques } from '../enum/enums';
 import { Article, DbArticle, Newsletter } from '../interfaces';
+import dynamic from 'next/dynamic'
 
+
+const EditorText = dynamic(
+    () => import('@/app/components/titap'),
+    { ssr: false }
+)
 
 export const toast = function (success: boolean, edit: boolean = false, message: string = "") {
   return success ? showToast.success(message ? message : edit ? "Publié!" : "Mis à Jour !", {
@@ -257,6 +263,16 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
             />
           </div>
         )
+      case 'description':
+               return(
+                    <div key={field.name} className={containerClasses}>
+                        <label style={labelStyle}>{field.label}</label>
+                        <EditorText 
+                            content={(articleFormData[field.name] as string) || ''} 
+                            onChange={(html) => handleArticleChange(field.name, html)}
+                        />
+                    </div>
+                );
       case 'number':
       default:
         return (

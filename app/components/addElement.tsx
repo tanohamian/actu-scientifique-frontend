@@ -4,7 +4,13 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { X, ChevronDown, Upload } from 'lucide-react';
 import { Rubriques } from "../enum/enums";
 import { Product } from "../interfaces";
+import dynamic from 'next/dynamic'
 
+
+const EditorText = dynamic(
+    () => import('@/app/components/titap'),
+    { ssr: false }
+)
 export interface FormFieldConfig {
     name: string;
     label: string;
@@ -117,7 +123,7 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                     : value
         }));
     };
-
+    
    
 
     const renderField = (field: FormFieldConfig) => {
@@ -229,6 +235,16 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                         lang="fr-FR"
                     />
                 </div>);
+            case 'description':
+               return(
+                    <div key={field.name} className={containerClasses}>
+                        <label className={labelClasses}>{field.label}</label>
+                        <EditorText 
+                            content={(formData[field.name] as string) || ''} 
+                            onChange={(html) => handleChange(field.name, html)}
+                        />
+                    </div>
+                );
             case 'number':
             default:
                 return (
