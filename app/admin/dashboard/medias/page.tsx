@@ -17,7 +17,7 @@ import { DbMedia, Product } from '@/app/interfaces';
 
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media', required: true },
-    { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...', required: false },
+    { name: 'description', label: 'Description', type: 'description', placeholder: 'Entrez une description ...', required: false },
     { name: 'file', label: "Fichier", type: "file" },
     {
         name: 'rubrique', label: 'Rubrique', type: 'select',
@@ -39,7 +39,7 @@ const MediaFields: FormFieldConfig[] = [
 
 const updateMediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media' },
-    { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...' },
+    { name: 'description', label: 'Description', type: 'description', placeholder: 'Entrez une description ...' },
     { name: 'file', label: "Fichier", type: "file" },
     {
         name: 'rubrique', label: 'Rubrique', type: 'select',

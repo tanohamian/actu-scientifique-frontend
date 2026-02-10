@@ -6,6 +6,7 @@ import { FetchArticles } from "@/app/actions/ArticleManager";
 import { Rubriques } from "@/app/enum/enums";
 import { Article } from "@/app/interfaces";
 import LoadingComponent from '@/app/components/loadingComponent'
+import { ArticleDisplay } from "@/app/components/viewElement";
 
 export default function PortraitDiscoveryPage() {
     const router = useRouter();
@@ -74,7 +75,7 @@ export default function PortraitDiscoveryPage() {
                                     {item.title}
                                 </h3>
                                 <p className="text-gray-400 text-sm mt-2 line-clamp-2">
-                                    {item.content}
+                                    {ArticleDisplay({htmlContent: item.content})}
                                 </p>
                             </div>
                         </div>

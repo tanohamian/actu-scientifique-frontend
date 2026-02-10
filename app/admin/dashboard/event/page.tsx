@@ -15,7 +15,7 @@ const EventFields: FormFieldConfig[] = [
     { name: 'location', label: 'Lieu', type: 'text', placeholder: 'Entrez le lieu de l\'évènement', required: true },
     { name: 'date', label: 'Date', type: 'date', placeholder: 'Entrez la date de l\'évènement', required: true },
     { name: 'time', label: 'Heure', type: 'time', placeholder: 'Entrez l\'heure de l\'évènement', required: true },
-    { name: "description", label: "Description", type: "textarea", placeholder: "Entrez la description de l\'évènement", required: false }
+    { name: "description", label: "Description", type: "description", placeholder: "Entrez la description de l\'évènement", required: false }
 ];
 
 const EventFieldsLive: FormFieldConfig[] = [

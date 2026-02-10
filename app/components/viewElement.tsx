@@ -1,6 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 import IconComponent from "@/app/components/Icons";
 import { Article, DbMedia } from "../interfaces";
+import DOMPurify from 'isomorphic-dompurify';
+
+export function ArticleDisplay ({ htmlContent }: { htmlContent: string }) {
+  const sanitizedHTML = DOMPurify.sanitize(htmlContent);
+  
+  return (
+    <div 
+      dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
+    />
+  );
+}
 
 export interface ViewArticleProps {
     article: Article | DbMedia;
@@ -62,9 +73,9 @@ export default function ViewElement({ article, media, onclick }: ViewArticleProp
                 </h1>
 
                 {contentText && (
-                    <p className="text-blue-100/80 line-clamp-2 text-sm leading-relaxed">
-                        {contentText}
-                    </p>
+                    <div className="text-blue-100/80 line-clamp-2 text-sm leading-relaxed">
+                        {ArticleDisplay({ htmlContent: contentText })}
+                    </div>
                 )}
             </div>
         </button>

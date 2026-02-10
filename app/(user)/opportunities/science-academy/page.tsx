@@ -38,20 +38,16 @@ export default function ScienceAcademy() {
                     </h1>
                 </div>
 
-                {/* Main content card */}
                 <div className="backdrop-blur-xl bg-slate-800/40 border border-slate-700/50 rounded-2xl p-8 md:p-12 shadow-2xl shadow-black/20 relative overflow-hidden">
-                    {/* Card decoration */}
                     <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-cyan-500/10 to-transparent rounded-full blur-2xl"></div>
 
                     <div className="relative">
-                        {/* Introduction */}
                         <div className="mb-10 pb-10 border-b border-slate-700/50">
                             <p className="text-lg md:text-xl text-slate-300 leading-relaxed font-light">
                                 La <span className="text-cyan-300 font-medium">Science Journalism Academy (SJA)</span> est une université d'été pensée pour les étudiants en journalisme et organisée sous forme de formation intensive et abordant non seulement les fondamentaux du journalisme scientifique, mais aussi des thématiques transversales comme l'approche <span className="text-violet-300">« Une seule santé »</span> et le <span className="text-violet-300">développement durable</span>.
                             </p>
                         </div>
 
-                        {/* Three pillars section */}
                         <div className="mb-10">
                             <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mb-8 flex items-center gap-3">
                                 <span className="inline-block w-2 h-2 bg-cyan-400 rounded-full"></span>
@@ -63,7 +59,6 @@ export default function ScienceAcademy() {
                             </p>
 
                             <div className="grid md:grid-cols-3 gap-6">
-                                {/* Pillar 1 */}
                                 <div className="group relative bg-gradient-to-br from-slate-700/30 to-slate-800/30 border border-slate-600/40 rounded-xl p-6 hover:border-cyan-400/40 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10 hover:-translate-y-1">
                                     <div className="absolute -top-3 -left-3 w-12 h-12 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">
                                         1
@@ -74,7 +69,6 @@ export default function ScienceAcademy() {
                                     </p>
                                 </div>
 
-                                {/* Pillar 2 */}
                                 <div className="group relative bg-gradient-to-br from-slate-700/30 to-slate-800/30 border border-slate-600/40 rounded-xl p-6 hover:border-violet-400/40 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/10 hover:-translate-y-1">
                                     <div className="absolute -top-3 -left-3 w-12 h-12 bg-gradient-to-br from-violet-500 to-violet-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">
                                         2
@@ -85,7 +79,6 @@ export default function ScienceAcademy() {
                                     </p>
                                 </div>
 
-                                {/* Pillar 3 */}
                                 <div className="group relative bg-gradient-to-br from-slate-700/30 to-slate-800/30 border border-slate-600/40 rounded-xl p-6 hover:border-blue-400/40 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 hover:-translate-y-1">
                                     <div className="absolute -top-3 -left-3 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">
                                         3
@@ -98,7 +91,6 @@ export default function ScienceAcademy() {
                             </div>
                         </div>
 
-                        {/* Partners & Mission section */}
                         <div className="bg-slate-900/40 border border-slate-700/30 rounded-xl p-8 relative overflow-hidden">
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
 
@@ -111,7 +103,6 @@ export default function ScienceAcademy() {
                                 Initiée par <span className="text-cyan-300 font-medium">ASCA</span> avec l'appui du consortium <span className="text-cyan-300 font-medium">Afrique One</span> basé au <span className="text-violet-300 font-medium">Centre suisse de recherches scientifiques en Côte d'Ivoire (CSRS)</span> et du média <span className="text-violet-300 font-medium">« Science de Chez Nous »</span>, la SJA vise à former les futurs journalistes à la spécialité du journalisme scientifique afin de favoriser une meilleure diffusion des savoirs scientifiques en Afrique.
                             </p>
 
-                            {/* Call to action */}
                             <div className="flex flex-wrap gap-4 mt-8">
                                 <button className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-lg hover:from-cyan-400 hover:to-blue-400 transition-all duration-300 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:-translate-y-0.5">
                                     En savoir plus
