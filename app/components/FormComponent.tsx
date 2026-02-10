@@ -342,11 +342,13 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
                 ))}
               </select>
             </div>
-            {isLoading ? <button type="submit" style={buttonStyle}>
+            {isLoading ? 
+            <button type="submit" style={buttonStyle}>
               {isEditing ? "Enregistrement en cours..." : "Publication en cours..."}
             </button> : <button type="submit" style={buttonStyle}>
               {isEditing ? "Enregistrer les modifications" : "Publier"}
-            </button>}
+            </button>
+            }
           </form>
       }
 
