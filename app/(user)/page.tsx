@@ -150,11 +150,11 @@ export default function Home() {
             <div className="flex flex-col bg-[#50789B] min-h-[400px] rounded-lg p-4 gap-4 sticky top-6">
               <h1 className="text-xl text-white">Boutique</h1>
               <button
-                className="bg-white/10 hover:bg-white/20 transition-all duration-200 rounded-lg p-4 flex  min-h-[300px] group relative overflow-hidden"
+                className="bg-white/10 hover:bg-white/20 transition-all duration-200 rounded-lg p-4 flex  min-h-[300px] group relative overflow-hidden items-center justify-center"
                 onClick={() => router.push('/shop')}
               >
                 {firstTwoProducts.length > 0 ? (
-                  <div className="relative w-full h-full flex items-center justify-center">
+                  <div className="relative w-full h-full flex ">
                     {firstTwoProducts.map((product, index) => (
                       <div
                         key={product.id}
@@ -178,9 +178,9 @@ export default function Home() {
                     ))}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center gap-2">
+                  <div className="flex flex-col gap-2">
                     <ShoppingCart className="text-white w-10 h-10 group-hover:scale-110 transition-transform" />
-                    <span className="text-white text-base font-bold">Boutique</span>
+                    {/*<span className="text-white text-base font-bold">Boutique</span>*/}
                   </div>
                 )}
               </button>

@@ -7,7 +7,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import LoginRegisterComponent from '../components/login_register_Component';
 import { useAuth, AuthProvider } from '../context/authContext';
-
+import { FetchArticles } from '../actions/ArticleManager';
+import { FetchMedias } from '../actions/MediasManager';
+import { Article, DbMedia } from "@/app/interfaces";
 export const dynamic = 'force-dynamic';
 
 const iconSize = 'w-8 h-8';
@@ -49,22 +51,15 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
+  const [searchLoading, setSearchLoading] = useState(false);
+
   const [isOpportunitiesOpen, setIsOpportunitiesOpen] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const iconBaseProps = { className: `text-white ${iconSize}` };
   const footerElement = "flex flex-row items-center";
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpportunitiesOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
+  
   const navItems: NavItemsProps[] = [
     { label: 'Accueil', href: "/" },
     { label: 'Une seule santé', href: "/one-health" },
@@ -97,19 +92,73 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   ];
 
   const { isLoggedIn,loading,logout } = useAuth();
+  const [combineData, setCombineData]=useState<({title :string; id : string | undefined})[]>([]) 
+
+ 
+
+  const searchRef = useRef<HTMLDivElement>(null);
+
+ 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setInputValue(''); 
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+
+  const filteredData = inputValue ?combineData.filter(data=>
+
+    data && (
+      data.title.toLowerCase().includes(inputValue.toLowerCase())
+    )
+  
+  ) :[]
+
+
+   useEffect(() => {
+    
+     
+       const fetchall =async ()=>{
+          setSearchLoading(true);
+        try {
+            const [articlesData, mediasData] = await Promise.all([
+              FetchArticles(),
+              FetchMedias()
+              ]);
+         setCombineData([...articlesData.map(a => ({title: a.title, id: a.id })),...mediasData.map(m => ({title: m.title, id: m.id}))])
+  
+        } catch (error) {
+          console.log("Erreur lors de la récupération des données de recherche :", error);
+        }finally{
+          setSearchLoading(false);
+        }
+       
+        }
+        fetchall()
+        
+
+  },[])
 
   
-
   return (
     <div className="m-0 p-0 bg-[#50789B] w-full min-h-screen flex flex-col">
       <header className="w-full relative ">
-        {(pathname === "/" || pathname === "/subscription") && (
-          <div className="absolute right-10 top-20 lg:right-20 lg:top-24 xl:right-10 xl:top-12 2xl:right-20 2xl:top-12 hidden lg:block pointer-events-none z-10">
-            <div className="w-80 h-80 lg:w-96 lg:h-96 xl:w-[300px] xl:h-[300px] 2xl:w-[700px] 2xl:h-[700px]">
-              <img src="/images/Loupe.svg" alt="Loupe" className="w-full h-full opacity-90" />
+       {(pathname === "/" || pathname === "/subscription") && (
+            <div className="absolute right-4 top-16 sm:right-8 sm:top-20 md:right-12 md:top-24 lg:right-16 lg:top-28 xl:right-20 xl:top-32 2xl:right-24 2xl:top-36 pointer-events-none z-10">
+              <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-64 lg:h-64 xl:w-80 xl:h-80 2xl:w-96 2xl:h-96">
+                <img 
+                  src="/images/Loupe.svg" 
+                  alt="Loupe décorative" 
+                  className="w-full h-full object-contain opacity-70 sm:opacity-75 md:opacity-80 lg:opacity-85 xl:opacity-90" 
+                />
+              </div>
             </div>
-          </div>
-        )}
+      )}
 
         <div className='flex flex-col lg:flex-row items-center justify-between lg:justify-around px-4 py-4 gap-4'>
           <div className='flex flex-row items-center gap-3'>
@@ -117,8 +166,28 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <h3 className='text-white text-sm lg:text-base w-25 font-bold'>Actu Scientifique</h3>
           </div>
 
-          <div className='w-full lg:flex-1 lg:max-w-md mx-0 lg:mx-4'>
+          <div className='w-full lg:flex-1 lg:max-w-md mx-0 lg:mx-4 relative'>
             <SearchBarComponent placeholder='Rechercher un sujet' inputValue={inputValue} setInputValue={setInputValue} />
+            {inputValue && (
+              <div className="absolute z-30 bg-white  max-h-60 overflow-y-auto w-full rounded-lg">
+               {
+                searchLoading ? (
+                  <div className="p-4 text-center text-gray-500">Chargement...</div>
+                ) :  filteredData.length > 0 ?  (
+                   filteredData.map((data, index) => (
+                  <div key={index} className="p-2 hover:bg-gray-100 cursor-pointer" onClick={()=>setInputValue('')}>
+                    <Link href={`/${data.id}`} className="text-gray-800">
+                      {data.title}
+                    </Link>
+                  </div>
+                ))
+                ):(
+                  <div className="p-4 text-center text-gray-500">Aucun résultat trouvé</div>
+                )
+                  
+               }
+              </div>
+            )}
           </div>
 
           <div className='flex flex-row items-center gap-4 w-full lg:w-auto justify-between lg:justify-end'>
