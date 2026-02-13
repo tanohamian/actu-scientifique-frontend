@@ -290,7 +290,7 @@ export default function SwitchSection() {
         {loading && items.length === 0 ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}><Loader2 className="animate-spin" size={32} /></div>
         ) : items.length === 0 ? (
-          <p style={{ textAlign: 'center', opacity: 0.6 }}>Aucune donnée trouvée.</p>
+          <p style={{ textAlign: 'center', opacity: 0.6, color: 'white' }}>Aucune donnée trouvée.</p>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex', padding: '10px 0', borderBottom: '2px solid rgba(255, 255, 255, 0.3)', marginBottom: '10px', fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase', opacity: 0.9 }}>

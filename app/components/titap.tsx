@@ -138,7 +138,7 @@ const Tiptap = ({ content = '', onChange, placeholder = 'Commencez à écrire...
   );
 
   return (
-    <div className="border border-gray-300 rounded-lg overflow-hidden bg-white">
+    <div className="border border-gray-300 rounded-lg overflow-hidden bg-[#2D4459]">
       {/* Toolbar */}
       <div className="border-b border-gray-300 bg-gray-50 p-2 flex flex-wrap gap-1">
         {/* Undo/Redo */}
@@ -147,14 +147,14 @@ const Tiptap = ({ content = '', onChange, placeholder = 'Commencez à écrire...
           disabled={!editor.can().undo()}
           title="Annuler"
         >
-          <Undo className="w-4 h-4" />
+          <Undo className="w-4 h-4 text" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
           title="Rétablir"
         >
-          <Redo className="w-4 h-4" />
+          <Redo className="w-4 h-4 text" />
         </ToolbarButton>
 
         <div className="w-px h-6 bg-gray-300 mx-1" />
@@ -346,7 +346,7 @@ const Tiptap = ({ content = '', onChange, placeholder = 'Commencez à écrire...
       </div>
 
       {/* Editor */}
-      <EditorContent editor={editor} />
+      <EditorContent editor={editor} className="text-white" />
     </div>
   );
 };

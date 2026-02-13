@@ -169,20 +169,20 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           <div className='w-full lg:flex-1 lg:max-w-md mx-0 lg:mx-4 relative'>
             <SearchBarComponent placeholder='Rechercher un sujet' inputValue={inputValue} setInputValue={setInputValue} />
             {inputValue && (
-              <div className="absolute z-30 bg-white  max-h-60 overflow-y-auto w-full rounded-lg">
+              <div className="absolute z-30 bg-[#2D4459]  max-h-60 overflow-y-auto w-full rounded-lg">
                {
                 searchLoading ? (
-                  <div className="p-4 text-center text-gray-500">Chargement...</div>
+                  <div className="p-4 text-center text-white">Chargement...</div>
                 ) :  filteredData.length > 0 ?  (
                    filteredData.map((data, index) => (
                   <div key={index} className="p-2 hover:bg-gray-100 cursor-pointer" onClick={()=>setInputValue('')}>
-                    <Link href={`/${data.id}`} className="text-gray-800">
+                    <Link href={`/${data.id}`} className="text-white font-medium">
                       {data.title}
                     </Link>
                   </div>
                 ))
                 ):(
-                  <div className="p-4 text-center text-gray-500">Aucun résultat trouvé</div>
+                  <div className="p-4 text-center text-white">Aucun résultat trouvé</div>
                 )
                   
                }

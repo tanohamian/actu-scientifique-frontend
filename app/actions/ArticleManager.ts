@@ -94,7 +94,10 @@ export async function DeleteArticle(articleId: string) {
 
         if (response.ok) {
             console.log(response)
+            const responseData = await response.json()
             revalidatePath('/admin/dashboard/gestion_article')
+            return responseData
+            
         }
         return true
     } catch (error) {
