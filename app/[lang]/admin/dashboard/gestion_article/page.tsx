@@ -12,6 +12,7 @@ import FormComponent, { toast } from '@app/components/FormComponent';
 import { Rubriques } from '@app/enum/enums';
 import LoadingComponent from '@app/components/loadingComponent';
 import { Article, DbArticle, Product } from '@app/interfaces';
+import dynamic from 'next/dynamic';
 
 
 const EditorText = dynamic(
