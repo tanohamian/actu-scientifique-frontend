@@ -1,6 +1,13 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { env } from '@/app/config/env';
+import createIntlMiddleware from 'next-intl/middleware';
+import { env } from '@app/config/env';
+
+const intlMiddleware = createIntlMiddleware({
+  locales: ['fr', 'en'],
+  defaultLocale: 'fr',
+  localePrefix: 'as-needed' 
+});
 
 async function check(req: NextRequest) {
   const url = req.nextUrl.pathname;
@@ -76,7 +83,7 @@ export default async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/admin', request.url));
     }
 
-    return NextResponse.next();
+    return intlMiddleware(request)
 
   } catch (error) {
     console.log(error);

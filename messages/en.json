@@ -1,0 +1,68 @@
+{
+  "Navigation": {
+    "home": "Home",
+    "oneHealth": "One Health",
+    "tech": "Tech",
+    "technology": "Technology",
+    "ecoHumanity": "Eco-humanity",
+    "portraits": "Portraits & discoveries",
+    "agenda": "Agenda",
+    "opportunities": "Opportunities",
+    "about": "About"
+  },
+  "Subscription" : {
+    "h1": "Subscribe to scientific news",
+    "p1": "Exclusive access to news on science in Africa",
+    "store": "Shop"
+  },
+  "Shop": {
+    "h1": "Discover our products",
+    "searchPlaceholder": "Search for an item",
+    "p1": "Discover our exclusive merchandise",
+    "subscribe": "Subscribe"
+  },
+  "Discovery": {
+    "portraits": "Portraits &",
+    "discovery" : "Discoveries",
+    "p1": "Discoveries of the week",
+    "searchPlaceholder": "Search for an item",
+    "notFound": "No portrait found."
+  },
+  "Home": {
+    "welcome": "Welcome to our scientific news platform!",
+    "description": "Deciphering science, informing the public",
+    "subscribe": "Subscribe",
+    "spotlight" : "Spotlight",
+    "store" : "Shop",
+    "searchPlaceholder": "Search for a topic",
+    "Ad": "Advertisement"
+  },
+  "Auth": {
+    "login": "Sign In",
+    "logout": "Sign out",
+    "register" : "Sign Up"
+  },
+  "Opportunities": {
+    "academy": "Science Journalism Academy",
+    "scholarship" : "Scholarships",
+    "training": "Trainings"
+  },
+  "Hero": {
+    "title": "Deciphering science,\ninforming the public",
+    "subscribe": "Subscribe",
+    "searchPlaceholder": "Search for a topic"
+  },
+  "Sections": {
+    "trending": "Trending",
+    "shop": "Shop"
+  },
+  "Bottom": {
+    "contact": "Contact & Location",
+    "privacy": "Privacy Policy",
+    "partners": "Partners",
+    "mission": "Our Mission",
+    "charter": "Editorial and Commercial Charter",
+    "terms": "Terms of Use",
+    "rights": "© 2026 - All rights reserved"
+  }
+}

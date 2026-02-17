@@ -1,0 +1,70 @@
+{
+  "Navigation": {
+    "home": "Accueil",
+    "oneHealth": "Une seule santé",
+    "tech": "Tech",
+    "technology": "Technologie",
+    "ecoHumanity": "Eco-humanité",
+    "portraits": "Portraits & découvertes",
+    "agenda": "Agenda",
+    "opportunities": "Opportunités",
+    "about": "À propos"
+  },
+  "Subscription" : {
+    "h1": "S'abonner à l'actualité scientifique",
+    "p1": "Accès exclusive à l'actualité sur la science en Afrique",
+    "store": "Boutique"
+  },
+  "Shop": {
+    "h1": "Découvrez nos produits",
+    "searchPlaceholder": "Rechercher un article",
+    "p1": "Découvrez nos produits dérivés exclusifs",
+    "subscribe": "S'abonner"
+  },
+  "Discovery": {
+    "portraits": "Portraits &",
+    "discovery" : "Découvertes",
+    "p1": "Découvertes de la semaine",
+    "searchPlaceholder": "Rechercher un article",
+    "notFound": "Aucun portrait trouvé.",
+    "subscribe": "S'abonner"
+  },
+  "Home": {
+    "welcome": "Bienvenue sur notre plateforme d'actualité scientifique !",
+    "description": "Décrypter la science, informer le public",
+    "subscribe": "S'abonner",
+    "spotlight" : "À la une",
+    "store" : "Boutique",
+    "searchPlaceholder": "Rechercher un sujet",
+    "Ad": "Publicité"
+  },
+  "Opportunities": {
+    "academy": "Science Journalism Academy",
+    "scholarship" : "Bourses",
+    "training": "Formations"
+  },
+
+  "Auth": {
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "register" : "S'inscrire"
+  },
+  "Hero": {
+    "title": "Décrypter la science,\ninformer le public",
+    "subscribe": "S'abonner",
+    "searchPlaceholder": "Rechercher un sujet"
+  },
+  "Sections": {
+    "trending": "À la une",
+    "shop": "Boutique"
+  },
+  "Bottom": {
+    "contact": "Contact & Localisation",
+    "privacy": "Politique de confidentialité",
+    "partners": "Partenaires",
+    "mission": "Notre mission",
+    "charter": "Charte éditoriale et commerciale",
+    "terms": "Conditions d'utilisation",
+    "rights": "© 2026 - Tous droits réservés"
+  }
+}
