@@ -3,7 +3,13 @@ import React, { FormEvent, useState, useEffect } from 'react';
 import { AddNewsletter, UpdateNewsletter } from "@app/actions/Newsletters";
 import { Rubriques } from '@app/enum/enums';
 import { Newsletter } from '@app/interfaces';
+import dynamic from 'next/dynamic'
 
+
+const EditorText = dynamic(
+    () => import('@app/components/titap'),
+    { ssr: false }
+)
 
 
 
@@ -101,13 +107,9 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
         </div>
         <div>
           <label style={labelStyle}>Contenu</label>
-          <textarea
-            name="contenu"
-            style={textareaStyle}
-            rows={8}
-            value={formData.contenu}
-            onChange={handleChange}
-            required
+         <EditorText
+            content={formData.contenu}
+            onChange={(html) => setFormData(prev => ({ ...prev, contenu: html }))}
           />
         </div>
         <div>

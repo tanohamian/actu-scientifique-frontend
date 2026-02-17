@@ -89,7 +89,7 @@ export interface Article {
 }
 
 export interface DbMedia {
-    id: number | string;
+    id: string;
     title: string;
     name: string;
     rubrique: Rubriques;

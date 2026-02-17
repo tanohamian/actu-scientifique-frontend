@@ -92,7 +92,7 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                         {
                             columnHeaders.map(header => {
                                 const isActionColumn = header.key === 'actions';
-                                const isURLColumn = header.key === 'url';
+                                //const isURLColumn = header.key === 'url';
 
                                 const cellClasses = `
                                 flex 
@@ -115,7 +115,7 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                 }
 
                                 if (isActionColumn) {
-                                    content = (
+                                    content = handleDeleteEvent && handleEditEvent ?(
                                         <div className="flex gap-2">
                                             <button
                                                 className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-blue-400"
@@ -130,7 +130,24 @@ export default function DataTable({ tableTitle, data, columnHeaders, handleEditE
                                                 <Trash2 size={20} />
                                             </button>
                                         </div>
-                                    );
+                                    ): handleDeleteEvent ? (
+                                        <button
+                                                className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-red-400"
+                                                onClick={handleDeleteEvent ? () => handleDeleteEvent(item as TableData) : undefined}
+                                            >
+                                                <Trash2 size={20} />
+                                            </button>
+                                    ) : (   
+                                    
+                                    
+                                        <button
+                                                className="bg-transparent border-none cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 text-white hover:text-blue-400"
+                                                onClick={handleEditEvent ? () => handleEditEvent(item as TableData) : undefined}
+                                            >
+                                                <Pencil size={20} />
+                                    </button>
+                                        
+                                        )
                                 }
                                 const rawValue = (item as { [key: string]: string })[header.key];
 

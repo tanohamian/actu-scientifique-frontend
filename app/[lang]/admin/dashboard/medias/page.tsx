@@ -17,7 +17,7 @@ import { DbMedia, Product } from '@app/interfaces';
 
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media', required: true },
-    { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...', required: false },
+    { name: 'description', label: 'Description', type: 'description', placeholder: 'Entrez une description ...', required: false },
     { name: 'file', label: "Fichier", type: "file" },
     {
         name: 'rubrique', label: 'Rubrique', type: 'select',
@@ -39,7 +39,7 @@ const MediaFields: FormFieldConfig[] = [
 
 const updateMediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media' },
-    { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Entrez une description ...' },
+    { name: 'description', label: 'Description', type: 'description', placeholder: 'Entrez une description ...' },
     { name: 'file', label: "Fichier", type: "file" },
     {
         name: 'rubrique', label: 'Rubrique', type: 'select',
@@ -73,6 +73,9 @@ export default function MediaPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [editMedia, setEditMedia] = useState(false);
     const [selectedMedia, setSelectedMedia] = useState<ElementType | null>(null);
+    const [loadingAddMeddia, setLoadingAddMedia] = useState(false);
+    const [loadingEditMedia, setLoadingEditMedia] = useState(false);
+
     const [filters] = useState<IFilter[]>(mainHeaders.map((header) => {
         return { value: header.key, label: header.label }
     }))
@@ -151,7 +154,7 @@ export default function MediaPage() {
     };
 
     const handleSubmitMedia = async (data: Product | InitialDataType | DbMedia) => {
-        setIsLoading(true)
+        setLoadingAddMedia(true)
         try {
             console.log("📋 Données reçues:", data);
 
@@ -205,10 +208,11 @@ export default function MediaPage() {
             console.error("❌ Erreur:", error);
             toast(false, false, "Échec de l'upload du media");
         } finally {
-            setIsLoading(false)
+            setLoadingAddMedia(false)
         }
     };
 
+    
     const handleEditMedia = async (item: ElementType) => {
         console.log('Editing event:', item);
         setSelectedMedia(item as TableData);
@@ -239,6 +243,7 @@ export default function MediaPage() {
     }
 
     const handleSubmitEditMedia = async (data: Product | InitialDataType | DbMedia) => {
+        setLoadingEditMedia(true)
         try {
             data = data as InitialDataType
             const media = new FormData()
@@ -266,6 +271,8 @@ export default function MediaPage() {
         } catch (error) {
             console.log((error as Error).message)
             toast(false, false, "Échec de la mise à jour du média");
+        }finally {
+            setLoadingEditMedia(false)
         }
 
     };
@@ -292,6 +299,8 @@ export default function MediaPage() {
 
         fetchMedias()
     }, [])
+
+    
 
     return (
         <div className={pageContainerClasses}>
@@ -340,7 +349,7 @@ export default function MediaPage() {
                 buttonTitle="Ajouter"
                 fields={MediaFields}
                 initialData={initialData}
-                isLoading={isLoading}
+                isLoading={loadingAddMeddia}
             />
 
             <AddElementModal
@@ -351,6 +360,7 @@ export default function MediaPage() {
                 buttonTitle="Modifier"
                 fields={updateMediaFields}
                 initialData={initialData}
+                isLoading={loadingEditMedia}
             />
         </div>
     );

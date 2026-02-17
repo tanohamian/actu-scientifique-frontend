@@ -6,6 +6,15 @@ import { FetchTrainings, AddTraining, UpdateTraining, DeleteTraining } from '@ap
 import { FetchScholarships, AddScholarship, UpdateScholarship, DeleteScholarship, IScholarship } from '@app/actions/Scholarships';
 import { ITraining } from '@app/interfaces';
 import ConfirmModal from './ConfirmModal';
+import dynamic from 'next/dynamic'
+
+
+const EditorText = dynamic(
+    () => import('@app/components/titap'),
+    { ssr: false }
+)
+
+
 
 export const toast = function (success: boolean, edit: boolean = false, message: string = "") {
   return success ? showToast.success(message ? message : edit ? "Mis à Jour !" : "Publié !", {
@@ -170,7 +179,7 @@ export default function SwitchSection() {
   };
 
   return (
-    <div style={{ backgroundColor: '#5A8FAC', minHeight: '100vh', padding: isMobile ? '20px' : '40px', color: 'white' }}>
+    <div style={{ backgroundColor: '#5A8FAC', minHeight: '100vh', padding: isMobile ? '20px' : '40px',  }}>
       <ConfirmModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -195,20 +204,20 @@ export default function SwitchSection() {
       </div>
 
       <div style={{ marginBottom: '60px' }}>
-        <h2 style={{ marginBottom: '30px', fontSize: '24px' }}>
+        <h2 style={{ marginBottom: '30px', fontSize: '24px' , color: 'white', fontWeight: 'bold' }}>
           {editingId ? 'Modifier' : 'Ajouter'} {activeTab === 'Bourses' ? 'une bourse' : 'une formation'}
         </h2>
 
         <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '20px', marginBottom: '20px' }}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label style={{ fontSize: '14px' }}>Titre</label>
+            <label style={{ fontSize: '14px', color: 'white' }}>Titre</label>
             <input type="text" placeholder="Entrez le titre" style={baseInputStyle}
               value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
           </div>
           
           {activeTab === 'Formations' && (
             <div style={{ flex: 0.5, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <label style={{ fontSize: '14px' }}>Type de formation</label>
+              <label style={{ fontSize: '14px', color: 'white' }}>Type de formation</label>
               <select
                 style={{ ...baseInputStyle, color: 'white', backgroundColor: 'rgba(255, 255, 255, 0.1)', appearance: 'none', cursor: 'pointer' }}
                 value={formData.type}
@@ -222,17 +231,17 @@ export default function SwitchSection() {
 
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <label style={{ fontSize: '14px' }}>
+              <label style={{ fontSize: '14px', color: 'white' }}>
                 {activeTab === 'Bourses' ? 'Information à fournir' : 'Lien de la formation'}
               </label>
               
               {activeTab === 'Bourses' && (
                 <div style={{ display: 'flex', gap: '12px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', fontSize: '12px', opacity: 0.9 }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', fontSize: '12px', opacity: 0.9, color: 'white' }}>
                       <input type="radio" checked={inputMode === 'url'} onChange={() => setInputMode('url')} />
                       Lien
                     </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', fontSize: '12px', opacity: 0.9 }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', fontSize: '12px', opacity: 0.9, color: 'white' }}>
                       <input type="radio" checked={inputMode === 'reward'} onChange={() => setInputMode('reward')} />
                       Montant
                     </label>
@@ -256,14 +265,16 @@ export default function SwitchSection() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
-          <label style={{ fontSize: '14px' }}>Description</label>
-          <textarea placeholder="Brève description..." style={{ ...baseInputStyle, minHeight: '100px', resize: 'vertical' }}
-            value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
+          <label style={{ fontSize: '14px', color: 'white' }}>Description</label>
+          <EditorText
+            content={formData.description}
+            onChange={(html) => setFormData({ ...formData, description: html })}
+          />
         </div>
 
         <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '20px', alignItems: 'flex-end' }}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label style={{ fontSize: '14px' }}>Date</label>
+            <label style={{ fontSize: '14px', color: 'white' }}>Date</label>
             <input type="date" style={{ ...baseInputStyle, colorScheme: 'dark' }}
               value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} />
           </div>
@@ -275,30 +286,30 @@ export default function SwitchSection() {
       </div>
 
       <div>
-        <h3 style={{ fontSize: '24px', marginBottom: '20px' }}>Liste des {activeTab}</h3>
+        <h3 style={{ fontSize: '24px', marginBottom: '20px', color: 'white' }}>Liste des {activeTab}</h3>
         {loading && items.length === 0 ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}><Loader2 className="animate-spin" size={32} /></div>
         ) : items.length === 0 ? (
-          <p style={{ textAlign: 'center', opacity: 0.6 }}>Aucune donnée trouvée.</p>
+          <p style={{ textAlign: 'center', opacity: 0.6, color: 'white' }}>Aucune donnée trouvée.</p>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex', padding: '10px 0', borderBottom: '2px solid rgba(255, 255, 255, 0.3)', marginBottom: '10px', fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase', opacity: 0.9 }}>
-              <div style={{ flex: 2 }}>Titre</div>
-              {activeTab === 'Formations' && <div style={{ flex: 1 }}>Type</div>}
-              <div style={{ flex: 1 }}>Date</div>
-              <div style={{ flex: 0.5, textAlign: 'right' }}>Actions</div>
+              <div style={{ flex: 2, color: 'white' }}>Titre</div>
+              {activeTab === 'Formations' && <div style={{ flex: 1, color: 'white' }}>Type</div>}
+              <div style={{ flex: 1, color: 'white' }}>Date</div>
+              <div style={{ flex: 0.5, textAlign: 'right', color: 'white' }}>Actions</div>
             </div>
             {items.map((item) => (
               <div key={item.id} style={{ display: 'flex', padding: '15px 0', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', alignItems: 'center' }}>
-                <div style={{ flex: 2, fontWeight: '500' }}>{item.title}</div>
+                <div style={{ flex: 2, fontWeight: '500', color: 'white' }}>{item.title}</div>
                 {activeTab === 'Formations' && (
-                  <div style={{ flex: 1, fontSize: '12px' }}>
+                  <div style={{ flex: 1, fontSize: '12px', color: 'white' }}>
                     <span style={{ backgroundColor: (item as ITraining).type === 'ACADEMY' ? '#E67E5F' : 'rgba(255,255,255,0.2)', padding: '4px 8px', borderRadius: '4px' }}>
                       {(item as ITraining).type === 'ACADEMY' ? 'Academy' : 'Classique'}
                     </span>
                   </div>
                 )}
-                <div style={{ flex: 1, opacity: 0.8 }}>{formatDateFR(item.date)}</div>
+                <div style={{ flex: 1, opacity: 0.8, color: 'white' }}>{formatDateFR(item.date)}</div>
                 <div style={{ flex: 0.5, display: 'flex', gap: '15px', justifyContent: 'flex-end' }}>
                   <button onClick={() => handleEditClick(item)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}><Pencil size={18} /></button>
                   <button onClick={() => item.id && (setItemToDelete(item.id), setIsModalOpen(true))} style={{ background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer' }}><Trash2 size={18} /></button>

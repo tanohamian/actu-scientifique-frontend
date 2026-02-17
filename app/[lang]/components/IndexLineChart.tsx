@@ -1,7 +1,7 @@
 import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { RechartsDevtools } from '@recharts/devtools';
 import { useEffect, useState } from 'react';
-import { mockData } from '@/app/constant';
+import { mockData } from '@app/constant';
 
 interface IndexLineChartInterface{
   start?: Date | string,

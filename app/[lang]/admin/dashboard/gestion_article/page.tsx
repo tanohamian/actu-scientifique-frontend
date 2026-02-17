@@ -12,7 +12,7 @@ import FormComponent, { toast } from '@app/components/FormComponent';
 import { Rubriques } from '@app/enum/enums';
 import LoadingComponent from '@app/components/loadingComponent';
 import { Article, DbArticle, Product } from '@app/interfaces';
-import dynamic from 'next/dynamic'
+
 
 const EditorText = dynamic(
     () => import('@app/components/editor'),
@@ -21,7 +21,7 @@ const EditorText = dynamic(
 
 const ArticleFields: FormFieldConfig[] = [
     { name: 'title', label: "Titre de l'article", placeholder: "Entrez le titre de l'article", required: true },
-    { name: 'content', label: 'Contenu', type: 'textarea', required: true },
+    { name: 'content', label: 'Contenu', type: 'description', required: true },
     { name: 'file', label: "Image", placeholder: 'Ajoutez une illustration', type: 'file' },
     {
         name: 'rubrique',
@@ -47,7 +47,7 @@ const ArticleFields: FormFieldConfig[] = [
 
 const articleUpdateFields: FormFieldConfig[] = [
     { name: 'title', label: "Titre de l'article", placeholder: "Entrez le titre de l'article" },
-    { name: 'content', label: 'Contenu', type: 'textarea' },
+    { name: 'content', label: 'Contenu', type: 'description' },
     { name: 'file', label: "Image", placeholder: 'Ajoutez une illustration', type: 'file' },
     {
         name: 'rubrique',
@@ -333,7 +333,6 @@ export default function ArticlePage() {
                 </article>
 
 
-                <EditorText value={editorText} onChange={setEditorText} />
 
             </div>
 
