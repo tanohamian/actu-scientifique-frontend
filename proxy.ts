@@ -66,6 +66,8 @@ const testHost = (request: NextRequest) => {
 
   return null;
 }
+
+
 export default async function middleware(request: NextRequest) {
   try {
     await check(request);

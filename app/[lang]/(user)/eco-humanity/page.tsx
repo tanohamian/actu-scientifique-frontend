@@ -8,6 +8,7 @@ import { Rubriques } from "@app/enum/enums";
 import { Article, DbMedia } from "@app/interfaces";
 import { FetchMedias } from "@app/actions/MediasManager";
 import LoadingComponent from '@app/components/loadingComponent'
+import { useTranslations } from "next-intl";
 
 
 export default function Ecohumanity() {
@@ -49,6 +50,7 @@ export default function Ecohumanity() {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = articles.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(articles.length / itemsPerPage);
+    const t = useTranslations("EcoHumanity");
 
 
     return (
@@ -58,7 +60,7 @@ export default function Ecohumanity() {
                 onClose={() => setIsLoading(false)}
             />
             <div className="mb-12">
-                <h1 className="text-5xl md:text-7xl font-bold text-white mb-4"> Eco-humanité </h1>
+                <h1 className="text-5xl md:text-7xl font-bold text-white mb-4"> {t("h1")} </h1>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {currentItems.map((item: Article | DbMedia) => (

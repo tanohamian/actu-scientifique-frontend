@@ -38,12 +38,75 @@
     "searchPlaceholder": "Rechercher un sujet",
     "Ad": "Publicité"
   },
+  "OneHealth": {
+    "h1": "Une seule santé",
+    "p1": "Découvrez les liens entre la santé humaine, animale et environnementale",
+    "subscribe": "S'abonner"
+  },
+  "EcoHumanity": {
+    "h1": "Eco-humanité",
+    "p1": "Explorez les interactions entre l'écologie et l'humanité",
+    "subscribe": "S'abonner"
+  },
+  "Agenda": {
+    "h1": "Agenda",
+    "p1": "Découvrez les événements scientifiques à venir en Afrique",
+    "subscribe": "S'abonner",
+    "place" : "Lieu",
+    "hour" : "Heure",
+    "live" : "En direct",
+    "liveNow": "LIVE MAINTENANT",
+    "joinLive": "REJOINDRE LE DIRECT",
+    "noLive": "Aucun direct pour le moment.",
+    "comingSoon": "À venir",
+    "nothingScheduled": "Aucun événement prévu pour le moment."
+  },
   "Opportunities": {
     "academy": "Science Journalism Academy",
     "scholarship" : "Bourses",
     "training": "Formations"
   },
-
+  "SJA": {
+    "h1": "Science Journalism Academy",
+    "p1": "Formez-vous au journalisme scientifique en Afrique",
+    "subscribe": "S'abonner"
+  },
+  "Scholarships": {
+    "h1": "Bourses",
+    "p1": "Découvrez les bourses disponibles pour les journalistes scientifiques africains",
+    "subscribe": "S'abonner"
+  },
+  "Training": {
+    "h1": "Formations",
+    "p1": "Participez à nos formations pour améliorer vos compétences en journalisme scientifique",
+    "subscribe": "S'abonner"
+  },
+  "About" : {
+    "h1": "À propos d'",
+    "span0": "ActuScientifique",
+    "span1": "est un média africain de",
+    "span2": "journalisme scientifique",
+    "p1": "dont la vocation est de rendre la science accessible au plus grand nombre. Le projet est né d'un constat simple : en Afrique, une grande partie des informations scientifiques reste difficilement accessible au grand public, alors même qu'elles sont essentielles pour comprendre le monde, faire des choix éclairés et améliorer durablement le bien-être des populations.",
+    "reading" : "Lire notre charte éditoriale et commerciale →",
+    "engagement": "Notre engagement",
+    "eVerb": "s'engage à",
+    "eSpan1": "transformer les résultats de la recherche scientifique en informations claires, fiables et compréhensibles",
+    "eLeftOver1": "adaptées aux réalités africaines.",
+    "eSpan2": "Le média s'adresse à tous : citoyens, étudiants, professionnels, décideurs et acteurs de la société civile.",
+    "mission": "Notre mission",
+    "mText": "Informer, expliquer et former le public sur les sujets scientifiques d'intérêt général, en s'appuyant sur des données issues de la recherche, traitées avec rigueur.",
+    "ambition": "Notre ambition",
+    "aText": "Contribuer à l'émergence d'une culture scientifique forte en Afrique, capable de lutter contre la désinformation et de favoriser des décisions fondées sur des preuves.",
+    "activities": "Ce que nous faisons",
+    "activitiesText": "Vulgarisation,Décryptage,Mise en lumière",
+    "editorial" : "Notre approche éditoriale",
+    "eTexts": "Fiabilité et vérification,Clarté et pédagogie,Contextualisation,Indépendance,Éthique",
+    "why": "Pourquoi",
+    "reasonP1" : "Parce que la science ne doit pas rester confinée aux laboratoires. ",
+    "reasonSpan": "Elle doit être comprise, appropriée et utilisée par tous.",
+    "reasonP2": "En rapprochant la science des citoyens, nous contribuons à bâtir des sociétés africaines mieux informées et capables de relever les défis contemporains.",
+    "motto": "Journalisme Scientifique • Éthique • Indépendant"
+  },
   "Auth": {
     "login": "Connexion",
     "logout": "Déconnexion",

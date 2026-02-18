@@ -9,7 +9,7 @@ export function ArticleDisplay ({ htmlContent }: { htmlContent: string }) {
   return (
     <div 
       dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
-    />
+    ></div>
   );
 }
 

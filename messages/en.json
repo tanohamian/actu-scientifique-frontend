@@ -15,6 +15,31 @@
     "p1": "Exclusive access to news on science in Africa",
     "store": "Shop"
   },
+  
+  "Home": {
+    "welcome": "Welcome to our scientific news platform!",
+    "description": "Deciphering science, informing the public",
+    "subscribe": "Subscribe",
+    "spotlight" : "Spotlight",
+    "store" : "Shop",
+    "searchPlaceholder": "Search for a topic",
+    "Ad": "Advertisement"
+  },
+  "OneHealth": {
+    "h1": "One Health",
+    "p1": "Discover the links between human, animal and environmental health",
+    "subscribe": "Subscribe"
+  },
+  "EcoHumanity": {
+    "h1": "Eco-humanity",
+    "p1": "Explore the interactions between ecology and humanity",
+    "subscribe": "Subscribe"
+  },
+  "Auth": {
+    "login": "Sign In",
+    "logout": "Sign out",
+    "register" : "Sign Up"
+  },
   "Shop": {
     "h1": "Discover our products",
     "searchPlaceholder": "Search for an item",
@@ -28,24 +53,64 @@
     "searchPlaceholder": "Search for an item",
     "notFound": "No portrait found."
   },
-  "Home": {
-    "welcome": "Welcome to our scientific news platform!",
-    "description": "Deciphering science, informing the public",
+  "Agenda": {
+    "h1": "Agenda",
+    "p1": "Discover upcoming scientific events in Africa",
     "subscribe": "Subscribe",
-    "spotlight" : "Spotlight",
-    "store" : "Shop",
-    "searchPlaceholder": "Search for a topic",
-    "Ad": "Advertisement"
-  },
-  "Auth": {
-    "login": "Sign In",
-    "logout": "Sign out",
-    "register" : "Sign Up"
+    "place": "Location",
+    "hour": "Time",
+    "live": "Live",
+    "liveNow": "LIVE NOW",
+    "joinLive": "JOIN THE LIVE STREAM",
+    "noLive": "No live streams at the moment.",
+    "comingSoon": "Coming soon",
+    "nothingScheduled": "No events scheduled at the moment."
   },
   "Opportunities": {
     "academy": "Science Journalism Academy",
     "scholarship" : "Scholarships",
     "training": "Trainings"
+  },
+  "SJA": {
+    "h1": "Science Journalism Academy",
+    "p1": "Train in science journalism in Africa",
+    "subscribe": "Subscribe"
+  },
+  "Scholarships": {
+    "h1": "Scholarships",
+    "p1": "Discover scholarship opportunities for science journalism in Africa",
+    "subscribe": "Subscribe"
+  },
+  "Training": {
+    "h1": "Trainings",
+    "p1": "Explore training opportunities in science journalism in Africa",
+    "subscribe": "Subscribe"
+  },
+  "About": {
+    "h1": "About ",
+    "span0": "ActuScientifique",
+    "span1": "is an African",
+    "span2": "science journalism",
+    "p1": "media outlet dedicated to making science accessible to as many people as possible. The project was born from a simple observation: in Africa, much of the scientific information remains difficult for the general public to access, even though it is essential for understanding the world, making informed choices, and sustainably improving the well-being of populations.",
+    "reading": "Read our editorial and commercial charter →",
+    "engagement": "Our Commitment",
+    "eVerb": "is committed to",
+    "eSpan1": "transforming scientific research results into clear, reliable, and understandable information",
+    "eLeftOver1": "tailored to African realities.",
+    "eSpan2": "The media outlet is for everyone: citizens, students, professionals, decision-makers, and civil society actors.",
+    "mission": "Our Mission",
+    "mText": "To inform, explain, and educate the public on scientific topics of general interest, based on research data processed with rigor.",
+    "ambition": "Our Ambition",
+    "aText": "To contribute to the emergence of a strong scientific culture in Africa, capable of fighting disinformation and promoting evidence-based decisions.",
+    "activities": "What We Do",
+    "activitiesText": "Popularization,Decryption,Highlighting",
+    "editorial": "Our Editorial Approach",
+    "eTexts": "Reliability and verification,Clarity and pedagogy,Contextualization,Independence,Ethics",
+    "why": "Why",
+    "reasonP1": "Because science must not remain confined to laboratories. ",
+    "reasonSpan": "It must be understood, embraced, and used by everyone.",
+    "reasonP2": "By bringing science closer to citizens, we contribute to building better-informed African societies capable of meeting contemporary challenges.",
+    "motto": "Science Journalism • Ethical • Independent"
   },
   "Hero": {
     "title": "Deciphering science,\ninforming the public",

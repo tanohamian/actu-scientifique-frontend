@@ -5,12 +5,13 @@ import OpportunityCard from "@app/components/OpportunityCard"
 import { useEffect, useState } from "react"
 import LoadingComponent from '@app/components/loadingComponent'
 import { DisplayedElementInterface } from "../training/page"
+import { useTranslations } from "next-intl"
 
 
 export default function Scholarships() {
     const [scholarships, setScholarships] = useState<DisplayedElementInterface[]>([])
     const [loading, setLoading] = useState(true)
-
+    const t = useTranslations("Scholarships")
     useEffect(() => {
         const fetchScholarships = async () => {
             try {
@@ -31,7 +32,7 @@ export default function Scholarships() {
                 isOpen={loading}
                 onClose={() => setLoading(false)}
             />
-            <h1 className="text-5xl font-bold text-white mb-5">Bourses</h1>
+            <h1 className="text-5xl font-bold text-white mb-5">{t('h1')}</h1>
             <section>
                 <div className="grid grid-cols-1 gap-4">
                     {scholarships.map((item, index) => (

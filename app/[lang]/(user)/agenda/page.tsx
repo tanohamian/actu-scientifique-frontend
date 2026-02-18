@@ -7,6 +7,8 @@ import interactionPlugin from '@fullcalendar/interaction'
 import frLocale from '@fullcalendar/core/locales/fr'
 import { FetchEvents } from '@app/actions/EventsManager'
 import LoadingComponent from '@app/components/loadingComponent'
+import { LANG } from '../../enum/enums'
+import { useLocale, useTranslations } from 'next-intl'
 
 export interface Event {
     id: string;
@@ -19,13 +21,32 @@ export interface Event {
     status: boolean;
     createdAt: string;
 }
-
+interface CalendarInterface {
+    id: string;
+    title: string;
+    start: string;
+    backgroundColor: string;
+    borderColor: string;
+    textColor: string;
+    extendedProps: {
+        id: string;
+        title: string;
+        date: string;
+        location: string;
+        time: string;
+        url?: string;
+        description: string;
+        status: boolean;
+        createdAt: string;
+    };
+}
 export default function AgendaPage() {
     const [isLoading, setIsLoading] = useState(false)
     const [liveEvents, setLiveEvents] = useState<Event[]>([])
     const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([])
-    const [formattedCalendarEvents, setFormattedCalendarEvents] = useState<any[]>([])
-
+    const [formattedCalendarEvents, setFormattedCalendarEvents] = useState<CalendarInterface[]>([])
+    const locale = useLocale()
+    const t = useTranslations("Agenda")
     useEffect(() => {
         (async () => {
             setIsLoading(true)
@@ -54,11 +75,15 @@ export default function AgendaPage() {
                         extendedProps: { ...e }
                     }))
                     setFormattedCalendarEvents(calendar)
+                    //const receivedParams = await params
+                    console.log("log in agenda")
+                    
                 }
             } catch (error) {
                 console.error("Erreur lors de la récupération des événements:", error)
             } finally {
                 setIsLoading(false)
+                
             }
         })()
     }, [])
@@ -89,7 +114,7 @@ export default function AgendaPage() {
                             <FullCalendar
                                 plugins={[dayGridPlugin, interactionPlugin]}
                                 initialView="dayGridMonth"
-                                locale={frLocale}
+                                locale={locale === LANG.FR ? frLocale : undefined}
                                 events={formattedCalendarEvents}
                                 height="auto"
                                 headerToolbar={{ left: 'prev', center: 'title', right: 'next' }}
@@ -106,35 +131,35 @@ export default function AgendaPage() {
 
                     <div className="space-y-6">
 
-                        <div className="bg-gradient-to-br from-slate-600 to-slate-700 rounded-2xl shadow-xl overflow-hidden">
-                            <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-4">
-                                <h3 className="text-white text-xl font-bold text-center">En direct</h3>
+                        <div className="bg-linear-to-br from-slate-600 to-slate-700 rounded-2xl shadow-xl overflow-hidden">
+                            <div className="bg-linear-to-br from-orange-500 to-orange-600 p-4">
+                                <h3 className="text-white text-xl font-bold text-center">{t('live')} </h3>
                             </div>
                             <div className="p-6 bg-gray-100 min-h-[150px] space-y-4">
                                 {liveEvents.length > 0 ? liveEvents.map(event => (
                                     <div key={event.id} className="bg-white rounded-xl p-4 shadow-lg border-l-4 border-orange-500">
                                         <div className="flex items-center gap-2 mb-2">
                                             <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-                                            <span className="text-orange-500 font-bold text-xs">LIVE MAINTENANT</span>
+                                            <span className="text-orange-500 font-bold text-xs">{t('liveNow')}</span>
                                         </div>
                                         <h4 className="font-bold text-slate-800">{event.title}</h4>
                                         <p className="text-slate-500 text-xs mt-1">📍 {event.location} - {event.time}</p>
                                         <a href={event.url} target="_blank" rel="noopener noreferrer"
                                             className="mt-3 block text-center text-xs bg-orange-500 text-white py-2 rounded-lg font-bold hover:bg-orange-600 transition-colors">
-                                            REJOINDRE LE DIRECT
+                                            {t('joinLive')}
                                         </a>
                                     </div>
                                 )) : (
                                     <div className="flex flex-col items-center justify-center text-gray-400 py-8">
-                                        <p className="text-sm italic">Aucun direct pour le moment</p>
+                                        <p className="text-sm italic">{t('noLive')}</p>
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        <div className="bg-gradient-to-br from-slate-600 to-slate-700 rounded-2xl shadow-xl overflow-hidden">
+                        <div className="bg-linear-to-br from-slate-600 to-slate-700 rounded-2xl shadow-xl overflow-hidden">
                             <div className="p-4 bg-slate-600 border-b border-slate-500">
-                                <h3 className="text-white text-xl font-bold">À venir</h3>
+                                <h3 className="text-white text-xl font-bold">{t('comingSoon')}</h3>
                             </div>
                             <div className="p-4 bg-gray-100 space-y-3 min-h-[250px]">
                                 {upcomingEvents.length > 0 ? upcomingEvents.map(event => (
@@ -146,7 +171,7 @@ export default function AgendaPage() {
                                         </div>
                                     </div>
                                 )) : (
-                                    <p className="text-center text-gray-400 text-sm italic py-10">Aucun événement prévu</p>
+                                    <p className="text-center text-gray-400 text-sm italic py-10">{t('nothingScheduled')}</p>
                                 )}
                             </div>
                         </div>

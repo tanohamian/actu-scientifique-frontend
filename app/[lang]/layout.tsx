@@ -3,6 +3,7 @@ config.autoAddCss = false;
 
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
+import { notFound } from 'next/navigation';
 
 export default async function RootLayout({
   children,
@@ -11,19 +12,25 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: Promise<{ lang: string }>
 }) {
-  
+
+  const { lang } = await params;
+
+  if (!['fr', 'en'].includes(lang)) {
+    notFound();
+  }
+
   const messages = await getMessages();
-  const lang = (await params).lang
+
   return (
-    <html lang={lang}>
-        <head>
-            <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg"></link>
-            <title>{"L'actualité scientifique"}</title>
-            <meta name="google-adsense-account" content="ca-pub-7800085793195104"></meta>
-        </head>
+    <html lang={lang} translate="no">
+      <head>
+        <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg" />
+        <title>{lang === 'fr' ? "L'actualité scientifique" : "Science news"}</title>
+        <meta name="google-adsense-account" content="ca-pub-7800085793195104" />
+      </head>
       <body>
         <NextIntlClientProvider messages={messages} locale={lang}>
-            {children}
+          {children}
         </NextIntlClientProvider>
       </body>
     </html>

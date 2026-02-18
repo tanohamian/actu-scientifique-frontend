@@ -66,7 +66,7 @@ export async function FetchArticles() {
             },
             cache: 'no-store',
         })
-        console.log(response)
+        //console.log(response)
         if (response.ok) {
             const responseData = await response.json()
             revalidatePath('/admin/dashboard/gestion_article')
