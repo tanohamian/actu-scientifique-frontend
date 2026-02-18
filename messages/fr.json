@@ -81,6 +81,15 @@
     "p1": "Participez à nos formations pour améliorer vos compétences en journalisme scientifique",
     "subscribe": "S'abonner"
   },
+  "ID": {
+    "loading": "Chargement...",
+    "noContent" : "Contenu non trouvé",
+    "back" : "Retour",
+    "noDescription": "Aucune description disponible.",
+    "learnMore":"Souhaitez-vous en savoir plus ?",
+    "unregisteredMessage": "La suite de ce contenu est réservée aux membres de la communauté ActuScientifique.",
+    "signIn" : "Connectez-vous pour accéder au contenu complet"
+  },
   "About" : {
     "h1": "À propos d'",
     "span0": "ActuScientifique",

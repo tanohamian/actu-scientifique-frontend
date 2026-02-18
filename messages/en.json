@@ -86,6 +86,15 @@
     "p1": "Explore training opportunities in science journalism in Africa",
     "subscribe": "Subscribe"
   },
+  "ID": {
+    "loading": "Loading...",
+    "noContent" : "Content not found",
+    "back" : "Back",
+    "noDescription": "No description available.",
+    "learnMore":"Want to learn more ?",
+    "unregisteredMessage": "The rest of this content is reserved for members of the ActuScientifique community.",
+    "signIn" : "Sign in to access the full content"
+  },
   "About": {
     "h1": "About ",
     "span0": "ActuScientifique",

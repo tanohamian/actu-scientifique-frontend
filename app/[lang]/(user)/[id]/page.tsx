@@ -8,6 +8,7 @@ import { FetchMediaById } from "@app/actions/MediasManager"
 import LoginRegisterComponent from "@app/components/login_register_Component"
 import { InputsProps } from "../layout"
 import { ArticleDisplay } from "@app/components/viewElement"
+import { useTranslations } from "next-intl"
 
 
 export default function DetailsArticle() {
@@ -38,7 +39,7 @@ export default function DetailsArticle() {
         { typeInput: 'password', placeholderInput: 'Mot de passe', inputValue: password, setInputValue: setPassword },
         { typeInput: 'password', placeholderInput: 'Confirmer le mot de passe', inputValue: confirmPassword, setInputValue: setConfirmPassword },
     ];
-
+    const t = useTranslations("ID")
     useEffect(() => {
         const loadContent = async () => {
             if (!articleId) return
@@ -67,14 +68,14 @@ export default function DetailsArticle() {
     const textContent = article ? article.content : media?.description
 
     if (isLoading) {
-        return <div className="min-h-screen flex items-center justify-center text-white">Chargement...</div>
+        return <div className="min-h-screen flex items-center justify-center text-white">{t('loading')}</div>
     }
 
     if (!activeContent) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center text-white gap-4">
-                <p>Contenu non trouvé</p>
-                <button onClick={() => router.back()} className="underline hover:text-gray-400">Retour</button>
+                <p>{t('noContent')}</p>
+                <button onClick={() => router.back()} className="underline hover:text-gray-400">{t('back')}</button>
             </div>
         )
     }
@@ -85,7 +86,7 @@ export default function DetailsArticle() {
                 onClick={() => router.back()}
                 className="text-white hover:text-gray-400 mb-8 flex items-center gap-2 transition-colors group"
             >
-                <span className="group-hover:-translate-x-1 transition-transform">←</span> Retour
+                <span className="group-hover:-translate-x-1 transition-transform">←</span> {t('back')}
             </button>
 
             <div className="max-w-5xl mx-auto flex flex-col gap-8">
@@ -122,21 +123,21 @@ export default function DetailsArticle() {
                         {textContent  ? (
                            ArticleDisplay({ htmlContent: textContent })
                         ) : (
-                            <p className="italic text-white">Aucune description disponible.</p>
+                            <p className="italic text-white">{t('noDescription')}</p>
                         )}
                     </div>
 
                     {activeContent.withToken === false && (
-                        <div className="mt-10 p-8 rounded-2xl bg-gradient-to-t from-blue-900/40 to-transparent border-t border-blue-500/30 text-center">
-                            <h3 className="text-xl font-bold text-white mb-2">Envie d'en savoir plus ?</h3>
+                        <div className="mt-10 p-8 rounded-2xl bg-linear-to-t from-blue-900/40 to-transparent border-t border-blue-500/30 text-center">
+                            <h3 className="text-xl font-bold text-white mb-2">{t('learnMore')}</h3>
                             <p className="text-gray-300 mb-6">
-                                La suite de ce contenu est réservée aux membres de la communauté ActuScientifique.
+                                {t('unregisteredMessage')}
                             </p>
                             <button
                                 onClick={() => setIsLoginOpen(true)}
                                 className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition-all transform hover:scale-105 shadow-lg shadow-blue-900/20"
                             >
-                                Se connecter pour lire la suite
+                                {t('signIn')}
                             </button>
                         </div>
                     )}
