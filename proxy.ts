@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextRequest } from 'next/server';
 import createIntlMiddleware from 'next-intl/middleware';
 import { env } from '@app/config/env';
 
@@ -66,7 +66,42 @@ const testHost = (request: NextRequest) => {
 
   return null;
 }
+export default async function middleware(request: NextRequest) {
+  try {
+    await check(request);
 
+    if (env.onProduction) {
+      const hostRedirect = testHost(request);
+      
+      if (hostRedirect) {
+        
+        if (hostRedirect.status >= 300 && hostRedirect.status < 400) {
+          return hostRedirect;
+        }
+
+        
+        const rewriteUrl = hostRedirect.headers.get('x-middleware-rewrite');
+        if (rewriteUrl) {
+          const newRequest = new NextRequest(new URL(rewriteUrl), request);
+          return intlMiddleware(newRequest);
+        }
+      }
+    }
+
+    
+    const authToken = request.cookies.get('authToken')?.value;
+    if (!authToken && request.nextUrl.pathname.startsWith('/admin') && request.nextUrl.pathname !== '/admin') {
+      return NextResponse.redirect(new URL('/admin', request.url));
+    }
+
+    return intlMiddleware(request);
+
+  } catch (error) {
+    console.error(error);
+    return NextResponse.next();
+  }
+}
+/*
 export default async function middleware(request: NextRequest) {
   try {
     await check(request);
@@ -90,7 +125,7 @@ export default async function middleware(request: NextRequest) {
     console.log(error);
     return NextResponse.next();
   }
-}
+}*/
 
 export const config = {
   matcher: [
