@@ -52,17 +52,15 @@ const testHost = (request: NextRequest) => {
     // Remove '/admin
     if (newUrlPathName.startsWith('/admin')) {
       newUrlPathName = newUrlPathName.split('/admin')[1]
-      console.log("redirection vers admin : ", newUrlPathName)
     }
     else {
-      console.log("redirection vers admin mais url ne commence pas par /admin : ", newUrlPathName)
       const newUrl = new URL(`/admin${newUrlPathName}`, request.url);
       return NextResponse.rewrite(newUrl);
     }
   }
 
   if (hostname !== adminDomain && url.pathname.startsWith('/admin')) {
-    const newUrl = new URL(`https://${adminDomain}${url.pathname}`, request.url);
+    const newUrl = new URL(`https://${adminDomain + url.pathname}`, request.url);
     return NextResponse.redirect(newUrl);
   }
 
@@ -75,6 +73,7 @@ export default async function middleware(request: NextRequest) {
     if (env.onProduction) {
       const hostRedirect = testHost(request);
       if (hostRedirect) {
+        console.log("redirection vers admin : ", hostRedirect.url)
         return hostRedirect;
       }
     }

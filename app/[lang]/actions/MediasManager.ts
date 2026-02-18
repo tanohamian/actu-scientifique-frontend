@@ -8,57 +8,6 @@ import { redirect } from 'next/navigation';
 import { getLocale } from 'next-intl/server';
 import { LANG } from '../enum/enums';
 
-export async function AddMedia(formData: FormData) {
-
-    const lang = await getLocale()
-    const baseUrl = env.getApiUrl(lang as LANG)
-    const authToken = (await cookies()).get('authToken')?.value;
-    console.log("payload: ", formData)
-    const file = (formData as FormData).get('file') as File;
-
-    // Log de survie pour voir si Next.js a laissé passer le fichier
-    console.log("--- SERVER ACTION RECEIVE ---");
-    console.log("File exists:", !!file);
-    if (file) console.log("File size on server:", file.size);
-
-    if (!file || file.size === 0) {
-        throw new Error("Aucun fichier sélectionné ou fichier vide");
-    }
-
-    console.log("File details:", {
-        name: file.name,
-        size: file.size,
-        type: file.type
-    });
-    if (!authToken) {
-        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
-        redirect('/admin');
-    }
-    try {
-        const response = await fetch(`${baseUrl}/multimedia/`, {
-            method: 'POST',
-            headers: {
-                'Cookie': `authToken=${authToken}`,
-            },
-            body: formData
-        });
-
-        if (!response.ok) {
-            const errorData = response;
-            console.log("Server error response:", JSON.stringify(errorData));
-            if (response.status === 401) //redirect('/admin');
-                throw Error(`Échec de l'upload du média : ${response.status} ${response.statusText}`);
-        }
-
-        const result = await response.json();
-        console.log("Upload successful:", result);
-        return result.file as DbMedia;
-    } catch (error) {
-        console.error("Erreur lors de l'upload du média:");
-        console.log(error);
-        throw error;
-    }
-}
 
 
 export async function UpdateMedia(formData: FormData, id: string) {

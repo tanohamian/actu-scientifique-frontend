@@ -17,11 +17,6 @@ export async function AddArticle(formData: Article | FormData, json: boolean = f
         throw Error("Aucun fichier sélectionné ou fichier vide");
     }
 
-    console.log("File details:", {
-        name: file.name,
-        size: file.size,
-        type: file.type
-    });
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
         redirect('/admin');
@@ -62,7 +57,6 @@ export async function FetchArticles() {
     try {
         const lang = await getLocale()
         const baseUrl = env.getApiUrl(lang as LANG)
-        console.log({baseUrl})
         const authToken = (await cookies()).get('authToken')?.value;
         const response = await fetch(`${baseUrl}/articles`, {
             method: 'GET',
