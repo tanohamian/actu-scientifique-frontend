@@ -123,7 +123,7 @@ export async function FetchMedias() {
             },
             cache: 'no-store',
         })
-        console.log("Response fetch medias:", response);
+        //console.log("Response fetch medias:", response);
 
         if (response.ok) {
             const responseData = await response.json()

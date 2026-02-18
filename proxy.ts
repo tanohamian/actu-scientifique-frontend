@@ -46,14 +46,16 @@ const testHost = (request: NextRequest) => {
 
 
   const adminDomain = env.adminUrl;
-
+  console.log({hostname, adminDomain})
   if (hostname === adminDomain) {
     let newUrlPathName = url.pathname;
     // Remove '/admin
-    if (url.pathname.startsWith('/admin')) {
-      newUrlPathName = url.pathname.split('admin')[1]
+    if (newUrlPathName.startsWith('/admin')) {
+      newUrlPathName = newUrlPathName.split('/admin')[1]
+      console.log("redirection vers admin : ", newUrlPathName)
     }
-    if (!newUrlPathName.startsWith('/admin')) {
+    else {
+      console.log("redirection vers admin mais url ne commence pas par /admin : ", newUrlPathName)
       const newUrl = new URL(`/admin${newUrlPathName}`, request.url);
       return NextResponse.rewrite(newUrl);
     }
