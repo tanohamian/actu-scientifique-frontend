@@ -1,10 +1,11 @@
 'use client'
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { Search } from 'lucide-react';
 
 interface SearchBar {
     placeholder: string
     inputValue: string
+    setFocus : Dispatch<SetStateAction<boolean>>
     setInputValue: (value: string) => void
 }
 
@@ -14,13 +15,20 @@ const placeholderStyle = `
     }
 `;
 
-export default function SearchBarComponent({placeholder, inputValue, setInputValue}: SearchBar) {
+export default function SearchBarComponent({placeholder, inputValue, setInputValue, setFocus}: SearchBar) {
   
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
     };
-
+    const OnFocus = ()=>{
+        setFocus(true)
+        //alert("onFocus")
+    }
+    const OnBlur = ()=>{
+        setFocus(false)
+        //alert("onBlur")
+    }
     const containerClasses = [
         'flex', 
         'w-full', 
@@ -75,6 +83,9 @@ export default function SearchBarComponent({placeholder, inputValue, setInputVal
                 value={inputValue} 
                 onChange={handleChange} 
                 className={inputClasses} 
+                onBlur={()=>OnBlur()}
+                onChangeCapture={()=>OnFocus()}
+                onFocus={()=>OnFocus()}
             />
         </div>
     );
