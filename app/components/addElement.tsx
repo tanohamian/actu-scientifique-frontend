@@ -18,6 +18,10 @@ export interface FormFieldConfig {
     placeholder?: string;
     required?: boolean;
     options?: { value: string | number; label: string }[];
+    conditionalField?: {
+        dependsOn: string;
+        showWhen: string | number;
+    };
 }
 
 export type InitialDataType = { [key: string]: string | number | File | undefined | Rubriques | boolean }
@@ -124,9 +128,16 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
         }));
     };
     
-   
+    const shouldShowField = (field: FormFieldConfig): boolean => {
+        if (!field.conditionalField) return true;
+        
+        const { dependsOn, showWhen } = field.conditionalField;
+        return formData[dependsOn] === showWhen;
+    };
 
     const renderField = (field: FormFieldConfig) => {
+        if (!shouldShowField(field)) return null;
+
         const inputClasses = "w-full p-3 md:p-3.5 rounded-lg border-none bg-[#2d4f6b] text-white text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-blue-300 custom-input";
         const labelClasses = "text-white text-sm md:text-base mb-1 font-medium font-sans";
         const containerClasses = "flex flex-col gap-1";
@@ -180,7 +191,6 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                                 <div className="mt-2">
                                     {
                                         isImage ?
-                                            // eslint-disable-next-line @next/next/no-img-element
                                             <img src={imageUrl as string} alt="Preview" className="max-w-full h-auto rounded-lg" /> : null
                                     }
 
@@ -194,9 +204,6 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                         </label>
                     </div>
                 );
-            case 'text':
-            case 'email':
-            case 'password':
             case 'textarea':
                 return (<div key={field.name} className={containerClasses}>
                     <label className={labelClasses}>{field.label}</label>
@@ -245,13 +252,17 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
                         />
                     </div>
                 );
+            case 'url':
+            case 'text':
+            case 'email':
+            case 'password':
             case 'number':
             default:
                 return (
                     <div key={field.name} className={containerClasses}>
                         <label className={labelClasses}>{field.label}</label>
                         <input
-                            type={field.type}
+                            type={field.type || 'text'}
                             className={inputClasses}
                             placeholder={field.placeholder || ''}
                             value={(formData[field.name] as string) || ''}

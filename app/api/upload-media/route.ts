@@ -10,6 +10,7 @@ export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
 
+
         for (const [key, value] of formData.entries()) {
             if (value instanceof File) {
                 console.log(`  ${key}: [File] ${value.name} (${value.size} bytes, ${value.type})`);
@@ -20,15 +21,9 @@ export async function POST(request: NextRequest) {
 
         const file = formData.get('file') as File;
 
-        if (!file || file.size === 0) {
-            console.error("Aucun fichier reçu");
-            return NextResponse.json(
-                { error: 'Aucun fichier sélectionné ou fichier vide' },
-                { status: 400 }
-            );
-        }
+       
 
-        console.log("Fichier validé:", file.name, file.size);
+        console.log("Fichier validé:", file?.name, file?.size);
 
         const cookieStore = await cookies();
         const authToken = cookieStore.get('authToken')?.value;
@@ -41,7 +36,6 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        console.log("Envoi au backend Express:", `${env.baseUrl}/multimedia/`);
 
         const response = await fetch(`${env.baseUrl}/multimedia/`, {
             method: 'POST',
