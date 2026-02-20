@@ -1,0 +1,142 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { env } from '@app/config/env';
+import { LANG } from '../../enum/enums';
+import { getLocale } from 'next-intl/server';
+
+export async function POST(request: NextRequest) {
+    const lang = await getLocale()
+    const baseUrl = env.getApiUrl(lang as LANG)
+    try {
+        const formData = await request.formData();
+
+        console.log("=== 📡 API ROUTE: upload-article ===");
+        console.log("📦 FormData reçu:");
+
+        for (const [key, value] of formData.entries()) {
+            if (value instanceof File) {
+                console.log(`  ${key}: [File] ${value.name} (${value.size} bytes, ${value.type})`);
+            } else {
+                console.log(`  ${key}:`, value);
+            }
+        }
+
+        const file = formData.get('file') as File;
+
+        if (!file || file.size === 0) {
+            console.error("❌ Aucun fichier reçu");
+            return NextResponse.json(
+                { error: 'Aucun fichier sélectionné ou fichier vide' },
+                { status: 400 }
+            );
+        }
+
+        console.log("✅ Fichier validé:", file.name, file.size);
+
+        const cookieStore = await cookies();
+        const authToken = cookieStore.get('authToken')?.value;
+
+        if (!authToken) {
+            console.error("❌ Pas de token d'authentification");
+            return NextResponse.json(
+                { error: 'Non authentifié' },
+                { status: 401 }
+            );
+        }
+
+
+        // Transférer le FormData au backend Express
+        const response = await fetch(`${baseUrl}/products/`, {
+            method: 'POST',
+            headers: {
+                'Cookie': `authToken=${authToken}`,
+            },
+            body: formData
+        });
+
+        console.log("📨 Réponse backend:", response.status);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("❌ Erreur backend:", errorText);
+            return NextResponse.json(
+                { error: `Erreur backend: ${response.status}` },
+                { status: response.status }
+            );
+        }
+
+        const result = await response.json();
+        console.log("✅ Succès:", result);
+
+        return NextResponse.json(result);
+
+    } catch (error) {
+        console.error("❌ Erreur dans l'API route:", error);
+        return NextResponse.json(
+            { error: 'Erreur serveur' },
+            { status: 500 }
+        );
+    }
+}
+
+
+export async function PUT(request: NextRequest) {
+    const lang = await getLocale()
+    const baseUrl = env.getApiUrl(lang as LANG)
+    try {
+        const formData = await request.formData();
+        console.log("formData reçu:", formData);
+        const id = formData.get('id') as string;
+
+
+        for (const [key, value] of formData.entries()) {
+            if (value instanceof File) {
+                console.log(`  ${key}: [File] ${value.name} (${value.size} bytes, ${value.type})`);
+            } else {
+                console.log(`  ${key}:`, value);
+            }
+        }
+
+        const cookieStore = await cookies();
+        const authToken = cookieStore.get('authToken')?.value;
+
+          if (!authToken) {
+            console.log("Pas de token d'authentification");
+            return NextResponse.json(
+                { error: 'Non authentifié' },
+                { status: 401 }
+            );
+        }
+
+        const response = await fetch(`${baseUrl}/products/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Cookie': `authToken=${authToken}`,
+            },
+            body: formData
+        });
+
+        console.log("📨 Réponse backend:", response.status);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("❌ Erreur backend:", errorText);
+            return NextResponse.json(
+                { error: `Erreur backend: ${response.status}` },
+                { status: response.status }
+            );
+        }
+
+        const result = await response.json();
+        console.log("✅ Succès:", result);
+
+        return NextResponse.json(result);
+    } catch (error) {        
+        
+        console.log("Erreur dans l'API route:", error);
+        return NextResponse.json(
+            { error: 'Erreur serveur' },
+            { status: 500 }
+        );
+    }
+}
