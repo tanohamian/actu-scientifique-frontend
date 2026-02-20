@@ -6,7 +6,7 @@ import { env } from '@app/config/env';
 const intlMiddleware = createIntlMiddleware({
   locales: ['fr', 'en'],
   defaultLocale: 'fr',
-  localePrefix: 'as-needed' 
+  localePrefix: 'always' 
 });
 
 async function check(req: NextRequest) {

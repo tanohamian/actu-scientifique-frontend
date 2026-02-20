@@ -55,7 +55,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   const [searchLoading, setSearchLoading] = useState(false);
-
+  const [focusedOnSearchBar, setFocusedOnSearchBar] =  useState(true)
   const [isOpportunitiesOpen, setIsOpportunitiesOpen] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
@@ -173,19 +173,21 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className='w-full lg:flex-1 lg:max-w-md mx-0 lg:mx-4 relative'>
-            <SearchBarComponent placeholder='Rechercher un sujet' inputValue={inputValue} setInputValue={setInputValue} />
+            <SearchBarComponent placeholder='Rechercher un sujet' inputValue={inputValue} setInputValue={setInputValue} setFocus={setFocusedOnSearchBar} />
             {inputValue && (
               <div className="absolute z-30 bg-[#2D4459]  max-h-60 overflow-y-auto w-full rounded-lg">
                {
                 searchLoading ? (
                   <div className="p-4 text-center text-white">Chargement...</div>
-                ) :  filteredData.length > 0 ?  (
+                ) :  !focusedOnSearchBar ? null : filteredData.length > 0 ?  (
                    filteredData.map((data, index) => (
-                  <div key={index} className="p-2 hover:bg-gray-100 cursor-pointer" onClick={()=>setInputValue('')}>
-                    <Link href={`/${data.id}`} className="text-white font-medium">
-                      {data.title}
+                  
+                    <Link key={index} href={`/${data.id}`} className="text-white font-medium">
+                      <div  className="p-2 hover:bg-[#ffffff88] cursor-pointer " onClick={()=>setInputValue('')}>
+                        {data.title}
+                      </div> 
                     </Link>
-                  </div>
+                  
                 ))
                 ):(
                   <div className="p-4 text-center text-white">Aucun résultat trouvé</div>

@@ -11,7 +11,7 @@ import { getLocale } from 'next-intl/server';
 async function getAuthHeaders() {
     const authToken = (await cookies()).get('authToken')?.value;
     return {
-        'Content-Type': 'application/json',
+        //'Content-Type': 'application/json',
         'Cookie': `authToken=${authToken}`
     };
 }
@@ -38,17 +38,30 @@ export async function FetchTrainings() {
 
 export async function AddTraining(data: ITraining) {
     const lang = await getLocale()
-const baseUrl = env.getApiUrl(lang as LANG)
+    const baseUrl = env.getApiUrl(lang as LANG)
     const authToken = (await cookies()).get('authToken')?.value;
     if (!authToken) {
         console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
         redirect('/admin');
     }
+
+    const formData = new FormData()
+
+    formData.append('title', data.title);
+    formData.append('lien', data.lien);
+    formData.append('description', data.description);
+    formData.append('date', data.date);
+    formData.append('type', data.type);
+
+    if (data.file) {
+        formData.append('file', data.file);
+    }
+
     try {
         const response = await fetch(`${baseUrl}/trainings`, {
             method: 'POST',
             headers: await getAuthHeaders(),
-            body: JSON.stringify(data)
+            body: formData
         });
 
         if (response.ok) {
@@ -72,10 +85,20 @@ const baseUrl = env.getApiUrl(lang as LANG)
         redirect('/admin');
     }
     try {
+        const formData = new FormData();
+        formData.append('title', data.title);
+        formData.append('lien', data.lien);
+        formData.append('description', data.description);
+        formData.append('date', data.date);
+        formData.append('type', data.type);
+
+        if (data.file) {
+            formData.append('file', data.file);
+        }
         const response = await fetch(`${baseUrl}/trainings/${id}`, {
             method: 'PUT',
             headers: await getAuthHeaders(),
-            body: JSON.stringify(data)
+            body: formData
         });
 
         if (response.ok) {

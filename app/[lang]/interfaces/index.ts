@@ -41,6 +41,8 @@ export interface ITraining {
     description: string;
     date: string;
     type: 'CLASSIC' | 'ACADEMY';
+    documentUrl?: string;
+    file?:File;
 }
 
 export interface OrderInterface {

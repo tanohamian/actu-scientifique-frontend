@@ -44,6 +44,7 @@ interface FormData {
   date: string;
   reward: string;
   type: 'CLASSIC' | 'ACADEMY';
+  file?:File;
 }
 
 const tabContainer: CSSProperties = { display: 'flex', gap: '30px', marginBottom: '40px', borderBottom: '2px solid rgba(255, 255, 255, 0.3)' };
@@ -73,7 +74,7 @@ export default function SwitchSection() {
   const [inputMode, setInputMode] = useState<'url' | 'reward'>('url');
 
   const [formData, setFormData] = useState<FormData>({
-    title: '', url: '', description: '', date: '', reward: '', type: 'CLASSIC'
+    title: '', url: '', description: '', date: '', reward: '', type: 'CLASSIC' ,file: undefined
   });
 
   const loadData = useCallback(async () => {
@@ -141,7 +142,8 @@ export default function SwitchSection() {
         lien: formData.url || "",
         description: formData.description,
         date: formData.date,
-        type: formData.type
+        type: formData.type,
+        file:formData.file
       };
       res = isEditing ? await UpdateTraining(editingId as string, payload) : await AddTraining(payload);
     }
@@ -149,7 +151,7 @@ export default function SwitchSection() {
     if (res?.success) {
       toast(true, isEditing);
       setEditingId(null);
-      setFormData({ title: '', url: '', description: '', date: '', reward: '', type: 'CLASSIC' });
+      setFormData({ title: '', url: '', description: '', date: '', reward: '', type: 'CLASSIC' ,file: undefined});
       await loadData();
     } else {
       // @ts-expect-error: res may not have an 'error' property depending on the API response shape
@@ -173,7 +175,8 @@ export default function SwitchSection() {
       description: item.description,
       date: typeof item.date === 'string' ? item.date.split('T')[0] : new Date(item.date).toISOString().split('T')[0],
       reward: 'reward' in item && item.reward ? String(item.reward) : '',
-      type: 'type' in item ? (item as ITraining).type : 'CLASSIC'
+      type: 'type' in item ? (item as ITraining).type : 'CLASSIC',
+      file:undefined
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -195,7 +198,7 @@ export default function SwitchSection() {
             onClick={() => {
               setActiveTab(tab);
               setEditingId(null);
-              setFormData({ title: '', url: '', description: '', date: '', reward: '', type: 'CLASSIC' });
+              setFormData({ title: '', url: '', description: '', date: '', reward: '', type: 'CLASSIC' ,file: undefined});
             }}
           >
             {tab}
@@ -221,7 +224,14 @@ export default function SwitchSection() {
               <select
                 style={{ ...baseInputStyle, color: 'white', backgroundColor: 'rgba(255, 255, 255, 0.1)', appearance: 'none', cursor: 'pointer' }}
                 value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as 'CLASSIC' | 'ACADEMY' })}
+                onChange={(e) => {
+                const newType = e.target.value as 'CLASSIC' | 'ACADEMY';
+                setFormData({
+                  ...formData,
+                  type: newType,
+                  url: newType === 'ACADEMY' ? 'https://actuscientifique.com/en/opportunities/science-academy' : formData.url
+                });
+              }}
               >
                 <option value="CLASSIC" style={{ color: 'black', backgroundColor: 'white' }}>Classique</option>
                 <option value="ACADEMY" style={{ color: 'black', backgroundColor: 'white' }}>Science Journalism Academy</option>
@@ -271,6 +281,23 @@ export default function SwitchSection() {
             onChange={(html) => setFormData({ ...formData, description: html })}
           />
         </div>
+        
+        {activeTab === 'Formations' && formData.type === 'ACADEMY' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+            <label style={{ fontSize: '14px', color: 'white' }}>Document joint (Optionnel)</label>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx,.txt"
+              style={{ ...baseInputStyle, width: '100%' , color: formData.file ? 'transparent' : 'white'}}
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  setFormData({ ...formData, file: e.target.files[0] });
+                }
+              }}
+            />
+            {formData.file && <p style={{ fontSize: '15px', color: '#dd3400' ,fontWeight:'bold' }}>Fichier prêt : {formData.file.name}</p>}
+          </div>
+        )}
 
         <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '20px', alignItems: 'flex-end' }}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>

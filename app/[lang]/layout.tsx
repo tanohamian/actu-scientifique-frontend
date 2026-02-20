@@ -4,6 +4,7 @@ config.autoAddCss = false;
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import CustomizedSwitches from "./components/switchLanguage";
 
 export default async function RootLayout({
   children,
@@ -30,6 +31,9 @@ export default async function RootLayout({
       </head>
       <body>
         <NextIntlClientProvider messages={messages} locale={lang}>
+          <section style={{position : 'absolute', right : '1px', zIndex: 3}}>
+            <CustomizedSwitches></CustomizedSwitches>
+          </section>
           {children}
         </NextIntlClientProvider>
       </body>
