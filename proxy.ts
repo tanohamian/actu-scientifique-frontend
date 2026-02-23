@@ -46,36 +46,21 @@ const testHost = (request: NextRequest) => {
   const adminDomain = env.adminUrl;
 
   if (hostname !== adminDomain && url.pathname.startsWith('/admin')) {
-    const newUrl = new URL(url.pathname, `https://${adminDomain}`);
-    return NextResponse.redirect(newUrl);
+    const adminUrl = new URL(url.pathname, `https://${adminDomain}`);
+    return NextResponse.redirect(adminUrl);
   }
 
-  
   if (hostname === adminDomain) {
-    
-    if (!url.pathname.startsWith('/admin') && !url.pathname.startsWith('/api')) {
-      
-      
-      const segments = url.pathname.split('/');
-      const locales = ['fr', 'en'];
-      const hasLocale = locales.includes(segments[1]);
-
-      if (hasLocale) {
-        
-        const locale = segments[1];
-        const rest = segments.slice(2).join('/');
-        url.pathname = `/${locale}/admin/${rest}`;
-      } else {
-        
-        url.pathname = `/admin${url.pathname}`;
-      }
-
-      return NextResponse.rewrite(url);
+    if (url.pathname.startsWith('/admin')) {
+        const newPath = url.pathname.replace('/admin', '') || '/';
+        return NextResponse.redirect(new URL(newPath, request.url));
     }
+    url.pathname = `/admin${url.pathname}`;
+    return NextResponse.rewrite(url);
   }
 
   return null;
-};
+}
 
 
 export default async function middleware(request: NextRequest) {
