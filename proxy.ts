@@ -54,7 +54,7 @@ const testHost = (request: NextRequest) => {
       newUrlPathName = newUrlPathName.split('/admin')[1]
     }
     else {
-      const newUrl = new URL(`/admin${newUrlPathName}`, request.url);
+      const newUrl = new URL(`${newUrlPathName}`, request.url);
       return NextResponse.rewrite(newUrl);
     }
   }
