@@ -41,34 +41,41 @@ async function check(req: NextRequest) {
 }
 
 const testHost = (request: NextRequest) => {
-  const url = request.nextUrl;
+  const url = request.nextUrl.clone();
   const hostname = request.headers.get('host');
-
-
   const adminDomain = env.adminUrl;
-  console.log({hostname, adminDomain})
-
-  console.log("url : ", url.pathname)
-  if (hostname === adminDomain) {
-    let newUrlPathName = url.pathname;
-    // Remove '/admin
-    if (newUrlPathName.startsWith('/admin')) {
-      newUrlPathName = newUrlPathName.split('/admin')[1]
-      console.log({newUrlPathName})
-    }
-    else {
-      const newUrl = new URL(`${newUrlPathName}`, request.url);
-      return NextResponse.rewrite(newUrl);
-    }
-  }
 
   if (hostname !== adminDomain && url.pathname.startsWith('/admin')) {
-    const newUrl = new URL(`https://${adminDomain + url.pathname}`, request.url);
+    const newUrl = new URL(url.pathname, `https://${adminDomain}`);
     return NextResponse.redirect(newUrl);
   }
 
+  
+  if (hostname === adminDomain) {
+    
+    if (!url.pathname.startsWith('/admin') && !url.pathname.startsWith('/api')) {
+      
+      
+      const segments = url.pathname.split('/');
+      const locales = ['fr', 'en'];
+      const hasLocale = locales.includes(segments[1]);
+
+      if (hasLocale) {
+        
+        const locale = segments[1];
+        const rest = segments.slice(2).join('/');
+        url.pathname = `/${locale}/admin/${rest}`;
+      } else {
+        
+        url.pathname = `/admin${url.pathname}`;
+      }
+
+      return NextResponse.rewrite(url);
+    }
+  }
+
   return null;
-}
+};
 
 
 export default async function middleware(request: NextRequest) {
