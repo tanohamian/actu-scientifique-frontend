@@ -51,11 +51,26 @@ const testHost = (request: NextRequest) => {
   }
 
   if (hostname === adminDomain) {
-    if (url.pathname.startsWith('/admin')) {
-        const newPath = url.pathname.replace('/admin', '') || '/';
-        return NextResponse.redirect(new URL(newPath, request.url));
+    const path = url.pathname;
+
+    const isAdminInPath = path.includes('/admin');
+
+    if (isAdminInPath) {
+      return null; 
     }
-    url.pathname = `/admin${url.pathname}`;
+
+    const segments = path.split('/');
+    const isLocalePresent = ['fr', 'en'].includes(segments[1]);
+
+    if (isLocalePresent) {
+      const locale = segments[1];
+      const rest = segments.slice(2).join('/');
+      url.pathname = `/${locale}/admin/${rest}`;
+    } else {
+      url.pathname = `/admin${path}`;
+    }
+
+    console.log("Rewriting to:", url.pathname);
     return NextResponse.rewrite(url);
   }
 
