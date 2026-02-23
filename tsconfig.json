@@ -24,8 +24,10 @@
       "@styles/*":["./app/[lang]/styles/*"],
       "@components/*":["./app/[lang]/components/*"],
       "@public/*":["./public/*"],
-      "@interfaces/*":["./interfaces/*"],
-      "@app/*":["./app/[lang]/*"]
+      "@interfaces/*":["./app/[lang]/interfaces/*"],
+      "@app/*":["./app/[lang]/*"],
+      "@actions/*":["./app/[lang]/actions/*"],
+      "@enum/*":["./app/[lang]/enum/*"]
     }
   },
   "include": [

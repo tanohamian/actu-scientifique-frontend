@@ -9,16 +9,26 @@ import AddElementModal, { FormFieldConfig, InitialDataType } from '@app/componen
 
 import Filter, { IFilter } from '@app/components/filter';
 import { Property } from "csstype"
-import { DeleteMedia, FetchMedias, UpdateMedia } from '@app/actions/MediasManager';
-import { Rubriques } from '@app/enum/enums';
-import { toast } from '@app/components/FormComponent';
-import LoadingComponent from '@app/components/loadingComponent';
-import { DbMedia, Product } from '@app/interfaces';
+import { DeleteMedia, FetchMedias, UpdateMedia } from '@actions/MediasManager';
+import { Rubriques } from '@enum/enums';
+import { toast } from '@components/FormComponent';
+import LoadingComponent from '@components/loadingComponent';
+import { DbMedia, Product } from '@interfaces/index';
+import { url } from 'inspector';
 
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media', required: true },
     { name: 'description', label: 'Description', type: 'description', placeholder: 'Entrez une description ...', required: false },
-    { name: 'file', label: "Fichier", type: "file" },
+    {
+        name: 'type', label: 'Type de media', type: 'select',
+        options: [
+            { label: "URL", value: "url" },
+            { label: "Fichier (Podcast/Vidéo)", value: "file" },
+        ],
+        required: true
+    },
+    { name: 'url', label: "URL du média", type: "text", placeholder: "https://exemple.com/media", conditionalField: { dependsOn: 'type', showWhen: 'url' } },
+    { name: 'file', label: "Fichier", type: "file", conditionalField: { dependsOn: 'type', showWhen: 'file' } },
     {
         name: 'rubrique', label: 'Rubrique', type: 'select',
         options: [
@@ -40,7 +50,12 @@ const MediaFields: FormFieldConfig[] = [
 const updateMediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media' },
     { name: 'description', label: 'Description', type: 'description', placeholder: 'Entrez une description ...' },
-    { name: 'file', label: "Fichier", type: "file" },
+    {name:"type", label: "Type de media", type: "select", options: [
+        { label: "URL", value: "url" },
+        { label: "Fichier", value: "file" },
+    ]},
+    { name: 'url', label: "URL du média", type: "text", placeholder: "https://exemple.com/media", conditionalField: { dependsOn: 'type', showWhen: 'url' } },
+    { name: 'file', label: "Fichier", type: "file", conditionalField: { dependsOn: 'type', showWhen: 'file' } },
     {
         name: 'rubrique', label: 'Rubrique', type: 'select',
         options: [
@@ -151,9 +166,11 @@ export default function MediaPage() {
         file: undefined,
         description: "",
         rubrique: "",
+        url: "",
     };
 
     const handleSubmitMedia = async (data: Product | InitialDataType | DbMedia) => {
+        console.log("Submitting media with data:", data);
         setLoadingAddMedia(true)
         try {
             console.log("📋 Données reçues:", data);
@@ -166,11 +183,20 @@ export default function MediaPage() {
             media.append('une', data.une as string);
             media.append('description', data.description as string);
 
-            if (data.file instanceof File) {
-                media.append('file', data.file);
-                console.log("✅ Fichier ajouté:", data.file.name, data.file.size);
-            } else {
-                throw new Error("Aucun fichier sélectionné");
+            if (data.type === 'file') {
+                if (data.file instanceof File) {
+                    media.append('file', data.file);
+                    console.log("✅ Fichier ajouté:", data.file.name, data.file.size);
+                } else {
+                    throw new Error("Aucun fichier sélectionné");
+                }
+            } else if (data.type === 'url') {
+                if (data?.url) {
+                    media.append('url', data?.url as string);
+                    console.log("✅ URL ajoutée:", data.url);
+                } else {
+                    throw new Error("Aucune URL fournie");
+                }
             }
 
             console.log("📦 Contenu du FormData:");
@@ -239,6 +265,7 @@ export default function MediaPage() {
             description: media.description as string || '',
             rubrique: media.rubrique as string || '',
             une: media.une ? 1 : 0,
+            url: media.url as string || '',
         };
     }
 
@@ -252,10 +279,15 @@ export default function MediaPage() {
             media.append('rubrique', data.rubrique as string)
             media.append('une', data.une as string)
             media.append('description', data.description as string)
-            if (data.file && data.file instanceof File) {
+        
+            if (data.type === 'file' && data.file && data.file instanceof File) {
                 media.append('file', data.file)
-                console.log("file found !")
+                console.log("✅ Fichier trouvé et ajouté!")
+            } else if (data.type === 'url' && data.url) {
+                media.append('url', data.url as string)
+                console.log("✅ URL trouvée et ajoutée!")
             }
+            
             const response = await fetch('/api/upload-media', {
                 method: 'PUT',
                 body: media,

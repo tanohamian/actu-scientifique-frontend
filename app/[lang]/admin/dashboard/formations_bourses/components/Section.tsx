@@ -282,22 +282,90 @@ export default function SwitchSection() {
           />
         </div>
         
-        {activeTab === 'Formations' && formData.type === 'ACADEMY' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
-            <label style={{ fontSize: '14px', color: 'white' }}>Document joint (Optionnel)</label>
-            <input
-              type="file"
-              accept=".pdf,.doc,.docx,.txt"
-              style={{ ...baseInputStyle, width: '100%' , color: formData.file ? 'transparent' : 'white'}}
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  setFormData({ ...formData, file: e.target.files[0] });
-                }
-              }}
-            />
-            {formData.file && <p style={{ fontSize: '15px', color: '#dd3400' ,fontWeight:'bold' }}>Fichier prêt : {formData.file.name}</p>}
-          </div>
-        )}
+            {activeTab === 'Formations' && formData.type === 'ACADEMY' && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+                      <label style={{ fontSize: '14px', color: 'white' }}>Document</label>
+                      
+                      <label
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '10px',
+                          padding: '30px 20px',
+                          border: formData.file ? '2px solid #E67E5F' : '2px dashed rgba(255, 255, 255, 0.4)',
+                          borderRadius: '12px',
+                          backgroundColor: formData.file ? 'rgba(230, 126, 95, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                        }}
+                        onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)')}
+                        onMouseLeave={e => (e.currentTarget.style.backgroundColor = formData.file ? 'rgba(230, 126, 95, 0.1)' : 'rgba(255, 255, 255, 0.05)')}
+                      >
+                        <input
+                          type="file"
+                          accept=".pdf,.doc,.docx,.txt"
+                          style={{ display: 'none' }}
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              setFormData({ ...formData, file: e.target.files[0] });
+                            }
+                          }}
+                        />
+
+                        {formData.file ? (
+                          <>
+                            <div style={{
+                              width: '48px', height: '48px', borderRadius: '10px',
+                              backgroundColor: '#E67E5F', display: 'flex',
+                              alignItems: 'center', justifyContent: 'center', fontSize: '22px'
+                            }}>
+                              📄
+                            </div>
+                            <div style={{ textAlign: 'center' }}>
+                              <p style={{ color: 'white', fontWeight: 'bold', margin: 0 }}>{formData.file.name}</p>
+                              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', margin: '4px 0 0' }}>
+                                {(formData.file.size / 1024).toFixed(1)} Ko — Cliquez pour changer
+                              </p>
+                            </div>
+                            {/* Bouton retirer */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setFormData({ ...formData, file: undefined });
+                              }}
+                              style={{
+                                backgroundColor: 'rgba(255,100,100,0.2)', border: '1px solid rgba(255,100,100,0.5)',
+                                color: '#ff6b6b', borderRadius: '6px', padding: '4px 14px',
+                                cursor: 'pointer', fontSize: '12px'
+                              }}
+                            >
+                              Retirer le fichier
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <div style={{
+                              width: '48px', height: '48px', borderRadius: '10px',
+                              backgroundColor: 'rgba(255,255,255,0.1)', display: 'flex',
+                              alignItems: 'center', justifyContent: 'center', fontSize: '22px'
+                            }}>
+                              📎
+                            </div>
+                            <div style={{ textAlign: 'center' }}>
+                              <p style={{ color: 'white', fontWeight: '500', margin: 0 }}>Cliquez pour uploader un document</p>
+                              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', margin: '4px 0 0' }}>
+                                PDF, DOC, DOCX, TXT
+                              </p>
+                            </div>
+                          </>
+                        )}
+                      </label>
+                    </div>
+            )}
 
         <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '20px', alignItems: 'flex-end' }}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>

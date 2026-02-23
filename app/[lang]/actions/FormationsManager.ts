@@ -22,8 +22,8 @@ export async function FetchFormations() {
 
         if (response.ok) {
             const responseData = await response.json()
-            console.log(responseData)
-            revalidatePath('/admin/dashboard/formations_bourses')
+            console.log("training :" ,responseData)
+            //revalidatePath('/admin/dashboard/formations_bourses')
             return responseData.formations as Formation[]
         }
         return []
