@@ -47,11 +47,14 @@ const testHost = (request: NextRequest) => {
 
   const adminDomain = env.adminUrl;
   console.log({hostname, adminDomain})
+
+  console.log("url : ", url.pathname)
   if (hostname === adminDomain) {
     let newUrlPathName = url.pathname;
     // Remove '/admin
     if (newUrlPathName.startsWith('/admin')) {
       newUrlPathName = newUrlPathName.split('/admin')[1]
+      console.log({newUrlPathName})
     }
     else {
       const newUrl = new URL(`${newUrlPathName}`, request.url);
