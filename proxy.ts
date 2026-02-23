@@ -44,11 +44,11 @@ const testHost = (request: NextRequest) => {
   const url = request.nextUrl;
   const hostname = request.headers.get('host');
 
-  const locale = url.pathname.split('/')[1];
+
   const adminDomain = env.adminUrl;
   console.log({hostname, adminDomain})
 
-  console.log("url.pathname : ", url.pathname)
+  console.log("url : ", url.pathname)
   if (hostname === adminDomain) {
     let newUrlPathName = url.pathname;
     // Remove '/admin
@@ -57,10 +57,7 @@ const testHost = (request: NextRequest) => {
       console.log({newUrlPathName})
     }
     else {
-      console.log({oldNewnewUrlPathName: newUrlPathName})
-      newUrlPathName = `/${locale}/admin${newUrlPathName.replace(locale, '')}`
       const newUrl = new URL(`${newUrlPathName}`, request.url);
-      console.log({newUrlPathName, newUrl})
       return NextResponse.rewrite(newUrl);
     }
   }
