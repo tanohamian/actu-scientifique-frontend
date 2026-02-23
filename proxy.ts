@@ -40,104 +40,53 @@ async function check(req: NextRequest) {
   }
 }
 
-const testHost = (request: NextRequest) => {
-  const url = request.nextUrl.clone();
-  const hostname = request.headers.get('host');
+const testHost = (req: NextRequest) => {
+  const url = req.nextUrl.clone();
+  const hostname = req.headers.get('host');
   const adminDomain = env.adminUrl;
 
   if (hostname !== adminDomain && url.pathname.startsWith('/admin')) {
-    const adminUrl = new URL(url.pathname, `https://${adminDomain}`);
-    return NextResponse.redirect(adminUrl);
+    return NextResponse.redirect(new URL(`https://${adminDomain}`, req.url));
   }
 
   if (hostname === adminDomain) {
-    const path = url.pathname;
-
-    const isAdminInPath = path.includes('/admin');
-
-    if (isAdminInPath) {
-      return null; 
+    if (url.pathname.startsWith('/admin')) {
+      const cleanPath = url.pathname.replace('/admin', '') || '/';
+      return NextResponse.redirect(new URL(cleanPath, req.url));
     }
-
-    const segments = path.split('/');
-    const isLocalePresent = ['fr', 'en'].includes(segments[1]);
-
-    if (isLocalePresent) {
-      const locale = segments[1];
-      const rest = segments.slice(2).join('/');
-      url.pathname = `/${locale}/admin/${rest}`;
-    } else {
-      url.pathname = `/admin${path}`;
-    }
-
-    console.log("Rewriting to:", url.pathname);
+    url.pathname = `/admin${url.pathname}`;
     return NextResponse.rewrite(url);
   }
 
   return null;
-}
+};
 
 
 export default async function middleware(request: NextRequest) {
-  try {
-    await check(request);
+  const hostname = request.headers.get('host');
+  
 
-    if (env.onProduction) {
-      const hostRedirect = testHost(request);
-      
-      if (hostRedirect) {
-        
-        if (hostRedirect.status >= 300 && hostRedirect.status < 400) {
-          return hostRedirect;
-        }
+  const response = intlMiddleware(request);
 
-        
-        const rewriteUrl = hostRedirect.headers.get('x-middleware-rewrite');
-        if (rewriteUrl) {
-          const newRequest = new NextRequest(new URL(rewriteUrl), request);
-          return intlMiddleware(newRequest);
-        }
-      }
-    }
-
+  if (env.onProduction && hostname === env.adminUrl) {
+    const url = request.nextUrl.clone();
     
-    const authToken = request.cookies.get('authToken')?.value;
-    if (!authToken && request.nextUrl.pathname.startsWith('/admin') && request.nextUrl.pathname !== '/admin') {
-      return NextResponse.redirect(new URL('/admin', request.url));
+    if (!url.pathname.includes('/admin') && !url.pathname.includes('.')) {
+      
+      const segments = url.pathname.split('/');
+      const locale = ['fr', 'en'].includes(segments[1]) ? segments[1] : 'fr';
+      const pathWithoutLocale = ['fr', 'en'].includes(segments[1]) 
+        ? '/' + segments.slice(2).join('/') 
+        : url.pathname;
+
+      const internalPath = `/${locale}/admin${pathWithoutLocale}`;
+      
+      return NextResponse.rewrite(new URL(internalPath, request.url));
     }
-
-    return intlMiddleware(request);
-
-  } catch (error) {
-    console.error(error);
-    return NextResponse.next();
   }
+
+  return response;
 }
-/*
-export default async function middleware(request: NextRequest) {
-  try {
-    await check(request);
-    if (env.onProduction) {
-      const hostRedirect = testHost(request);
-      if (hostRedirect) {
-        console.log("redirection vers admin : ", hostRedirect.url)
-        return hostRedirect;
-      }
-    }
-
-
-    const authToken = request.cookies.get('authToken')?.value;
-    if (!authToken && request.nextUrl.pathname.startsWith('/admin') && request.nextUrl.pathname !== '/admin') {
-      return NextResponse.redirect(new URL('/admin', request.url));
-    }
-
-    return intlMiddleware(request)
-
-  } catch (error) {
-    console.log(error);
-    return NextResponse.next();
-  }
-}*/
 
 export const config = {
   matcher: [
