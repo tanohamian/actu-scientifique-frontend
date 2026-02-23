@@ -107,7 +107,7 @@ export default function ScienceAcademy() {
                     <h3 className="mt-2 text-xl font-serif">{t('applyTitle')}</h3>
                 </div>
                 <button className="flex-shrink-0 bg-[#C4622D] hover:bg-[#a8512a] transition-colors text-white font-sans text-sm tracking-wide uppercase px-8 py-3">
-                    {t('applyButton')} →
+                    {t('applyButton')} 
                 </button>
             </div>
 
