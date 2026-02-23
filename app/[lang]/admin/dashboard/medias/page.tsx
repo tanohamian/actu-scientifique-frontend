@@ -9,20 +9,12 @@ import AddElementModal, { FormFieldConfig, InitialDataType } from '@app/componen
 
 import Filter, { IFilter } from '@app/components/filter';
 import { Property } from "csstype"
-<<<<<<< HEAD:app/admin/dashboard/medias/page.tsx
-import { DeleteMedia, FetchMedias, UpdateMedia } from '@/app/actions/MediasManager';
-import { Rubriques } from '@/app/enum/enums';
-import { toast } from '@/app/components/FormComponent';
-import LoadingComponent from '@/app/components/loadingComponent';
-import { DbMedia, Product } from '@/app/interfaces';
+import { DeleteMedia, FetchMedias, UpdateMedia } from '@actions/MediasManager';
+import { Rubriques } from '@enum/enums';
+import { toast } from '@components/FormComponent';
+import LoadingComponent from '@components/loadingComponent';
+import { DbMedia, Product } from '@interfaces/index';
 import { url } from 'inspector';
-=======
-import { DeleteMedia, FetchMedias, UpdateMedia } from '@app/actions/MediasManager';
-import { Rubriques } from '@app/enum/enums';
-import { toast } from '@app/components/FormComponent';
-import LoadingComponent from '@app/components/loadingComponent';
-import { DbMedia, Product } from '@app/interfaces';
->>>>>>> 28b04ab2eb8989c36d578ceb57342033c9e1ce90:app/[lang]/admin/dashboard/medias/page.tsx
 
 const MediaFields: FormFieldConfig[] = [
     { name: 'title', label: 'Titre du media', placeholder: 'Entrez le titre du media', required: true },

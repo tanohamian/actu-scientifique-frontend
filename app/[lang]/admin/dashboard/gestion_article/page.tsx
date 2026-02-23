@@ -66,8 +66,6 @@ const articleUpdateFields: FormFieldConfig[] = [
             { label: "Oui", value: 1 },
             { label: "Non", value: 0 }
         ]
-    }, {
-        name: 'description', label: 'description', type: 'description'
     }
 
 ];
@@ -157,7 +155,7 @@ export default function ArticlePage() {
 
     const rightSectionClasses = `
         w-full 
-        lg:w-1/3 
+        lg:w-1/2 
         h-fit 
         ml-auto
         flex-shrink-0 
