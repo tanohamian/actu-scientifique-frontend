@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
             formData.delete('file');
         }
 
-        console.log("✅ Fichier validé:", file?.name, file?.size);
+        console.log("Fichier validé:", file?.name, file?.size);
 
         const cookieStore = await cookies();
         const authToken = cookieStore.get('authToken')?.value;

@@ -7,6 +7,7 @@ import { showToast } from "nextjs-toast-notify"
 import { Rubriques } from '../enum/enums';
 import { Article, DbArticle, Newsletter } from '../interfaces';
 import dynamic from 'next/dynamic'
+import { AddArticle } from '../actions/ArticleManager';
 
 
 const EditorText = dynamic(
@@ -124,27 +125,25 @@ export default function FormComponent({ isArticle = false, initialData, onSucces
         console.log("Aperçu de l'article : ")
         console.log(article)
 
-        console.log("📤 Envoi vers /api/upload-article");
+        console.log(" Envoi vers /api/upload-article");
 
-        const response = await fetch('/api/upload-article', {
-          method: 'POST',
-          body: article,
-        });
 
-        console.log("📨 Réponse reçue:", response.status);
+        const response = await AddArticle(article, false)
+        console.log(response)
 
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.error || 'Erreur lors de l\'upload');
+        console.log("📨 Réponse reçue:", response);
+
+        if (!response) {
+          throw new Error('Erreur lors de l\'upload');
         }
 
-        const result = await response.json();
-        console.log("✅ Média uploadé:", result);
+        const result = response;
+        console.log("✅ Média uploadé:", response);
 
         if (result) {
 
           toast(true, isEditing);
-          const newArticle = result.article as DbArticle;
+          const newArticle = result;
           newArticle.createdAt = newArticle.createdAt.toLocaleString('fr-FR', { year: "numeric", month: "2-digit", day: "2-digit" })
           console.log(result)
           setFormData({ title: "", content: "", rubrique: Rubriques.TECHNOLOGY });
