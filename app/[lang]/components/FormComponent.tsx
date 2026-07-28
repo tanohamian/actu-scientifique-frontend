@@ -15,8 +15,8 @@ import {
 import { showToast } from "nextjs-toast-notify";
 import { Rubriques } from "../enum/enums";
 import { Article, DbArticle, Newsletter } from "../interfaces";
-import dynamic from "next/dynamic";
-import { AddArticle } from "../actions/ArticleManager";
+import dynamic from "next/dynamic";import { AddArticle } from '../actions/ArticleManager';
+
 
 const EditorText = dynamic(() => import("@app/components/titap"), {
   ssr: false,
