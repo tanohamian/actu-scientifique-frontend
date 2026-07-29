@@ -73,7 +73,6 @@ export default function DetailsArticle() {
     },
   ];
   const t = useTranslations("ID");
-  console.log("articleId : ", articleId);
   useEffect(() => {
     const loadContent = async () => {
       if (!articleId) return;
