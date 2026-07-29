@@ -161,11 +161,11 @@ export async function AddMedia(formData: FormData) {
             body: formData
         });
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error("Erreur Backend:", errorText);
-            throw Error(`Erreur ${response.status}: ${response.statusText}`);
-        }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Erreur Backend:", errorText);
+      throw Error(`Erreur ${response.status}: ${response.statusText}`);
+    }
 
         const result = await response.json();
         console.log("Upload successful:", result);
