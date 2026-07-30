@@ -11,10 +11,9 @@ import AddElementModal, {
   FormFieldConfig,
   InitialDataType,
 } from "@app/components/addElement";
-import { AddMedia } from "@actions/MediasManager";
 import Filter, { IFilter } from "@app/components/filter";
 import { Property } from "csstype";
-import { DeleteMedia, FetchMedias, UpdateMedia } from "@actions/MediasManager";
+import { AddMedia, DeleteMedia, FetchMedias, UpdateMedia } from "@actions/MediasManager";
 import { Rubriques } from "@enum/enums";
 import { toast } from "@components/FormComponent";
 import LoadingComponent from "@components/loadingComponent";
