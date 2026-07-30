@@ -139,3 +139,39 @@ export async function FetchMediaById(mediaId: string) {
         return
     }
 }
+
+export async function AddMedia(formData: FormData) {
+    const lang = await getLocale()
+    const baseUrl = env.getApiUrl(lang as LANG)
+    const authToken = (await cookies()).get('authToken')?.value;
+    console.log("payload: ", formData)
+    if (!authToken) {
+        console.error("Cookie d'authentification manquant. Redirection vers la connexion.");
+        redirect('/admin');
+    }
+    try {
+        const response = await fetch(`${baseUrl}/multimedia`, {
+            method: 'POST',
+            headers: {
+                'Cookie': `authToken=${authToken}`,
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Erreur Backend:", errorText);
+            throw Error(`Erreur ${response.status}: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        console.log("Upload successful:", result);
+        return result as DbMedia;
+
+    } catch (error) {
+        console.error("Erreur lors de l'upload du média:");
+        console.log(error);
+        throw error;
+    }
+
+}

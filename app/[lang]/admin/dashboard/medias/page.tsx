@@ -9,7 +9,7 @@ import AddElementModal, { FormFieldConfig, InitialDataType } from '@app/componen
 
 import Filter, { IFilter } from '@app/components/filter';
 import { Property } from "csstype"
-import { DeleteMedia, FetchMedias, UpdateMedia } from '@app/actions/MediasManager';
+import { AddMedia, DeleteMedia, FetchMedias, UpdateMedia } from '@app/actions/MediasManager';
 import { Rubriques } from '@app/enum/enums';
 import { toast } from '@app/components/FormComponent';
 import LoadingComponent from '@app/components/loadingComponent';
@@ -183,29 +183,14 @@ export default function MediaPage() {
             }
 
 
-            const response = await fetch('/api/upload-media', {
-                method: 'POST',
-                body: media,
-            });
-
-            console.log("📨 Réponse reçue:", response.status);
-
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Erreur lors de l\'upload');
-            }
-
-            const result = await response.json();
-            console.log("✅ Média uploadé:", result);
-
-
-            setMedias(prev => ([...prev, result.file]));
+            const result = await AddMedia(media);
+            setMedias(prev => ([...prev, result]));
             setIsOpen(false);
 
             toast(true, false, "Media uploadé !");
 
         } catch (error) {
-            console.error("❌ Erreur:", error);
+            console.error("Erreur:", error);
             toast(false, false, "Échec de l'upload du media");
         } finally {
             setLoadingAddMedia(false)
@@ -256,15 +241,7 @@ export default function MediaPage() {
                 media.append('file', data.file)
                 console.log("file found !")
             }
-            const response = await fetch('/api/upload-media', {
-                method: 'PUT',
-                body: media,
-            });
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Erreur lors de l\'upload');
-            }
-            const updatedMedia = await response.json();
+            const updatedMedia = await UpdateMedia(media, selectedMedia?.id as string)
             setMedias(prev => prev.map(m => m.id === updatedMedia.id ? updatedMedia : m));
             toast(true, false, "Média mis à jour !");
             setEditMedia(false);
@@ -316,7 +293,13 @@ export default function MediaPage() {
 
                 <div className={searchAndTabsClasses}>
                     <div className={searchBarWrapperClasses}>
-                        <SearchBarComponent placeholder='Rechercher un media....' inputValue={inputValue} setInputValue={setInputValue} />
+                        <SearchBarComponent 
+                            placeholder='Rechercher un media....' 
+                            inputValue={inputValue} 
+                            setInputValue={setInputValue} 
+                            setFocus={()=>{}}
+                        />
+                            
                     </div>
                     <Filter
                         filters={filters}
