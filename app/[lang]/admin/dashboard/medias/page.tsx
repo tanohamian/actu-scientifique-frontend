@@ -299,20 +299,22 @@ export default function MediaPage() {
       setMedias((prev) => [...prev, result.file]);
       setIsOpen(false);
 
-      toast(true, false, "Media uploadé !");
-    } catch (error) {
-      console.error("❌ Erreur:", error);
-      toast(false, false, "Échec de l'upload du media");
-    } finally {
-      setLoadingAddMedia(false);
-    }
-  };
+            toast(true, false, "Media uploadé !");
 
-  const handleEditMedia = async (item: ElementType) => {
-    console.log("Editing event:", item);
-    setSelectedMedia(item as TableData);
-    setEditMedia(true);
-  };
+        } catch (error) {
+            console.error("Erreur:", error);
+            toast(false, false, "Échec de l'upload du media");
+        } finally {
+            setLoadingAddMedia(false)
+        }
+    };
+
+    
+    const handleEditMedia = async (item: ElementType) => {
+        console.log('Editing event:', item);
+        setSelectedMedia(item as TableData);
+        setEditMedia(true);
+    };
 
   const handleDeleteMedia = async (item: ElementType) => {
     console.log("Deleting event:", item);
@@ -418,17 +420,22 @@ export default function MediaPage() {
         />
       </div>
 
-      <div className={contentContainerClasses}>
-        <div className={searchAndTabsClasses}>
-          <div className={searchBarWrapperClasses}>
-            <SearchBarComponent
-              placeholder="Rechercher un media...."
-              inputValue={inputValue}
-              setInputValue={setInputValue}
-            />
-          </div>
-          <Filter filters={filters} />
-        </div>
+            <div className={contentContainerClasses}>
+
+                <div className={searchAndTabsClasses}>
+                    <div className={searchBarWrapperClasses}>
+                        <SearchBarComponent 
+                            placeholder='Rechercher un media....' 
+                            inputValue={inputValue} 
+                            setInputValue={setInputValue} 
+                            setFocus={()=>{}}
+                        />
+                            
+                    </div>
+                    <Filter
+                        filters={filters}
+                    />
+                </div>
 
         <article className="flex flex-col lg:flex-row gap-8">
           <EventDataTable
