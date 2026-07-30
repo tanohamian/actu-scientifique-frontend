@@ -14,12 +14,16 @@ import AddElementModal, {
 
 import Filter, { IFilter } from "@app/components/filter";
 import { Property } from "csstype";
-import { DeleteMedia, FetchMedias, UpdateMedia } from "@actions/MediasManager";
-import { Rubriques } from "@enum/enums";
-import { toast } from "@components/FormComponent";
-import LoadingComponent from "@components/loadingComponent";
-import { DbMedia, Product } from "@interfaces/index";
-import { url } from "inspector";
+import {
+  AddMedia,
+  DeleteMedia,
+  FetchMedias,
+  UpdateMedia,
+} from "@app/actions/MediasManager";
+import { Rubriques } from "@app/enum/enums";
+import { toast } from "@app/components/FormComponent";
+import LoadingComponent from "@app/components/loadingComponent";
+import { DbMedia, Product } from "@app/interfaces";
 
 const MediaFields: FormFieldConfig[] = [
   {
@@ -281,27 +285,13 @@ export default function MediaPage() {
         }
       }
 
-      const response = await fetch("/api/upload-media", {
-        method: "POST",
-        body: media,
-      });
-
-      console.log("📨 Réponse reçue:", response.status);
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Erreur lors de l'upload");
-      }
-
-      const result = await response.json();
-      console.log("✅ Média uploadé:", result);
-
-      setMedias((prev) => [...prev, result.file]);
+      const result = await AddMedia(media);
+      setMedias((prev) => [...prev, result]);
       setIsOpen(false);
 
       toast(true, false, "Media uploadé !");
     } catch (error) {
-      console.error("❌ Erreur:", error);
+      console.error("Erreur:", error);
       toast(false, false, "Échec de l'upload du media");
     } finally {
       setLoadingAddMedia(false);
@@ -331,7 +321,6 @@ export default function MediaPage() {
       description: (media.description as string) || "",
       rubrique: (media.rubrique as string) || "",
       une: media.une ? 1 : 0,
-      url: (media.url as string) || "",
     };
   }
 
@@ -347,24 +336,14 @@ export default function MediaPage() {
       media.append("rubrique", data.rubrique as string);
       media.append("une", data.une as string);
       media.append("description", data.description as string);
-
-      if (data.type === "file" && data.file && data.file instanceof File) {
+      if (data.file && data.file instanceof File) {
         media.append("file", data.file);
-        console.log("✅ Fichier trouvé et ajouté!");
-      } else if (data.type === "url" && data.url) {
-        media.append("url", data.url as string);
-        console.log("✅ URL trouvée et ajoutée!");
+        console.log("file found !");
       }
-
-      const response = await fetch("/api/upload-media", {
-        method: "PUT",
-        body: media,
-      });
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Erreur lors de l'upload");
-      }
-      const updatedMedia = await response.json();
+      const updatedMedia = await UpdateMedia(
+        media,
+        selectedMedia?.id as string,
+      );
       setMedias((prev) =>
         prev.map((m) => (m.id === updatedMedia.id ? updatedMedia : m)),
       );
@@ -425,6 +404,7 @@ export default function MediaPage() {
               placeholder="Rechercher un media...."
               inputValue={inputValue}
               setInputValue={setInputValue}
+              setFocus={() => {}}
             />
           </div>
           <Filter filters={filters} />

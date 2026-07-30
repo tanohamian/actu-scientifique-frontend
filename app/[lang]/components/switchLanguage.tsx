@@ -1,13 +1,12 @@
 "use client"
 import { useTransition } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useLocale } from 'next-intl';
 import { styled } from '@mui/material/styles';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 
-const MaterialUISwitch = styled(Switch)(({ theme }) => ({
+const MaterialUISwitch = styled(Switch)(() => ({
   width: 62,
   height: 34,
   padding: 7,
@@ -56,16 +55,15 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 export default function LanguageSwitcher() {
   const [isPending, startTransition] = useTransition();
-  const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
 
+  const currentLocale = pathname.startsWith('/en') ? 'en' : 'fr';
+  const isEnglish = currentLocale === 'en';
+
   const handleLanguageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextLocale = event.target.checked ? 'en' : 'fr';
-    
-    const segments = pathname.split('/');
-    segments[1] = nextLocale;
-    const nextPathname = segments.join('/');
+    const nextPathname = pathname.replace(/^\/(fr|en)(?=\/|$)/, `/${nextLocale}`);
 
     startTransition(() => {
       router.replace(nextPathname);
@@ -78,12 +76,12 @@ export default function LanguageSwitcher() {
         control={
           <MaterialUISwitch 
             sx={{ m: 1 }} 
-            checked={locale === 'en'} 
+            checked={isEnglish}
             onChange={handleLanguageChange}
             disabled={isPending}
           />
         }
-        label={locale === 'fr' ? 'Langue' : 'Language'} 
+        label={currentLocale === 'fr' ? 'Langue' : 'Language'} 
         slotProps={{
           typography: {
             sx: {
