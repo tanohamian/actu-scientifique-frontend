@@ -159,7 +159,7 @@ export default function FormComponent({
         console.log("Aperçu de l'article : ");
         console.log(article);
 
-        console.log(" Envoi vers /api/upload-article");
+        //console.log(" Envoi vers /api/upload-article");
 
         const response = await AddArticle(article, false);
         console.log(response);
