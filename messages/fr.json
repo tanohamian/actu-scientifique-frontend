@@ -67,9 +67,34 @@
     "training": "Formations"
   },
   "SJA": {
-    "h1": "Science Journalism Academy",
-    "p1": "Formez-vous au journalisme scientifique en Afrique",
-    "subscribe": "S'abonner"
+  "h1": "Science Journalism Academy",
+    "subtitle": "Former les voix de la science africaine",
+    "partners": "Partenaires",
+    "programme": "Programme",
+    "programmeSubtitle": "Trois temps forts",
+    "step1Label": "Formation théorique",
+    "step1Detail": "Sessions en salle autour des fondamentaux du journalisme scientifique",
+    "step2Label": "Visites de terrain",
+    "step2Detail": "Centres et laboratoires de recherche scientifique",
+    "step3Label": "Travaux pratiques",
+    "step3Detail": "Études et reportages sur le terrain",
+    "applyLabel": "Candidature ouverte",
+    "applyTitle": "Rejoindre la prochaine promotion",
+    "applyButton": "Postuler →",
+    "trainingsTitle": "Formations disponibles",
+    "downloadDoc": "Télécharger le Document",
+    "link": "Lien",
+    "desc1Before": "La",
+    "desc1Span": "Science Journalism Academy (SJA)",
+    "desc1After": "est une université d'été pensée pour les étudiants en journalisme. Formation intensive et certifiante, elle aborde les fondamentaux du journalisme scientifique ainsi que des thématiques transversales comme l'approche",
+    "desc1Em": "« Une seule santé »",
+    "desc1End": "et le développement durable.",
+
+    "desc2Before": "Initiée par",
+    "desc2Span": "ASCA",
+    "desc2After": "avec l'appui du consortium Afrique One — basé au Centre suisse de recherches scientifiques en Côte d'Ivoire (CSRS) — et du média",
+    "desc2Em": "« Science de Chez Nous »",
+    "desc2End": "la SJA vise à former les futurs journalistes à la spécialité du journalisme scientifique afin de favoriser une meilleure diffusion des savoirs scientifiques en Afrique."
   },
   "Scholarships": {
     "h1": "Bourses",

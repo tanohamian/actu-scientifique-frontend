@@ -22,7 +22,7 @@ export default function AboutPage() {
                         href="/charte-editoriale.pdf"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-block mt-6 text-[#E65A46] text-lg hover:text-white font-semibold underline hover:no-underline transition-all duration-200"
+                        className="inline-block mt-6 text-white text-lg hover:text-[#E65A46] font-semibold underline hover:no-underline transition-all duration-200"
                     >
                         {t("reading")}
                     </a>
@@ -137,7 +137,7 @@ export default function AboutPage() {
 
             <section className="container mx-auto px-6 pb-20">
                 <div className="text-center  border-white/10 pt-10">
-                    <p className="text-[#E65A46] font-bold tracking-widest uppercase text-xs">
+                    <p className="text-white font-bold tracking-widest uppercase text-xs">
                         {t('motto')}
                     </p>
                 </div>

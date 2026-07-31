@@ -5,7 +5,7 @@ import { Search } from 'lucide-react';
 interface SearchBar {
     placeholder: string
     inputValue: string
-    setFocus : Dispatch<SetStateAction<boolean>>
+    setFocus ?: Dispatch<SetStateAction<boolean>>
     setInputValue: (value: string) => void
 }
 
@@ -22,11 +22,16 @@ export default function SearchBarComponent({placeholder, inputValue, setInputVal
         setInputValue(e.target.value);
     };
     const OnFocus = ()=>{
-        setFocus(true)
+        if (setFocus) {
+            setFocus(true)
+        }
+        
         //alert("onFocus")
     }
     const OnBlur = ()=>{
-        setFocus(false)
+        if (setFocus) {
+            setFocus(false)
+        }
         //alert("onBlur")
     }
     const containerClasses = [

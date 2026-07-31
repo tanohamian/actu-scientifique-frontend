@@ -97,6 +97,7 @@ const Tiptap = ({ content = '', onChange, placeholder = 'Commencez à écrire...
     },
   });
 
+  console.log("Editor initialized with content:", content);
   
   const setLink = useCallback(() => {
     if (linkUrl && editor) {

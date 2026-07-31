@@ -1,7 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Affichage, { ItemType } from './components/Affichage';
-import { env } from '@app/config/env';
 import ComponenteFormulaire from './components/ComponenteFormulaire';
 import LoadingComponent from '@app/components/loadingComponent'
 
@@ -44,7 +43,7 @@ export default function Page() {
     };
 
     const rightSection: React.CSSProperties = {
-        width: isMobile ? '100%' : '350px',
+        width: isMobile ? '100%' : '650px',
         height: 'fit-content',
         alignItems: 'flex-start',
         padding: "0px"

@@ -17,6 +17,8 @@ export default function Page() {
     const [orderLength, setOrderLength] = useState(0)
     const [validatedLength, setValidatedLength] = useState(0)
     const [revenue, setRevenue] = useState(0)
+
+
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
@@ -44,7 +46,7 @@ export default function Page() {
     };
 
     const rightSection: React.CSSProperties = {
-        width: isMobile ? '100%' : '350px',
+        width: isMobile ? '100%' : '550px',
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
         borderRadius: '12px',
         padding: '30px',

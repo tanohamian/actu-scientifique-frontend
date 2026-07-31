@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { env } from '@app/config/env';
-import { getLocale } from 'next-intl/server';
-import { LANG } from '../../enum/enums';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -10,9 +8,8 @@ export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
     try {
-        const lang = await getLocale()
-        const baseUrl = env.getApiUrl(lang as LANG)
         const formData = await request.formData();
+
 
         for (const [key, value] of formData.entries()) {
             if (value instanceof File) {
@@ -24,15 +21,9 @@ export async function POST(request: NextRequest) {
 
         const file = formData.get('file') as File;
 
-        if (!file || file.size === 0) {
-            console.error("Aucun fichier reçu");
-            return NextResponse.json(
-                { error: 'Aucun fichier sélectionné ou fichier vide' },
-                { status: 400 }
-            );
-        }
+       
 
-        console.log("Fichier validé:", file.name, file.size);
+        console.log("Fichier validé:", file?.name, file?.size);
 
         const cookieStore = await cookies();
         const authToken = cookieStore.get('authToken')?.value;
@@ -45,10 +36,8 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        console.log("Envoi au backend Express:", `${baseUrl}/multimedia/`);
 
-        
-        const response = await fetch(`${baseUrl}/multimedia/`, {
+        const response = await fetch(`${env.baseUrl}/multimedia/`, {
             method: 'POST',
             headers: {
                 'Cookie': `authToken=${authToken}`,
@@ -118,9 +107,7 @@ export async function PUT(request: NextRequest) {
         }
 
 
-        const lang = await getLocale()
-        const baseUrl = env.getApiUrl(lang as LANG)
-        const response = await fetch(`${baseUrl}/multimedia/${id}`, {
+        const response = await fetch(`${env.baseUrl}/multimedia/${id}`, {
             method: 'PUT',
             headers: {
                 'Cookie': `authToken=${authToken}`,

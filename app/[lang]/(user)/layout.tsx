@@ -326,7 +326,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         <div className=' border-white/20 py-4 px-4 text-center'>
-          <p className='text-white/70 text-sm'>{bottomT('rights')}<span><a href="https://asca.africa/">ASCA</a></span></p>
+          <p className='text-white/70 text-sm'>{bottomT('rights')} <span><a href="https://asca.africa/">ASCA</a></span></p>
         </div>
       </footer>
     </div>

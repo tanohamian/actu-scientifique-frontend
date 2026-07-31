@@ -43,6 +43,8 @@ export async function LoginUser(formData: FormState) {
     const baseUrl = env.getApiUrl(lang as LANG)
     const email = formData.email
     const password = formData.password
+
+    console.log("baseUrl : ", baseUrl)
     
     const response = await fetch(`${baseUrl}/auth/login`, {
       method: 'POST',
@@ -51,6 +53,8 @@ export async function LoginUser(formData: FormState) {
       },
       body: JSON.stringify({ email: email, password: password })
     })
+    console.log("response : ", response)
+
     if (!response.ok) {
       throw new Error(`Échec de la connexion : ${response.status}`);
     }
@@ -68,13 +72,13 @@ export async function LoginUser(formData: FormState) {
         maxAge: 3600
       });
     }
-    console.log("response : ", response)
+    
     const responseJson = await response.json()
     console.log("responseJson : ", responseJson)
     return responseJson.role
 
   } catch (error) {
-    console.error("Erreur lors de la connexion : ", error)
+    console.error("Erreur lors de la connexion : ",(error as any).message)
     return
   }
 
@@ -97,15 +101,15 @@ export async function IsAdmin() {
         'Cookie': `authToken=${authToken}`
       }
     })
-    if (response.status === 200) {
+
+    if (!response.ok){
+      throw new Error(`Échec de la verification : ${response.status}`);
+    }
+    console.log("reponse admin : ", response)
       const responseJson = await response.json()
       console.log("responseJson : ", responseJson)
       revalidatePath('/admin/dashboard')
       return responseJson.message
-    } else {
-      console.error("Échec de la vérification admin :", response.status);
-      return
-    }
   } catch (error) {
     console.error("Erreur lors de la vérification admin : ", error)
     return
