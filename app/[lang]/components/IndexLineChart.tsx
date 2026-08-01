@@ -2,16 +2,19 @@ import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'r
 import { RechartsDevtools } from '@recharts/devtools';
 import { useEffect, useState } from 'react';
 import { mockData } from '@/app/constant';
+import { AnalyticsBoundary } from '../enum/enums';
 
 interface IndexLineChartInterface{
   start?: Date | string,
+  boundary?: string,
   end?: Date | string,
   data?: {date: string, count: number}[]
 
 }
 const now = new Date(Date.now()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-export default function IndexLineChart({data=mockData, start="01/02/2026", end="01/08/2026"} : IndexLineChartInterface) {
+export default function IndexLineChart({data=mockData, start="01/02/2026", end="01/08/2026", boundary = AnalyticsBoundary.LAST_30_DAYS} : IndexLineChartInterface) {
+
   const parseDate = (dateStr: string) => {
     const [day, month, year] = dateStr.split('/').map(Number);
     return new Date(year, month - 1, day).getTime();
@@ -23,6 +26,26 @@ export default function IndexLineChart({data=mockData, start="01/02/2026", end="
   
   const [filteredData, setFilteredData] = useState<{ date:string, count:number}[]>()
   useEffect(() => {
+    switch (boundary) {
+      case AnalyticsBoundary.LAST_7_DAYS:
+        setFilteredData(data.filter(item => parseDate(item.date) >= startTime && parseDate(item.date) <= endTime));
+        break;
+      case AnalyticsBoundary.LAST_30_DAYS:
+        setFilteredData(data.filter(item => parseDate(item.date) >= startTime && parseDate(item.date) <= endTime));
+        break;
+      case AnalyticsBoundary.LAST_90_DAYS:
+        setFilteredData(data.filter(item => parseDate(item.date) >= startTime && parseDate(item.date) <= endTime));
+        break;
+      case AnalyticsBoundary.LAST_6_MONTHS:
+        setFilteredData(data.filter(item => parseDate(item.date) >= startTime && parseDate(item.date) <= endTime));
+        break;
+      case AnalyticsBoundary.LAST_1_YEAR:
+        setFilteredData(data.filter(item => parseDate(item.date) >= startTime && parseDate(item.date) <= endTime));
+        break;
+      default:
+        setFilteredData(data.filter(item => parseDate(item.date) >= startTime && parseDate(item.date) <= endTime));
+        break;
+    }
     const refresh = ()=>{
       const filtered = data.filter(item => {
       const itemTime = parseDate(item.date);

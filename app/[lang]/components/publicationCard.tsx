@@ -1,7 +1,10 @@
+"use client"
 import { mockData } from "@/app/constant";
 import styles from "../styles/Dashboard.module.scss";
 import IndexLineChart from "./IndexLineChart";
 import { AnalyticsBoundary } from "../enum/enums";
+import { useState } from "react";
+
 
 export interface ListItem {
     text ?: string;
@@ -18,11 +21,12 @@ export interface PublicationCardProps {
 }
 
 const PublicationCard = ({ cardTitle, items=[], data=mockData, isAnalytics=false }: PublicationCardProps) => {
+    const [boundary, setBoundary] = useState<keyof typeof AnalyticsBoundary>("LAST_7_DAYS");
     let analyticsBoundaries = Object.values(AnalyticsBoundary).map(boundary => ({
         value: boundary,
         label: boundary.replace(/_/g, ' ').toLowerCase()
     }));
-    
+
     return (
         <article className={styles.card}> 
             <h2 className={styles.title}>{cardTitle}</h2>
@@ -30,7 +34,7 @@ const PublicationCard = ({ cardTitle, items=[], data=mockData, isAnalytics=false
                 {isAnalytics? 
                     (
                     <>
-                        <select className={styles['date-filter']}>
+                        <select className={styles['date-filter']} value={boundary} onChange={(e) => setBoundary(e.target.value as keyof typeof AnalyticsBoundary)}>
                             {analyticsBoundaries.map((boundary, index) => (
                                 <option key={index} value={boundary.value}>{boundary.label}</option>
                             ))}
