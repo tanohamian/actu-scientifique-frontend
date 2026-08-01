@@ -276,20 +276,20 @@ export default function MediaPage() {
         }
       }
 
-      console.log("📦 Contenu du FormData:");
+      /*console.log("📦 Contenu du FormData:");
       for (const [key, value] of media.entries()) {
         if (value instanceof File) {
           console.log(`  ${key}: [File] ${value.name} (${value.size} bytes)`);
         } else {
           console.log(`  ${key}:`, value);
         }
-      }
+      }*/
 
       const result = await AddMedia(media);
       setMedias((prev) => [...prev, result]);
       setIsOpen(false);
 
-      toast(true, false, "Media uploadé !");
+      toast(true, false, "Media ajouté avec succès!");
     } catch (error) {
       console.error("Erreur:", error);
       toast(false, false, "Échec de l'upload du media");
@@ -305,7 +305,6 @@ export default function MediaPage() {
   };
 
   const handleDeleteMedia = async (item: ElementType) => {
-    console.log("Deleting event:", item);
     setSelectedMedia(item as TableData);
     await DeleteMedia(item.id as string);
     setMedias(medias.filter((media) => media.id !== item.id));
@@ -381,6 +380,16 @@ export default function MediaPage() {
     fetchMedias();
   }, []);
 
+  //fonction pour rechercher un media
+  const filterMedia = medias.filter((md) => {
+    const search = inputValue.trim().toLowerCase();
+    if (!search) return true;
+    return (
+      md.title?.toLowerCase().includes(search) ||
+      md.description?.toLowerCase().includes(search)
+    );
+  });
+
   return (
     <div className={pageContainerClasses}>
       <div className={headerClasses}>
@@ -407,14 +416,14 @@ export default function MediaPage() {
               setFocus={() => {}}
             />
           </div>
-          <Filter filters={filters} />
+          {/*<Filter filters={filters} />*/}
         </div>
 
         <article className="flex flex-col lg:flex-row gap-8">
           <EventDataTable
             tableTitle=""
             isMedia={true}
-            data={medias as DbMedia[]}
+            data={filterMedia as DbMedia[]}
             columnHeaders={mainHeaders}
             handleEditEvent={handleEditMedia}
             handleDeleteEvent={handleDeleteMedia}
