@@ -1,6 +1,7 @@
 import { mockData } from "@/app/constant";
 import styles from "../styles/Dashboard.module.scss";
 import IndexLineChart from "./IndexLineChart";
+import { AnalyticsBoundary } from "../enum/enums";
 
 export interface ListItem {
     text ?: string;
@@ -17,12 +18,29 @@ export interface PublicationCardProps {
 }
 
 const PublicationCard = ({ cardTitle, items=[], data=mockData, isAnalytics=false }: PublicationCardProps) => {
+    let analyticsBoundaries = Object.values(AnalyticsBoundary).map(boundary => ({
+        value: boundary,
+        label: boundary.replace(/_/g, ' ').toLowerCase()
+    }));
+    
     return (
         <article className={styles.card}> 
             <h2 className={styles.title}>{cardTitle}</h2>
             <ul className={styles['content-list']}>
                 {isAnalytics? 
-                    (<IndexLineChart data={data} end={"01/08/2026"}></IndexLineChart>) : items.map((item, index) => {
+                    (
+                    <>
+                        <select className={styles['date-filter']}>
+                            {analyticsBoundaries.map((boundary, index) => (
+                                <option key={index} value={boundary.value}>{boundary.label}</option>
+                            ))}
+                        </select>
+                        <IndexLineChart data={data} end={"01/08/2026"}></IndexLineChart>
+                    </>
+                ) : 
+                    
+                    
+                    items.map((item, index) => {
                     const isEvent = 'title' in item;
                     
                     const displayTitle : string | undefined = isEvent ? item.title : item.title ? item.title : item.text;
