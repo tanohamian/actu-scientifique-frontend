@@ -83,7 +83,7 @@ export const uploadIcon: React.CSSProperties = {
  * @returns
  */
 export default function AddElementModal(props: AddElementModalProps) {
-  const [imageUrl, setImageUrl] = useState<string | ArrayBuffer | null>("");
+  const [imageUrl, setImageUrl] = useState<string>("");
   const initialFormData = useMemo(() => {
     const data = props.fields.reduce((acc, field) => {
       acc[field.name] = props.initialData![field.name] ?? "";
@@ -106,7 +106,7 @@ export default function AddElementModal(props: AddElementModalProps) {
     updateImage();
   }, [props.initialData?.illustrationUrl]);
 
-  const [isImage, setIsImage] = useState(false);
+  //const [isImage, setIsImage] = useState(false);
   const [formData, setFormData] = useState<InitialDataType>(initialFormData);
   useEffect(() => {
     const set = async () => {
@@ -206,22 +206,22 @@ export default function AddElementModal(props: AddElementModalProps) {
                   console.log(file);
                   if (file) {
                     handleChange(field.name, file);
-                    setIsImage(file.type.startsWith("image/"));
+                    //setIsImage(file.type.startsWith("image/"));
                     const objectUrl = URL.createObjectURL(file);
                     setImageUrl(objectUrl);
                   }
                 }}
                 required={field.required}
               />
-              {formData[field.name] || field.name === "illustrationUrl" ? (
+              {imageUrl ? (
                 <div className="mt-2">
-                  {isImage ? (
-                    <img
-                      src={imageUrl as string}
-                      alt="Preview"
-                      className="max-w-full h-auto rounded-lg"
-                    />
-                  ) : null}
+                  (
+                  <img
+                    src={imageUrl}
+                    alt="Preview"
+                    className="max-w-full h-auto rounded-lg"
+                  />
+                  )
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center bg-[#00283C99] rounded-lg p-10 cursor-pointer">

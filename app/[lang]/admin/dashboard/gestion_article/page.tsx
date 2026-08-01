@@ -207,7 +207,8 @@ export default function ArticlePage() {
     setEditArticle(false);
   };
   /***valeur par defaut dans le formulaire d'ajout d'article */
-  let initialData: InitialDataType = {
+
+  const emptyData: InitialDataType = {
     title: "",
     content: "",
     illustrationUrl: "",
@@ -237,16 +238,17 @@ export default function ArticlePage() {
       res ? "Supprimé avec succès !" : "Echec de la suppresion",
     );
   };
-  if (selectedArticle) {
-    initialData = {
-      title: (selectedArticle.title as string) || "",
-      content: (selectedArticle.content as string) || "",
-      createdAt: (selectedArticle.createdAt as string) || "",
-      rubrique: (selectedArticle.rubrique as Rubriques) || "",
-      une: (selectedArticle.une as boolean) || false,
-      illustrationUrl: selectedArticle.illustrationUrl,
-    };
-  }
+
+  const editInitialData: InitialDataType | null = selectedArticle
+    ? {
+        title: (selectedArticle.title as string) || "",
+        content: (selectedArticle.content as string) || "",
+        rubrique: (selectedArticle.rubrique as Rubriques) || "",
+        une: (selectedArticle.une as boolean) || false,
+        illustrationUrl: selectedArticle.illustrationUrl,
+        createdAt: (selectedArticle.createdAt as string) || "",
+      }
+    : null;
   /***fonction pour modifier un article déja crée */
   const handleSubmitEditArticle = async (data: InitialDataType | Product) => {
     setIsLoading(true);
@@ -353,10 +355,9 @@ export default function ArticlePage() {
           <article className={rightSectionClasses}>
             <FormComponent
               isArticle={true}
-              initialArticleData={initialData}
+              initialArticleData={emptyData}
               fields={ArticleFields}
               onSuccess={handleSubmitArticle}
-              //setter={setArticles}
             />
           </article>
         </article>
@@ -364,12 +365,14 @@ export default function ArticlePage() {
 
       <AddElementModal
         isOpen={editArticle}
-        onClose={() => setEditArticle(false)}
+        onClose={() => {
+          setEditArticle(false);
+        }}
         onSubmit={handleSubmitEditArticle}
         titleComponent="Modifier un article"
         buttonTitle="Modifier"
         fields={articleUpdateFields}
-        initialData={initialData}
+        initialData={editInitialData ?? emptyData}
         id={selectedArticle?.id}
       />
     </div>

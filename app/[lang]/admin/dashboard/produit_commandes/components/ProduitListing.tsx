@@ -40,7 +40,7 @@ const projectFields: FormFieldConfig[] = [
   {
     name: "description",
     label: "Description",
-    type: "text",
+    type: "description",
     placeholder: "Entrez votre description",
     required: false,
   },
