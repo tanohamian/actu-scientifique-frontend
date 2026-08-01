@@ -1,5 +1,4 @@
 "use client";
-"use client";
 
 import ButtonComponent from "@app/components/button";
 import SearchBarComponent from "@app/components/searchBar";
@@ -22,63 +21,6 @@ import { DbMedia, Product } from "@interfaces/index";
 import { url } from "inspector";
 
 const MediaFields: FormFieldConfig[] = [
-  {
-    name: "title",
-    label: "Titre du media",
-    placeholder: "Entrez le titre du media",
-    required: true,
-  },
-  {
-    name: "description",
-    label: "Description",
-    type: "description",
-    placeholder: "Entrez une description ...",
-    required: false,
-  },
-  {
-    name: "type",
-    label: "Type de media",
-    type: "select",
-    options: [
-      { label: "URL", value: "url" },
-      { label: "Fichier (Podcast/Vidéo)", value: "file" },
-    ],
-    required: true,
-  },
-  {
-    name: "url",
-    label: "URL du média",
-    type: "text",
-    placeholder: "https://exemple.com/media",
-    conditionalField: { dependsOn: "type", showWhen: "url" },
-  },
-  {
-    name: "file",
-    label: "Fichier",
-    type: "file",
-    conditionalField: { dependsOn: "type", showWhen: "file" },
-  },
-  {
-    name: "rubrique",
-    label: "Rubrique",
-    type: "select",
-    options: [
-      { label: "Une seule santé", value: Rubriques.ONE_HEALTH },
-      { label: "Technologie", value: Rubriques.TECHNOLOGY },
-      { label: "Éco-humanité", value: Rubriques.ECO_HUMANITY },
-      { label: "Portrait et découvertes", value: Rubriques.PORT_DISCOVERY },
-    ],
-    required: true,
-  },
-  {
-    name: "une",
-    label: "Mettre à la une",
-    type: "select",
-    options: [
-      { label: "Oui", value: 1 },
-      { label: "Non", value: 0 },
-    ],
-  },
   {
     name: "title",
     label: "Titre du media",
@@ -192,72 +134,8 @@ const updateMediaFields: FormFieldConfig[] = [
       { label: "Non", value: 0 },
     ],
   },
-  {
-    name: "title",
-    label: "Titre du media",
-    placeholder: "Entrez le titre du media",
-  },
-  {
-    name: "description",
-    label: "Description",
-    type: "description",
-    placeholder: "Entrez une description ...",
-  },
-  {
-    name: "type",
-    label: "Type de media",
-    type: "select",
-    options: [
-      { label: "URL", value: "url" },
-      { label: "Fichier", value: "file" },
-    ],
-  },
-  {
-    name: "url",
-    label: "URL du média",
-    type: "text",
-    placeholder: "https://exemple.com/media",
-    conditionalField: { dependsOn: "type", showWhen: "url" },
-  },
-  {
-    name: "file",
-    label: "Fichier",
-    type: "file",
-    conditionalField: { dependsOn: "type", showWhen: "file" },
-  },
-  {
-    name: "rubrique",
-    label: "Rubrique",
-    type: "select",
-    options: [
-      { label: "Une seule santé", value: Rubriques.ONE_HEALTH },
-      { label: "Technologie", value: Rubriques.TECHNOLOGY },
-      { label: "Éco-humanité", value: Rubriques.ECO_HUMANITY },
-      { label: "Portrait et découvertes", value: Rubriques.PORT_DISCOVERY },
-    ],
-  },
-  {
-    name: "une",
-    label: "Mettre à la une",
-    type: "select",
-    options: [
-      { label: "Oui", value: 1 },
-      { label: "Non", value: 0 },
-    ],
-  },
 ];
 const mainHeaders = [
-  { key: "title", label: "Titre", flexBasis: "15%" },
-  { key: "type", label: "Type", flexBasis: "9%" },
-  {
-    key: "rubrique",
-    label: "Rubrique",
-    flexBasis: "15%",
-    textAlign: "center" as Property.TextAlign,
-  },
-  { key: "url", label: "URL", flexBasis: "29%", type: "url" },
-  { key: "createdAt", label: "Date de publication", flexBasis: "20%" },
-  { key: "actions", label: "Actions", flexBasis: "12%" },
   { key: "title", label: "Titre", flexBasis: "15%" },
   { key: "type", label: "Type", flexBasis: "9%" },
   {
@@ -525,22 +403,22 @@ export default function MediaPage() {
             />
         </div>
 
-                <div className={contentContainerClasses}>
+            <div className={contentContainerClasses}>
 
-                    <div className={searchAndTabsClasses}>
-                        <div className={searchBarWrapperClasses}>
-                            <SearchBarComponent 
-                                placeholder='Rechercher un media....' 
-                                inputValue={inputValue} 
-                                setInputValue={setInputValue} 
-                                setFocus={()=>{}}
-                            />
-                                
-                        </div>
-                        <Filter
-                            filters={filters}
+                <div className={searchAndTabsClasses}>
+                    <div className={searchBarWrapperClasses}>
+                        <SearchBarComponent 
+                            placeholder='Rechercher un media....' 
+                            inputValue={inputValue} 
+                            setInputValue={setInputValue} 
+                            setFocus={()=>{}}
                         />
+                            
                     </div>
+                    <Filter
+                        filters={filters}
+                    />
+                </div>
 
             <article className="flex flex-col lg:flex-row gap-8">
             <EventDataTable
