@@ -28,7 +28,7 @@ export default function Page() {
         const rowData = (await FetchStats()).data;
         const allowedPrefixes = [
             '/one-health', '/technology', '/eco-humanity', 
-            '/portrait-discovery', '/agenda', '/about', '/opportunities/'
+            '/portrait-discovery', '/agenda', '/about', '/opportunities/', '/shop'
         ];
         
         console.log({rowData})
