@@ -90,6 +90,8 @@ export default function ProduitsTable({
       console.log("erreur lors de la suppression du produit", error);
     }
   };
+  /*** Modifier  un oriduit
+   */
 
   const handleEdit = async (item: Product) => {
     try {

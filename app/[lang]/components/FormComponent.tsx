@@ -153,13 +153,7 @@ export default function FormComponent({
             : "rubrique" in initialData
               ? initialData.rubrique
               : Rubriques.TECHNOLOGY;
-        const rubrique =
-          "categorie" in initialData
-            ? (initialData.categorie as Rubriques)
-            : "rubrique" in initialData
-              ? initialData.rubrique
-              : Rubriques.TECHNOLOGY;
-
+       
         setFormData({ title, content, rubrique });
       } else {
         setFormData({ title: "", content: "", rubrique: Rubriques.TECHNOLOGY });
@@ -220,7 +214,6 @@ export default function FormComponent({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setIsLoading(true);
     try {
       let result: DbArticle | undefined | { success: boolean };
       const currentId = initialData?.id;
@@ -229,10 +222,6 @@ export default function FormComponent({
         article.append("title", articleFormData["title"] as string);
         article.append("content", articleFormData["content"] as string);
         article.append("rubrique", articleFormData["rubrique"] as string);
-        article.append("file", articleFormData["file"] as File);
-        article.append("une", articleFormData["une"] as string);
-        console.log("Aperçu de l'article : ");
-        console.log(article);
         const article = new FormData();
         article.append("title", articleFormData["title"] as string);
         article.append("content", articleFormData["content"] as string);

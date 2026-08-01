@@ -189,7 +189,7 @@ export default function ArticlePage() {
         mt-8 
         lg:mt-0 
     `;
-  //fonction pour reuperer l'article crée
+  /***fonction pour reuperer l'article crée */
   const handleSubmitArticle = (newArticle?: DbArticle) => {
     if (!newArticle) {
       alert("Aucun article à ajouter");
@@ -206,7 +206,7 @@ export default function ArticlePage() {
     setSelectedArticle(null);
     setEditArticle(false);
   };
-  //valeur par defaut dans le formulaire d'ajout d'article
+  /***valeur par defaut dans le formulaire d'ajout d'article */
   let initialData: InitialDataType = {
     title: "",
     content: "",
@@ -220,12 +220,12 @@ export default function ArticlePage() {
     rubrique: "",
     une: false,
   };
-  //fonction pour selectionne un article à modifier et ouvrir le modal de modification
+  /***fonction pour selectionne un article à modifier et ouvrir le modal de modification */
   const handleEditArticle = async (item: ElementType) => {
     setSelectedArticle(item as Article);
     setEditArticle(true);
   };
-  //focntion pour supprimer un article
+  /***focntion pour supprimer un article */
   const handleDeleteArticle = async (item: ElementType) => {
     console.log("Deleting event:", item);
     setSelectedArticle(item as Article);
@@ -247,7 +247,7 @@ export default function ArticlePage() {
       illustrationUrl: selectedArticle.illustrationUrl,
     };
   }
-  //fonction pour modifier un article déja crée
+  /***fonction pour modifier un article déja crée */
   const handleSubmitEditArticle = async (data: InitialDataType | Product) => {
     setIsLoading(true);
     try {
@@ -302,6 +302,7 @@ export default function ArticlePage() {
     fetchArtcicles();
   }, []);
 
+  /*** Filtrer les articles */
   const filteredArticles = articles.filter((article) => {
     const search = inputValue.trim().toLowerCase();
 
