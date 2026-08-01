@@ -95,7 +95,7 @@ export default function AddElementModal({
 
     return data;
   }, [fields, initialData, id]);
-
+  //console.log("initialData : ", initialData);
   useEffect(() => {
     const updateImage = () => {
       if (initialData.illustrationUrl) {
@@ -105,7 +105,8 @@ export default function AddElementModal({
     updateImage();
   }, [initialData.illustrationUrl]);
 
-  const [isImage, setIsImage] = useState(false);
+  //console.log("initialData : ", initialData);
+  //const [isImage, setIsImage] = useState(false);
   const [formData, setFormData] = useState<InitialDataType>(initialFormData);
   useEffect(() => {
     const set = async () => {
@@ -205,22 +206,20 @@ export default function AddElementModal({
                   console.log(file);
                   if (file) {
                     handleChange(field.name, file);
-                    setIsImage(file.type.startsWith("image/"));
+                    //setIsImage(file.type.startsWith("image/"));
                     const objectUrl = URL.createObjectURL(file);
                     setImageUrl(objectUrl);
                   }
                 }}
                 required={field.required}
               />
-              {formData[field.name] ? (
+              {imageUrl ? (
                 <div className="mt-2">
-                  {isImage || typeof formData[field.name] === "string" ? (
-                    <img
-                      src={imageUrl || (formData[field.name] as string)}
-                      alt="Preview"
-                      className="max-w-full h-auto rounded-lg"
-                    />
-                  ) : null}
+                  <img
+                    src={imageUrl}
+                    alt="Preview"
+                    className="max-w-full h-auto rounded-lg"
+                  />
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center bg-[#00283C99] rounded-lg p-10 cursor-pointer">

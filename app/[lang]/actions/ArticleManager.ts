@@ -161,7 +161,7 @@ export async function UpdateArticle(articleId: string, data: FormData) {
     if (!response.ok) {
       throw new Error(await response.text());
     }
-    return (await response.json()).article as DbArticle;
+    return (await response.json()) as DbArticle;
   } catch (error) {
     console.log("erreur lors de la mise à jour de l'article : ", error);
     return null;

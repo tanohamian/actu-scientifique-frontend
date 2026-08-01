@@ -108,14 +108,17 @@ export default function ArticlePage() {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [editArticle, setEditArticle] = useState(false);
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-  const [filters] = useState<IFilter[]>(
-    mainHeaders.map((header) => {
-      return { value: header.key, label: header.label };
-    }),
-  );
+  //const [selectedFilter, setSelectedFilter] = useState("title");
 
-  const [editorText, setEditorText] = useState<string>("");
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  /*const [filters] = useState<IFilter[]>(
+    mainHeaders
+      .filter((m) => m.key !== "actions")
+      .map((header) => {
+        return { value: header.key, label: header.label };
+      }),
+  );*/
+
   const [articles, setArticles] = useState<DbArticle[]>([]);
 
   const pageContainerClasses = `
@@ -186,9 +189,8 @@ export default function ArticlePage() {
         mt-8 
         lg:mt-0 
     `;
-
+  //fonction pour reuperer l'article crée
   const handleSubmitArticle = (newArticle?: DbArticle) => {
-    //console.log({ newArticle })
     if (!newArticle) {
       alert("Aucun article à ajouter");
       return;
@@ -200,30 +202,30 @@ export default function ArticlePage() {
       year: "numeric",
       month: "2-digit",
     });
-    //console.log("old_date : ", articles[0]?.createdAt)
     setArticles((prevState) => [...prevState, newArticle]);
+    setSelectedArticle(null);
     setEditArticle(false);
   };
-
+  //valeur par defaut dans le formulaire d'ajout d'article
   let initialData: InitialDataType = {
     title: "",
     content: "",
-    illustationUrl: "https://via.placeholder.com/150",
+    illustrationUrl: "",
     createdAt: new Date().toLocaleDateString("fr-FR", {
       hour: "2-digit",
       minute: "2-digit",
       day: "2-digit",
       year: "numeric",
     }),
-    rubrique: Rubriques.TECHNOLOGY as string,
+    rubrique: "",
     une: false,
   };
-
+  //fonction pour selectionne un article à modifier et ouvrir le modal de modification
   const handleEditArticle = async (item: ElementType) => {
-    console.log("item : ", item);
     setSelectedArticle(item as Article);
     setEditArticle(true);
   };
+  //focntion pour supprimer un article
   const handleDeleteArticle = async (item: ElementType) => {
     console.log("Deleting event:", item);
     setSelectedArticle(item as Article);
@@ -242,17 +244,15 @@ export default function ArticlePage() {
       createdAt: (selectedArticle.createdAt as string) || "",
       rubrique: (selectedArticle.rubrique as Rubriques) || "",
       une: (selectedArticle.une as boolean) || false,
-      illustationUrl: selectedArticle.illustrationUrl,
+      illustrationUrl: selectedArticle.illustrationUrl,
     };
   }
-
+  //fonction pour modifier un article déja crée
   const handleSubmitEditArticle = async (data: InitialDataType | Product) => {
     setIsLoading(true);
     try {
-      //console.log("📋 Données reçues:", data);
       data = data as InitialDataType;
       const article = new FormData();
-      //article.append("id", selectedArticle?.id as string);
       article.append("title", data.title as string);
       article.append("content", data.content as string);
       article.append("rubrique", data.rubrique as Rubriques);
@@ -260,32 +260,15 @@ export default function ArticlePage() {
 
       if (data.file && data.file instanceof File) {
         article.append("file", data.file);
-        //console.log("✅ Fichier ajouté:", data.file.name, data.file.size);
       }
 
-      /*for (const [key, value] of article.entries()) {
-        if (value instanceof File) {
-          console.log(`  ${key}: [File] ${value.name} (${value.size} bytes)`);
-        } else {
-          console.log(`  ${key}:`, value);
-        }
-      }*/
-
       const response = await UpdateArticle(data.id as string, article);
-
-      //console.log("📨 Réponse reçue:", response?.status);
-
-      /*if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Erreur lors de l'upload");
-      }*/
-
-      //const result = await response.json();
-
       setArticles((prev) =>
         prev.map((art) => (art.id === response?.id ? response : art)),
       );
+      setSelectedArticle(null);
       setEditArticle(false);
+
       toast(true, false, "Article mis à jour !");
     } catch (error) {
       console.log("❌ Erreur:", error);
@@ -319,6 +302,18 @@ export default function ArticlePage() {
     fetchArtcicles();
   }, []);
 
+  const filteredArticles = articles.filter((article) => {
+    const search = inputValue.trim().toLowerCase();
+
+    if (!search) return true;
+
+    return (
+      article.title?.toLowerCase().includes(search) ||
+      article.rubrique?.toLowerCase().includes(search) ||
+      article.content?.toLowerCase().includes(search)
+      //article.createdAt?.includes(search)
+    );
+  });
   return (
     <div className={pageContainerClasses}>
       <LoadingComponent
@@ -332,7 +327,6 @@ export default function ArticlePage() {
             Gérer les articles depuis cette interface
           </h3>
         </div>
-        {/* <ButtonComponent textButton='Ajouter un article' size='large' onclick={handleArticle} /> */}
       </div>
 
       <div className={contentContainerClasses}>
@@ -344,12 +338,12 @@ export default function ArticlePage() {
               setInputValue={setInputValue}
             />
           </div>
-          <Filter filters={filters} />
+          {/*<Filter filters={filters} onFilterChange={setSelectedFilter} />*/}
         </div>
         <article className="flex flex-col items-start lg:flex-row gap-8 h-fit">
           <DataTable
             tableTitle=""
-            data={articles}
+            data={filteredArticles}
             columnHeaders={mainHeaders}
             handleEditEvent={handleEditArticle}
             handleDeleteEvent={handleDeleteArticle}
