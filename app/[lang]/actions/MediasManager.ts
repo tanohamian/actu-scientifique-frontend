@@ -170,7 +170,7 @@ export async function AddMedia(formData: FormData) {
     }
 
     const result = await response.json();
-    //console.log("add media successful:", result);
+    console.log("Upload successful:", result);
     return result as DbMedia;
   } catch (error) {
     console.error("Erreur lors de l'upload du média:");

@@ -5,9 +5,12 @@ import { X, ChevronDown, Upload } from "lucide-react";
 import { Rubriques } from "../enum/enums";
 import { Product } from "../interfaces";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 
 const EditorText = dynamic(() => import("@components/titap"), { ssr: false });
+
+/**
+ * Interface for form field configuration
+ */
 export interface FormFieldConfig {
   name: string;
   label: string;
@@ -36,6 +39,9 @@ export type InitialDataType = {
   [key: string]: string | number | File | undefined | Rubriques | boolean;
 };
 
+/**
+ * Props for the AddElementModal component
+ */
 interface AddElementModalProps {
   id?: string;
   isOpen: boolean;
@@ -71,52 +77,46 @@ export const uploadIcon: React.CSSProperties = {
   marginBottom: "10px",
 };
 
-export default function AddElementModal({
-  isOpen,
-  onClose,
-  onSubmit,
-  titleComponent,
-  buttonTitle,
-  fields,
-  initialData = {},
-  isLoading,
-  id,
-}: AddElementModalProps) {
-  const [imageUrl, setImageUrl] = useState<string>("");
+/**
+ *
+ * @param {AddElementModalProps} param0
+ * @returns
+ */
+export default function AddElementModal(props: AddElementModalProps) {
+  const [imageUrl, setImageUrl] = useState<string | ArrayBuffer | null>("");
   const initialFormData = useMemo(() => {
-    const data = fields.reduce((acc, field) => {
-      acc[field.name] = initialData[field.name] ?? "";
+    const data = props.fields.reduce((acc, field) => {
+      acc[field.name] = props.initialData![field.name] ?? "";
       return acc;
     }, {} as InitialDataType);
 
-    if (id) {
-      data["id"] = id;
+    if (props.id) {
+      data["id"] = props.id;
     }
 
     return data;
-  }, [fields, initialData, id]);
-  //console.log("initialData : ", initialData);
+  }, [props.fields, props.initialData, props.id]);
+
   useEffect(() => {
     const updateImage = () => {
-      if (initialData.illustrationUrl) {
-        setImageUrl(initialData.illustrationUrl as string);
+      if (props.initialData?.illustrationUrl) {
+        setImageUrl(props.initialData.illustrationUrl as string);
       }
     };
     updateImage();
-  }, [initialData.illustrationUrl]);
+  }, [props.initialData?.illustrationUrl]);
 
-  //console.log("initialData : ", initialData);
-  //const [isImage, setIsImage] = useState(false);
+  const [isImage, setIsImage] = useState(false);
   const [formData, setFormData] = useState<InitialDataType>(initialFormData);
   useEffect(() => {
     const set = async () => {
       setFormData(initialFormData);
     };
     set();
-  }, [initialFormData, isOpen]);
+  }, [initialFormData, props.isOpen]);
 
   useEffect(() => {
-    if (isOpen) {
+    if (props.isOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -124,13 +124,13 @@ export default function AddElementModal({
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isOpen]);
+  }, [props.isOpen]);
 
-  if (!isOpen) return null;
+  if (!props.isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData as InitialDataType, id);
+    props.onSubmit(formData as InitialDataType, props.id);
   };
 
   const handleChange = (name: string, value: string | File, type?: string) => {
@@ -206,20 +206,22 @@ export default function AddElementModal({
                   console.log(file);
                   if (file) {
                     handleChange(field.name, file);
-                    //setIsImage(file.type.startsWith("image/"));
+                    setIsImage(file.type.startsWith("image/"));
                     const objectUrl = URL.createObjectURL(file);
                     setImageUrl(objectUrl);
                   }
                 }}
                 required={field.required}
               />
-              {imageUrl ? (
+              {formData[field.name] || field.name === "illustrationUrl" ? (
                 <div className="mt-2">
-                  <img
-                    src={imageUrl}
-                    alt="Preview"
-                    className="max-w-full h-auto rounded-lg"
-                  />
+                  {isImage ? (
+                    <img
+                      src={imageUrl as string}
+                      alt="Preview"
+                      className="max-w-full h-auto rounded-lg"
+                    />
+                  ) : null}
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center bg-[#00283C99] rounded-lg p-10 cursor-pointer">
@@ -330,13 +332,13 @@ export default function AddElementModal({
   const formClasses = "flex flex-col gap-4";
 
   return (
-    <div className={overlayClasses} onClick={onClose}>
+    <div className={overlayClasses} onClick={props.onClose}>
       <div className={modalClasses} onClick={(e) => e.stopPropagation()}>
         <div className={headerClasses}>
-          <h2 className={titleClasses}>{titleComponent}</h2>
+          <h2 className={titleClasses}>{props.titleComponent}</h2>
           <button
             className={closeButtonClasses}
-            onClick={onClose}
+            onClick={props.onClose}
             aria-label="Fermer"
           >
             <X size={24} />
@@ -344,14 +346,14 @@ export default function AddElementModal({
         </div>
 
         <form onSubmit={handleSubmit} className={formClasses}>
-          {fields.map((field) => renderField(field))}
-          {isLoading ? (
+          {props.fields.map((field) => renderField(field))}
+          {props.isLoading ? (
             <div className="mt-4 flex justify-center">
               <ButtonComponent textButton="Chargement..." size="medium" />
             </div>
           ) : (
             <div className="mt-4 flex justify-center">
-              <ButtonComponent textButton={buttonTitle} size="medium" />
+              <ButtonComponent textButton={props.buttonTitle} size="medium" />
             </div>
           )}
         </form>
