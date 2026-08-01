@@ -11,19 +11,15 @@ import AddElementModal, {
   FormFieldConfig,
   InitialDataType,
 } from "@app/components/addElement";
-
+import { AddMedia } from "@actions/MediasManager";
 import Filter, { IFilter } from "@app/components/filter";
 import { Property } from "csstype";
-import {
-  AddMedia,
-  DeleteMedia,
-  FetchMedias,
-  UpdateMedia,
-} from "@app/actions/MediasManager";
-import { Rubriques } from "@app/enum/enums";
-import { toast } from "@app/components/FormComponent";
-import LoadingComponent from "@app/components/loadingComponent";
-import { DbMedia, Product } from "@app/interfaces";
+import { DeleteMedia, FetchMedias, UpdateMedia } from "@actions/MediasManager";
+import { Rubriques } from "@enum/enums";
+import { toast } from "@components/FormComponent";
+import LoadingComponent from "@components/loadingComponent";
+import { DbMedia, Product } from "@interfaces/index";
+import { url } from "inspector";
 
 const MediaFields: FormFieldConfig[] = [
   {
@@ -153,6 +149,64 @@ const mainHeaders = [
   { key: "createdAt", label: "Date de publication", flexBasis: "20%" },
   { key: "actions", label: "Actions", flexBasis: "12%" },
 ];
+const pageContainerClasses = `
+        min-h-screen 
+        font-sans
+    `;
+
+const headerClasses = `
+        flex 
+        flex-col 
+        md:flex-row 
+        justify-between 
+        items-start 
+        md:items-center 
+        mb-4 
+        gap-4 
+        md:gap-0
+        p-5 
+        md:p-10
+    `;
+
+const textClasses = `
+        m-0 
+        text-2xl 
+        md:text-3xl 
+        lg:text-4xl 
+       font-light
+        text-white
+    `;
+
+const subTextClasses = `
+        text-white 
+        text-sm 
+        md:text-base 
+        font-light
+    `;
+
+const contentContainerClasses = `
+        p-5 
+        md:p-10
+    `;
+
+const searchAndTabsClasses = `
+        flex 
+        flex-col 
+        md:flex-row 
+        items-center 
+        gap-4 
+        md:gap-5 
+        my-5 
+        md:my-8 
+        justify-center 
+        md:justify-between
+    `;
+
+const searchBarWrapperClasses = `
+        flex-grow 
+        w-full 
+        md:max-w-xl
+    `;
 export type rubriques = "technology" | "one_health" | "ecohumanity";
 
 export default function MediaPage() {
@@ -170,64 +224,6 @@ export default function MediaPage() {
     }),
   );
   const [medias, setMedias] = useState<DbMedia[]>([]);
-  const pageContainerClasses = `
-        min-h-screen 
-        font-sans
-    `;
-
-  const headerClasses = `
-        flex 
-        flex-col 
-        md:flex-row 
-        justify-between 
-        items-start 
-        md:items-center 
-        mb-4 
-        gap-4 
-        md:gap-0
-        p-5 
-        md:p-10
-    `;
-
-  const textClasses = `
-        m-0 
-        text-2xl 
-        md:text-3xl 
-        lg:text-4xl 
-       font-light
-        text-white
-    `;
-
-  const subTextClasses = `
-        text-white 
-        text-sm 
-        md:text-base 
-        font-light
-    `;
-
-  const contentContainerClasses = `
-        p-5 
-        md:p-10
-    `;
-
-  const searchAndTabsClasses = `
-        flex 
-        flex-col 
-        md:flex-row 
-        items-center 
-        gap-4 
-        md:gap-5 
-        my-5 
-        md:my-8 
-        justify-center 
-        md:justify-between
-    `;
-
-  const searchBarWrapperClasses = `
-        flex-grow 
-        w-full 
-        md:max-w-xl
-    `;
 
   const handleMedia = () => {
     setIsOpen(true);
@@ -276,20 +272,19 @@ export default function MediaPage() {
         }
       }
 
-      /*console.log("📦 Contenu du FormData:");
+      console.log("📦 Contenu du FormData:");
       for (const [key, value] of media.entries()) {
         if (value instanceof File) {
           console.log(`  ${key}: [File] ${value.name} (${value.size} bytes)`);
         } else {
           console.log(`  ${key}:`, value);
         }
-      }*/
-
+      }
       const result = await AddMedia(media);
       setMedias((prev) => [...prev, result]);
       setIsOpen(false);
 
-      toast(true, false, "Media ajouté avec succès!");
+      toast(true, false, "Media uploadé !");
     } catch (error) {
       console.error("Erreur:", error);
       toast(false, false, "Échec de l'upload du media");
@@ -303,8 +298,8 @@ export default function MediaPage() {
     setSelectedMedia(item as TableData);
     setEditMedia(true);
   };
-
   const handleDeleteMedia = async (item: ElementType) => {
+    console.log("Deleting event:", item);
     setSelectedMedia(item as TableData);
     await DeleteMedia(item.id as string);
     setMedias(medias.filter((media) => media.id !== item.id));
@@ -320,6 +315,7 @@ export default function MediaPage() {
       description: (media.description as string) || "",
       rubrique: (media.rubrique as string) || "",
       une: media.une ? 1 : 0,
+      url: (media.url as string) || "",
     };
   }
 
@@ -335,14 +331,24 @@ export default function MediaPage() {
       media.append("rubrique", data.rubrique as string);
       media.append("une", data.une as string);
       media.append("description", data.description as string);
-      if (data.file && data.file instanceof File) {
+
+      if (data.type === "file" && data.file && data.file instanceof File) {
         media.append("file", data.file);
-        console.log("file found !");
+        console.log("✅ Fichier trouvé et ajouté!");
+      } else if (data.type === "url" && data.url) {
+        media.append("url", data.url as string);
+        console.log("✅ URL trouvée et ajoutée!");
       }
-      const updatedMedia = await UpdateMedia(
-        media,
-        selectedMedia?.id as string,
-      );
+
+      const response = await fetch("/api/upload-media", {
+        method: "PUT",
+        body: media,
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Erreur lors de l'upload");
+      }
+      const updatedMedia = await response.json();
       setMedias((prev) =>
         prev.map((m) => (m.id === updatedMedia.id ? updatedMedia : m)),
       );
@@ -380,16 +386,6 @@ export default function MediaPage() {
     fetchMedias();
   }, []);
 
-  //fonction pour rechercher un media
-  const filterMedia = medias.filter((md) => {
-    const search = inputValue.trim().toLowerCase();
-    if (!search) return true;
-    return (
-      md.title?.toLowerCase().includes(search) ||
-      md.description?.toLowerCase().includes(search)
-    );
-  });
-
   return (
     <div className={pageContainerClasses}>
       <div className={headerClasses}>
@@ -416,14 +412,14 @@ export default function MediaPage() {
               setFocus={() => {}}
             />
           </div>
-          {/*<Filter filters={filters} />*/}
+          <Filter filters={filters} />
         </div>
 
         <article className="flex flex-col lg:flex-row gap-8">
           <EventDataTable
             tableTitle=""
             isMedia={true}
-            data={filterMedia as DbMedia[]}
+            data={medias as DbMedia[]}
             columnHeaders={mainHeaders}
             handleEditEvent={handleEditMedia}
             handleDeleteEvent={handleDeleteMedia}

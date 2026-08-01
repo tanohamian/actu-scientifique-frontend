@@ -35,6 +35,7 @@ export default function Page() {
         "/agenda",
         "/about",
         "/opportunities/",
+        "/shop",
       ];
 
       console.log({ rowData });
@@ -96,10 +97,10 @@ export default function Page() {
       />
       <h1 className={textClasses}>Stat</h1>
       <h3 className={subTextClasses}>
-        {"Avoir une vision du traffic sur l'application"}
+        {"Avoir une vision du traffic sur l'application "}
       </h3>
 
-      <IndexLineChart />
+      <IndexLineChart end={"01/08/2026"} />
 
       {/* Section aperçu (Tendance) */}
       <section className={styles.tendance}>

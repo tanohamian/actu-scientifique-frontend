@@ -10,7 +10,7 @@ export interface INewsletter {
     id?: string;
     title: string;
     categorie?: string;
-    contenu: string;
+    content: string;
     createdAt?: string | Date;
 }
 
@@ -62,6 +62,8 @@ export async function AddNewsletter(data: INewsletter) {
             revalidatePath('/admin/dashboard/newsletters');
             return { success: true };
         }
+        var jsonResponse = await response.json();
+        console.error("Erreur lors de la création de la newsletter:", jsonResponse);
         return { success: false };
     } catch (error) {
         console.error("Erreur lors de la creation :", error);

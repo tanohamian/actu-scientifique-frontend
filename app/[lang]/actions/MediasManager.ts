@@ -118,6 +118,7 @@ export async function FetchMediaById(mediaId: string) {
   const lang = await getLocale();
   const baseUrl = env.getApiUrl(lang as LANG);
   const authToken = (await cookies()).get("authToken")?.value;
+  console.log(`${baseUrl}/multimedia/${mediaId}`);
 
   try {
     const response = await fetch(`${baseUrl}/multimedia/${mediaId}`, {
