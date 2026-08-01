@@ -1,5 +1,6 @@
 "use client"
 import { useTransition } from 'react';
+import { useLocale } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import { styled } from '@mui/material/styles';
 import FormGroup from '@mui/material/FormGroup';
@@ -57,13 +58,13 @@ export default function LanguageSwitcher() {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const pathname = usePathname();
+  const locale = useLocale();
 
-  const currentLocale = pathname.startsWith('/en') ? 'en' : 'fr';
-  const isEnglish = currentLocale === 'en';
+  const isEnglish = locale === 'en';
 
   const handleLanguageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextLocale = event.target.checked ? 'en' : 'fr';
-    const nextPathname = pathname.replace(/^\/(fr|en)(?=\/|$)/, `/${nextLocale}`);
+    const nextPathname = pathname === '/' ? `/${nextLocale}` : pathname.replace(/^\/(fr|en)(?=\/|$)/, `/${nextLocale}`);
 
     startTransition(() => {
       router.replace(nextPathname);
@@ -81,7 +82,7 @@ export default function LanguageSwitcher() {
             disabled={isPending}
           />
         }
-        label={currentLocale === 'fr' ? 'Langue' : 'Language'} 
+        label={locale === 'fr' ? 'Langue' : 'Language'} 
         slotProps={{
           typography: {
             sx: {

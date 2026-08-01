@@ -16,13 +16,13 @@ export interface PublicationCardProps {
     data?: {date: string, count: number}[] 
 }
 
-const PublicationCard = ({ cardTitle, items, data=mockData, isAnalytics=false }: PublicationCardProps) => {
+const PublicationCard = ({ cardTitle, items=[], data=mockData, isAnalytics=false }: PublicationCardProps) => {
     return (
         <article className={styles.card}> 
             <h2 className={styles.title}>{cardTitle}</h2>
             <ul className={styles['content-list']}>
                 {isAnalytics? 
-                    (<IndexLineChart data={data}></IndexLineChart>) : items.map((item, index) => {
+                    (<IndexLineChart data={data} end={"01/08/2026"}></IndexLineChart>) : items.map((item, index) => {
                     const isEvent = 'title' in item;
                     
                     const displayTitle : string | undefined = isEvent ? item.title : item.title ? item.title : item.text;

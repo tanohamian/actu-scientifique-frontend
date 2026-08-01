@@ -9,8 +9,8 @@ import { LANG } from '../enum/enums'
 
 export async function FetchStats () : Promise<{count: number, data: Stat[]}> {
     const lang = await getLocale()
-    const baseUrl = env.getApiUrl(lang as LANG)    
-    console.log(env)
+    const baseUrl = env.getApiUrl(lang as LANG)
+    if (env.onLocal) console.log(env)
     try {
         const response = await fetch(`${baseUrl}/stats`, {
             method: 'GET',

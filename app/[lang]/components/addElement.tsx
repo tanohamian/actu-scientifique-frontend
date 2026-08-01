@@ -11,6 +11,10 @@ const EditorText = dynamic(
     () => import('@components/titap'),
     { ssr: false }
 )
+
+/**
+ * Interface for form field configuration
+ */
 export interface FormFieldConfig {
     name: string;
     label: string;
@@ -27,6 +31,9 @@ export interface FormFieldConfig {
 export type InitialDataType = { [key: string]: string | number | File | undefined | Rubriques | boolean }
 
 
+/**
+ * Props for the AddElementModal component
+ */
 interface AddElementModalProps {
     id?: string
     isOpen: boolean;
@@ -61,33 +68,37 @@ export const uploadIcon: React.CSSProperties = {
 };
 
 
-
-export default function AddElementModal({ isOpen, onClose, onSubmit, titleComponent, buttonTitle, fields, initialData = {}, isLoading, id }: AddElementModalProps) {
+/**
+ * 
+ * @param {AddElementModalProps} param0
+ * @returns 
+ */
+export default function AddElementModal(props : AddElementModalProps) {
 
 
     const [imageUrl, setImageUrl] = useState<string | ArrayBuffer | null>("")
     const initialFormData = useMemo(() => {
-        const data = fields.reduce((acc, field) => {
-            acc[field.name] = initialData[field.name] ?? '';
+        const data = props.fields.reduce((acc, field) => {
+            acc[field.name] = props.initialData![field.name] ?? '';
             return acc;
         }, {} as InitialDataType);
 
 
-        if (id) {
-            data["id"] = id;
+        if (props.id) {
+            data["id"] = props.id;
         }
 
         return data;
-    }, [fields, initialData, id]);
+    }, [props.fields, props.initialData, props.id]);
 
     useEffect(() => {
         const updateImage = () => {
-            if (initialData.illustrationUrl) {
-                setImageUrl(initialData.illustrationUrl as string);
+            if (props.initialData?.illustrationUrl) {
+                setImageUrl(props.initialData.illustrationUrl as string);
             }
         }
         updateImage()
-    }, [initialData.illustrationUrl])
+    }, [props.initialData?.illustrationUrl])
 
     const [isImage, setIsImage] = useState(false)
     const [formData, setFormData] = useState<InitialDataType>(initialFormData);
@@ -96,10 +107,10 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
             setFormData(initialFormData);
         }
         set()
-    }, [initialFormData, isOpen]);
+    }, [initialFormData, props.isOpen]);
 
     useEffect(() => {
-        if (isOpen) {
+        if (props.isOpen) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'unset';
@@ -107,14 +118,13 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
         return () => {
             document.body.style.overflow = 'unset';
         };
-    }, [isOpen]);
+    }, [props.isOpen]);
 
-    if (!isOpen) return null;
+    if (!props.isOpen) return null;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(formData as InitialDataType, id);
-
+        props.onSubmit(formData as InitialDataType, props.id);
     };
 
     const handleChange = (name: string, value: string | File, type?: string) => {
@@ -288,21 +298,21 @@ export default function AddElementModal({ isOpen, onClose, onSubmit, titleCompon
 
 
     return (
-        <div className={overlayClasses} onClick={onClose}>
+        <div className={overlayClasses} onClick={props.onClose}>
             <div className={modalClasses} onClick={(e) => e.stopPropagation()}>
                 <div className={headerClasses}>
-                    <h2 className={titleClasses}>{titleComponent}</h2>
-                    <button className={closeButtonClasses} onClick={onClose} aria-label="Fermer">
+                    <h2 className={titleClasses}>{props.titleComponent}</h2>
+                    <button className={closeButtonClasses} onClick={props.onClose} aria-label="Fermer">
                         <X size={24} />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className={formClasses}>
-                    {fields.map(field => renderField(field))}
-                    {isLoading ? <div className="mt-4 flex justify-center">
+                    {props.fields.map(field => renderField(field))}
+                    {props.isLoading ? <div className="mt-4 flex justify-center">
                         <ButtonComponent textButton="Chargement..." size="medium" />
                     </div> : <div className="mt-4 flex justify-center">
-                        <ButtonComponent textButton={buttonTitle} size="medium" />
+                        <ButtonComponent textButton={props.buttonTitle} size="medium" />
                     </div>}
                 </form>
             </div>

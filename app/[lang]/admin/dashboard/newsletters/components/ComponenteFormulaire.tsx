@@ -11,7 +11,11 @@ const EditorText = dynamic(
     { ssr: false }
 )
 
-
+interface IFormData{
+  title: string;
+  content: string;
+  categorie: string;
+}
 
 interface FormPropos {
   isArticle: boolean;
@@ -28,9 +32,9 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
   { label: 'Portrait et découvertes', value: Rubriques.PORT_DISCOVERY },
 ];
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<IFormData>({
     title: "",
-    contenu: "",
+    content: "",
     categorie: "",
   });
 
@@ -38,12 +42,12 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
     const initiateDatas = async () => {
       if (initialData) {
         const title = initialData.title || "";
-        const contenu = initialData.content || "";
+        const content = initialData.content || "";
         const categorie = initialData.categorie || "";
 
-        setFormData({ title, contenu, categorie });
+        setFormData({ title, content, categorie });
       } else {
-        setFormData({ title: "", contenu: "", categorie: "" });
+        setFormData({ title: "", content: "", categorie: "" });
       }
     }
     initiateDatas()
@@ -53,14 +57,18 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
   const isEditing = !!initialData;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    console.log("Changement de valeur:", e.target.name, e.target.value);
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (formData: IFormData) => {
+    if (!formData.title || !formData.content || !formData.categorie) {
+      alert("Veuillez remplir tous les champs.");
+      return;
+    }
     try {
       let result;
       const currentId = initialData?.id;
@@ -72,9 +80,13 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
       }
 
       if (result?.success) {
-        setFormData({ title: "", contenu: "", categorie: "" });
+        setFormData({ title: "", content: "", categorie: "" });
         if (onSuccess) onSuccess();
       }
+      else{
+        alert("Une erreur est survenue lors de la soumission du formulaire. Veuillez réessayer.");
+      }
+      console.log("Résultat de la soumission:", result);
     } catch (error) {
       console.error("Erreur:", error);
     }
@@ -92,7 +104,7 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
       <h2 style={{ color: 'white', textAlign: 'center', fontSize: '32px', fontWeight: 'bold', marginBottom: '30px' }}>
         {isEditing ? "Modifier" : (isArticle ? "Ajouter un Article" : "Nouvelle NewsLetter")}
       </h2>
-      <form onSubmit={handleSubmit}>
+      <article>
         <div>
           <label style={labelStyle}>{isArticle ? "Titre de l'article" : "Titre de la NewsLetter"}</label>
           <input
@@ -108,8 +120,8 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
         <div>
           <label style={labelStyle}>Contenu</label>
          <EditorText
-            content={formData.contenu}
-            onChange={(html) => setFormData(prev => ({ ...prev, contenu: html }))}
+            content={formData.content}
+            onChange={(html) => setFormData(prev => ({ ...prev, content: html }))}
           />
         </div>
         <div>
@@ -118,7 +130,7 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
             name="categorie"
             style={selectStyle}
             value={formData.categorie}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e)}
             required
           >
             {rubriquesOptions.map((opt) => (
@@ -128,10 +140,10 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
             ))}
           </select>
         </div>
-        <button type="submit" style={buttonStyle}>
+        <button style={buttonStyle} onClick={() => handleSubmit(formData)}>
           {isEditing ? "Enregistrer les modifications" : "Publier"}
         </button>
-      </form>
+      </article>
     </div>
   );
 }

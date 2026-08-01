@@ -85,9 +85,9 @@ export default function Page() {
                 onClose={() => setIsLoading(false)}
             />
             <h1 className={textClasses}>Stat</h1>
-            <h3 className={subTextClasses}>{"Avoir une vision du traffic sur l'application HIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"}</h3>
+            <h3 className={subTextClasses}>{"Avoir une vision du traffic sur l'application "}</h3>
 
-            <IndexLineChart />
+            <IndexLineChart end={"01/08/2026"}/>
 
             {/* Section aperçu (Tendance) */}
             <section className={styles.tendance}>
