@@ -9,9 +9,9 @@ interface IndexLineChartInterface{
   data?: {date: string, count: number}[]
 
 }
+const now = new Date(Date.now()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-
-export default function IndexLineChart({data=mockData, start="01/02/2026", end="28/02/2026"} : IndexLineChartInterface) {
+export default function IndexLineChart({data=mockData, start="01/02/2026", end="01/08/2026"} : IndexLineChartInterface) {
   const parseDate = (dateStr: string) => {
     const [day, month, year] = dateStr.split('/').map(Number);
     return new Date(year, month - 1, day).getTime();
@@ -47,7 +47,7 @@ export default function IndexLineChart({data=mockData, start="01/02/2026", end="
       }}
     >
       <CartesianGrid stroke="#aaa" strokeDasharray="5 5" />
-      <Line type="monotone" dataKey="count" stroke="#EF7B96" strokeWidth={2} name="Visites par jour" />
+      <Line type="monotone" dataKey="count" stroke="#EF7B96" strokeWidth={2} name="Visites" />
       <XAxis 
         dataKey="date" 
         stroke='white' 

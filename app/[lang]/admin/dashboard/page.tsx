@@ -92,6 +92,7 @@ export default function Page() {
             <section className={styles.tendance}>
                 <IndexLineChart
                     data={analytics}
+                    end={"01/08/2026"}
                  />
             </section>
 

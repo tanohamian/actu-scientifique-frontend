@@ -5,16 +5,17 @@ import { Stat } from "@app/interfaces";
 import { getLocale } from "next-intl/server";
 import { LANG } from "../enum/enums";
 
-export async function FetchStats(): Promise<{ count: number; data: Stat[] }> {
-  const lang = await getLocale();
-  const baseUrl = env.getApiUrl(lang as LANG);
-  try {
-    const response = await fetch(`${baseUrl}/stats`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+export async function FetchStats () : Promise<{count: number, data: Stat[]}> {
+    const lang = await getLocale()
+    const baseUrl = env.getApiUrl(lang as LANG)
+    if (env.onLocal) console.log(env)
+    try {
+        const response = await fetch(`${baseUrl}/stats`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
 
     if (response.ok) {
       const responseData = await response.json();
