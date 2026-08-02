@@ -10,9 +10,25 @@ import { FormFieldConfig } from "@app/components/addElement";
 import { Product } from "@app/interfaces";
 import { toast } from "@app/components/FormComponent";
 
+/*** Source unique de vérité pour les catégories (utilisée par le tableau ET le formulaire) */
+const CATEGORIES = [
+  { value: "books", label: "livres" },
+  { value: "clothes", label: "vêtements" },
+  { value: "technology_objects", label: "objets tech" },
+] as const;
+
+/*** Mapping value -> label généré automatiquement à partir de CATEGORIES */
+const categorieLabels: Record<string, string> = Object.fromEntries(
+  CATEGORIES.map((c) => [c.value, c.label]),
+);
+
 const colonnesProduits = [
   { key: "name", header: "Produits" },
-  { key: "categories", header: "Catégories" },
+  {
+    key: "categories",
+    header: "Catégories",
+    render: (value: string) => categorieLabels[value] || value,
+  },
   { key: "price", header: "Prix" },
   { key: "stock", header: "Stock" },
 ];
@@ -22,6 +38,7 @@ interface ProduitInterface {
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
 const projectFields: FormFieldConfig[] = [
   {
     name: "name",
@@ -49,11 +66,7 @@ const projectFields: FormFieldConfig[] = [
     label: "Catégorie",
     type: "select",
     required: false,
-    options: [
-      { value: "books", label: "livres" },
-      { value: "clothes", label: "vêtements" },
-      { value: "technology_objects", label: "objets tech" },
-    ],
+    options: [...CATEGORIES],
   },
   {
     name: "price",
@@ -90,13 +103,11 @@ export default function ProduitsTable({
       console.log("erreur lors de la suppression du produit", error);
     }
   };
-  /*** Modifier  un oriduit
-   */
 
+  /*** Modifier un produit */
   const handleEdit = async (item: Product) => {
     try {
       const formData = new FormData();
-      //formData.append('id', item.id);
       formData.append("name", item.name);
       formData.append("categories", item.categories);
       formData.append("price", item.price.toString());
@@ -108,6 +119,7 @@ export default function ProduitsTable({
       }
 
       const response = await UpdateProduct(formData, item.id);
+      console.log("response : ", response);
       if (response) {
         setProducts((prevProducts) =>
           prevProducts.map((product) =>

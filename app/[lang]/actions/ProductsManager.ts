@@ -96,7 +96,7 @@ export async function UpdateProduct(product: FormData | Product, id: string) {
     if (response.ok) {
       const responseData = await response.json();
       //revalidatePath("/admin/dashboard/gestion_article");
-      return responseData.product as Product;
+      return responseData as Product;
     }
     return null;
   } catch (error) {

@@ -1,8 +1,8 @@
-'use client'
-import React, { useMemo, useState } from 'react';
-import { Search, Pencil, Trash2 } from 'lucide-react';
-import AddElementModal, { FormFieldConfig } from '@app/components/addElement';
-import SearchBarComponent from '@app/components/searchBar';
+"use client";
+import React, { useMemo, useState } from "react";
+import { Search, Pencil, Trash2 } from "lucide-react";
+import AddElementModal, { FormFieldConfig } from "@app/components/addElement";
+import SearchBarComponent from "@app/components/searchBar";
 
 interface ColonneDefinition {
   key: string;
@@ -21,127 +21,132 @@ interface AffichageProps<T extends { id: number | string }> {
 
 const styles = {
   container: {
-    backgroundColor: '#50789B',
-    padding: '40px',
-    fontFamily: 'Arial, sans-serif',
-    borderRadius: '20px',
-    marginBottom: '40px'
+    backgroundColor: "#50789B",
+    padding: "40px",
+    fontFamily: "Arial, sans-serif",
+    borderRadius: "20px",
+    marginBottom: "40px",
   } as React.CSSProperties,
   title: {
-    color: 'white',
-    fontSize: '24px',
-    fontWeight: '700',
-    marginBottom: '20px',
+    color: "white",
+    fontSize: "24px",
+    fontWeight: "700",
+    marginBottom: "20px",
   } as React.CSSProperties,
   searchSection: {
-    borderRadius: '12px',
-    padding: '10px 25px',
-    marginBottom: '25px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between'
+    borderRadius: "12px",
+    padding: "10px 25px",
+    marginBottom: "25px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
   } as React.CSSProperties,
   searchWrapper: {
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    flexGrow: 1
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    flexGrow: 1,
   } as React.CSSProperties,
   searchIcon: {
-    position: 'absolute',
-    left: '15px',
-    color: 'rgba(255, 255, 255, 0.9)',
+    position: "absolute",
+    left: "15px",
+    color: "rgba(255, 255, 255, 0.9)",
   } as React.CSSProperties,
   searchInput: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    border: '1px solid rgba(255, 255, 255, 0.3)',
-    borderRadius: '8px',
-    padding: '10px 15px',
-    paddingLeft: '45px',
-    color: 'white',
-    fontSize: '14px',
-    outline: 'none',
-    width: '100%'
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    border: "1px solid rgba(255, 255, 255, 0.3)",
+    borderRadius: "8px",
+    padding: "10px 15px",
+    paddingLeft: "45px",
+    color: "white",
+    fontSize: "14px",
+    outline: "none",
+    width: "100%",
   } as React.CSSProperties,
   sortButton: {
-    backgroundColor: '#d54a36',
-    color: 'white',
-    borderRadius: '8px',
-    padding: '10px 20px',
-    marginLeft: '20px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    appearance: 'none'
+    backgroundColor: "#d54a36",
+    color: "white",
+    borderRadius: "8px",
+    padding: "10px 20px",
+    marginLeft: "20px",
+    cursor: "pointer",
+    fontSize: "14px",
+    appearance: "none",
   } as React.CSSProperties,
   tableSection: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderRadius: '12px',
-    padding: '0 25px 25px 25px',
-    overflowX: 'auto',
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    borderRadius: "12px",
+    padding: "0 25px 25px 25px",
+    overflowX: "auto",
   } as React.CSSProperties,
   table: {
-    width: '100%',
-    borderCollapse: 'collapse',
+    width: "100%",
+    borderCollapse: "collapse",
   } as React.CSSProperties,
   tableHeader: {
-    borderBottom: '2px solid rgba(255, 255, 255, 0.3)'
+    borderBottom: "2px solid rgba(255, 255, 255, 0.3)",
   } as React.CSSProperties,
   th: {
-    color: 'white',
-    fontSize: '14px',
-    fontWeight: '600',
-    textAlign: 'left',
-    padding: '15px 10px'
+    color: "white",
+    fontSize: "14px",
+    fontWeight: "600",
+    textAlign: "left",
+    padding: "15px 10px",
   } as React.CSSProperties,
   td: {
-    color: 'white',
-    fontSize: '14px',
-    padding: '15px 10px',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.2)'
+    color: "white",
+    fontSize: "14px",
+    padding: "15px 10px",
+    borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
   } as React.CSSProperties,
   actionButtons: {
-    display: 'flex',
-    gap: '15px',
-    justifyContent: 'flex-end'
+    display: "flex",
+    gap: "15px",
+    justifyContent: "flex-end",
   } as React.CSSProperties,
   iconButton: {
-    background: 'none',
-    border: 'none',
-    color: 'white',
-    cursor: 'pointer',
-    padding: '5px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
+    background: "none",
+    border: "none",
+    color: "white",
+    cursor: "pointer",
+    padding: "5px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   } as React.CSSProperties,
   lastTd: {
-    borderBottom: 'none'
+    borderBottom: "none",
   } as React.CSSProperties,
 };
 
-export default function AffichageTableau<T extends { id: number | string }>({
+export default function AffichageTableau<
+  T extends { id: number | string; preview_image?: string },
+>({
   titre,
   columns,
   data,
   onEdit,
   onDelete,
-  editFields
+  editFields,
 }: React.PropsWithChildren<AffichageProps<T>>) {
-
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
-  const [inputValue, setInputValue] = useState<string>('');
-  const [sortBy, setSortBy] = useState<string>('');
+  const [inputValue, setInputValue] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("");
   const hasActions = onEdit || onDelete;
 
   const handleSelectElement = (item: T) => {
+    console.log("item product : ", item);
     setSelectedItem(item);
     setShowModal(true);
   };
 
   let initialData = {};
   if (selectedItem) {
-    initialData = selectedItem;
+    initialData = {
+      ...selectedItem,
+      illustrationUrl: selectedItem.preview_image,
+    };
   }
 
   const filteredAndSortedData = useMemo(() => {
@@ -151,17 +156,17 @@ export default function AffichageTableau<T extends { id: number | string }>({
       const query = inputValue.toLowerCase();
       result = result.filter((item) => {
         return Object.values(item).some((val) =>
-          String(val).toLowerCase().includes(query)
+          String(val).toLowerCase().includes(query),
         );
       });
     }
 
     if (sortBy) {
       result.sort((a, b) => {
-        const valA = (a as { [key: string]: string |undefined; })[sortBy];
-        const valB = (b as { [key: string]: string |undefined; })[sortBy];
+        const valA = (a as { [key: string]: string | undefined })[sortBy];
+        const valB = (b as { [key: string]: string | undefined })[sortBy];
 
-        if (typeof valA === 'number' && typeof valB === 'number') {
+        if (typeof valA === "number" && typeof valB === "number") {
           return valA - valB;
         }
         return String(valA).localeCompare(String(valB));
@@ -170,7 +175,6 @@ export default function AffichageTableau<T extends { id: number | string }>({
 
     return result;
   }, [data, inputValue, sortBy]);
-
 
   return (
     <div style={styles.container}>
@@ -182,9 +186,7 @@ export default function AffichageTableau<T extends { id: number | string }>({
             placeholder="Rechercher..........."
             inputValue={inputValue}
             setInputValue={setInputValue}
-
           />
-
         </div>
         <select
           style={styles.sortButton}
@@ -192,7 +194,7 @@ export default function AffichageTableau<T extends { id: number | string }>({
           onChange={(e) => setSortBy(e.target.value)}
         >
           <option value="">Trier par</option>
-          {columns.map(col => (
+          {columns.map((col) => (
             <option key={col.key} value={col.key}>
               {col.header}
             </option>
@@ -210,7 +212,7 @@ export default function AffichageTableau<T extends { id: number | string }>({
                 </th>
               ))}
               {hasActions && (
-                <th key="actions" style={{ ...styles.th, textAlign: 'right' }}>
+                <th key="actions" style={{ ...styles.th, textAlign: "right" }}>
                   Actions
                 </th>
               )}
@@ -224,24 +226,38 @@ export default function AffichageTableau<T extends { id: number | string }>({
                   {columns.map((col) => {
                     const value = (item as Record<string, any>)[col.key];
 
-                    if (col.key === columns[0].key && (item as any).preview_image) {
+                    if (
+                      col.key === columns[0].key &&
+                      (item as any).preview_image
+                    ) {
                       return (
                         <td
                           key={`${item.id}-${col.key}`}
-                          style={{ ...styles.td, ...(isLastRow ? styles.lastTd : {}) }}
+                          style={{
+                            ...styles.td,
+                            ...(isLastRow ? styles.lastTd : {}),
+                          }}
                         >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "12px",
+                            }}
+                          >
                             <img
                               src={(item as any).preview_image}
-                              alt={value || 'preview'}
+                              alt={value || "preview"}
                               style={{
-                                width: '50px',
-                                height: '50px',
-                                objectFit: 'cover',
-                                borderRadius: '4px'
+                                width: "50px",
+                                height: "50px",
+                                objectFit: "cover",
+                                borderRadius: "4px",
                               }}
                             />
-                            <span>{col.render ? col.render(value) : value}</span>
+                            <span>
+                              {col.render ? col.render(value) : value}
+                            </span>
                           </div>
                         </td>
                       );
@@ -250,22 +266,36 @@ export default function AffichageTableau<T extends { id: number | string }>({
                     return (
                       <td
                         key={`${item.id}-${col.key}`}
-                        style={{ ...styles.td, ...(isLastRow ? styles.lastTd : {}) }}
+                        style={{
+                          ...styles.td,
+                          ...(isLastRow ? styles.lastTd : {}),
+                        }}
                       >
                         {col.render ? col.render(value) : value}
                       </td>
                     );
                   })}
                   {hasActions && (
-                    <td style={{ ...styles.td, ...(isLastRow ? styles.lastTd : {}) }}>
+                    <td
+                      style={{
+                        ...styles.td,
+                        ...(isLastRow ? styles.lastTd : {}),
+                      }}
+                    >
                       <div style={styles.actionButtons}>
                         {onEdit && (
-                          <button style={styles.iconButton} onClick={() => handleSelectElement(item)}>
+                          <button
+                            style={styles.iconButton}
+                            onClick={() => handleSelectElement(item)}
+                          >
                             <Pencil size={18} />
                           </button>
                         )}
                         {onDelete && (
-                          <button style={styles.iconButton} onClick={() => onDelete(item)}>
+                          <button
+                            style={styles.iconButton}
+                            onClick={() => onDelete(item)}
+                          >
                             <Trash2 size={18} />
                           </button>
                         )}
@@ -277,8 +307,7 @@ export default function AffichageTableau<T extends { id: number | string }>({
             })}
           </tbody>
         </table>
-        {
-          editFields && onEdit && selectedItem &&
+        {editFields && onEdit && selectedItem && (
           <AddElementModal
             isOpen={showModal}
             onClose={() => setShowModal(false)}
@@ -292,7 +321,8 @@ export default function AffichageTableau<T extends { id: number | string }>({
             buttonTitle="Modifier"
             fields={editFields}
             initialData={initialData}
-          />}
+          />
+        )}
       </div>
     </div>
   );
