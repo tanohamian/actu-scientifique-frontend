@@ -15,8 +15,8 @@ import {
 import { showToast } from "nextjs-toast-notify";
 import { Rubriques } from "../enum/enums";
 import { Article, DbArticle, Newsletter } from "../interfaces";
-import dynamic from "next/dynamic";import { AddArticle } from '../actions/ArticleManager';
-
+import dynamic from "next/dynamic";
+import { AddArticle } from "../actions/ArticleManager";
 
 const EditorText = dynamic(() => import("@app/components/titap"), {
   ssr: false,
@@ -159,7 +159,7 @@ export default function FormComponent({
         console.log("Aperçu de l'article : ");
         console.log(article);
 
-        result = await AddArticle(article, false)
+        result = await AddArticle(article, false);
         if (result) {
           toast(true, isEditing);
           const newArticle = result;
