@@ -161,7 +161,7 @@ export default function FormComponent({
 
         result = await AddArticle(article, false);
         if (result) {
-          toast(true, isEditing);
+          toast(true, false, "Article Ajouté");
           const newArticle = result;
           newArticle.createdAt = newArticle.createdAt.toLocaleString("fr-FR", {
             year: "numeric",

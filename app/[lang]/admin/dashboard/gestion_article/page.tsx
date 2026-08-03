@@ -367,6 +367,7 @@ export default function ArticlePage() {
         isOpen={editArticle}
         onClose={() => {
           setEditArticle(false);
+          setSelectedArticle(null);
         }}
         onSubmit={handleSubmitEditArticle}
         titleComponent="Modifier un article"
