@@ -161,12 +161,12 @@ export default function SidebarComponent({
         <div className={userInfoClasses}>
           <div className={avatarCircleClasses}>
             <span>
-              {user.first_name[0].toUpperCase() || ""}
-              {user.last_name[0].toUpperCase() || ""}
+              {user.first_name[0]?.toUpperCase() || ""}
+              {user.last_name[0]?.toUpperCase() || ""}
             </span>
           </div>
           <div className={avatarTextClasses}>
-            {ROLE_LABELS[user.roles].toUpperCase()}
+            {ROLE_LABELS[user.roles]}
             <br />
             {user.first_name} {user.last_name}
           </div>
