@@ -11,10 +11,14 @@ import AddElementModal, {
   FormFieldConfig,
   InitialDataType,
 } from "@app/components/addElement";
-
 import Filter, { IFilter } from "@app/components/filter";
 import { Property } from "csstype";
-import { DeleteMedia, FetchMedias, UpdateMedia } from "@actions/MediasManager";
+import {
+  AddMedia,
+  DeleteMedia,
+  FetchMedias,
+  UpdateMedia,
+} from "@actions/MediasManager";
 import { Rubriques } from "@enum/enums";
 import { toast } from "@components/FormComponent";
 import LoadingComponent from "@components/loadingComponent";
@@ -149,6 +153,63 @@ const mainHeaders = [
   { key: "createdAt", label: "Date de publication", flexBasis: "20%" },
   { key: "actions", label: "Actions", flexBasis: "12%" },
 ];
+const pageContainerClasses = `
+        min-h-screen 
+        font-sans
+    `;
+
+const headerClasses = `
+        flex 
+        flex-col 
+        md:flex-row 
+        justify-between 
+        items-start 
+        md:items-center 
+        mb-4 
+        gap-4 
+        md:gap-0
+        p-5 
+        md:p-10
+    `;
+const textClasses = `
+        m-0 
+        text-2xl 
+        md:text-3xl 
+        lg:text-4xl 
+       font-light
+        text-white
+    `;
+
+const subTextClasses = `
+        text-white 
+        text-sm 
+        md:text-base 
+        font-light
+    `;
+
+const contentContainerClasses = `
+        p-5 
+        md:p-10
+    `;
+
+const searchAndTabsClasses = `
+        flex 
+        flex-col 
+        md:flex-row 
+        items-center 
+        gap-4 
+        md:gap-5 
+        my-5 
+        md:my-8 
+        justify-center 
+        md:justify-between
+    `;
+
+const searchBarWrapperClasses = `
+        flex-grow 
+        w-full 
+        md:max-w-xl
+    `;
 export type rubriques = "technology" | "one_health" | "ecohumanity";
 
 export default function MediaPage() {
@@ -166,64 +227,6 @@ export default function MediaPage() {
     }),
   );
   const [medias, setMedias] = useState<DbMedia[]>([]);
-  const pageContainerClasses = `
-        min-h-screen 
-        font-sans
-    `;
-
-  const headerClasses = `
-        flex 
-        flex-col 
-        md:flex-row 
-        justify-between 
-        items-start 
-        md:items-center 
-        mb-4 
-        gap-4 
-        md:gap-0
-        p-5 
-        md:p-10
-    `;
-
-  const textClasses = `
-        m-0 
-        text-2xl 
-        md:text-3xl 
-        lg:text-4xl 
-       font-light
-        text-white
-    `;
-
-  const subTextClasses = `
-        text-white 
-        text-sm 
-        md:text-base 
-        font-light
-    `;
-
-  const contentContainerClasses = `
-        p-5 
-        md:p-10
-    `;
-
-  const searchAndTabsClasses = `
-        flex 
-        flex-col 
-        md:flex-row 
-        items-center 
-        gap-4 
-        md:gap-5 
-        my-5 
-        md:my-8 
-        justify-center 
-        md:justify-between
-    `;
-
-  const searchBarWrapperClasses = `
-        flex-grow 
-        w-full 
-        md:max-w-xl
-    `;
 
   const handleMedia = () => {
     setIsOpen(true);
@@ -280,28 +283,13 @@ export default function MediaPage() {
           console.log(`  ${key}:`, value);
         }
       }
-
-      const response = await fetch("/api/upload-media", {
-        method: "POST",
-        body: media,
-      });
-
-      console.log("📨 Réponse reçue:", response.status);
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Erreur lors de l'upload");
-      }
-
-      const result = await response.json();
-      console.log("✅ Média uploadé:", result);
-
-      setMedias((prev) => [...prev, result.file]);
+      const result = await AddMedia(media);
+      setMedias((prev) => [...prev, result]);
       setIsOpen(false);
 
       toast(true, false, "Media uploadé !");
     } catch (error) {
-      console.error("❌ Erreur:", error);
+      console.error("Erreur:", error);
       toast(false, false, "Échec de l'upload du media");
     } finally {
       setLoadingAddMedia(false);
@@ -313,7 +301,6 @@ export default function MediaPage() {
     setSelectedMedia(item as TableData);
     setEditMedia(true);
   };
-
   const handleDeleteMedia = async (item: ElementType) => {
     console.log("Deleting event:", item);
     setSelectedMedia(item as TableData);
@@ -425,6 +412,7 @@ export default function MediaPage() {
               placeholder="Rechercher un media...."
               inputValue={inputValue}
               setInputValue={setInputValue}
+              setFocus={() => {}}
             />
           </div>
           <Filter filters={filters} />

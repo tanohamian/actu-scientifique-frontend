@@ -43,10 +43,11 @@ export default function Connexion() {
 
     try {
       const response = await LoginUser(formData);
-      console.log("response : ", response);
-      if (response == "ROLE_ADMIN") {
-        //const dashboardRoute = env.devMode ? "/admin/dashboard" : "/dashboard";
-        router.push("/admin/dashboard");
+      localStorage.setItem("user", JSON.stringify(response.user));
+      const userInfo = response.user;
+      if (userInfo.roles == "ROLE_ADMIN") {
+        const dashboardRoute = env.devMode ? "/admin/dashboard" : "/dashboard";
+        router.push(dashboardRoute);
       } else {
         setMessage("Vous n'avez pas les droits pour acceder à cette page");
       }

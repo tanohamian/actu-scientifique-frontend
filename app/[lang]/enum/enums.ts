@@ -25,3 +25,11 @@ export enum OrderStatus {
     CANCELED = "CANCELED",
     DELIVERED = "DELIVERED"
 }
+
+export const AnalyticsBoundary = {
+  LAST_7_DAYS : "LAST_7_DAYS",
+  LAST_30_DAYS : "LAST_30_DAYS",
+  LAST_90_DAYS : "LAST_90_DAYS",
+  LAST_6_MONTHS : "LAST_6_MONTHS",
+  LAST_1_YEAR : "LAST_1_YEAR"
+}

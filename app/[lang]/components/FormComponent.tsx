@@ -159,22 +159,9 @@ export default function FormComponent({
         console.log("Aperçu de l'article : ");
         console.log(article);
 
-        console.log(" Envoi vers /api/upload-article");
-
-        const response = await AddArticle(article, false);
-        console.log(response);
-
-        console.log("📨 Réponse reçue:", response);
-
-        if (!response) {
-          throw new Error("Erreur lors de l'upload");
-        }
-
-        const result = response;
-        console.log("✅ Média uploadé:", response);
-
+        result = await AddArticle(article, false);
         if (result) {
-          toast(true, isEditing);
+          toast(true, false, "Article Ajouté");
           const newArticle = result;
           newArticle.createdAt = newArticle.createdAt.toLocaleString("fr-FR", {
             year: "numeric",

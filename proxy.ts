@@ -11,21 +11,26 @@ const intlMiddleware = createIntlMiddleware({
 
 async function check(req: NextRequest) {
   const url = req.nextUrl.pathname;
-  if (
-    req.method !== 'GET' ||
-    !url.startsWith('/one-health') &&
-    !url.startsWith('/technology') &&
-    !url.startsWith('/eco-humanity') &&
-    !url.startsWith('/portrait-discovery') &&
-    !url.startsWith('/agenda') &&
-    !url.startsWith(`${env.onProduction ? "" : "/admin/"}/dashboard`) &&
-    !url.startsWith('/opportunities/') &&
-    !url.startsWith('/about')
-  ) {
+  const normalizedPath = url.replace(/^\/(fr|en)(?=\/|$)/, '') || '/';
+
+  const shouldTrack =
+    normalizedPath === '/one-health' || normalizedPath.startsWith('/one-health/') ||
+    normalizedPath === '/technology' || normalizedPath.startsWith('/technology/') ||
+    normalizedPath === '/eco-humanity' || normalizedPath.startsWith('/eco-humanity/') ||
+    normalizedPath === '/portrait-discovery' || normalizedPath.startsWith('/portrait-discovery/') ||
+    normalizedPath === '/agenda' || normalizedPath.startsWith('/agenda/') ||
+    normalizedPath === '/dashboard' || normalizedPath.startsWith('/dashboard/') ||
+    normalizedPath === '/admin/dashboard' || normalizedPath.startsWith('/admin/dashboard/') ||
+    normalizedPath === '/opportunities' || normalizedPath.startsWith('/opportunities/') ||
+    normalizedPath === '/about' || normalizedPath.startsWith('/about/');
+
+  if (req.method !== 'GET' || !shouldTrack) {
     return;
   }
-  const reqBody = { url } as { url: string };
-  console.log(`Navigating to ${url}`);
+
+  const reqBody = { url: normalizedPath } as { url: string };
+  console.log(`Navigating to ${normalizedPath}`);
+
   try {
     const response = await fetch(`${env.baseUrl}/stats/check`, {
       method: 'POST',
@@ -64,9 +69,9 @@ const testHost = (req: NextRequest) => {
 
 export default async function middleware(request: NextRequest) {
   const hostname = request.headers.get('host');
-  
 
   const response = intlMiddleware(request);
+  void check(request);
 
   if (env.onProduction && hostname === env.adminUrl) {
     const url = request.nextUrl.clone();
