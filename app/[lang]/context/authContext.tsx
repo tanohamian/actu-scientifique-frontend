@@ -13,6 +13,7 @@ interface AuthContextType {
     login: (userData: UserInterface) => void;
     logout: () => void;
     loading: boolean;
+    refreshUser: () => Promise<void>;
 }
 
 
@@ -68,7 +69,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, user, login, logout,loading }}>
+        <AuthContext.Provider value={{ isLoggedIn, user, login, logout, loading, refreshUser: checkAuth }}>
             {children}
         </AuthContext.Provider>
     );
