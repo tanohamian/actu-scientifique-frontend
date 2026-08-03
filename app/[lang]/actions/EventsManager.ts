@@ -117,12 +117,12 @@ export async function DeleteEvent(id: string) {
         if (response.ok) {
             const responseData = await response.json()
             console.log(responseData)
-            revalidatePath('/admin/dashboard/events')
-            return responseData
+            revalidatePath('/admin/dashboard/event')
+            return true
         }
-        return []
+        return false
     } catch (error) {
         console.log("erreur lors de la suppression de l'évènement : ", error)
-        return []
+        return false
     }
 }

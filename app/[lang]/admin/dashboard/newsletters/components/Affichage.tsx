@@ -4,6 +4,8 @@ import { Search, Pencil, Trash2 } from 'lucide-react';
 import Filter, { IFilter } from '@app/components/filter';
 import { FetchNewsletters, DeleteNewsletter } from '@app/actions/Newsletters';
 import { AffichageType, Rubriques } from '@app/enum/enums';
+import ConfirmModal from '@app/components/ConfirmModal';
+import { toast } from '@app/components/FormComponent';
 
 import { Article, Newsletter } from '@app/interfaces';
 
@@ -56,6 +58,8 @@ export default function Affichage({
     const [itemList, setItemList] = useState<ItemType[]>(initialItems);
     const [activeFilter, setActiveFilter] = useState<string>("all");
     const [searchTerm, setSearchTerm] = useState<string>("");
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
 
     const loadData = useCallback(async () => {
@@ -79,21 +83,31 @@ export default function Affichage({
         }
         effect()
     }, [loadData]);
-    const handleDelete = async (id: string) => {
+    const handleDelete = (id: string) => {
+        setItemToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
 
+    const confirmDelete = async () => {
+        if (!itemToDelete) return;
+        setIsDeleteModalOpen(false);
         try {
             let success = false;
             if (type === AffichageType.NEWSLETTER) {
-                success = await DeleteNewsletter(id);
+                success = await DeleteNewsletter(itemToDelete);
             }
 
             if (success) {
-                setItemList(prev => prev.filter(item => item.id !== id));
+                setItemList(prev => prev.filter(item => item.id !== itemToDelete));
+                toast(true, false, "Supprimé avec succès !");
             } else {
-                alert("Erreur lors de la suppression");
+                toast(false, false, "Erreur lors de la suppression");
             }
         } catch (error) {
             console.error("Erreur lors de la suppression :", error);
+            toast(false, false, "Erreur lors de la suppression");
+        } finally {
+            setItemToDelete(null);
         }
     };
 
@@ -141,6 +155,12 @@ export default function Affichage({
 
     return (
         <div style={styles.container}>
+            <ConfirmModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={confirmDelete}
+                title="Supprimer cet élément ?"
+            />
             <div style={styles.searchSection}>
                 <div style={styles.searchWrapper}>
                     <div style={styles.searchInputContainer}>

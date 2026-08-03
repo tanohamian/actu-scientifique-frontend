@@ -44,8 +44,8 @@ export default function Connexion() {
     setMessage("");
 
     try {
-      const role = await LoginUser(formData);
-      if (role === "ROLE_ADMIN") {
+      const response = await LoginUser(formData);
+      if (response?.user?.roles === "ROLE_ADMIN") {
         await refreshUser();
         const dashboardRoute = env.devMode ? "/admin/dashboard" : "/dashboard";
         router.push(dashboardRoute);

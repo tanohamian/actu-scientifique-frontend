@@ -24,6 +24,7 @@ import { toast } from "@components/FormComponent";
 import LoadingComponent from "@components/loadingComponent";
 import { DbMedia, Product } from "@interfaces/index";
 import { url } from "inspector";
+import ConfirmModal from "@app/components/ConfirmModal";
 
 const MediaFields: FormFieldConfig[] = [
   {
@@ -218,6 +219,8 @@ export default function MediaPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [editMedia, setEditMedia] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<ElementType | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [mediaToDelete, setMediaToDelete] = useState<ElementType | null>(null);
   const [loadingAddMeddia, setLoadingAddMedia] = useState(false);
   const [loadingEditMedia, setLoadingEditMedia] = useState(false);
 
@@ -301,11 +304,22 @@ export default function MediaPage() {
     setSelectedMedia(item as TableData);
     setEditMedia(true);
   };
-  const handleDeleteMedia = async (item: ElementType) => {
-    console.log("Deleting event:", item);
-    setSelectedMedia(item as TableData);
-    await DeleteMedia(item.id as string);
-    setMedias(medias.filter((media) => media.id !== item.id));
+  const handleDeleteMedia = (item: ElementType) => {
+    setMediaToDelete(item);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDeleteMedia = async () => {
+    if (!mediaToDelete) return;
+    setIsDeleteModalOpen(false);
+    const success = await DeleteMedia(mediaToDelete.id as string);
+    if (success) {
+      setMedias(medias.filter((media) => media.id !== mediaToDelete.id));
+      toast(true, false, "Média supprimé !");
+    } else {
+      toast(false, false, "Échec de la suppression du média");
+    }
+    setMediaToDelete(null);
   };
 
   if (selectedMedia) {
@@ -454,6 +468,13 @@ export default function MediaPage() {
         fields={updateMediaFields}
         initialData={initialData}
         isLoading={loadingEditMedia}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDeleteMedia}
+        title="Supprimer ce média ?"
       />
     </div>
   );

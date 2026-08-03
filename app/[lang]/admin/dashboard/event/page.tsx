@@ -21,6 +21,7 @@ import {
 } from "@app/actions/EventsManager";
 import LoadingComponent from "@app/components/loadingComponent";
 import { toast } from "@app/components/FormComponent";
+import ConfirmModal from "@app/components/ConfirmModal";
 
 const EventFields: FormFieldConfig[] = [
   {
@@ -109,6 +110,8 @@ export default function EventPage() {
   const [events, setEvents] = useState<EventInterface[]>([]);
   const [eventLive, setEventLive] = useState<EventLive[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<TableData | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState<ElementType | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -224,9 +227,12 @@ export default function EventPage() {
           formattedEvent as EventInterface,
         ]);
         toast(true, false, "Évènement créé avec succès !");
+      } else {
+        toast(false, false, "Échec de la création de l'évènement");
       }
     } catch (error) {
       console.error("Erreur lors de la création de l'événement : ", error);
+      toast(false, false, "Échec de la création de l'évènement");
     }
   };
 
@@ -271,7 +277,6 @@ export default function EventPage() {
           setEvents((prevEvents) =>
             prevEvents.filter((e) => e.id !== updatedEvent.id),
           );
-          toast(true, false, "Évènement mis à jour avec succès !");
         } else {
           setEvents((prevEvents) => {
             const exists = prevEvents.find((e) => e.id === updatedEvent.id);
@@ -292,9 +297,12 @@ export default function EventPage() {
         setEditEvent(false);
         setSelectedEvent(null);
         toast(true, false, "Évènement mis à jour avec succès !");
+      } else {
+        toast(false, false, "Échec de la mise à jour de l'évènement");
       }
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'événement : ", error);
+      toast(false, false, "Échec de la mise à jour de l'évènement");
     }
   };
 
@@ -339,23 +347,35 @@ export default function EventPage() {
     setViewMode(mode);
   };
 
-  const handleDeleteEvent = async (data: ElementType) => {
+  const handleDeleteEvent = (data: ElementType) => {
+    setEventToDelete(data);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDeleteEvent = async () => {
+    if (!eventToDelete) return;
+    setIsDeleteModalOpen(false);
     try {
-      const deletedEvent = await DeleteEvent(data?.id as string);
+      const deletedEvent = await DeleteEvent(eventToDelete.id as string);
       if (deletedEvent) {
         setEvents((prevEvents) =>
-          prevEvents.filter((event) => event.id !== data.id),
+          prevEvents.filter((event) => event.id !== eventToDelete.id),
         );
         setEventLive((prevLive) =>
-          prevLive.filter((event) => event.id !== data.id),
+          prevLive.filter((event) => event.id !== eventToDelete.id),
         );
         setAllEvents((prevAll) =>
-          prevAll.filter((event) => event.id !== data.id),
+          prevAll.filter((event) => event.id !== eventToDelete.id),
         );
         toast(true, false, "Évènement supprimé avec succès !");
+      } else {
+        toast(false, false, "Échec de la suppression de l'évènement");
       }
     } catch (error) {
       console.error("Erreur lors de la suppression de l'événement : ", error);
+      toast(false, false, "Échec de la suppression de l'évènement");
+    } finally {
+      setEventToDelete(null);
     }
   };
 
@@ -500,6 +520,13 @@ export default function EventPage() {
         buttonTitle="Modifier"
         fields={EventFieldsLive}
         initialData={initialDataLive}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDeleteEvent}
+        title="Supprimer cet évènement ?"
       />
     </div>
   );

@@ -4,6 +4,7 @@ config.autoAddCss = false;
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import CustomizedSwitches from "./components/switchLanguage";
 
 export default async function RootLayout({
@@ -30,12 +31,14 @@ export default async function RootLayout({
         <meta name="google-adsense-account" content="ca-pub-7800085793195104" />
       </head>
       <body>
-        <NextIntlClientProvider messages={messages} locale={lang}>
-          <section style={{position : 'absolute', right : '1px', zIndex: 3}}>
-            <CustomizedSwitches></CustomizedSwitches>
-          </section>
-          {children}
-        </NextIntlClientProvider>
+        <AppRouterCacheProvider options={{ key: 'mui' }}>
+          <NextIntlClientProvider messages={messages} locale={lang}>
+            <section style={{position : 'absolute', right : '1px', zIndex: 3}}>
+              <CustomizedSwitches></CustomizedSwitches>
+            </section>
+            {children}
+          </NextIntlClientProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

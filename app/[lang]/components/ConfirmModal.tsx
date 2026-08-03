@@ -22,7 +22,7 @@ interface ConfirmModalProps {
             boxShadow: '0 10px 25px rgba(0,0,0,0.3)', textAlign: 'center'
         }}>
             <h3 style={{ color: 'white', marginBottom: '20px', fontSize: '20px' }}>{title}</h3>
-            
+
             <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
             <button
                 onClick={onClose}

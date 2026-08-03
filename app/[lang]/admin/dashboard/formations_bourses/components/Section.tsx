@@ -5,7 +5,7 @@ import { showToast } from "nextjs-toast-notify"
 import { FetchTrainings, AddTraining, UpdateTraining, DeleteTraining } from '@app/actions/Trainings';
 import { FetchScholarships, AddScholarship, UpdateScholarship, DeleteScholarship, IScholarship } from '@app/actions/Scholarships';
 import { ITraining } from '@app/interfaces';
-import ConfirmModal from './ConfirmModal';
+import ConfirmModal from '@app/components/ConfirmModal';
 import dynamic from 'next/dynamic'
 
 

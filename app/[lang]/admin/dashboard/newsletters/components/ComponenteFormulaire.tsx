@@ -3,6 +3,7 @@ import React, { FormEvent, useState, useEffect } from 'react';
 import { AddNewsletter, UpdateNewsletter } from "@app/actions/Newsletters";
 import { Rubriques } from '@app/enum/enums';
 import { Newsletter } from '@app/interfaces';
+import { toast } from '@app/components/FormComponent';
 import dynamic from 'next/dynamic'
 
 
@@ -66,7 +67,7 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
 
   const handleSubmit = async (formData: IFormData) => {
     if (!formData.title || !formData.content || !formData.categorie) {
-      alert("Veuillez remplir tous les champs.");
+      toast(false, false, "Veuillez remplir tous les champs.");
       return;
     }
     try {
@@ -81,14 +82,16 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
 
       if (result?.success) {
         setFormData({ title: "", content: "", categorie: "" });
+        toast(true, isEditing, isEditing ? "Newsletter mise à jour !" : "Newsletter créée !");
         if (onSuccess) onSuccess();
       }
       else{
-        alert("Une erreur est survenue lors de la soumission du formulaire. Veuillez réessayer.");
+        toast(false, false, "Une erreur est survenue lors de la soumission du formulaire. Veuillez réessayer.");
       }
       console.log("Résultat de la soumission:", result);
     } catch (error) {
       console.error("Erreur:", error);
+      toast(false, false, "Une erreur est survenue lors de la soumission du formulaire. Veuillez réessayer.");
     }
   };
 
