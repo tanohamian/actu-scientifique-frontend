@@ -1,143 +1,141 @@
-'use server'
-import { revalidatePath } from 'next/cache'
-import { FormState } from "../admin/page"
-import { env } from '@app/config/env'
-import { cookies } from 'next/headers'
-import { UserInterface } from '../admin/dashboard/users/page'
-import { redirect } from 'next/navigation'
-import { getLocale } from 'next-intl/server'
-import { LANG } from '../enum/enums'
-
-
+"use server";
+import { revalidatePath } from "next/cache";
+import { FormState } from "../admin/page";
+import { env } from "@app/config/env";
+import { cookies } from "next/headers";
+import { UserInterface } from "../admin/dashboard/users/page";
+import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
+import { LANG } from "../enum/enums";
 
 export async function RegisterUser(formData: UserInterface) {
-  const lang = await getLocale()
-  const baseUrl = env.getApiUrl(lang as LANG)
+  const lang = await getLocale();
+  const baseUrl = env.getApiUrl(lang as LANG);
   try {
     const response = await fetch(`${baseUrl}/auth/register`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
 
-      body: JSON.stringify({ first_name: formData.first_name, last_name: formData.last_name, roles: formData.roles == "Administrateur" ? 'ROLE_ADMIN' : 'ROLE_VIEWER', email: formData.email, password: formData.password, username: formData.username })
-    })
+      body: JSON.stringify({
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        roles:
+          formData.roles == "Administrateur" ? "ROLE_ADMIN" : "ROLE_VIEWER",
+        email: formData.email,
+        password: formData.password,
+        username: formData.username,
+      }),
+    });
     if (!response.ok) {
-      console.log(response)
-      throw new Error(`Echec de creation utilisateur : ${response}`)
+      console.log(response);
+      throw new Error(`Echec de creation utilisateur : ${response}`);
     }
-    const responseJson = await response.json()
-    return responseJson.user
-
+    const responseJson = await response.json();
+    return responseJson.user;
   } catch (err) {
-    console.log("erreur lors de la creation d'un utilisateur : ", err)
-    return
+    console.log("erreur lors de la creation d'un utilisateur : ", err);
+    return;
   }
-
 }
 
 export async function LoginUser(formData: FormState) {
-  
   try {
-    const lang = await getLocale()
-    const baseUrl = env.getApiUrl(lang as LANG)
-    const email = formData.email
-    const password = formData.password
+    const lang = await getLocale();
+    const baseUrl = env.getApiUrl(lang as LANG);
+    const email = formData.email;
+    const password = formData.password;
 
-    console.log("baseUrl : ", baseUrl)
-    
+    //console.log("baseUrl : ", baseUrl)
+
     const response = await fetch(`${baseUrl}/auth/login`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email: email, password: password })
-    })
-    console.log("response : ", response)
+      body: JSON.stringify({ email: email, password: password }),
+    });
+    console.log("response : ", response);
 
     if (!response.ok) {
       throw new Error(`Échec de la connexion : ${response.status}`);
     }
 
-
-    const setCookieHeader = response.headers.get('set-cookie');
+    const setCookieHeader = response.headers.get("set-cookie");
     if (setCookieHeader) {
-      const token = setCookieHeader.split(';')[0].split('=')[1];
+      const token = setCookieHeader.split(";")[0].split("=")[1];
       const cookieStore = await cookies();
-      cookieStore.set('authToken', token, {
+      cookieStore.set("authToken", token, {
         httpOnly: true,
         secure: true,
-        sameSite: 'lax',
-        path: '/',
-        maxAge: 3600
+        sameSite: "lax",
+        path: "/",
+        maxAge: 3600,
       });
     }
-    
-    const responseJson = await response.json()
-    console.log("responseJson : ", responseJson)
-    return responseJson.role
 
+    const responseJson = await response.json();
+    //console.log("responseJson : ", responseJson)
+    return responseJson;
   } catch (error) {
-    console.error("Erreur lors de la connexion : ",(error as any).message)
-    return
+    console.error("Erreur lors de la connexion : ", (error as any).message);
+    return;
   }
-
-
 }
 
-
 export async function IsAdmin() {
-  const lang = await getLocale()
-  const baseUrl = env.getApiUrl(lang as LANG)
-  const authToken = (await cookies()).get('authToken')?.value;
+  const lang = await getLocale();
+  const baseUrl = env.getApiUrl(lang as LANG);
+  const authToken = (await cookies()).get("authToken")?.value;
   if (!authToken) {
     console.error("Cookie d'authentification manquant");
-    redirect('/admin')
+    redirect("/admin");
   }
   try {
     const response = await fetch(`${baseUrl}/auth/admin`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Cookie': `authToken=${authToken}`
-      }
-    })
+        Cookie: `authToken=${authToken}`,
+      },
+    });
 
-    if (!response.ok){
+    if (!response.ok) {
       throw new Error(`Échec de la verification : ${response.status}`);
     }
-    console.log("reponse admin : ", response)
-      const responseJson = await response.json()
-      console.log("responseJson : ", responseJson)
-      revalidatePath('/admin/dashboard')
-      return responseJson.message
+    console.log("reponse admin : ", response);
+    const responseJson = await response.json();
+    console.log("responseJson : ", responseJson);
+    revalidatePath("/admin/dashboard");
+    return responseJson.message;
   } catch (error) {
-    console.error("Erreur lors de la vérification admin : ", error)
-    return
+    console.error("Erreur lors de la vérification admin : ", error);
+    return;
   }
 }
 
 export async function LogoutUser() {
-  const lang = await getLocale()
-  const baseUrl = env.getApiUrl(lang as LANG)
-  const authToken = (await cookies()).get('authToken')?.value;
+  const lang = await getLocale();
+  const baseUrl = env.getApiUrl(lang as LANG);
+  const authToken = (await cookies()).get("authToken")?.value;
   if (!authToken) {
     console.log("Cookie d'authentification manquant");
   }
   try {
     const response = await fetch(`${baseUrl}/auth/logout`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Cookie': `authToken=${authToken}`
-      }
-    })
+        Cookie: `authToken=${authToken}`,
+      },
+    });
     if (response.ok) {
       const cookieStore = await cookies();
-      cookieStore.delete('authToken');
+      cookieStore.delete("authToken");
     } else {
       console.error("Échec de la déconnexion :", response.status);
     }
   } catch (error) {
-    console.log("Erreur lors de la déconnexion : ", error)
-    return
+    console.log("Erreur lors de la déconnexion : ", error);
+    return;
   }
 }
