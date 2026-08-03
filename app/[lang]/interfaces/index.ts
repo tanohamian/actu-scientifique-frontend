@@ -131,3 +131,10 @@ export interface IUpdateArticle {
   une?: boolean;
   withToken?: boolean;
 }
+
+export interface IUserInfo {
+  id?: string;
+  first_name: string;
+  last_name: string;
+  roles: string;
+}
