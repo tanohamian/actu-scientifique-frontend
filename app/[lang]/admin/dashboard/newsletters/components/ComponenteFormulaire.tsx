@@ -95,21 +95,21 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
     }
   };
 
-  const container: React.CSSProperties = { backgroundColor: '#50789B', maxWidth: '1200px', width: '100%', padding: '40px', fontFamily: 'Arial, sans-serif', borderRadius: '25px', margin: '0 auto', boxSizing: 'border-box' };
-  const labelStyle: React.CSSProperties = { color: 'white', fontWeight: 'bold', marginBottom: '8px', display: 'block', fontSize: '25px', marginTop: '20px' };
+  const container: React.CSSProperties = { backgroundColor: '#50789B', maxWidth: '1200px', width: '100%', fontFamily: 'Arial, sans-serif', borderRadius: '25px', margin: '0 auto', boxSizing: 'border-box' };
+  const labelStyle: React.CSSProperties = { color: 'white', fontWeight: 'bold', marginBottom: '8px', display: 'block', marginTop: '20px' };
   const inputBaseStyle: React.CSSProperties = { backgroundColor: '#2D4459', color: 'white', padding: '12px', borderRadius: '8px', border: 'none', width: '100%', boxSizing: 'border-box', fontSize: '16px', outline: 'none' };
   const textareaStyle: React.CSSProperties = { ...inputBaseStyle, minHeight: '150px', resize: 'vertical' };
   const selectStyle: React.CSSProperties = { ...inputBaseStyle, appearance: 'none' };
   const buttonStyle: React.CSSProperties = { backgroundColor: '#E76C5B', color: 'white', padding: '15px 0', borderRadius: '8px', border: 'none', width: '100%', fontSize: '18px', fontWeight: 'bold', cursor: 'pointer', marginTop: '40px' };
 
   return (
-    <div style={container}>
-      <h2 style={{ color: 'white', textAlign: 'center', fontSize: '32px', fontWeight: 'bold', marginBottom: '30px' }}>
+    <div className="p-5 md:p-10" style={container}>
+      <h2 className="text-2xl md:text-4xl" style={{ color: 'white', textAlign: 'center', fontWeight: 'bold', marginBottom: '30px' }}>
         {isEditing ? "Modifier" : (isArticle ? "Ajouter un Article" : "Nouvelle NewsLetter")}
       </h2>
       <article>
         <div>
-          <label style={labelStyle}>{isArticle ? "Titre de l'article" : "Titre de la NewsLetter"}</label>
+          <label className="text-lg md:text-2xl" style={labelStyle}>{isArticle ? "Titre de l'article" : "Titre de la NewsLetter"}</label>
           <input
             type="text"
             id="title"
@@ -121,14 +121,14 @@ export default function ComponenteFormulaire({ isArticle = false, initialData, o
           />
         </div>
         <div>
-          <label style={labelStyle}>Contenu</label>
+          <label className="text-lg md:text-2xl" style={labelStyle}>Contenu</label>
          <EditorText
             content={formData.content}
             onChange={(html) => setFormData(prev => ({ ...prev, content: html }))}
           />
         </div>
         <div>
-          <label style={labelStyle}>Rubrique</label>
+          <label className="text-lg md:text-2xl" style={labelStyle}>Rubrique</label>
           <select
             name="categorie"
             style={selectStyle}

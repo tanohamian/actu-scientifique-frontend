@@ -32,14 +32,14 @@ interface AffichageProps {
 }
 
 const styles = {
-    container: { backgroundColor: '#50789B', width: '100%', maxWidth: '809px', padding: '40px', fontFamily: 'Arial, sans-serif', borderRadius: '20px', minHeight: '468px', display: 'flex', flexDirection: 'column' as const, boxSizing: 'border-box' as const },
+    container: { backgroundColor: '#50789B', width: '100%', maxWidth: '809px', fontFamily: 'Arial, sans-serif', borderRadius: '20px', minHeight: '468px', display: 'flex', flexDirection: 'column' as const, boxSizing: 'border-box' as const },
     searchSection: { borderRadius: '12px', marginBottom: '25px' },
-    searchWrapper: { position: 'relative' as const, alignItems: 'center', display: 'flex', gap: '20px' },
+    searchWrapper: { position: 'relative' as const, alignItems: 'center', display: 'flex', flexWrap: 'wrap' as const, gap: '20px' },
     searchInputContainer: { position: 'relative' as const, flexGrow: 1 },
     searchIcon: { position: 'absolute' as const, left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255, 255, 255, 0.9)' },
     searchInput: { backgroundColor: 'rgba(255, 255, 255, 0.2)', border: '1px solid #ffffff4d', borderRadius: '8px', padding: '14px 15px', paddingLeft: '45px', color: 'white', fontSize: '14px', outline: 'none', width: '100%', boxSizing: 'border-box' as const },
-    tableSection: { flex: '1', overflowY: 'auto' as const },
-    table: { width: '100%', borderCollapse: 'collapse' as const },
+    tableSection: { flex: '1', overflowY: 'auto' as const, overflowX: 'auto' as const },
+    table: { width: '100%', minWidth: '480px', borderCollapse: 'collapse' as const },
     tableHeader: { borderBottom: '2px solid rgba(255, 255, 255, 0.3)' },
     th: { color: 'white', fontSize: '14px', fontWeight: '600', textAlign: 'left' as const, padding: '15px 10px' },
     td: { color: 'white', fontSize: '14px', padding: '20px 10px', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' },
@@ -154,7 +154,7 @@ export default function Affichage({
     };
 
     return (
-        <div style={styles.container}>
+        <div className="p-5 md:p-10" style={styles.container}>
             <ConfirmModal
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}

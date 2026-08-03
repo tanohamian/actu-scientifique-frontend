@@ -153,7 +153,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   
   return (
     <div className="m-0 p-0 bg-[#50789B] w-full min-h-screen flex flex-col">
-      <header className="w-full relative ">
+      <header className="w-full relative pt-12 lg:pt-0">
        {(pathname === "/" || pathname === "/subscription") && (
             <div className="absolute right-4 top-16 sm:right-8 sm:top-20 md:right-12 md:top-24 lg:right-16 lg:top-28 xl:right-20 xl:top-32 2xl:right-24 2xl:top-36 pointer-events-none z-10">
               <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-64 lg:h-64 xl:w-80 xl:h-80 2xl:w-96 2xl:h-96">
@@ -168,8 +168,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
         <div className='flex flex-col lg:flex-row items-center justify-between lg:justify-around px-4 py-4 gap-4'>
           <div className='flex flex-row items-center gap-3'>
-            <img src="/images/favicon.svg" alt="Logo" className="w-30 h-30 shrink-0" />
-            <h3 className='text-white text-sm lg:text-base w-25 font-bold'>Actu Scientifique</h3>
+            <img src="/images/favicon.svg" alt="Logo" className="w-14 h-14 sm:w-20 sm:h-20 lg:w-30 lg:h-30 shrink-0" />
+            <h3 className='text-white text-sm lg:text-base font-bold'>Actu Scientifique</h3>
           </div>
 
           <div className='w-full lg:flex-1 lg:max-w-md mx-0 lg:mx-4 relative'>

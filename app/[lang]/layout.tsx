@@ -33,7 +33,7 @@ export default async function RootLayout({
       <body>
         <AppRouterCacheProvider options={{ key: 'mui' }}>
           <NextIntlClientProvider messages={messages} locale={lang}>
-            <section style={{position : 'absolute', right : '1px', zIndex: 3}}>
+            <section style={{position : 'absolute', top: '10px', right : '10px', zIndex: 3}}>
               <CustomizedSwitches></CustomizedSwitches>
             </section>
             {children}
