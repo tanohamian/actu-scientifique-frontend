@@ -286,7 +286,7 @@ export default function MediaPage() {
       const result = await AddMedia(media);
       setMedias((prev) => [...prev, result]);
       setIsOpen(false);
-
+      setSelectedMedia(null);
       toast(true, false, "Media uploadé !");
     } catch (error) {
       console.error("Erreur:", error);
@@ -357,6 +357,7 @@ export default function MediaPage() {
       );
       toast(true, false, "Média mis à jour !");
       setEditMedia(false);
+      setSelectedMedia(null);
     } catch (error) {
       console.log((error as Error).message);
       toast(false, false, "Échec de la mise à jour du média");
