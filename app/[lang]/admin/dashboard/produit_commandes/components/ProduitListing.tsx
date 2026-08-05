@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AffichageTableau from "./ListingTask";
 import {
   FetchProducts,
@@ -9,6 +9,7 @@ import {
 import { FormFieldConfig } from "@app/components/addElement";
 import { Product } from "@app/interfaces";
 import { toast } from "@app/components/FormComponent";
+import ConfirmModal from "@app/components/ConfirmModal";
 
 /*** Source unique de vérité pour les catégories (utilisée par le tableau ET le formulaire) */
 const CATEGORIES = [
@@ -89,18 +90,33 @@ export default function ProduitsTable({
   setProducts,
   setLoading,
 }: ProduitInterface) {
-  const handleDelete = async (item: Product) => {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+
+  const handleDelete = (item: Product) => {
+    setProductToDelete(item);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!productToDelete) return;
+    setIsDeleteModalOpen(false);
     try {
-      const deletedProduct = await DeleteProduct(item?.id as string);
+      const deletedProduct = await DeleteProduct(productToDelete.id as string);
       if (deletedProduct) {
         const updatedProducts = products.filter(
-          (product) => product.id !== item.id,
+          (product) => product.id !== productToDelete.id,
         );
         setProducts(updatedProducts);
         toast(true, false, "Produit supprimé avec succès");
+      } else {
+        toast(false, false, "Échec de la suppression du produit");
       }
     } catch (error) {
       console.log("erreur lors de la suppression du produit", error);
+      toast(false, false, "Échec de la suppression du produit");
+    } finally {
+      setProductToDelete(null);
     }
   };
 
@@ -127,9 +143,12 @@ export default function ProduitsTable({
           ),
         );
         toast(true, false, "Produit modifié avec succès");
+      } else {
+        toast(false, false, "Échec de la modification du produit");
       }
     } catch (error) {
       console.log("erreur lors de la modification du produit", error);
+      toast(false, false, "Échec de la modification du produit");
     }
   };
 
@@ -145,13 +164,22 @@ export default function ProduitsTable({
   }, []);
 
   return (
-    <AffichageTableau<Product>
-      titre="Produits"
-      columns={colonnesProduits}
-      data={products}
-      onDelete={handleDelete}
-      onEdit={handleEdit}
-      editFields={projectFields}
-    />
+    <>
+      <AffichageTableau<Product>
+        titre="Produits"
+        columns={colonnesProduits}
+        data={products}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
+        editFields={projectFields}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        title="Supprimer ce produit ?"
+      />
+    </>
   );
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import SidebarComponent from "@app/components/sidebar";
 import { Menu, X } from "lucide-react";
-import { IUserInfo } from "../../interfaces";
+import { useAuth } from "../../context/authContext";
 
 export default function AdminLayout({
   children,
@@ -12,11 +12,7 @@ export default function AdminLayout({
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(1200);
-  const [userInfo, setUserInfo] = useState<IUserInfo>({
-    first_name: "",
-    last_name: "",
-    roles: "",
-  });
+  const { user: userInfo } = useAuth();
 
   const SIDEBAR_WIDTH = 256;
   const MOBILE_BREAKPOINT = 1024;
@@ -132,19 +128,10 @@ export default function AdminLayout({
     position: "relative",
   };
 
-  useEffect(() => {
-    (async () => {
-      const storedUserInfo = localStorage.getItem("user");
-      if (storedUserInfo) {
-        setUserInfo(JSON.parse(storedUserInfo));
-      }
-    })();
-  }, []);
-
   return (
     <div style={containerStyle}>
       <aside style={sidebarDesktopStyle}>
-        <SidebarComponent isMobile={false} user={userInfo!} />
+        <SidebarComponent isMobile={false} user={userInfo} />
       </aside>
 
       <div style={overlayStyle} onClick={() => setIsMobileMenuOpen(false)} />
@@ -153,7 +140,7 @@ export default function AdminLayout({
         <SidebarComponent
           onClose={() => setIsMobileMenuOpen(false)}
           isMobile={true}
-          user={userInfo!}
+          user={userInfo}
         />
       </aside>
 

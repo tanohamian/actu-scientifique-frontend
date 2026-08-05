@@ -10,7 +10,7 @@ import LoadingComponent from '@app/components/loadingComponent'
 
 
 export default function Page() {
-    const MOBILE_BREAKPOINT = 768;
+    const MOBILE_BREAKPOINT = 1024;
     const [isMobile, setIsMobile] = useState(() =>
         typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT
     );

@@ -30,7 +30,7 @@ export default function SidebarComponent({
 }: {
   onClose?: () => void;
   isMobile: boolean;
-  user: IUserInfo;
+  user: IUserInfo | null;
 }) {
   const pathname = usePathname();
 
@@ -167,7 +167,9 @@ export default function SidebarComponent({
           <div className={avatarTextClasses}>
             {ROLE_LABELS[user.roles]}
             <br />
-            {user.first_name} {user.last_name}
+            {user
+              ? `${user.first_name} ${user.last_name}`
+              : "Reconnecte-toi si besoin"}
           </div>
         </div>
         {isMobile && onClose && (

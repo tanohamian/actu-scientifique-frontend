@@ -14,6 +14,7 @@ import {
   UpdateArticle,
 } from "@app/actions/ArticleManager";
 import FormComponent, { toast } from "@app/components/FormComponent";
+import ConfirmModal from "@app/components/ConfirmModal";
 import { Rubriques } from "@app/enum/enums";
 import LoadingComponent from "@app/components/loadingComponent";
 import { Article, DbArticle, IUpdateArticle, Product } from "@app/interfaces";
@@ -111,6 +112,8 @@ export default function ArticlePage() {
   //const [selectedFilter, setSelectedFilter] = useState("title");
 
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [articleToDelete, setArticleToDelete] = useState<Article | null>(null);
   /*const [filters] = useState<IFilter[]>(
     mainHeaders
       .filter((m) => m.key !== "actions")
@@ -226,17 +229,24 @@ export default function ArticlePage() {
     setSelectedArticle(item as Article);
     setEditArticle(true);
   };
-  /***focntion pour supprimer un article */
-  const handleDeleteArticle = async (item: ElementType) => {
-    console.log("Deleting event:", item);
-    setSelectedArticle(item as Article);
-    setArticles(articles.filter((newItem) => newItem.id !== item.id));
-    const res = await DeleteArticle(item.id as string);
+  /***focntion pour demander confirmation avant de supprimer un article */
+  const handleDeleteArticle = (item: ElementType) => {
+    setArticleToDelete(item as Article);
+    setIsDeleteModalOpen(true);
+  };
+
+  /***fonction appelée une fois la suppression confirmée dans la modale */
+  const confirmDeleteArticle = async () => {
+    if (!articleToDelete) return;
+    setIsDeleteModalOpen(false);
+    setArticles(articles.filter((newItem) => newItem.id !== articleToDelete.id));
+    const res = await DeleteArticle(articleToDelete.id as string);
     toast(
       res,
       false,
       res ? "Supprimé avec succès !" : "Echec de la suppresion",
     );
+    setArticleToDelete(null);
   };
 
   const editInitialData: InitialDataType | null = selectedArticle
@@ -374,6 +384,13 @@ export default function ArticlePage() {
         fields={articleUpdateFields}
         initialData={editInitialData ?? emptyData}
         id={selectedArticle?.id}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDeleteArticle}
+        title="Supprimer cet article ?"
       />
     </div>
   );

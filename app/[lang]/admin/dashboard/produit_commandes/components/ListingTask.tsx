@@ -22,7 +22,6 @@ interface AffichageProps<T extends { id: number | string }> {
 const styles = {
   container: {
     backgroundColor: "#50789B",
-    padding: "40px",
     fontFamily: "Arial, sans-serif",
     borderRadius: "20px",
     marginBottom: "40px",
@@ -38,14 +37,17 @@ const styles = {
     padding: "10px 25px",
     marginBottom: "25px",
     display: "flex",
+    flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "space-between",
+    gap: "10px",
   } as React.CSSProperties,
   searchWrapper: {
     position: "relative",
     display: "flex",
     alignItems: "center",
     flexGrow: 1,
+    minWidth: "200px",
   } as React.CSSProperties,
   searchIcon: {
     position: "absolute",
@@ -81,6 +83,7 @@ const styles = {
   } as React.CSSProperties,
   table: {
     width: "100%",
+    minWidth: "480px",
     borderCollapse: "collapse",
   } as React.CSSProperties,
   tableHeader: {
@@ -177,7 +180,7 @@ export default function AffichageTableau<
   }, [data, inputValue, sortBy]);
 
   return (
-    <div style={styles.container}>
+    <div className="p-5 md:p-10" style={styles.container}>
       <h2 style={styles.title}>{titre}</h2>
 
       <div style={styles.searchSection}>

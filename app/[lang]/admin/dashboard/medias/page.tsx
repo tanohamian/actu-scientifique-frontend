@@ -24,6 +24,7 @@ import { toast } from "@components/FormComponent";
 import LoadingComponent from "@components/loadingComponent";
 import { DbMedia, Product } from "@interfaces/index";
 import { url } from "inspector";
+import ConfirmModal from "@app/components/ConfirmModal";
 
 const MediaFields: FormFieldConfig[] = [
   {
@@ -218,6 +219,8 @@ export default function MediaPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [editMedia, setEditMedia] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<ElementType | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [mediaToDelete, setMediaToDelete] = useState<ElementType | null>(null);
   const [loadingAddMeddia, setLoadingAddMedia] = useState(false);
   const [loadingEditMedia, setLoadingEditMedia] = useState(false);
 
@@ -476,6 +479,13 @@ export default function MediaPage() {
         fields={updateMediaFields}
         initialData={editInitialData ?? emptyData}
         isLoading={loadingEditMedia}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDeleteMedia}
+        title="Supprimer ce média ?"
       />
     </div>
   );

@@ -390,7 +390,7 @@ export default function AddElementModal(props: AddElementModalProps) {
     "fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-4 md:p-8";
 
   const modalClasses =
-    "bg-[#5A8FAC] rounded-xl p-6 md:p-8 w-full max-w-1/2 max-h-[90vh] overflow-y-auto relative";
+    "bg-[#5A8FAC] rounded-xl p-6 md:p-8 w-full max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto relative";
 
   const headerClasses = "flex justify-between items-center mb-6";
 

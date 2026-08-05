@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { LoginUser } from "../actions/Auth";
 import { useRouter } from "next/navigation";
 import { env } from "../config/env";
+import { useAuth } from "../context/authContext";
 
 export interface FormState {
   email: string;
@@ -25,6 +26,7 @@ export default function Connexion() {
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const router = useRouter();
+  const { refreshUser } = useAuth();
 
   const handleInputChange = (field: keyof FormState, value: string) => {
     setFormData((prev) => ({
@@ -43,9 +45,8 @@ export default function Connexion() {
 
     try {
       const response = await LoginUser(formData);
-      localStorage.setItem("user", JSON.stringify(response.user));
-      const userInfo = response.user;
-      if (userInfo.roles == "ROLE_ADMIN") {
+      if (response?.user?.roles === "ROLE_ADMIN") {
+        await refreshUser();
         const dashboardRoute = env.devMode ? "/admin/dashboard" : "/dashboard";
         router.push(dashboardRoute);
       } else {

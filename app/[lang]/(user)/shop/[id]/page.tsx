@@ -49,7 +49,7 @@ export default function DetailsProduct() {
                     <img
                         src={product?.preview_image}
                         alt={product?.name}
-                        className="w-full h-[500px] lg:h-[700px] object-cover hover:scale-105 transition-transform duration-500"
+                        className="w-full h-72 sm:h-96 md:h-[420px] lg:h-[700px] object-cover hover:scale-105 transition-transform duration-500"
                     />
                 </div>
 

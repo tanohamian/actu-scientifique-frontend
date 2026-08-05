@@ -50,7 +50,7 @@ export default function ShopPage() {
             </div>
 
             <div className="w-full max-w-sm" onClick={() => router.push('/susbscription')}>
-                <button className="w-full bg-[#E85C41] hover:bg-[#d44d35] text-white text-4xl font-bold py-2 px-8 rounded-lg transition-colors">
+                <button className="w-full bg-[#E85C41] hover:bg-[#d44d35] text-white text-2xl md:text-4xl font-bold py-2 px-8 rounded-lg transition-colors">
                     {t('subscribe')}
                 </button>
             </div>
@@ -61,7 +61,7 @@ export default function ShopPage() {
 
 
 
-            <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4">
                 {currentItems.map((product) => (
                     <button key={product.id} className="bg-white/20 p-4 rounded-md border border-white/10" onClick={() => router.push(`/shop/${product.id}`)}>
                         <img src={product.preview_image} alt={product.name} className="w-full h-48 object-cover" />
