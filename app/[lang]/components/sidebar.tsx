@@ -33,7 +33,6 @@ export default function SidebarComponent({
   user: IUserInfo;
 }) {
   const pathname = usePathname();
-  console.log("user : ", user);
 
   const iconBaseProps = { className: `text-white ${iconSize}` };
   const basePath = !env.devMode ? "/dashboard" : "/admin/dashboard";

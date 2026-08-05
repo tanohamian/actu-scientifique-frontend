@@ -5,6 +5,7 @@ import { X, ChevronDown, Upload } from "lucide-react";
 import { Rubriques } from "../enum/enums";
 import { Product } from "../interfaces";
 import dynamic from "next/dynamic";
+import MediaPreview from "./MediaPreview";
 
 const EditorText = dynamic(() => import("@components/titap"), { ssr: false });
 
@@ -79,11 +80,28 @@ export const uploadIcon: React.CSSProperties = {
 
 /**
  *
- * @param {AddElementModalProps} param0
+ * @param {AddElementModalProps} param
  * @returns
  */
+
+const getYouTubeEmbedUrl = (url: string) => {
+  if (!url) return null;
+  const regExp =
+    /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11
+    ? `https://www.youtube.com/embed/${match[2]}`
+    : null;
+};
+
 export default function AddElementModal(props: AddElementModalProps) {
-  const [imageUrl, setImageUrl] = useState<string>("");
+  const [imageUrl, setImageUrl] = useState<string>(() => {
+    return (
+      (props.initialData?.illustrationUrl as string) ||
+      (props.initialData?.url as string) ||
+      ""
+    );
+  });
   const initialFormData = useMemo(() => {
     const data = props.fields.reduce((acc, field) => {
       acc[field.name] = props.initialData![field.name] ?? "";
@@ -97,23 +115,35 @@ export default function AddElementModal(props: AddElementModalProps) {
     return data;
   }, [props.fields, props.initialData, props.id]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     const updateImage = () => {
       if (props.initialData?.illustrationUrl) {
         setImageUrl(props.initialData.illustrationUrl as string);
       }
     };
     updateImage();
-  }, [props.initialData?.illustrationUrl]);
+  }, [props.initialData?.illustrationUrl]);*/
+
+  /*useEffect(() => {
+  const source =
+    (props.initialData?.illustrationUrl as string) ||
+    (props.initialData?.url as string) ||
+    "";
+  if (source) {
+    setImageUrl(source);
+  }
+}, [props.initialData?.illustrationUrl, props.initialData?.url]);*/
 
   //const [isImage, setIsImage] = useState(false);
-  const [formData, setFormData] = useState<InitialDataType>(initialFormData);
-  useEffect(() => {
+  const [formData, setFormData] = useState<InitialDataType>(
+    () => initialFormData,
+  );
+  /*useEffect(() => {
     const set = async () => {
       setFormData(initialFormData);
     };
     set();
-  }, [initialFormData, props.isOpen]);
+  }, [initialFormData, props.isOpen]);*/
 
   useEffect(() => {
     if (props.isOpen) {
@@ -190,48 +220,50 @@ export default function AddElementModal(props: AddElementModalProps) {
           </div>
         );
 
-      case "file":
+      case "file": {
+        const selectedFile = formData[field.name] as File | undefined;
+        const mimeType =
+          selectedFile?.type || (props.initialData?.mimeType as string) || "";
+
         return (
           <div key={field.name} className={containerClasses}>
             <label className={labelClasses}>{field.label}</label>
-            <label className="cursor-pointer">
+
+            {/* Aperçu du média existant / nouveau */}
+            {imageUrl && (
+              <div className="mb-3 flex flex-col items-center gap-2 bg-[#00283C99] p-4 rounded-lg">
+                <MediaPreview src={imageUrl} mimeType={mimeType} />
+              </div>
+            )}
+
+            {/* Input de sélection pour ajouter/remplacer le média */}
+            <label className="cursor-pointer block">
               <input
-                type={field.type}
+                type="file"
                 accept="image/*,video/*,audio/*,application/pdf"
-                style={{ display: "none" }}
-                placeholder={field.placeholder || ""}
+                className="hidden"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  console.log("file in addElementModal");
-                  console.log(file);
                   if (file) {
                     handleChange(field.name, file);
-                    //setIsImage(file.type.startsWith("image/"));
                     const objectUrl = URL.createObjectURL(file);
                     setImageUrl(objectUrl);
                   }
                 }}
-                required={field.required}
+                required={field.required && !imageUrl}
               />
-              {imageUrl ? (
-                <div className="mt-2">
-                  (
-                  <img
-                    src={imageUrl}
-                    alt="Preview"
-                    className="max-w-full h-auto rounded-lg"
-                  />
-                  )
+              <div className="flex flex-col items-center justify-center bg-[#00283C99] rounded-lg p-6 cursor-pointer border-2 border-dashed border-white/20 hover:border-white/40 transition">
+                <Upload size={30} style={uploadIcon} />
+                <div style={uploadText}>
+                  {imageUrl
+                    ? "Changer le fichier média (uploader un nouveau)"
+                    : "Cliquez pour uploader un fichier (Vidéo, Audio, Image)"}
                 </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center bg-[#00283C99] rounded-lg p-10 cursor-pointer">
-                  <Upload size={40} style={uploadIcon} />
-                  <div style={uploadText}>cliquez pour uploader une image</div>
-                </div>
-              )}
+              </div>
             </label>
           </div>
         );
+      }
       case "textarea":
         return (
           <div key={field.name} className={containerClasses}>
@@ -292,7 +324,45 @@ export default function AddElementModal(props: AddElementModalProps) {
             />
           </div>
         );
-      case "url":
+      case "url": {
+        const value = (formData[field.name] as string) || "";
+        const youtubeEmbedUrl = getYouTubeEmbedUrl(value); // Détection YouTube
+
+        return (
+          <div key={field.name} className={containerClasses}>
+            <label className={labelClasses}>{field.label}</label>
+            <input
+              type="url"
+              className={inputClasses}
+              placeholder={field.placeholder || ""}
+              value={value}
+              onChange={(e) =>
+                handleChange(field.name, e.target.value, field.type)
+              }
+              required={field.required}
+            />
+            {value && (
+              <div className="mt-2 flex flex-col items-center gap-2 bg-[#00283C99] p-4 rounded-lg w-full">
+                {youtubeEmbedUrl ? (
+                  <iframe
+                    className="w-full aspect-video rounded-lg"
+                    src={youtubeEmbedUrl}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                ) : (
+                  <MediaPreview
+                    src={value}
+                    mimeType={props.initialData?.mimeType as string}
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        );
+      }
       case "text":
       case "email":
       case "password":

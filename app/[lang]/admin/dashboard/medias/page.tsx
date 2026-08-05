@@ -52,7 +52,7 @@ const MediaFields: FormFieldConfig[] = [
   {
     name: "url",
     label: "URL du média",
-    type: "text",
+    type: "url",
     placeholder: "https://exemple.com/media",
     conditionalField: { dependsOn: "type", showWhen: "url" },
   },
@@ -103,13 +103,13 @@ const updateMediaFields: FormFieldConfig[] = [
     type: "select",
     options: [
       { label: "URL", value: "url" },
-      { label: "Fichier", value: "file" },
+      { label: "Media (vidéo, fichier, podcast)", value: "file" },
     ],
   },
   {
     name: "url",
     label: "URL du média",
-    type: "text",
+    type: "url",
     placeholder: "https://exemple.com/media",
     conditionalField: { dependsOn: "type", showWhen: "url" },
   },
@@ -221,18 +221,19 @@ export default function MediaPage() {
   const [loadingAddMeddia, setLoadingAddMedia] = useState(false);
   const [loadingEditMedia, setLoadingEditMedia] = useState(false);
 
-  const [filters] = useState<IFilter[]>(
+  /**const [filters] = useState<IFilter[]>(
     mainHeaders.map((header) => {
       return { value: header.key, label: header.label };
     }),
-  );
+  );*/
   const [medias, setMedias] = useState<DbMedia[]>([]);
 
   const handleMedia = () => {
+    setSelectedMedia(null);
     setIsOpen(true);
   };
 
-  let initialData: InitialDataType = {
+  const emptyData: InitialDataType = {
     name: "",
     createdAt: "",
     title: "",
@@ -246,11 +247,8 @@ export default function MediaPage() {
   const handleSubmitMedia = async (
     data: Product | InitialDataType | DbMedia,
   ) => {
-    console.log("Submitting media with data:", data);
     setLoadingAddMedia(true);
     try {
-      console.log("📋 Données reçues:", data);
-
       data = data as InitialDataType;
       const media = new FormData();
 
@@ -287,7 +285,7 @@ export default function MediaPage() {
       setMedias((prev) => [...prev, result]);
       setIsOpen(false);
       setSelectedMedia(null);
-      toast(true, false, "Media uploadé !");
+      toast(true, false, "Media Ajouté !");
     } catch (error) {
       console.error("Erreur:", error);
       toast(false, false, "Échec de l'upload du media");
@@ -305,23 +303,39 @@ export default function MediaPage() {
     console.log("Deleting event:", item);
     setSelectedMedia(item as TableData);
     await DeleteMedia(item.id as string);
+    toast(true, false, "Media Supprimé !");
     setMedias(medias.filter((media) => media.id !== item.id));
   };
 
-  if (selectedMedia) {
-    const media = selectedMedia as DbMedia;
-    initialData = {
-      name: (media.name as string) || "",
-      createdAt: (media.createdAt as string) || "",
-      type: media.type as string,
-      title: media.title as string,
-      description: (media.description as string) || "",
-      rubrique: (media.rubrique as string) || "",
-      une: media.une ? 1 : 0,
-      url: (media.url as string) || "",
-    };
-  }
+  const editInitialData: InitialDataType | null = selectedMedia
+    ? (() => {
+        const media = selectedMedia as DbMedia;
 
+        let formType = media.type;
+        if (
+          media.type === "video" ||
+          media.type === "podcast" ||
+          media.type === "fichier"
+        ) {
+          formType = media.url?.includes("http") ? "url" : "file";
+        }
+
+        return {
+          name: media.name ?? "",
+          createdAt:
+            media.createdAt instanceof Date
+              ? media.createdAt.toISOString()
+              : (media.createdAt ?? ""),
+          type: formType,
+          title: media.title,
+          description: media.description ?? "",
+          rubrique: media.rubrique ?? "",
+          une: media.une ? 1 : 0,
+          url: media.url ?? "",
+          mimeType: media.mimeType ?? "",
+        };
+      })()
+    : null;
   const handleSubmitEditMedia = async (
     data: Product | InitialDataType | DbMedia,
   ) => {
@@ -329,7 +343,7 @@ export default function MediaPage() {
     try {
       data = data as InitialDataType;
       const media = new FormData();
-      media.append("id", selectedMedia?.id as string);
+      //media.append("id", selectedMedia?.id as string);
       media.append("title", data.title as string);
       media.append("rubrique", data.rubrique as string);
       media.append("une", data.une as string);
@@ -343,17 +357,9 @@ export default function MediaPage() {
         console.log("✅ URL trouvée et ajoutée!");
       }
 
-      const response = await fetch("/api/upload-media", {
-        method: "PUT",
-        body: media,
-      });
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Erreur lors de l'upload");
-      }
-      const updatedMedia = await response.json();
+      const response = await UpdateMedia(media, selectedMedia?.id as string);
       setMedias((prev) =>
-        prev.map((m) => (m.id === updatedMedia.id ? updatedMedia : m)),
+        prev.map((m) => (m.id === response.id ? response : m)),
       );
       toast(true, false, "Média mis à jour !");
       setEditMedia(false);
@@ -390,6 +396,19 @@ export default function MediaPage() {
     fetchMedias();
   }, []);
 
+  const filteredMedias = medias.filter((media) => {
+    const search = inputValue.trim().toLowerCase();
+
+    if (!search) return true;
+
+    return (
+      media.title?.toLowerCase().includes(search) ||
+      media.rubrique?.toLowerCase().includes(search) ||
+      media.description?.toLowerCase().includes(search)
+      //article.createdAt?.includes(search)
+    );
+  });
+
   return (
     <div className={pageContainerClasses}>
       <div className={headerClasses}>
@@ -413,17 +432,17 @@ export default function MediaPage() {
               placeholder="Rechercher un media...."
               inputValue={inputValue}
               setInputValue={setInputValue}
-              setFocus={() => {}}
+              //setFocus={() => {}}
             />
           </div>
-          <Filter filters={filters} />
+          {/*<Filter filters={filters} />*/}
         </div>
 
         <article className="flex flex-col lg:flex-row gap-8">
           <EventDataTable
             tableTitle=""
             isMedia={true}
-            data={medias as DbMedia[]}
+            data={filteredMedias as DbMedia[]}
             columnHeaders={mainHeaders}
             handleEditEvent={handleEditMedia}
             handleDeleteEvent={handleDeleteMedia}
@@ -436,24 +455,26 @@ export default function MediaPage() {
       </div>
 
       <AddElementModal
+        key={isOpen ? "new-media-open" : "new-media-closed"}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onSubmit={handleSubmitMedia}
         titleComponent="Ajouter un Média"
         buttonTitle="Ajouter"
         fields={MediaFields}
-        initialData={initialData}
+        initialData={emptyData}
         isLoading={loadingAddMeddia}
       />
 
       <AddElementModal
         isOpen={editMedia}
+        key={selectedMedia?.id ?? "edit-media"}
         onClose={() => setEditMedia(false)}
         onSubmit={handleSubmitEditMedia}
         titleComponent="Modifier un média"
         buttonTitle="Modifier"
         fields={updateMediaFields}
-        initialData={initialData}
+        initialData={editInitialData ?? emptyData}
         isLoading={loadingEditMedia}
       />
     </div>
