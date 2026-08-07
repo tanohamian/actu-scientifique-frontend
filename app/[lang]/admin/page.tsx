@@ -44,8 +44,7 @@ export default function Connexion() {
     try {
       const response = await LoginUser(formData);
       localStorage.setItem("user", JSON.stringify(response.user));
-      const userInfo = response.user;
-      if (userInfo.roles == "ROLE_ADMIN") {
+      if (response.role == "ROLE_ADMIN") {
         const dashboardRoute = env.devMode ? "/admin/dashboard" : "/dashboard";
         router.push(dashboardRoute);
       } else {
