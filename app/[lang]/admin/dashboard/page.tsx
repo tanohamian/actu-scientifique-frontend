@@ -13,7 +13,6 @@ import { EventInterface } from "@app/components/eventDataTable";
 import LoadingComponent from "@app/components/loadingComponent";
 import IndexLineChart from "@app/components/IndexLineChart";
 import { FetchStats } from "@app/actions/StatManager";
-import { IUserInfo, Stat } from "@app/interfaces";
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
