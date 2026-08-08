@@ -1,21 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import styles from "../../../styles/Dashboard.module.scss";
-import { DashboardCardProps } from "@app/components/dashboardCards";
-import { FetchArticles } from "@app/actions/ArticleManager";
-
 import LoadingComponent from "@app/components/loadingComponent";
 import IndexLineChart from "@app/components/IndexLineChart";
-import PublicationCard from "@app/components/publicationCard";
 import { FetchStats } from "@app/actions/StatManager";
 import { env } from "@app/config/env";
 import AnalyticsCard from "@/app/[lang]/components/analyticsCard";
 const today = (new Date()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-interface AnalyticsInterface {
-  endpoint: string;
-  dateRange?: number;
-  data: { date: string; count: number }[];
-}
+
 export default function Page() {
   //const today = new Date().toISOString();
   const allowedPrefixes = [
@@ -29,7 +21,6 @@ export default function Page() {
     "/shop",
   ];
   const [isLoading, setIsLoading] = useState(true);
-  const [analytics, setAnalytics] = useState<AnalyticsInterface[]>([]);
   const [tendance] = useState<string>(
     "Vous verrez ici un aperçu de tout ce qui se passe sur l'app",
   );
@@ -61,17 +52,6 @@ export default function Page() {
         },
         {},
       );
-
-      const analyticsPerEndpoint = Object.entries(grouped).map(
-        ([endpoint, datesObj]) => ({
-          endpoint,
-          data: Object.entries(datesObj).map(([date, count]) => ({
-            date,
-            count,
-          })),
-        }),
-      );
-      setAnalytics(analyticsPerEndpoint);
       setIsLoading(false);
     }
     update();

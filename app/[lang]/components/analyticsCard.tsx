@@ -2,7 +2,7 @@ import { mockData } from "@/app/constant";
 import styles from "../styles/Dashboard.module.scss";
 import IndexLineChart from "./IndexLineChart";
 import { AnalyticsBoundary } from "../enum/enums";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FetchStats } from "../actions/StatManager";
 let today = (new Date()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 export interface ListItem {
@@ -23,7 +23,23 @@ const AnalyticsCard = ({ cardTitle, endpoint }: AnalyticsCardProps) => {
         value: boundary.value,
         label: boundary.label.replace(/_/g, ' ').toLowerCase()
     }));
+    useEffect(() => {
+        (async () => {
+            const rowAnalytics = (await FetchStats({ endpoint, daysRange: 7 })).data;
+            const grouped = rowAnalytics.reduce(
+                (acc: Record<string, number>, current) => {
+                    const date = new Date(current.createdAt).toLocaleDateString("fr-FR");
+                    acc[date] = (acc[date] || 0) + 1;
 
+                    return acc;
+                },
+                {}
+            );
+            let dataToSet = grouped ? Object.entries(grouped).map(([date, count]) => ({ date, count })) : [];
+            console.log("dataToSet = ", dataToSet);
+            setData(dataToSet);
+        })();
+    }, [endpoint]);
     const onFilterChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedValue = parseInt(e.target.value);
         const rowAnalytics = (await FetchStats({ endpoint, daysRange: selectedValue })).data;

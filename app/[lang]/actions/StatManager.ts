@@ -4,12 +4,15 @@ import { env } from "@app/config/env";
 import { Stat } from "@app/interfaces";
 import { getLocale } from "next-intl/server";
 import { LANG } from "../enum/enums";
-
-export async function FetchStats(paramsObject?: {endpoint: string, daysRange: number}): Promise<{ count: number; data: Stat[] }> {
+interface FetchStatsParams {
+  endpoint: string;
+  daysRange: number;
+}
+export async function FetchStats(paramsObject: FetchStatsParams = { endpoint: '/', daysRange: 7}): Promise<{ count: number; data: Stat[] }> {
   let paramsString = '';
   if (paramsObject) {
     const { endpoint, daysRange } = paramsObject;
-    paramsString = `?endpoint=${encodeURIComponent(endpoint)}&dateRange=${encodeURIComponent(daysRange)}`;
+    paramsString = `?endpoint=${encodeURIComponent(endpoint)}&daysRange=${encodeURIComponent(daysRange)}`;
   }
   const lang = await getLocale();
   const baseUrl = env.getApiUrl(lang as LANG);
@@ -29,9 +32,11 @@ export async function FetchStats(paramsObject?: {endpoint: string, daysRange: nu
       //revalidatePath('/admin/dashboard/gestion_article')
       return responseData as { count: number; data: Stat[] };
     }
+    let error = await response.json();
+    console.log("Erreur lors de la récupération des statistiques : ", error);
     return { count: 0, data: [] };
   } catch (error) {
-    console.log("erreur lors de la récupération des articles : ", error);
+    console.log("erreur lors de la récupération des statistiques : ", error);
     return { count: 0, data: [] };
   }
 }

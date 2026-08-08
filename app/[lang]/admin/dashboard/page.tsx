@@ -13,7 +13,7 @@ import { EventInterface } from "@app/components/eventDataTable";
 import LoadingComponent from "@app/components/loadingComponent";
 import IndexLineChart from "@app/components/IndexLineChart";
 import { FetchStats } from "@app/actions/StatManager";
-
+const today = (new Date()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [analytics, setAnalytics] = useState<{ date: string; count: number }[]>(
@@ -127,7 +127,7 @@ export default function Page() {
       />
 
       <section className={styles.tendance}>
-        <IndexLineChart data={analytics} end={"01/08/2026"} />
+        <IndexLineChart data={analytics} end={today} />
       </section>
 
       {/* Grille 2x2 des Publications Cards */}
