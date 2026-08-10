@@ -36,10 +36,10 @@ export default function LoginRegisterComponent({ type, title, inputs, onClose, o
                 };
 
                 const response = await LoginUser(loginData);
-                if (response) {
+                if (response?.user) {
                     const authenticatedUser = {
+                        ...response.user,
                         email,
-                        roles: response.role
                     }
                     login(authenticatedUser as UserInterface)
                     onClose()
@@ -69,8 +69,8 @@ export default function LoginRegisterComponent({ type, title, inputs, onClose, o
                 const response = await RegisterUser(registerData as UserInterface);
                 if (response) {
                     const authenticatedUser = {
+                        ...response,
                         email,
-                        roles: response.role
                     }
                     login(authenticatedUser as UserInterface)
                     onClose()

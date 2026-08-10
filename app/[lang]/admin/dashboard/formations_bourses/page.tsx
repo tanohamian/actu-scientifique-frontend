@@ -3,7 +3,6 @@ import SwitchSection from './components/Section';
 //à ne pas supprimer
   const container: React.CSSProperties = {
         minHeight: '100vh',
-        padding: '40px',
         fontFamily: 'Arial, sans-serif',
         display: 'flex',
         flexDirection: 'column',
@@ -17,24 +16,22 @@ import SwitchSection from './components/Section';
 
   const title: React.CSSProperties = {
             color: 'white',
-            fontSize: '36px',
             fontWeight: 'bold',
             marginBottom: '1px'
           };
 
   const soustitre: React.CSSProperties = {
             color: 'white',
-            fontSize: '20px',
             fontWeight: 'bold',
             marginBottom: '30px'
           };
 
 export default function page() {
   return (
-    <div style={container}>
+    <div className="p-5 md:p-10" style={container}>
       <div style={entete}>
-        <h1 style={title}> Gestion de contenu </h1>
-        <h2 style={soustitre}> Gérer les bourses, les formations et les Reportages </h2>
+        <h1 className="text-2xl md:text-4xl" style={title}> Gestion de contenu </h1>
+        <h2 className="text-base md:text-xl" style={soustitre}> Gérer les bourses, les formations et les Reportages </h2>
       </div>
       <SwitchSection/>
     </div>

@@ -158,7 +158,7 @@ const containerClasses = `
         md:p-0
     `;
 
-  const formContainerClasses = `
+const formContainerClasses = `
         bg-white 
         rounded-xl 
         shadow-2xl 
@@ -168,7 +168,7 @@ const containerClasses = `
         max-w-md
     `;
 
-  const titleClasses = `
+const titleClasses = `
         text-[#588DA9] 
         text-2xl 
         md:text-3xl 
@@ -177,7 +177,7 @@ const containerClasses = `
         text-center
     `;
 
-  const subtitleClasses = `
+const subtitleClasses = `
         text-gray-500 
         text-xs 
         md:text-sm 
@@ -185,7 +185,7 @@ const containerClasses = `
         text-center
     `;
 
-  const inputClasses = `
+const inputClasses = `
         w-full 
         p-3 
         md:p-4 
@@ -201,7 +201,7 @@ const containerClasses = `
         disabled:cursor-not-allowed
     `;
 
-  const buttonClasses = `
+const buttonClasses = `
         w-full 
         p-3 
         md:p-4 
@@ -225,10 +225,10 @@ const containerClasses = `
         gap-2
     `;
 
-  const inputGroupClasses = "mb-6";
-  const labelClasses = "block text-gray-700 text-sm font-medium mb-2";
-  const linkContainerClasses = "text-center mt-6";
-  const linkClasses = `
+const inputGroupClasses = "mb-6";
+const labelClasses = "block text-gray-700 text-sm font-medium mb-2";
+const linkContainerClasses = "text-center mt-6";
+const linkClasses = `
         text-[#588DA9] 
         text-sm 
         font-medium 

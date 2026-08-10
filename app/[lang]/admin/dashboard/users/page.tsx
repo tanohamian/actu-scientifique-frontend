@@ -9,6 +9,8 @@ import { DeleteUser, FetchUsers, UpdateRole } from "@app/actions/Users";
 import { RegisterUser } from "@app/actions/Auth";
 import { Product } from "@app/interfaces";
 import LoadingComponent from '@app/components/loadingComponent'
+import ConfirmModal from '@app/components/ConfirmModal'
+import { toast } from '@app/components/FormComponent'
 
 export interface UserInterface {
     id?: string
@@ -51,6 +53,8 @@ export default function Utilisateurs() {
     const [editUser, setEditUser] = useState(false)
     const [selectedUser, setSelectedUser] = useState<string | null>(null);
     const [selectUserId, setSelectUserId] = useState<string | undefined>("");
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [userToDelete, setUserToDelete] = useState<string | undefined>(undefined);
     //const router = useRouter();
     //const [isPending, startTransition] = useTransition()
 
@@ -69,10 +73,14 @@ export default function Utilisateurs() {
                 console.log("nouvel utilisateur : ", newUser)
                 setUsers((prevUsers) => [...prevUsers, newUser as UserInterface])
                 setAddUser(false)
+                toast(true, false, "Utilisateur ajouté avec succès !")
+            } else {
+                toast(false, false, "Échec de l'ajout de l'utilisateur")
             }
 
         } catch (err) {
             console.log("erreur lors de l'appel addUser : ", err)
+            toast(false, false, "Échec de l'ajout de l'utilisateur")
         }
 
     }
@@ -89,22 +97,39 @@ export default function Utilisateurs() {
             if (updatedUser) {
                 setUsers((prevUsers) => prevUsers.map(u => u.id === updatedUser.id ? updatedUser : u))
                 setEditUser(false);
+                toast(true, false, "Rôle mis à jour avec succès !")
+            } else {
+                toast(false, false, "Échec de la mise à jour du rôle")
             }
         } catch (err) {
             console.log("erreur lors de l'appel updateRole : ", err)
+            toast(false, false, "Échec de la mise à jour du rôle")
         }
 
     }
 
-    const handleDelete = async (userId: string | undefined) => {
+    const handleDelete = (userId: string | undefined) => {
+        setUserToDelete(userId);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!userToDelete) return;
+        setIsDeleteModalOpen(false);
         try {
-            const deletedUser = await DeleteUser(userId)
+            const deletedUser = await DeleteUser(userToDelete)
             if (deletedUser) {
                 console.log("utilisateur supprimé : ", deletedUser)
-                setUsers((prevUsers) => prevUsers.filter(u => u.id !== userId))
+                setUsers((prevUsers) => prevUsers.filter(u => u.id !== userToDelete))
+                toast(true, false, "Utilisateur supprimé avec succès !")
+            } else {
+                toast(false, false, "Échec de la suppression de l'utilisateur")
             }
         } catch (err) {
             console.log("erreur lors de l'appel deleteUser : ", err)
+            toast(false, false, "Échec de la suppression de l'utilisateur")
+        } finally {
+            setUserToDelete(undefined);
         }
     };
 
@@ -291,6 +316,13 @@ export default function Utilisateurs() {
                 buttonTitle="Modifier"
                 fields={roleFields}
                 initialData={initialData}
+            />
+
+            <ConfirmModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={confirmDelete}
+                title="Supprimer cet utilisateur ?"
             />
         </div>
     );

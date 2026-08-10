@@ -5,7 +5,7 @@ import { showToast } from "nextjs-toast-notify"
 import { FetchTrainings, AddTraining, UpdateTraining, DeleteTraining } from '@app/actions/Trainings';
 import { FetchScholarships, AddScholarship, UpdateScholarship, DeleteScholarship, IScholarship } from '@app/actions/Scholarships';
 import { ITraining } from '@app/interfaces';
-import ConfirmModal from './ConfirmModal';
+import ConfirmModal from '@app/components/ConfirmModal';
 import dynamic from 'next/dynamic'
 
 
@@ -95,7 +95,7 @@ export default function SwitchSection() {
   }, [activeTab]);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -388,14 +388,26 @@ export default function SwitchSection() {
           <p style={{ textAlign: 'center', opacity: 0.6, color: 'white' }}>Aucune donnée trouvée.</p>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ display: 'flex', padding: '10px 0', borderBottom: '2px solid rgba(255, 255, 255, 0.3)', marginBottom: '10px', fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase', opacity: 0.9 }}>
-              <div style={{ flex: 2, color: 'white' }}>Titre</div>
-              {activeTab === 'Formations' && <div style={{ flex: 1, color: 'white' }}>Type</div>}
-              <div style={{ flex: 1, color: 'white' }}>Date</div>
-              <div style={{ flex: 0.5, textAlign: 'right', color: 'white' }}>Actions</div>
-            </div>
+            {!isMobile && (
+              <div style={{ display: 'flex', padding: '10px 0', borderBottom: '2px solid rgba(255, 255, 255, 0.3)', marginBottom: '10px', fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase', opacity: 0.9 }}>
+                <div style={{ flex: 2, color: 'white' }}>Titre</div>
+                {activeTab === 'Formations' && <div style={{ flex: 1, color: 'white' }}>Type</div>}
+                <div style={{ flex: 1, color: 'white' }}>Date</div>
+                <div style={{ flex: 0.5, textAlign: 'right', color: 'white' }}>Actions</div>
+              </div>
+            )}
             {items.map((item) => (
-              <div key={item.id} style={{ display: 'flex', padding: '15px 0', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', alignItems: 'center' }}>
+              <div
+                key={item.id}
+                style={{
+                  display: 'flex',
+                  flexDirection: isMobile ? 'column' : 'row',
+                  gap: isMobile ? '8px' : 0,
+                  padding: '15px 0',
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+                  alignItems: isMobile ? 'flex-start' : 'center',
+                }}
+              >
                 <div style={{ flex: 2, fontWeight: '500', color: 'white' }}>{item.title}</div>
                 {activeTab === 'Formations' && (
                   <div style={{ flex: 1, fontSize: '12px', color: 'white' }}>
@@ -405,7 +417,15 @@ export default function SwitchSection() {
                   </div>
                 )}
                 <div style={{ flex: 1, opacity: 0.8, color: 'white' }}>{formatDateFR(item.date)}</div>
-                <div style={{ flex: 0.5, display: 'flex', gap: '15px', justifyContent: 'flex-end' }}>
+                <div
+                  style={{
+                    flex: isMobile ? undefined : 0.5,
+                    width: isMobile ? '100%' : undefined,
+                    display: 'flex',
+                    gap: '15px',
+                    justifyContent: isMobile ? 'flex-start' : 'flex-end',
+                  }}
+                >
                   <button onClick={() => handleEditClick(item)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}><Pencil size={18} /></button>
                   <button onClick={() => item.id && (setItemToDelete(item.id), setIsModalOpen(true))} style={{ background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer' }}><Trash2 size={18} /></button>
                 </div>
