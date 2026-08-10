@@ -40,6 +40,7 @@ const AnalyticsCard = ({ cardTitle, endpoint }: AnalyticsCardProps) => {
             console.log("dataToSet = ", dataToSet);
             setData(dataToSet);
         })();
+        //console.log("cardTitle: ", cardTitle)
     }, [endpoint]);
     const onFilterChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedValue = parseInt(e.target.value);

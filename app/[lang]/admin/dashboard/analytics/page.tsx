@@ -7,6 +7,7 @@ import { FetchStats } from "@app/actions/StatManager";
 import { env } from "@app/config/env";
 import AnalyticsCard from "@/app/[lang]/components/analyticsCard";
 import { getLocale } from "next-intl/server";
+import { useTranslations } from "next-intl";
 const today = (new Date()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
 export default function Page() {
@@ -23,16 +24,16 @@ export default function Page() {
     "/shop",
   ];*/
   const allowedPrefixes = [
-    { endpoint: "/one-health", name: lang === "fr" ? "Une seule santé" : "One Health" },
-    { endpoint: "/technology", name: lang === "fr" ? "Technologie" : "Technology" },
-    { endpoint: "/eco-humanity", name: lang === "fr" ? "Eco-Humanité" : "Eco-Humanity" },
-    { endpoint: "/portrait-discovery", name: lang === "fr" ? "Portraits et découvertes" : "Portrait Discovery" },
-    { endpoint: "/agenda", name: lang === "fr" ? "Agenda" : "Agenda" },
-    { endpoint: "/about", name: lang === "fr" ? "À propos" : "About" },
-    { endpoint: "/opportunities", name: lang === "fr" ? "Opportunités" : "Opportunities" },
-    { endpoint: "/opportunities/scholarships", name: lang === "fr" ? "Bourses" : "Scholarships" },
-    { endpoint: "/opportunities/training", name: lang === "fr" ? "Formations" : "Trainings" },
-    { endpoint: "/shop", name: lang === "fr" ? "Boutique" : "Shop" },
+    { endpoint: "/one-health", key: "oneHealth" },
+    { endpoint: "/technology", key: "tech" },
+    { endpoint: "/eco-humanity", key: "ecoHumanity" },
+    { endpoint: "/portrait-discovery", key: "portraits" },
+    { endpoint: "/agenda", key: "agenda" },
+    { endpoint: "/about", key: "about" },
+    { endpoint: "/opportunities", key: "opportunities" },
+    { endpoint: "/opportunities/scholarships", key: "scholarships" },
+    { endpoint: "/opportunities/training", key: "trainings" },
+    { endpoint: "/shop", key: "shop" },
   ];
   const [isLoading, setIsLoading] = useState(true);
   const [tendance] = useState<string>(
@@ -46,7 +47,7 @@ export default function Page() {
       //lang = await getLocale() || "fr";
       console.log({ rowData });
       const dashboardPath = !env.devMode ? "/dashboard" : "/admin/dashboard";
-      allowedPrefixes.push({ endpoint: dashboardPath, name: lang === "fr" ? "Tableau de bord" : "Dashboard" });
+      allowedPrefixes.push({ endpoint: dashboardPath, key: "home" });
 
       const rowAnalytics = rowData.filter((item) =>
         allowedPrefixes.some((prefix) => item.endpoint.startsWith(prefix.endpoint)),
@@ -95,7 +96,7 @@ export default function Page() {
           return (
             <AnalyticsCard
               key={key}
-              cardTitle={item.name}
+              cardTitle={item.key}
               endpoint={item.endpoint}
             />
           );

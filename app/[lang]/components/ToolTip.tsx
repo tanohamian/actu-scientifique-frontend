@@ -1,5 +1,6 @@
-import React from 'react';
-import { env } from '../config/env';
+"use client"
+import React, { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface TooltipProps {
   data: {
@@ -11,12 +12,13 @@ interface TooltipProps {
 }
 
 export default function Tooltip({ data, children }: TooltipProps) {
+  const t = useTranslations("Navigation")
   return (
     <div className="group relative inline-block mb-5">
         <a href={`${(data.route||"").toLowerCase().replace("dashboard", "")}`}>
             {children ? children : (
                 <span className="cursor-pointer underline decoration-dotted text-white-700">
-                {data.label}
+                {t(data.label) ?? data.label}
                 </span>
             )}
 
