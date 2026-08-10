@@ -67,6 +67,36 @@ const EventFieldsLive: FormFieldConfig[] = [
     label: "Titre de l'évènement",
     type: "text",
     placeholder: "Entrez le titre de l'évènement",
+    required: false,
+  },
+  {
+    name: "location",
+    label: "Lieu",
+    type: "text",
+    placeholder: "Entrez le lieu de l'évènement",
+    required: true,
+  },
+
+  {
+    name: "date",
+    label: "Date",
+    type: "date",
+    placeholder: "Entrez la date de l'évènement",
+    required: false,
+  },
+
+  {
+    name: "description",
+    label: "Description",
+    type: "description",
+    placeholder: "Entrez la description de l\'évènement",
+    required: false,
+  },
+  {
+    name: "time",
+    label: "Heure",
+    type: "time",
+    placeholder: "Entrez l'heure de l'évènement",
     required: true,
   },
   {
@@ -74,7 +104,7 @@ const EventFieldsLive: FormFieldConfig[] = [
     label: "Url",
     type: "text",
     placeholder: "Entrez l'url de l'évènement",
-    required: true,
+    required: false,
   },
 ];
 
@@ -101,7 +131,25 @@ export interface EventLive {
   url: string | undefined;
   status?: boolean;
 }
+const formatDate = (dateStr?: string) => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
 
+  // Format 18/08/2026
+  return date.toLocaleDateString("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
+  /* Si tu préfères le texte (ex: 18 août 2026) :
+  return date.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }); 
+  */
+};
 export default function EventPage() {
   const [allEvents, setAllEvents] = useState<EventInterface[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -312,6 +360,7 @@ export default function EventPage() {
     date: "",
     time: "",
     status: false,
+    description: "",
   };
   let initialDataLive: InitialDataType = {
     title: "",
@@ -338,6 +387,10 @@ export default function EventPage() {
   if (selectedEvent) {
     initialDataLive = {
       title: (selectedEvent.title as string) || "",
+      location: (selectedEvent.location as string) || "",
+      date: (selectedEvent.date as string) || "",
+      time: (selectedEvent.time as string) || "",
+      description: (selectedEvent.description as string) || "",
       url: (selectedEvent.url as string) || "",
       status: selectedEvent.status || false,
     };
@@ -397,11 +450,13 @@ export default function EventPage() {
           .filter((event) => !event.status)
           .map((event) => ({
             ...event,
+            date: formatDate(event.date as string),
             status: event.status,
           }));
 
         const allFormattedEvents = events.map((event) => ({
           ...event,
+          date: formatDate(event.date as string),
           status: event.status,
         }));
 

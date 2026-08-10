@@ -226,6 +226,7 @@ export default function ArticlePage() {
   };
   /***fonction pour selectionne un article à modifier et ouvrir le modal de modification */
   const handleEditArticle = async (item: ElementType) => {
+    console.log("item article : ", item);
     setSelectedArticle(item as Article);
     setEditArticle(true);
   };
@@ -239,7 +240,9 @@ export default function ArticlePage() {
   const confirmDeleteArticle = async () => {
     if (!articleToDelete) return;
     setIsDeleteModalOpen(false);
-    setArticles(articles.filter((newItem) => newItem.id !== articleToDelete.id));
+    setArticles(
+      articles.filter((newItem) => newItem.id !== articleToDelete.id),
+    );
     const res = await DeleteArticle(articleToDelete.id as string);
     toast(
       res,
@@ -374,6 +377,7 @@ export default function ArticlePage() {
       </div>
 
       <AddElementModal
+        key={editArticle ? "new-media-open" : "new-media-closed"}
         isOpen={editArticle}
         onClose={() => {
           setEditArticle(false);
