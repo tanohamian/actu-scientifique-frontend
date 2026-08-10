@@ -132,14 +132,14 @@ export default function AdminLayout({
     position: "relative",
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     (async () => {
       const storedUserInfo = localStorage.getItem("user");
       if (storedUserInfo) {
         setUserInfo(JSON.parse(storedUserInfo));
       }
     })();
-  }, []);
+  }, []);*/
 
   return (
     <div style={containerStyle}>
