@@ -54,8 +54,8 @@ export default function OneHealthPage() {
         isOpen={isLoading}
         onClose={() => setIsLoading(false)}
       />
-      <h1 className="text-white text-8xl mb-10">{t("h1")}</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <h1 className="text-white text-5xl md:text-7xl mb-10">{t("h1")}</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {currentItems.map((item: Article | DbMedia) => (
           <ViewElement
             key={item.id}

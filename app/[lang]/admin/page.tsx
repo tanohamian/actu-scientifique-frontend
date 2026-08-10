@@ -44,8 +44,7 @@ export default function Connexion() {
     try {
       const response = await LoginUser(formData);
       localStorage.setItem("user", JSON.stringify(response.user));
-      const userInfo = response.user;
-      if (userInfo.roles == "ROLE_ADMIN") {
+      if (response.role == "ROLE_ADMIN") {
         const dashboardRoute = env.devMode ? "/admin/dashboard" : "/dashboard";
         router.push(dashboardRoute);
       } else {
@@ -58,99 +57,6 @@ export default function Connexion() {
       setLoading(false);
     }
   };
-
-  const containerClasses = `
-        min-h-screen 
-        flex 
-        justify-center 
-        items-center 
-        bg-gradient-to-br 
-        from-[#588DA9] 
-        to-[#4a7390] 
-        font-sans 
-        p-5 
-        md:p-0
-    `;
-
-  const formContainerClasses = `
-        bg-white 
-        rounded-xl 
-        shadow-2xl 
-        p-8 
-        md:p-12 
-        w-full 
-        max-w-md
-    `;
-
-  const titleClasses = `
-        text-[#588DA9] 
-        text-2xl 
-        md:text-3xl 
-        font-semibold 
-        mb-2 
-        text-center
-    `;
-
-  const subtitleClasses = `
-        text-gray-500 
-        text-xs 
-        md:text-sm 
-        mb-8 
-        text-center
-    `;
-
-  const inputClasses = `
-        w-full 
-        p-3 
-        md:p-4 
-        text-base 
-        border-2 
-        border-gray-200 
-        rounded-lg 
-        outline-none 
-        transition-all 
-        duration-300 
-        focus:border-[#588DA9]
-        disabled:bg-gray-100
-        disabled:cursor-not-allowed
-    `;
-
-  const buttonClasses = `
-        w-full 
-        p-3 
-        md:p-4 
-        bg-[#588DA9] 
-        text-white 
-        text-base 
-        font-semibold 
-        border-none 
-        rounded-lg 
-        cursor-pointer 
-        transition-all 
-        duration-300 
-        mt-3 
-        shadow-md 
-        hover:bg-[#4a7390]
-        disabled:bg-gray-400
-        disabled:cursor-not-allowed
-        flex
-        items-center
-        justify-center
-        gap-2
-    `;
-
-  const inputGroupClasses = "mb-6";
-  const labelClasses = "block text-gray-700 text-sm font-medium mb-2";
-  const linkContainerClasses = "text-center mt-6";
-  const linkClasses = `
-        text-[#588DA9] 
-        text-sm 
-        font-medium 
-        cursor-pointer 
-        hover:underline 
-        transition-colors
-    `;
-
   return (
     <div className={containerClasses}>
       <div className={formContainerClasses}>
@@ -238,3 +144,95 @@ export default function Connexion() {
     </div>
   );
 }
+
+const containerClasses = `
+        min-h-screen 
+        flex 
+        justify-center 
+        items-center 
+        bg-gradient-to-br 
+        from-[#588DA9] 
+        to-[#4a7390] 
+        font-sans 
+        p-5 
+        md:p-0
+    `;
+
+const formContainerClasses = `
+        bg-white 
+        rounded-xl 
+        shadow-2xl 
+        p-8 
+        md:p-12 
+        w-full 
+        max-w-md
+    `;
+
+const titleClasses = `
+        text-[#588DA9] 
+        text-2xl 
+        md:text-3xl 
+        font-semibold 
+        mb-2 
+        text-center
+    `;
+
+const subtitleClasses = `
+        text-gray-500 
+        text-xs 
+        md:text-sm 
+        mb-8 
+        text-center
+    `;
+
+const inputClasses = `
+        w-full 
+        p-3 
+        md:p-4 
+        text-base 
+        border-2 
+        border-gray-200 
+        rounded-lg 
+        outline-none 
+        transition-all 
+        duration-300 
+        focus:border-[#588DA9]
+        disabled:bg-gray-100
+        disabled:cursor-not-allowed
+    `;
+
+const buttonClasses = `
+        w-full 
+        p-3 
+        md:p-4 
+        bg-[#588DA9] 
+        text-white 
+        text-base 
+        font-semibold 
+        border-none 
+        rounded-lg 
+        cursor-pointer 
+        transition-all 
+        duration-300 
+        mt-3 
+        shadow-md 
+        hover:bg-[#4a7390]
+        disabled:bg-gray-400
+        disabled:cursor-not-allowed
+        flex
+        items-center
+        justify-center
+        gap-2
+    `;
+
+const inputGroupClasses = "mb-6";
+const labelClasses = "block text-gray-700 text-sm font-medium mb-2";
+const linkContainerClasses = "text-center mt-6";
+const linkClasses = `
+        text-[#588DA9] 
+        text-sm 
+        font-medium 
+        cursor-pointer 
+        hover:underline 
+        transition-colors
+    `;

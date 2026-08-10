@@ -55,7 +55,7 @@ export default function PortraitDiscoveryPage() {
         <p className="text-xl text-gray-300 font-medium">{t("p1")} </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12 justify-items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-12 justify-items-center">
         {currentItems.length > 0 ? (
           currentItems.map((item: Article) => {
             console.log("itemId: ", item.id);
@@ -65,7 +65,7 @@ export default function PortraitDiscoveryPage() {
                 onClick={() => router.push(`/${item.id}`)}
                 className="flex flex-col items-center group cursor-pointer"
               >
-                <div className="relative w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-white/20 group-hover:border-[#E85C41] transition-all duration-300 shadow-xl">
+                <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-white/20 group-hover:border-[#E85C41] transition-all duration-300 shadow-xl">
                   {item.illustrationUrl?.match(/\.(mp4|mkv|webm)$/i) ? (
                     <video
                       src={item.illustrationUrl}

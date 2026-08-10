@@ -103,13 +103,13 @@ export async function DeleteMedia(mediaId: string) {
     });
 
     if (response.ok) {
-      console.log(response);
-      revalidatePath("/admin/dashboard/gestion_media");
+      revalidatePath("/admin/dashboard/medias");
+      return true;
     }
-    return [];
+    return false;
   } catch (error) {
     console.log("erreur lors de la suppression du media : ", error);
-    return [];
+    return false;
   }
 }
 

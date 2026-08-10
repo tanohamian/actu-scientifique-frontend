@@ -2,7 +2,7 @@ import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'r
 import { RechartsDevtools } from '@recharts/devtools';
 import { useEffect, useState } from 'react';
 import { mockData } from '@/app/constant';
-
+const today = (new Date()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 interface IndexLineChartInterface{
   start?: Date | string,
   end?: Date | string,
@@ -11,7 +11,7 @@ interface IndexLineChartInterface{
 }
 const now = new Date(Date.now()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-export default function IndexLineChart({data=mockData, start="01/02/2026", end="01/08/2026"} : IndexLineChartInterface) {
+export default function IndexLineChart({data=mockData, start="01/02/2026", end=today} : IndexLineChartInterface) {
   const parseDate = (dateStr: string) => {
     const [day, month, year] = dateStr.split('/').map(Number);
     return new Date(year, month - 1, day).getTime();

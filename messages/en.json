@@ -8,7 +8,12 @@
     "portraits": "Portraits & discoveries",
     "agenda": "Agenda",
     "opportunities": "Opportunities",
-    "about": "About"
+    "scholarships": "Scholarships",
+    "trainings": "Trainings",
+    "academy":"Science Journalism Academy",
+    "shop": "Shop",
+    "about": "About",
+    "unknown": "Unknown"
   },
   "Subscription" : {
     "h1": "Subscribe to scientific news",

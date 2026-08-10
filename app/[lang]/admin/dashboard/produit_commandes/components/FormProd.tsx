@@ -75,10 +75,12 @@ export default function ComponentFormProd({
         //setImageFile(null)
         setImagePreview(null);
         toast(true, false, "Produit ajouté avec succès");
+      } else {
+        toast(false, false, "Erreur lors de l'ajout du produit");
       }
     } catch (error) {
       console.log("erreur lors de l'ajout du produit : ", error);
-      toast(true, false, "Erreur lors de l'ajout du produit");
+      toast(false, false, "Erreur lors de l'ajout du produit");
     }
   };
 

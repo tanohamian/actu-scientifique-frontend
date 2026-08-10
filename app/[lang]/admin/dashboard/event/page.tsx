@@ -21,6 +21,7 @@ import {
 } from "@app/actions/EventsManager";
 import LoadingComponent from "@app/components/loadingComponent";
 import { toast } from "@app/components/FormComponent";
+import ConfirmModal from "@app/components/ConfirmModal";
 
 const EventFields: FormFieldConfig[] = [
   {
@@ -66,6 +67,36 @@ const EventFieldsLive: FormFieldConfig[] = [
     label: "Titre de l'évènement",
     type: "text",
     placeholder: "Entrez le titre de l'évènement",
+    required: false,
+  },
+  {
+    name: "location",
+    label: "Lieu",
+    type: "text",
+    placeholder: "Entrez le lieu de l'évènement",
+    required: true,
+  },
+
+  {
+    name: "date",
+    label: "Date",
+    type: "date",
+    placeholder: "Entrez la date de l'évènement",
+    required: false,
+  },
+
+  {
+    name: "description",
+    label: "Description",
+    type: "description",
+    placeholder: "Entrez la description de l\'évènement",
+    required: false,
+  },
+  {
+    name: "time",
+    label: "Heure",
+    type: "time",
+    placeholder: "Entrez l'heure de l'évènement",
     required: true,
   },
   {
@@ -73,7 +104,7 @@ const EventFieldsLive: FormFieldConfig[] = [
     label: "Url",
     type: "text",
     placeholder: "Entrez l'url de l'évènement",
-    required: true,
+    required: false,
   },
 ];
 
@@ -100,7 +131,50 @@ export interface EventLive {
   url: string | undefined;
   status?: boolean;
 }
+const parseToISODate = (dateStr?: string) => {
+  if (!dateStr) return "";
 
+  // Si la date est déjà au format YYYY-MM-DD ou ISO
+  if (dateStr.includes("-")) {
+    return new Date(dateStr).toISOString();
+  }
+
+  // Si la date est au format "18/08/2026"
+  const parts = dateStr.split("/");
+  if (parts.length === 3) {
+    const [day, month, year] = parts;
+    const date = new Date(`${year}-${month}-${day}`);
+    return date.toISOString();
+  }
+
+  return dateStr;
+};
+
+// Fonction spécifique pour remplir l'input HTML type="date" (YYYY-MM-DD)
+const formatToInputDate = (dateStr?: string) => {
+  const isoStr = parseToISODate(dateStr);
+  if (!isoStr) return "";
+  return isoStr.split("T")[0]; // Extrait "YYYY-MM-DD"
+};
+const formatDate = (dateStr?: string) => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+
+  // Format 18/08/2026
+  return date.toLocaleDateString("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
+  /* Si tu préfères le texte (ex: 18 août 2026) :
+  return date.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }); 
+  */
+};
 export default function EventPage() {
   const [allEvents, setAllEvents] = useState<EventInterface[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -109,6 +183,8 @@ export default function EventPage() {
   const [events, setEvents] = useState<EventInterface[]>([]);
   const [eventLive, setEventLive] = useState<EventLive[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<TableData | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState<ElementType | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -224,9 +300,12 @@ export default function EventPage() {
           formattedEvent as EventInterface,
         ]);
         toast(true, false, "Évènement créé avec succès !");
+      } else {
+        toast(false, false, "Échec de la création de l'évènement");
       }
     } catch (error) {
       console.error("Erreur lors de la création de l'événement : ", error);
+      toast(false, false, "Échec de la création de l'évènement");
     }
   };
 
@@ -234,31 +313,32 @@ export default function EventPage() {
     try {
       const eventId = selectedEvent?.id as string;
 
-      if (!data?.url) {
-        throw new Error("L'URL est requise pour les événements en direct.");
-      }
+      const hasUrl = Boolean(data?.url && data.url.trim() !== "");
+      const eventData = {
+        ...data,
+        date: parseToISODate(data.date as string),
+        status: hasUrl,
+      };
 
-      const updatedEvent = await UpdateEvent(true, eventId, data.url || "");
+      const updatedEvent = await UpdateEvent(eventId, eventData);
 
       if (updatedEvent && !Array.isArray(updatedEvent)) {
         const formattedEvent = {
           ...updatedEvent,
+          date: formatDate(updatedEvent.date as string),
           status: updatedEvent.status,
           url: updatedEvent.url || "",
         };
 
-        setAllEvents((prevAll) => {
-          const exists = prevAll.find((e) => e.id === updatedEvent.id);
-          return exists
-            ? prevAll.map((e) =>
-                e.id === updatedEvent.id
-                  ? (formattedEvent as EventInterface)
-                  : e,
-              )
-            : [...prevAll, formattedEvent as EventInterface];
-        });
+        // Mise à jour de l'état global
+        setAllEvents((prevAll) =>
+          prevAll.map((e) =>
+            e.id === updatedEvent.id ? (formattedEvent as EventInterface) : e,
+          ),
+        );
 
-        if (updatedEvent.status === true) {
+        // Si l'événement est en live (status === true)
+        if (updatedEvent.status) {
           setEventLive((prevLive) => {
             const exists = prevLive.find((e) => e.id === updatedEvent.id);
             return exists
@@ -268,11 +348,12 @@ export default function EventPage() {
               : [...prevLive, formattedEvent as EventLive];
           });
 
+          // On le retire de la liste ordinaire
           setEvents((prevEvents) =>
             prevEvents.filter((e) => e.id !== updatedEvent.id),
           );
-          toast(true, false, "Évènement mis à jour avec succès !");
         } else {
+          // S'il n'est plus en live (status === false / URL retirée)
           setEvents((prevEvents) => {
             const exists = prevEvents.find((e) => e.id === updatedEvent.id);
             return exists
@@ -284,6 +365,7 @@ export default function EventPage() {
               : [...prevEvents, formattedEvent as EventInterface];
           });
 
+          // On le retire de la liste des lives
           setEventLive((prevLive) =>
             prevLive.filter((e) => e.id !== updatedEvent.id),
           );
@@ -292,9 +374,12 @@ export default function EventPage() {
         setEditEvent(false);
         setSelectedEvent(null);
         toast(true, false, "Évènement mis à jour avec succès !");
+      } else {
+        toast(false, false, "Échec de la mise à jour de l'évènement");
       }
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'événement : ", error);
+      toast(false, false, "Échec de la mise à jour de l'évènement");
     }
   };
 
@@ -304,6 +389,7 @@ export default function EventPage() {
     date: "",
     time: "",
     status: false,
+    description: "",
   };
   let initialDataLive: InitialDataType = {
     title: "",
@@ -330,6 +416,10 @@ export default function EventPage() {
   if (selectedEvent) {
     initialDataLive = {
       title: (selectedEvent.title as string) || "",
+      location: (selectedEvent.location as string) || "",
+      date: formatToInputDate(selectedEvent.date as string) || "",
+      time: (selectedEvent.time as string) || "",
+      description: (selectedEvent.description as string) || "",
       url: (selectedEvent.url as string) || "",
       status: selectedEvent.status || false,
     };
@@ -339,23 +429,35 @@ export default function EventPage() {
     setViewMode(mode);
   };
 
-  const handleDeleteEvent = async (data: ElementType) => {
+  const handleDeleteEvent = (data: ElementType) => {
+    setEventToDelete(data);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDeleteEvent = async () => {
+    if (!eventToDelete) return;
+    setIsDeleteModalOpen(false);
     try {
-      const deletedEvent = await DeleteEvent(data?.id as string);
+      const deletedEvent = await DeleteEvent(eventToDelete.id as string);
       if (deletedEvent) {
         setEvents((prevEvents) =>
-          prevEvents.filter((event) => event.id !== data.id),
+          prevEvents.filter((event) => event.id !== eventToDelete.id),
         );
         setEventLive((prevLive) =>
-          prevLive.filter((event) => event.id !== data.id),
+          prevLive.filter((event) => event.id !== eventToDelete.id),
         );
         setAllEvents((prevAll) =>
-          prevAll.filter((event) => event.id !== data.id),
+          prevAll.filter((event) => event.id !== eventToDelete.id),
         );
         toast(true, false, "Évènement supprimé avec succès !");
+      } else {
+        toast(false, false, "Échec de la suppression de l'évènement");
       }
     } catch (error) {
       console.error("Erreur lors de la suppression de l'événement : ", error);
+      toast(false, false, "Échec de la suppression de l'évènement");
+    } finally {
+      setEventToDelete(null);
     }
   };
 
@@ -377,11 +479,13 @@ export default function EventPage() {
           .filter((event) => !event.status)
           .map((event) => ({
             ...event,
+            date: formatDate(event.date as string),
             status: event.status,
           }));
 
         const allFormattedEvents = events.map((event) => ({
           ...event,
+          date: formatDate(event.date as string),
           status: event.status,
         }));
 
@@ -493,6 +597,7 @@ export default function EventPage() {
       />
 
       <AddElementModal
+        key={editEvent ? "new-media-open" : "new-media-closed"}
         isOpen={editEvent}
         onClose={() => setEditEvent(false)}
         onSubmit={handleSubmitEditEvent}
@@ -500,6 +605,13 @@ export default function EventPage() {
         buttonTitle="Modifier"
         fields={EventFieldsLive}
         initialData={initialDataLive}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDeleteEvent}
+        title="Supprimer cet évènement ?"
       />
     </div>
   );

@@ -5,6 +5,7 @@ import AffichageTableau from "./ListingTask";
 import { FetchOrders, UpdateOrderStatus } from "@app/actions/Order";
 import { Categories } from "@app/admin/page";
 import { FormFieldConfig } from "@app/components/addElement";
+import { toast } from "@app/components/FormComponent";
 
 interface Commande {
     id: string;
@@ -72,15 +73,23 @@ export default function CommandesTable({ setOrderLength, setLoading }: Commandes
     }, []);
 
     const handleEdit = async (item: Commande) => {
-        const result = await UpdateOrderStatus(item.id, item.status);
-        if (result) {
-            const updatedCommandes = donneesCommandes.map((commande) => {
-                if (commande.id === item.id) {
-                    return { ...commande, status: item.status };
-                }
-                return commande;
-            });
-            setDonneesCommandes(updatedCommandes);
+        try {
+            const result = await UpdateOrderStatus(item.id, item.status);
+            if (result) {
+                const updatedCommandes = donneesCommandes.map((commande) => {
+                    if (commande.id === item.id) {
+                        return { ...commande, status: item.status };
+                    }
+                    return commande;
+                });
+                setDonneesCommandes(updatedCommandes);
+                toast(true, false, "Statut de la commande mis à jour !");
+            } else {
+                toast(false, false, "Échec de la mise à jour de la commande");
+            }
+        } catch (error) {
+            console.log("erreur lors de la mise à jour de la commande : ", error);
+            toast(false, false, "Échec de la mise à jour de la commande");
         }
     };
 

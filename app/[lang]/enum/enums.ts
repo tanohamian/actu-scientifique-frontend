@@ -27,9 +27,9 @@ export enum OrderStatus {
 }
 
 export const AnalyticsBoundary = {
-  LAST_7_DAYS : "LAST_7_DAYS",
-  LAST_30_DAYS : "LAST_30_DAYS",
-  LAST_90_DAYS : "LAST_90_DAYS",
-  LAST_6_MONTHS : "LAST_6_MONTHS",
-  LAST_1_YEAR : "LAST_1_YEAR"
+  LAST_7_DAYS : { label: "Ces 7 derniers jours", value: 7 },
+  LAST_30_DAYS : { label: "Ces 30 derniers jours", value: 30 },
+  LAST_90_DAYS : { label: "Ces 3 derniers mois", value: 90 },
+  LAST_6_MONTHS : { label: "Ces 6 derniers mois", value: 180 },
+  LAST_1_YEAR : { label: "Cette année", value: 365 }
 }

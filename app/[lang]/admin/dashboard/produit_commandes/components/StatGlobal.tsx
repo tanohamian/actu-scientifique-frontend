@@ -16,7 +16,6 @@ export default function StatGlobal({ numberOrder, numberValidated, revenue }: St
 
   const statsContainer: React.CSSProperties = {
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
     gap: '20px',
     marginBottom: '30px'
   };
@@ -46,7 +45,7 @@ export default function StatGlobal({ numberOrder, numberValidated, revenue }: St
 
   return (
     <div style={container}>
-      <div style={statsContainer}>
+      <div className="grid-cols-1 sm:grid-cols-3" style={statsContainer}>
         <div style={statCard}>
           <div style={statLabel}>Commandes</div>
           <div style={statValue}>{numberOrder}</div>
