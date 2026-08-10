@@ -6,11 +6,13 @@ import IndexLineChart from "@app/components/IndexLineChart";
 import { FetchStats } from "@app/actions/StatManager";
 import { env } from "@app/config/env";
 import AnalyticsCard from "@/app/[lang]/components/analyticsCard";
+import { getLocale } from "next-intl/server";
 const today = (new Date()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
 export default function Page() {
+  let lang = 'fr';
   //const today = new Date().toISOString();
-  const allowedPrefixes = [
+  /*const allowedPrefixes = [
     "/one-health",
     "/technology",
     "/eco-humanity",
@@ -19,6 +21,18 @@ export default function Page() {
     "/about",
     "/opportunities/",
     "/shop",
+  ];*/
+  const allowedPrefixes = [
+    { endpoint: "/one-health", name: lang === "fr" ? "Une seule santé" : "One Health" },
+    { endpoint: "/technology", name: lang === "fr" ? "Technologie" : "Technology" },
+    { endpoint: "/eco-humanity", name: lang === "fr" ? "Eco-Humanité" : "Eco-Humanity" },
+    { endpoint: "/portrait-discovery", name: lang === "fr" ? "Portraits et découvertes" : "Portrait Discovery" },
+    { endpoint: "/agenda", name: lang === "fr" ? "Agenda" : "Agenda" },
+    { endpoint: "/about", name: lang === "fr" ? "À propos" : "About" },
+    { endpoint: "/opportunities", name: lang === "fr" ? "Opportunités" : "Opportunities" },
+    { endpoint: "/opportunities/scholarships", name: lang === "fr" ? "Bourses" : "Scholarships" },
+    { endpoint: "/opportunities/training", name: lang === "fr" ? "Formations" : "Trainings" },
+    { endpoint: "/shop", name: lang === "fr" ? "Boutique" : "Shop" },
   ];
   const [isLoading, setIsLoading] = useState(true);
   const [tendance] = useState<string>(
@@ -29,13 +43,13 @@ export default function Page() {
   useEffect(() => {
     async function update() {
       const rowData = (await FetchStats()).data;
-
+      //lang = await getLocale() || "fr";
       console.log({ rowData });
       const dashboardPath = !env.devMode ? "/dashboard" : "/admin/dashboard";
-      allowedPrefixes.push(dashboardPath);
+      allowedPrefixes.push({ endpoint: dashboardPath, name: lang === "fr" ? "Tableau de bord" : "Dashboard" });
 
       const rowAnalytics = rowData.filter((item) =>
-        allowedPrefixes.some((prefix) => item.endpoint.startsWith(prefix)),
+        allowedPrefixes.some((prefix) => item.endpoint.startsWith(prefix.endpoint)),
       );
       const grouped = rowAnalytics.reduce(
         (acc: Record<string, Record<string, number>>, current) => {
@@ -81,8 +95,8 @@ export default function Page() {
           return (
             <AnalyticsCard
               key={key}
-              cardTitle={item.replace(/^\//, "").replace(/-/g, " ")}
-              endpoint={item}
+              cardTitle={item.name}
+              endpoint={item.endpoint}
             />
           );
         })}

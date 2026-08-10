@@ -4,6 +4,7 @@ import IndexLineChart from "./IndexLineChart";
 import { AnalyticsBoundary } from "../enum/enums";
 import { useEffect, useState } from "react";
 import { FetchStats } from "../actions/StatManager";
+import Tooltip from "./ToolTip";
 let today = (new Date()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 export interface ListItem {
     text ?: string;
@@ -21,7 +22,7 @@ const AnalyticsCard = ({ cardTitle, endpoint }: AnalyticsCardProps) => {
     const [data, setData] = useState(mockData); // Replace with your actual data source
     let analyticsBoundaries = Object.values(AnalyticsBoundary).map(boundary => ({
         value: boundary.value,
-        label: boundary.label.replace(/_/g, ' ').toLowerCase()
+        label: boundary.label?.replace(/_/g, ' ')
     }));
     useEffect(() => {
         (async () => {
@@ -59,7 +60,7 @@ const AnalyticsCard = ({ cardTitle, endpoint }: AnalyticsCardProps) => {
     
     return (
         <article className={styles.card}> 
-            <h2 className={styles.title}>{cardTitle}</h2>
+            <Tooltip data={{ label: cardTitle, messageBubble: `Statistiques pour l'endpoint ${endpoint}`, route: endpoint }} />
             <ul className={styles['content-list']}>
                 <select className={styles['date-filter']} onChange={onFilterChange}>
                             {analyticsBoundaries.map((boundary, index) => (
