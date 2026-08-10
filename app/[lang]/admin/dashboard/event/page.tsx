@@ -131,6 +131,31 @@ export interface EventLive {
   url: string | undefined;
   status?: boolean;
 }
+const parseToISODate = (dateStr?: string) => {
+  if (!dateStr) return "";
+
+  // Si la date est déjà au format YYYY-MM-DD ou ISO
+  if (dateStr.includes("-")) {
+    return new Date(dateStr).toISOString();
+  }
+
+  // Si la date est au format "18/08/2026"
+  const parts = dateStr.split("/");
+  if (parts.length === 3) {
+    const [day, month, year] = parts;
+    const date = new Date(`${year}-${month}-${day}`);
+    return date.toISOString();
+  }
+
+  return dateStr;
+};
+
+// Fonction spécifique pour remplir l'input HTML type="date" (YYYY-MM-DD)
+const formatToInputDate = (dateStr?: string) => {
+  const isoStr = parseToISODate(dateStr);
+  if (!isoStr) return "";
+  return isoStr.split("T")[0]; // Extrait "YYYY-MM-DD"
+};
 const formatDate = (dateStr?: string) => {
   if (!dateStr) return "";
   const date = new Date(dateStr);
@@ -288,31 +313,32 @@ export default function EventPage() {
     try {
       const eventId = selectedEvent?.id as string;
 
-      if (!data?.url) {
-        throw new Error("L'URL est requise pour les événements en direct.");
-      }
+      const hasUrl = Boolean(data?.url && data.url.trim() !== "");
+      const eventData = {
+        ...data,
+        date: parseToISODate(data.date as string),
+        status: hasUrl,
+      };
 
-      const updatedEvent = await UpdateEvent(true, eventId, data.url || "");
+      const updatedEvent = await UpdateEvent(eventId, eventData);
 
       if (updatedEvent && !Array.isArray(updatedEvent)) {
         const formattedEvent = {
           ...updatedEvent,
+          date: formatDate(updatedEvent.date as string),
           status: updatedEvent.status,
           url: updatedEvent.url || "",
         };
 
-        setAllEvents((prevAll) => {
-          const exists = prevAll.find((e) => e.id === updatedEvent.id);
-          return exists
-            ? prevAll.map((e) =>
-                e.id === updatedEvent.id
-                  ? (formattedEvent as EventInterface)
-                  : e,
-              )
-            : [...prevAll, formattedEvent as EventInterface];
-        });
+        // Mise à jour de l'état global
+        setAllEvents((prevAll) =>
+          prevAll.map((e) =>
+            e.id === updatedEvent.id ? (formattedEvent as EventInterface) : e,
+          ),
+        );
 
-        if (updatedEvent.status === true) {
+        // Si l'événement est en live (status === true)
+        if (updatedEvent.status) {
           setEventLive((prevLive) => {
             const exists = prevLive.find((e) => e.id === updatedEvent.id);
             return exists
@@ -322,10 +348,12 @@ export default function EventPage() {
               : [...prevLive, formattedEvent as EventLive];
           });
 
+          // On le retire de la liste ordinaire
           setEvents((prevEvents) =>
             prevEvents.filter((e) => e.id !== updatedEvent.id),
           );
         } else {
+          // S'il n'est plus en live (status === false / URL retirée)
           setEvents((prevEvents) => {
             const exists = prevEvents.find((e) => e.id === updatedEvent.id);
             return exists
@@ -337,6 +365,7 @@ export default function EventPage() {
               : [...prevEvents, formattedEvent as EventInterface];
           });
 
+          // On le retire de la liste des lives
           setEventLive((prevLive) =>
             prevLive.filter((e) => e.id !== updatedEvent.id),
           );
@@ -388,7 +417,7 @@ export default function EventPage() {
     initialDataLive = {
       title: (selectedEvent.title as string) || "",
       location: (selectedEvent.location as string) || "",
-      date: (selectedEvent.date as string) || "",
+      date: formatToInputDate(selectedEvent.date as string) || "",
       time: (selectedEvent.time as string) || "",
       description: (selectedEvent.description as string) || "",
       url: (selectedEvent.url as string) || "",
@@ -568,6 +597,7 @@ export default function EventPage() {
       />
 
       <AddElementModal
+        key={editEvent ? "new-media-open" : "new-media-closed"}
         isOpen={editEvent}
         onClose={() => setEditEvent(false)}
         onSubmit={handleSubmitEditEvent}
