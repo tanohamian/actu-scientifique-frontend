@@ -15,3 +15,4 @@ export const mockData = [
   { date: "26/02/2026", count: 98 },  { date: "27/02/2026", count: 102 },
   { date: "28/02/2026", count: 107 }
 ];
+export const webHostname = "https://actuscientifique.com"

@@ -30,9 +30,9 @@ export default function Page() {
     { endpoint: "/portrait-discovery", key: "portraits" },
     { endpoint: "/agenda", key: "agenda" },
     { endpoint: "/about", key: "about" },
-    { endpoint: "/opportunities", key: "opportunities" },
     { endpoint: "/opportunities/scholarships", key: "scholarships" },
     { endpoint: "/opportunities/training", key: "trainings" },
+    { endpoint: "/opportunities/science-academy", key: "academy" },
     { endpoint: "/shop", key: "shop" },
   ];
   const [isLoading, setIsLoading] = useState(true);
