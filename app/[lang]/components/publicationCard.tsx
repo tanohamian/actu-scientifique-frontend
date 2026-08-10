@@ -2,7 +2,7 @@ import { mockData } from "@/app/constant";
 import styles from "../styles/Dashboard.module.scss";
 import IndexLineChart from "./IndexLineChart";
 import { AnalyticsBoundary } from "../enum/enums";
-
+let today = (new Date()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 export interface ListItem {
     text ?: string;
     title?:string
@@ -14,13 +14,14 @@ export interface PublicationCardProps {
     cardTitle: string; 
     items: ListItem[] ;
     isAnalytics ?: boolean ;
-    data?: {date: string, count: number}[] 
+    data?: {date: string, count: number}[];
+    onFilterChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-const PublicationCard = ({ cardTitle, items=[], data=mockData, isAnalytics=false }: PublicationCardProps) => {
+const PublicationCard = ({ cardTitle, items=[], data=mockData, isAnalytics=false, onFilterChange }: PublicationCardProps) => {
     let analyticsBoundaries = Object.values(AnalyticsBoundary).map(boundary => ({
-        value: boundary,
-        label: boundary.replace(/_/g, ' ').toLowerCase()
+        value: boundary.value,
+        label: boundary.label.replace(/_/g, ' ').toLowerCase()
     }));
     
     return (
@@ -30,12 +31,12 @@ const PublicationCard = ({ cardTitle, items=[], data=mockData, isAnalytics=false
                 {isAnalytics? 
                     (
                     <>
-                        <select className={styles['date-filter']}>
+                        <select className={styles['date-filter']} onChange={onFilterChange}>
                             {analyticsBoundaries.map((boundary, index) => (
                                 <option key={index} value={boundary.value}>{boundary.label}</option>
                             ))}
                         </select>
-                        <IndexLineChart data={data} end={"01/08/2026"}></IndexLineChart>
+                        <IndexLineChart data={data} end={today}></IndexLineChart>
                     </>
                 ) : 
                     
