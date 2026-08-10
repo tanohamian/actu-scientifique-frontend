@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { UserInterface } from "../admin/dashboard/users/page";
 import { redirect } from "next/navigation";
 import { getLocale } from "next-intl/server";
+import { jwtDecode } from "jwt-decode";
 import { LANG } from "../enum/enums";
 
 export async function RegisterUser(formData: UserInterface) {
@@ -56,15 +57,15 @@ export async function LoginUser(formData: FormState) {
       },
       body: JSON.stringify({ email: email, password: password }),
     });
-    console.log("response : ", response);
-
     if (!response.ok) {
       throw new Error(`Échec de la connexion : ${response.status}`);
     }
-
+    const responseJson = await response.json();
     const setCookieHeader = response.headers.get("set-cookie");
     if (setCookieHeader) {
       const token = setCookieHeader.split(";")[0].split("=")[1];
+      const user = jwtDecode(token);
+      responseJson.user = user;
       const cookieStore = await cookies();
       cookieStore.set("authToken", token, {
         httpOnly: true,
@@ -74,8 +75,6 @@ export async function LoginUser(formData: FormState) {
         maxAge: 3600,
       });
     }
-
-    const responseJson = await response.json();
     //console.log("responseJson : ", responseJson)
     return responseJson;
   } catch (error) {

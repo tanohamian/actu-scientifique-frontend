@@ -44,8 +44,7 @@ export default function Connexion() {
     try {
       const response = await LoginUser(formData);
       localStorage.setItem("user", JSON.stringify(response.user));
-      const userInfo = response.user;
-      if (userInfo.roles == "ROLE_ADMIN") {
+      if (response.role == "ROLE_ADMIN") {
         const dashboardRoute = env.devMode ? "/admin/dashboard" : "/dashboard";
         router.push(dashboardRoute);
       } else {
@@ -58,8 +57,95 @@ export default function Connexion() {
       setLoading(false);
     }
   };
+  return (
+    <div className={containerClasses}>
+      <div className={formContainerClasses}>
+        <h1 className={titleClasses}>Connexion</h1>
+        <p className={subtitleClasses}>Accédez à votre tableau de bord</p>
 
-  const containerClasses = `
+        <form onSubmit={handleSubmit}>
+          <div className={inputGroupClasses}>
+            <label className={labelClasses} htmlFor="email">
+              Adresse e-mail
+            </label>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="exemple@email.com"
+              value={formData.email}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+              className={inputClasses}
+              required
+              disabled={loading}
+              autoComplete="email"
+            />
+          </div>
+
+          <div className={inputGroupClasses}>
+            <label className={labelClasses} htmlFor="password">
+              Mot de passe
+            </label>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="••••••••"
+              value={formData.password}
+              onChange={(e) => handleInputChange("password", e.target.value)}
+              className={inputClasses}
+              required
+              disabled={loading}
+              autoComplete="current-password"
+            />
+          </div>
+
+          {message && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-600 text-center">{message}</p>
+            </div>
+          )}
+
+          <button type="submit" className={buttonClasses} disabled={loading}>
+            {loading ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                <span>Connexion en cours...</span>
+              </>
+            ) : (
+              <span>Se connecter</span>
+            )}
+          </button>
+        </form>
+
+        <div className={linkContainerClasses}>
+          <span className={linkClasses}>Mot de passe oublié ?</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const containerClasses = `
         min-h-screen 
         flex 
         justify-center 
@@ -150,91 +236,3 @@ export default function Connexion() {
         hover:underline 
         transition-colors
     `;
-
-  return (
-    <div className={containerClasses}>
-      <div className={formContainerClasses}>
-        <h1 className={titleClasses}>Connexion</h1>
-        <p className={subtitleClasses}>Accédez à votre tableau de bord</p>
-
-        <form onSubmit={handleSubmit}>
-          <div className={inputGroupClasses}>
-            <label className={labelClasses} htmlFor="email">
-              Adresse e-mail
-            </label>
-            <input
-              id="email"
-              type="email"
-              name="email"
-              placeholder="exemple@email.com"
-              value={formData.email}
-              onChange={(e) => handleInputChange("email", e.target.value)}
-              className={inputClasses}
-              required
-              disabled={loading}
-              autoComplete="email"
-            />
-          </div>
-
-          <div className={inputGroupClasses}>
-            <label className={labelClasses} htmlFor="password">
-              Mot de passe
-            </label>
-            <input
-              id="password"
-              type="password"
-              name="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={(e) => handleInputChange("password", e.target.value)}
-              className={inputClasses}
-              required
-              disabled={loading}
-              autoComplete="current-password"
-            />
-          </div>
-
-          {message && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-600 text-center">{message}</p>
-            </div>
-          )}
-
-          <button type="submit" className={buttonClasses} disabled={loading}>
-            {loading ? (
-              <>
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                <span>Connexion en cours...</span>
-              </>
-            ) : (
-              <span>Se connecter</span>
-            )}
-          </button>
-        </form>
-
-        <div className={linkContainerClasses}>
-          <span className={linkClasses}>Mot de passe oublié ?</span>
-        </div>
-      </div>
-    </div>
-  );
-}
