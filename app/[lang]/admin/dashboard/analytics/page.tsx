@@ -6,11 +6,14 @@ import IndexLineChart from "@app/components/IndexLineChart";
 import { FetchStats } from "@app/actions/StatManager";
 import { env } from "@app/config/env";
 import AnalyticsCard from "@/app/[lang]/components/analyticsCard";
+import { getLocale } from "next-intl/server";
+import { useTranslations } from "next-intl";
 const today = (new Date()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
 export default function Page() {
+  let lang = 'fr';
   //const today = new Date().toISOString();
-  const allowedPrefixes = [
+  /*const allowedPrefixes = [
     "/one-health",
     "/technology",
     "/eco-humanity",
@@ -19,6 +22,18 @@ export default function Page() {
     "/about",
     "/opportunities/",
     "/shop",
+  ];*/
+  const allowedPrefixes = [
+    { endpoint: "/one-health", key: "oneHealth" },
+    { endpoint: "/technology", key: "tech" },
+    { endpoint: "/eco-humanity", key: "ecoHumanity" },
+    { endpoint: "/portrait-discovery", key: "portraits" },
+    { endpoint: "/agenda", key: "agenda" },
+    { endpoint: "/about", key: "about" },
+    { endpoint: "/opportunities/scholarships", key: "scholarships" },
+    { endpoint: "/opportunities/training", key: "trainings" },
+    { endpoint: "/opportunities/science-academy", key: "academy" },
+    { endpoint: "/shop", key: "shop" },
   ];
   const [isLoading, setIsLoading] = useState(true);
   const [tendance] = useState<string>(
@@ -29,13 +44,13 @@ export default function Page() {
   useEffect(() => {
     async function update() {
       const rowData = (await FetchStats()).data;
-
+      //lang = await getLocale() || "fr";
       console.log({ rowData });
       const dashboardPath = !env.devMode ? "/dashboard" : "/admin/dashboard";
-      allowedPrefixes.push(dashboardPath);
+      allowedPrefixes.push({ endpoint: dashboardPath, key: "home" });
 
       const rowAnalytics = rowData.filter((item) =>
-        allowedPrefixes.some((prefix) => item.endpoint.startsWith(prefix)),
+        allowedPrefixes.some((prefix) => item.endpoint.startsWith(prefix.endpoint)),
       );
       const grouped = rowAnalytics.reduce(
         (acc: Record<string, Record<string, number>>, current) => {
@@ -81,8 +96,8 @@ export default function Page() {
           return (
             <AnalyticsCard
               key={key}
-              cardTitle={item.replace(/^\//, "").replace(/-/g, " ")}
-              endpoint={item}
+              cardTitle={item.key}
+              endpoint={item.endpoint}
             />
           );
         })}
