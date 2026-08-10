@@ -374,6 +374,18 @@ export default function MediaPage() {
       setLoadingEditMedia(false);
     }
   };
+  const confirmDeleteMedia = async () => {
+    if (!mediaToDelete) return;
+    setIsDeleteModalOpen(false);
+    const success = await DeleteMedia(mediaToDelete.id as string);
+    if (success) {
+      setMedias(medias.filter((media) => media.id !== mediaToDelete.id));
+      toast(true, false, "Média supprimé !");
+    } else {
+      toast(false, false, "Échec de la suppression du média");
+    }
+    setMediaToDelete(null);
+  };
 
   useEffect(() => {
     const fetchMedias = async () => {
