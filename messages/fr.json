@@ -8,7 +8,11 @@
     "portraits": "Portraits & découvertes",
     "agenda": "Agenda",
     "opportunities": "Opportunités",
-    "about": "À propos"
+    "scholarships": "Bourses",
+    "trainings": "Formations",
+    "about": "À propos",
+    "shop": "Boutique",
+    "unknown": "Inconnu"
   },
   "Subscription" : {
     "h1": "S'abonner à l'actualité scientifique",
