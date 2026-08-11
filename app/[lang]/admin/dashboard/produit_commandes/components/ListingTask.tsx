@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import { Search, Pencil, Trash2 } from "lucide-react";
 import AddElementModal, { FormFieldConfig } from "@app/components/addElement";
 import SearchBarComponent from "@app/components/searchBar";
+import { useTranslations } from "next-intl";
 
 interface ColonneDefinition {
   key: string;
@@ -132,6 +133,7 @@ export default function AffichageTableau<
   onDelete,
   editFields,
 }: React.PropsWithChildren<AffichageProps<T>>) {
+  const t = useTranslations("AffichageTableau");
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
@@ -186,7 +188,7 @@ export default function AffichageTableau<
       <div style={styles.searchSection}>
         <div style={styles.searchWrapper}>
           <SearchBarComponent
-            placeholder="Rechercher..........."
+            placeholder={t("searchPlaceholder")}
             inputValue={inputValue}
             setInputValue={setInputValue}
           />
@@ -196,7 +198,7 @@ export default function AffichageTableau<
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
         >
-          <option value="">Trier par</option>
+          <option value="">{t("sortBy")}</option>
           {columns.map((col) => (
             <option key={col.key} value={col.key}>
               {col.header}
@@ -216,7 +218,7 @@ export default function AffichageTableau<
               ))}
               {hasActions && (
                 <th key="actions" style={{ ...styles.th, textAlign: "right" }}>
-                  Actions
+                  {t("actions")}
                 </th>
               )}
             </tr>
@@ -250,7 +252,7 @@ export default function AffichageTableau<
                           >
                             <img
                               src={(item as any).preview_image}
-                              alt={value || "preview"}
+                              alt={value || t("altPreview")}
                               style={{
                                 width: "50px",
                                 height: "50px",
@@ -314,14 +316,14 @@ export default function AffichageTableau<
           <AddElementModal
             isOpen={showModal}
             onClose={() => setShowModal(false)}
-            titleComponent="Modifier Informations"
+            titleComponent={t("editModal.title")}
             onSubmit={async (updatedData) => {
               if (selectedItem && onEdit) {
                 onEdit({ ...selectedItem, ...updatedData });
               }
               setShowModal(false);
             }}
-            buttonTitle="Modifier"
+            buttonTitle={t("editModal.button")}
             fields={editFields}
             initialData={initialData}
           />

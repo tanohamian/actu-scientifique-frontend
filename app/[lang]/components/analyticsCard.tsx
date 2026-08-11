@@ -1,77 +1,150 @@
+"use client";
+
+import { useEffect, useState, useMemo, useCallback, ChangeEvent } from "react";
 import { mockData } from "@/app/constant";
 import styles from "../styles/Dashboard.module.scss";
 import IndexLineChart from "./IndexLineChart";
 import { AnalyticsBoundary } from "../enum/enums";
-import { useEffect, useState } from "react";
 import { FetchStats } from "../actions/StatManager";
 import Tooltip from "./ToolTip";
-let today = (new Date()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+import { useLocale, useTranslations } from "next-intl";
+
 export interface ListItem {
-    text ?: string;
-    title?:string
-    date ?: string | Date;
-    createdAt ?: Date|string
+  text?: string;
+  title?: string;
+  date?: string | Date;
+  createdAt?: Date | string;
 }
 
 export interface AnalyticsCardProps {
-    cardTitle: string; 
-    endpoint: string;
+  cardTitle: string;
+  endpoint: string;
 }
 
-const AnalyticsCard = ({ cardTitle, endpoint }: AnalyticsCardProps) => {
-    const [data, setData] = useState(mockData); // Replace with your actual data source
-    let analyticsBoundaries = Object.values(AnalyticsBoundary).map(boundary => ({
+interface AnalyticsDataPoint {
+  date: string;
+  count: number;
+}
+
+export default function AnalyticsCard({
+  cardTitle,
+  endpoint,
+}: AnalyticsCardProps) {
+  const t = useTranslations("AnalyticsCard");
+  const locale = useLocale();
+
+  const [data, setData] = useState<AnalyticsDataPoint[]>(mockData);
+
+  // Formatage de la date du jour selon la locale
+  const today = useMemo(() => {
+    return new Date().toLocaleDateString(locale, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  }, [locale]);
+
+  // Options de filtrage traduites et mémoïsées (Correction TypeScript)
+  const analyticsBoundaries = useMemo(() => {
+    return Object.values(AnalyticsBoundary).map((boundary) => {
+      // Mapping explicite selon la valeur numérique
+      let translationKey = "sevenDays";
+      if (boundary.value === 30) translationKey = "thirtyDays";
+      else if (boundary.value === 90) translationKey = "ninetyDays";
+      else if (boundary.value === 365) translationKey = "year";
+
+      const translatedLabel = t.has(`boundaries.${translationKey}`)
+        ? t(`boundaries.${translationKey}`)
+        : boundary.label?.replace(/_/g, " ");
+
+      return {
         value: boundary.value,
-        label: boundary.label?.replace(/_/g, ' ')
-    }));
-    useEffect(() => {
-        (async () => {
-            const rowAnalytics = (await FetchStats({ endpoint, daysRange: 7 })).data;
-            const grouped = rowAnalytics.reduce(
-                (acc: Record<string, number>, current) => {
-                    const date = new Date(current.createdAt).toLocaleDateString("fr-FR");
-                    acc[date] = (acc[date] || 0) + 1;
+        label: translatedLabel,
+      };
+    });
+  }, [t]);
 
-                    return acc;
-                },
-                {}
-            );
-            let dataToSet = grouped ? Object.entries(grouped).map(([date, count]) => ({ date, count })) : [];
-            console.log("dataToSet = ", dataToSet);
-            setData(dataToSet);
-        })();
-        //console.log("cardTitle: ", cardTitle)
-    }, [endpoint]);
-    const onFilterChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedValue = parseInt(e.target.value);
-        const rowAnalytics = (await FetchStats({ endpoint, daysRange: selectedValue })).data;
-        const grouped = rowAnalytics.reduce(
-            (acc: Record<string, number>, current) => {
-                const date = new Date(current.createdAt).toLocaleDateString("fr-FR");
-                acc[date] = (acc[date] || 0) + 1;
+  // Traitement et groupement des données par date
+  const processAnalyticsData = useCallback(
+    (rowAnalytics: Array<{ createdAt: string | Date }>) => {
+      const grouped = rowAnalytics.reduce<Record<string, number>>(
+        (acc, current) => {
+          const date = new Date(current.createdAt).toLocaleDateString(locale);
+          acc[date] = (acc[date] || 0) + 1;
+          return acc;
+        },
+        {},
+      );
 
-                return acc;
-            },
-            {}
-        );
-        let dataToSet = grouped ? Object.entries(grouped).map(([date, count]) => ({ date, count })) : [];
-        console.log("dataToSet = ", dataToSet);
-        setData(dataToSet);
-    }
-    
-    return (
-        <article className={styles.card}> 
-            <Tooltip data={{ label: cardTitle, messageBubble: `Statistiques pour l'endpoint ${endpoint}`, route: endpoint }} />
-            <ul className={styles['content-list']}>
-                <select className={styles['date-filter']} onChange={onFilterChange}>
-                            {analyticsBoundaries.map((boundary, index) => (
-                                <option key={index} value={boundary.value}>{boundary.label}</option>
-                            ))}
-                </select>
-                <IndexLineChart data={data} end={today}></IndexLineChart>
-            </ul>
-        </article>
-    );
+      return Object.entries(grouped).map(([date, count]) => ({ date, count }));
+    },
+    [locale],
+  );
+
+  // Fonction d'acquisition de données réutilisable
+  const fetchAndSetStats = useCallback(
+    async (daysRange: number, isSubscribed = true) => {
+      try {
+        const response = await FetchStats({ endpoint, daysRange });
+        const rowAnalytics = response?.data || [];
+        const dataToSet = processAnalyticsData(rowAnalytics);
+
+        if (isSubscribed) {
+          setData(dataToSet);
+        }
+      } catch (error) {
+        console.error(t("errors.fetchError"), error);
+      }
+    },
+    [endpoint, processAnalyticsData, t],
+  );
+
+  // Effet de chargement initial (Correction React Linter)
+  useEffect(() => {
+    let isSubscribed = true;
+
+    const initFetch = async () => {
+      await fetchAndSetStats(7, isSubscribed);
+    };
+
+    initFetch();
+
+    return () => {
+      isSubscribed = false;
+    };
+  }, [fetchAndSetStats]);
+
+  const onFilterChange = useCallback(
+    async (e: ChangeEvent<HTMLSelectElement>) => {
+      const selectedValue = parseInt(e.target.value, 10);
+      if (!isNaN(selectedValue)) {
+        await fetchAndSetStats(selectedValue);
+      }
+    },
+    [fetchAndSetStats],
+  );
+
+  const tooltipData = useMemo(() => {
+    return {
+      label: cardTitle,
+      messageBubble: t("tooltip.message", { endpoint }),
+      route: endpoint,
+    };
+  }, [cardTitle, endpoint, t]);
+
+  return (
+    <article className={styles.card}>
+      <Tooltip data={tooltipData} />
+      <ul className={styles["content-list"]}>
+        <select className={styles["date-filter"]} onChange={onFilterChange}>
+          {analyticsBoundaries.map((boundary, index) => (
+            <option key={boundary.value ?? index} value={boundary.value}>
+              {boundary.label}
+            </option>
+          ))}
+        </select>
+        <IndexLineChart data={data} end={today} />
+      </ul>
+    </article>
+  );
 }
-
-export default AnalyticsCard;

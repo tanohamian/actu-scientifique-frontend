@@ -1,105 +1,121 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import AffichageTableau from "./ListingTask";
 import { FetchOrders, UpdateOrderStatus } from "@app/actions/Order";
 import { Categories } from "@app/admin/page";
 import { FormFieldConfig } from "@app/components/addElement";
 import { toast } from "@app/components/FormComponent";
+import { useTranslations } from "next-intl";
 
 interface Commande {
-    id: string;
-    name: string;
-    category: Categories;
-    status: string;
-    totalAmount: number;
-    quantity: number;
-    email: string;
+  id: string;
+  name: string;
+  category: Categories;
+  status: string;
+  totalAmount: number;
+  quantity: number;
+  email: string;
 }
 
 interface CommandesTableProps {
-    setOrderLength: React.Dispatch<React.SetStateAction<number>>;
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setOrderLength: React.Dispatch<React.SetStateAction<number>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
-// Fonction pour traduire le status
-const getStatusLabel = (status: string): string => {
-    const statusMap: Record<string, string> = {
-        'CREATED': 'Créé',
-        'DELIVERED': 'Livré',
-        'CANCELED': 'Annulé'
-    };
-    return statusMap[status] || status;
-};
 
-const colonnesCommandes = [
-    { key: 'name', header: 'Produits' },
-    { key: 'category', header: 'Catégorie' },
-    {
-        key: 'status',
-        header: 'Status',
-        render: (value: string) => getStatusLabel(value)
+export default function CommandesTable({
+  setOrderLength,
+  setLoading,
+}: CommandesTableProps) {
+  const t = useTranslations("CommandesTable");
+
+  const statusOptions = useMemo(
+    () => [
+      { value: "CREATED", label: t("status.CREATED") },
+      { value: "DELIVERED", label: t("status.DELIVERED") },
+      { value: "CANCELED", label: t("status.CANCELED") },
+    ],
+    [t],
+  );
+
+  const getStatusLabel = useCallback(
+    (status: string): string => {
+      const option = statusOptions.find((opt) => opt.value === status);
+      return option ? option.label : status;
     },
-    { key: 'totalAmount', header: 'Prix' },
-    { key: 'quantity', header: 'Quantité' },
-];
+    [statusOptions],
+  );
 
-const editFields: FormFieldConfig[] = [
-    {
-        name: 'status',
-        label: 'Status',
-        type: 'select',
+  const colonnesCommandes = useMemo(
+    () => [
+      { key: "name", header: t("columns.name") },
+      { key: "category", header: t("columns.category") },
+      {
+        key: "status",
+        header: t("columns.status"),
+        render: (value: string) => getStatusLabel(value),
+      },
+      { key: "totalAmount", header: t("columns.totalAmount") },
+      { key: "quantity", header: t("columns.quantity") },
+    ],
+    [t, getStatusLabel],
+  );
+
+  const editFields: FormFieldConfig[] = useMemo(
+    () => [
+      {
+        name: "status",
+        label: t("fields.status"),
+        type: "select",
         required: false,
-        options: [
-            { value: 'CREATED', label: 'Créé' },
-            { value: 'DELIVERED', label: 'Livré' },
-            { value: 'CANCELED', label: 'Annulé' },
-        ]
+        options: statusOptions,
+      },
+    ],
+    [t, statusOptions],
+  );
+
+  const [donneesCommandes, setDonneesCommandes] = useState<Commande[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      const commandes = await FetchOrders();
+      if (commandes) {
+        setDonneesCommandes(commandes);
+        setOrderLength(commandes.length);
+      }
+      setLoading(false);
+    })();
+  }, [setLoading, setOrderLength]);
+
+  const handleEdit = async (item: Commande) => {
+    try {
+      const result = await UpdateOrderStatus(item.id, item.status);
+      if (result) {
+        const updatedCommandes = donneesCommandes.map((commande) => {
+          if (commande.id === item.id) {
+            return { ...commande, status: item.status };
+          }
+          return commande;
+        });
+        setDonneesCommandes(updatedCommandes);
+        toast(true, false, t("toasts.updateSuccess"));
+      } else {
+        toast(false, false, t("toasts.updateError"));
+      }
+    } catch (error) {
+      console.log("erreur lors de la mise à jour de la commande : ", error);
+      toast(false, false, t("toasts.updateError"));
     }
-];
+  };
 
-export default function CommandesTable({ setOrderLength, setLoading }: CommandesTableProps) {
-    const [donneesCommandes, setDonneesCommandes] = useState<Commande[]>([]);
-
-    useEffect(() => {
-        (async () => {
-            setLoading(true)
-            const commandes = await FetchOrders();
-            if (commandes) {
-                setDonneesCommandes(commandes);
-                setOrderLength(commandes.length);
-            }
-            setLoading(false)
-        })();
-    }, []);
-
-    const handleEdit = async (item: Commande) => {
-        try {
-            const result = await UpdateOrderStatus(item.id, item.status);
-            if (result) {
-                const updatedCommandes = donneesCommandes.map((commande) => {
-                    if (commande.id === item.id) {
-                        return { ...commande, status: item.status };
-                    }
-                    return commande;
-                });
-                setDonneesCommandes(updatedCommandes);
-                toast(true, false, "Statut de la commande mis à jour !");
-            } else {
-                toast(false, false, "Échec de la mise à jour de la commande");
-            }
-        } catch (error) {
-            console.log("erreur lors de la mise à jour de la commande : ", error);
-            toast(false, false, "Échec de la mise à jour de la commande");
-        }
-    };
-
-    return (
-        <AffichageTableau<Commande>
-            titre="Commandes"
-            columns={colonnesCommandes}
-            data={donneesCommandes}
-            onEdit={handleEdit}
-            editFields={editFields}
-        />
-    );
+  return (
+    <AffichageTableau<Commande>
+      titre={t("title")}
+      columns={colonnesCommandes}
+      data={donneesCommandes}
+      onEdit={handleEdit}
+      editFields={editFields}
+    />
+  );
 }

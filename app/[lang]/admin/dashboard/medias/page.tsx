@@ -6,7 +6,7 @@ import EventDataTable, {
   ElementType,
   TableData,
 } from "@app/components/eventDataTable";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import AddElementModal, {
   FormFieldConfig,
   InitialDataType,
@@ -23,143 +23,213 @@ import { Rubriques } from "@enum/enums";
 import { toast } from "@components/FormComponent";
 import LoadingComponent from "@components/loadingComponent";
 import { DbMedia, Product } from "@interfaces/index";
-import { url } from "inspector";
 import ConfirmModal from "@app/components/ConfirmModal";
+import { useTranslations } from "next-intl";
 
-const MediaFields: FormFieldConfig[] = [
-  {
-    name: "title",
-    label: "Titre du media",
-    placeholder: "Entrez le titre du media",
-    required: true,
-  },
-  {
-    name: "description",
-    label: "Description",
-    type: "description",
-    placeholder: "Entrez une description ...",
-    required: false,
-  },
-  {
-    name: "type",
-    label: "Type de media",
-    type: "select",
-    options: [
-      { label: "URL", value: "url" },
-      { label: "Fichier (Podcast/Vidéo)", value: "file" },
-    ],
-    required: true,
-  },
-  {
-    name: "url",
-    label: "URL du média",
-    type: "url",
-    placeholder: "https://exemple.com/media",
-    conditionalField: { dependsOn: "type", showWhen: "url" },
-  },
-  {
-    name: "file",
-    label: "Fichier",
-    type: "file",
-    conditionalField: { dependsOn: "type", showWhen: "file" },
-  },
-  {
-    name: "rubrique",
-    label: "Rubrique",
-    type: "select",
-    options: [
-      { label: "Une seule santé", value: Rubriques.ONE_HEALTH },
-      { label: "Technologie", value: Rubriques.TECHNOLOGY },
-      { label: "Éco-humanité", value: Rubriques.ECO_HUMANITY },
-      { label: "Portrait et découvertes", value: Rubriques.PORT_DISCOVERY },
-    ],
-    required: true,
-  },
-  {
-    name: "une",
-    label: "Mettre à la une",
-    type: "select",
-    options: [
-      { label: "Oui", value: 1 },
-      { label: "Non", value: 0 },
-    ],
-  },
-];
+export type rubriques = "technology" | "one_health" | "ecohumanity";
 
-const updateMediaFields: FormFieldConfig[] = [
-  {
-    name: "title",
-    label: "Titre du media",
-    placeholder: "Entrez le titre du media",
-  },
-  {
-    name: "description",
-    label: "Description",
-    type: "description",
-    placeholder: "Entrez une description ...",
-  },
-  {
-    name: "type",
-    label: "Type de media",
-    type: "select",
-    options: [
-      { label: "URL", value: "url" },
-      { label: "Media (vidéo, fichier, podcast)", value: "file" },
+export default function MediaPage() {
+  const t = useTranslations("MediaPage");
+
+  const mediaFields: FormFieldConfig[] = useMemo(
+    () => [
+      {
+        name: "title",
+        label: t("fields.title"),
+        placeholder: t("fields.titlePlaceholder"),
+        required: true,
+      },
+      {
+        name: "description",
+        label: t("fields.description"),
+        type: "description",
+        placeholder: t("fields.descriptionPlaceholder"),
+        required: false,
+      },
+      {
+        name: "language",
+        label: t("fields.language"),
+        type: "select",
+        options: [
+          { label: t("fields.languageOptions.french"), value: "french" },
+          { label: t("fields.languageOptions.english"), value: "english" },
+        ],
+      },
+      {
+        name: "type",
+        label: t("fields.type"),
+        type: "select",
+        options: [
+          { label: t("fields.typeOptions.url"), value: "url" },
+          { label: t("fields.typeOptions.file"), value: "file" },
+        ],
+        required: true,
+      },
+      {
+        name: "url",
+        label: t("fields.url"),
+        type: "url",
+        placeholder: t("fields.urlPlaceholder"),
+        conditionalField: { dependsOn: "type", showWhen: "url" },
+      },
+      {
+        name: "file",
+        label: t("fields.file"),
+        type: "file",
+        conditionalField: { dependsOn: "type", showWhen: "file" },
+      },
+      {
+        name: "rubrique",
+        label: t("fields.rubrique"),
+        type: "select",
+        options: [
+          {
+            label: t("fields.rubriqueOptions.oneHealth"),
+            value: Rubriques.ONE_HEALTH,
+          },
+          {
+            label: t("fields.rubriqueOptions.technology"),
+            value: Rubriques.TECHNOLOGY,
+          },
+          {
+            label: t("fields.rubriqueOptions.ecoHumanity"),
+            value: Rubriques.ECO_HUMANITY,
+          },
+          {
+            label: t("fields.rubriqueOptions.portDiscovery"),
+            value: Rubriques.PORT_DISCOVERY,
+          },
+        ],
+        required: true,
+      },
+      {
+        name: "une",
+        label: t("fields.featured"),
+        type: "select",
+        options: [
+          { label: t("fields.featuredOptions.yes"), value: 1 },
+          { label: t("fields.featuredOptions.no"), value: 0 },
+        ],
+      },
     ],
-  },
-  {
-    name: "url",
-    label: "URL du média",
-    type: "url",
-    placeholder: "https://exemple.com/media",
-    conditionalField: { dependsOn: "type", showWhen: "url" },
-  },
-  {
-    name: "file",
-    label: "Fichier",
-    type: "file",
-    conditionalField: { dependsOn: "type", showWhen: "file" },
-  },
-  {
-    name: "rubrique",
-    label: "Rubrique",
-    type: "select",
-    options: [
-      { label: "Une seule santé", value: Rubriques.ONE_HEALTH },
-      { label: "Technologie", value: Rubriques.TECHNOLOGY },
-      { label: "Éco-humanité", value: Rubriques.ECO_HUMANITY },
-      { label: "Portrait et découvertes", value: Rubriques.PORT_DISCOVERY },
+    [t],
+  );
+
+  const updateMediaFields: FormFieldConfig[] = useMemo(
+    () => [
+      {
+        name: "title",
+        label: t("fields.title"),
+        placeholder: t("fields.titlePlaceholder"),
+      },
+      {
+        name: "description",
+        label: t("fields.description"),
+        type: "description",
+        placeholder: t("fields.descriptionPlaceholder"),
+      },
+      {
+        name: "language",
+        label: t("fields.language"),
+        type: "select",
+        options: [
+          { label: t("fields.languageOptions.french"), value: "french" },
+          { label: t("fields.languageOptions.english"), value: "english" },
+        ],
+      },
+      {
+        name: "type",
+        label: t("fields.type"),
+        type: "select",
+        options: [
+          { label: t("fields.typeOptions.url"), value: "url" },
+          { label: t("fields.typeOptions.fileEdit"), value: "file" },
+        ],
+      },
+      {
+        name: "url",
+        label: t("fields.url"),
+        type: "url",
+        placeholder: t("fields.urlPlaceholder"),
+        conditionalField: { dependsOn: "type", showWhen: "url" },
+      },
+      {
+        name: "file",
+        label: t("fields.file"),
+        type: "file",
+        conditionalField: { dependsOn: "type", showWhen: "file" },
+      },
+      {
+        name: "rubrique",
+        label: t("fields.rubrique"),
+        type: "select",
+        options: [
+          {
+            label: t("fields.rubriqueOptions.oneHealth"),
+            value: Rubriques.ONE_HEALTH,
+          },
+          {
+            label: t("fields.rubriqueOptions.technology"),
+            value: Rubriques.TECHNOLOGY,
+          },
+          {
+            label: t("fields.rubriqueOptions.ecoHumanity"),
+            value: Rubriques.ECO_HUMANITY,
+          },
+          {
+            label: t("fields.rubriqueOptions.portDiscovery"),
+            value: Rubriques.PORT_DISCOVERY,
+          },
+        ],
+      },
+      {
+        name: "une",
+        label: t("fields.featured"),
+        type: "select",
+        options: [
+          { label: t("fields.featuredOptions.yes"), value: 1 },
+          { label: t("fields.featuredOptions.no"), value: 0 },
+        ],
+      },
     ],
-  },
-  {
-    name: "une",
-    label: "Mettre à la une",
-    type: "select",
-    options: [
-      { label: "Oui", value: 1 },
-      { label: "Non", value: 0 },
+    [t],
+  );
+
+  const mainHeaders = useMemo(
+    () => [
+      { key: "title", label: t("headers.title"), flexBasis: "15%" },
+      { key: "type", label: t("headers.type"), flexBasis: "9%" },
+      {
+        key: "rubrique",
+        label: t("headers.rubrique"),
+        flexBasis: "15%",
+        textAlign: "center" as Property.TextAlign,
+      },
+      { key: "url", label: t("headers.url"), flexBasis: "29%", type: "url" },
+      { key: "createdAt", label: t("headers.publishedAt"), flexBasis: "20%" },
+      { key: "actions", label: t("headers.actions"), flexBasis: "12%" },
     ],
-  },
-];
-const mainHeaders = [
-  { key: "title", label: "Titre", flexBasis: "15%" },
-  { key: "type", label: "Type", flexBasis: "9%" },
-  {
-    key: "rubrique",
-    label: "Rubrique",
-    flexBasis: "15%",
-    textAlign: "center" as Property.TextAlign,
-  },
-  { key: "url", label: "URL", flexBasis: "29%", type: "url" },
-  { key: "createdAt", label: "Date de publication", flexBasis: "20%" },
-  { key: "actions", label: "Actions", flexBasis: "12%" },
-];
-const pageContainerClasses = `
+    [t],
+  );
+
+  const [inputValue, setInputValue] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [editMedia, setEditMedia] = useState(false);
+  const [selectedMedia, setSelectedMedia] = useState<ElementType | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [mediaToDelete, setMediaToDelete] = useState<ElementType | null>(null);
+  const [loadingAddMeddia, setLoadingAddMedia] = useState(false);
+  const [loadingEditMedia, setLoadingEditMedia] = useState(false);
+
+  const [medias, setMedias] = useState<DbMedia[]>([]);
+
+  const pageContainerClasses = `
         min-h-screen 
         font-sans
     `;
 
-const headerClasses = `
+  const headerClasses = `
         flex 
         flex-col 
         md:flex-row 
@@ -172,28 +242,28 @@ const headerClasses = `
         p-5 
         md:p-10
     `;
-const textClasses = `
+  const textClasses = `
         m-0 
         text-2xl 
         md:text-3xl 
         lg:text-4xl 
-       font-light
+        font-light
         text-white
     `;
 
-const subTextClasses = `
+  const subTextClasses = `
         text-white 
         text-sm 
         md:text-base 
         font-light
     `;
 
-const contentContainerClasses = `
+  const contentContainerClasses = `
         p-5 
         md:p-10
     `;
 
-const searchAndTabsClasses = `
+  const searchAndTabsClasses = `
         flex 
         flex-col 
         md:flex-row 
@@ -206,30 +276,11 @@ const searchAndTabsClasses = `
         md:justify-between
     `;
 
-const searchBarWrapperClasses = `
+  const searchBarWrapperClasses = `
         flex-grow 
         w-full 
         md:max-w-xl
     `;
-export type rubriques = "technology" | "one_health" | "ecohumanity";
-
-export default function MediaPage() {
-  const [inputValue, setInputValue] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [editMedia, setEditMedia] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState<ElementType | null>(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [mediaToDelete, setMediaToDelete] = useState<ElementType | null>(null);
-  const [loadingAddMeddia, setLoadingAddMedia] = useState(false);
-  const [loadingEditMedia, setLoadingEditMedia] = useState(false);
-
-  /**const [filters] = useState<IFilter[]>(
-    mainHeaders.map((header) => {
-      return { value: header.key, label: header.label };
-    }),
-  );*/
-  const [medias, setMedias] = useState<DbMedia[]>([]);
 
   const handleMedia = () => {
     setSelectedMedia(null);
@@ -276,22 +327,14 @@ export default function MediaPage() {
         }
       }
 
-      console.log("📦 Contenu du FormData:");
-      for (const [key, value] of media.entries()) {
-        if (value instanceof File) {
-          console.log(`  ${key}: [File] ${value.name} (${value.size} bytes)`);
-        } else {
-          console.log(`  ${key}:`, value);
-        }
-      }
       const result = await AddMedia(media);
       setMedias((prev) => [...prev, result]);
       setIsOpen(false);
       setSelectedMedia(null);
-      toast(true, false, "Media Ajouté !");
+      toast(true, false, t("toasts.addSuccess"));
     } catch (error) {
       console.error("Erreur:", error);
-      toast(false, false, "Échec de l'upload du media");
+      toast(false, false, t("toasts.addError"));
     } finally {
       setLoadingAddMedia(false);
     }
@@ -302,12 +345,11 @@ export default function MediaPage() {
     setSelectedMedia(item as TableData);
     setEditMedia(true);
   };
+
   const handleDeleteMedia = async (item: ElementType) => {
     console.log("Deleting event:", item);
-    setSelectedMedia(item as TableData);
-    await DeleteMedia(item.id as string);
-    toast(true, false, "Media Supprimé !");
-    setMedias(medias.filter((media) => media.id !== item.id));
+    setMediaToDelete(item);
+    setIsDeleteModalOpen(true);
   };
 
   const editInitialData: InitialDataType | null = selectedMedia
@@ -339,6 +381,7 @@ export default function MediaPage() {
         };
       })()
     : null;
+
   const handleSubmitEditMedia = async (
     data: Product | InitialDataType | DbMedia,
   ) => {
@@ -346,7 +389,6 @@ export default function MediaPage() {
     try {
       data = data as InitialDataType;
       const media = new FormData();
-      //media.append("id", selectedMedia?.id as string);
       media.append("title", data.title as string);
       media.append("rubrique", data.rubrique as string);
       media.append("une", data.une as string);
@@ -364,25 +406,26 @@ export default function MediaPage() {
       setMedias((prev) =>
         prev.map((m) => (m.id === response.id ? response : m)),
       );
-      toast(true, false, "Média mis à jour !");
+      toast(true, false, t("toasts.updateSuccess"));
       setEditMedia(false);
       setSelectedMedia(null);
     } catch (error) {
       console.log((error as Error).message);
-      toast(false, false, "Échec de la mise à jour du média");
+      toast(false, false, t("toasts.updateError"));
     } finally {
       setLoadingEditMedia(false);
     }
   };
+
   const confirmDeleteMedia = async () => {
     if (!mediaToDelete) return;
     setIsDeleteModalOpen(false);
     const success = await DeleteMedia(mediaToDelete.id as string);
     if (success) {
       setMedias(medias.filter((media) => media.id !== mediaToDelete.id));
-      toast(true, false, "Média supprimé !");
+      toast(true, false, t("toasts.deleteSuccess"));
     } else {
-      toast(false, false, "Échec de la suppression du média");
+      toast(false, false, t("toasts.deleteError"));
     }
     setMediaToDelete(null);
   };
@@ -420,7 +463,6 @@ export default function MediaPage() {
       media.title?.toLowerCase().includes(search) ||
       media.rubrique?.toLowerCase().includes(search) ||
       media.description?.toLowerCase().includes(search)
-      //article.createdAt?.includes(search)
     );
   });
 
@@ -428,13 +470,11 @@ export default function MediaPage() {
     <div className={pageContainerClasses}>
       <div className={headerClasses}>
         <div>
-          <h1 className={textClasses}>Gestion des Médias</h1>
-          <h3 className={subTextClasses}>
-            Gérer les podcasts et les videos depuis cette interface
-          </h3>
+          <h1 className={textClasses}>{t("header.title")}</h1>
+          <h3 className={subTextClasses}>{t("header.subtitle")}</h3>
         </div>
         <ButtonComponent
-          textButton="Ajouter un media"
+          textButton={t("header.addButton")}
           size="large"
           onclick={handleMedia}
         />
@@ -444,13 +484,11 @@ export default function MediaPage() {
         <div className={searchAndTabsClasses}>
           <div className={searchBarWrapperClasses}>
             <SearchBarComponent
-              placeholder="Rechercher un media...."
+              placeholder={t("search.placeholder")}
               inputValue={inputValue}
               setInputValue={setInputValue}
-              //setFocus={() => {}}
             />
           </div>
-          {/*<Filter filters={filters} />*/}
         </div>
 
         <article className="flex flex-col lg:flex-row gap-8">
@@ -474,9 +512,9 @@ export default function MediaPage() {
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onSubmit={handleSubmitMedia}
-        titleComponent="Ajouter un Média"
-        buttonTitle="Ajouter"
-        fields={MediaFields}
+        titleComponent={t("modals.addTitle")}
+        buttonTitle={t("modals.addSubmit")}
+        fields={mediaFields}
         initialData={emptyData}
         isLoading={loadingAddMeddia}
       />
@@ -486,8 +524,8 @@ export default function MediaPage() {
         key={selectedMedia?.id ?? "edit-media"}
         onClose={() => setEditMedia(false)}
         onSubmit={handleSubmitEditMedia}
-        titleComponent="Modifier un média"
-        buttonTitle="Modifier"
+        titleComponent={t("modals.editTitle")}
+        buttonTitle={t("modals.editSubmit")}
         fields={updateMediaFields}
         initialData={editInitialData ?? emptyData}
         isLoading={loadingEditMedia}
@@ -497,7 +535,7 @@ export default function MediaPage() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={confirmDeleteMedia}
-        title="Supprimer ce média ?"
+        title={t("modals.deleteTitle")}
       />
     </div>
   );
