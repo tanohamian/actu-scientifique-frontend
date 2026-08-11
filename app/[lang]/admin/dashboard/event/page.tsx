@@ -1,4 +1,5 @@
 "use client";
+
 import ButtonComponent from "@app/components/button";
 import SearchBarComponent from "@app/components/searchBar";
 import EventDataTable, {
@@ -6,7 +7,7 @@ import EventDataTable, {
   EventInterface,
   TableData,
 } from "@app/components/eventDataTable";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import AddElementModal, {
   FormFieldConfig,
   InitialDataType,
@@ -22,105 +23,7 @@ import {
 import LoadingComponent from "@app/components/loadingComponent";
 import { toast } from "@app/components/FormComponent";
 import ConfirmModal from "@app/components/ConfirmModal";
-
-const EventFields: FormFieldConfig[] = [
-  {
-    name: "title",
-    label: "Titre de l'évènement",
-    type: "text",
-    placeholder: "Entrez le titre de l'évènement",
-    required: true,
-  },
-  {
-    name: "location",
-    label: "Lieu",
-    type: "text",
-    placeholder: "Entrez le lieu de l'évènement",
-    required: true,
-  },
-  {
-    name: "date",
-    label: "Date",
-    type: "date",
-    placeholder: "Entrez la date de l'évènement",
-    required: true,
-  },
-  {
-    name: "time",
-    label: "Heure",
-    type: "time",
-    placeholder: "Entrez l'heure de l'évènement",
-    required: true,
-  },
-  {
-    name: "description",
-    label: "Description",
-    type: "description",
-    placeholder: "Entrez la description de l\'évènement",
-    required: false,
-  },
-];
-
-const EventFieldsLive: FormFieldConfig[] = [
-  {
-    name: "title",
-    label: "Titre de l'évènement",
-    type: "text",
-    placeholder: "Entrez le titre de l'évènement",
-    required: false,
-  },
-  {
-    name: "location",
-    label: "Lieu",
-    type: "text",
-    placeholder: "Entrez le lieu de l'évènement",
-    required: true,
-  },
-
-  {
-    name: "date",
-    label: "Date",
-    type: "date",
-    placeholder: "Entrez la date de l'évènement",
-    required: false,
-  },
-
-  {
-    name: "description",
-    label: "Description",
-    type: "description",
-    placeholder: "Entrez la description de l\'évènement",
-    required: false,
-  },
-  {
-    name: "time",
-    label: "Heure",
-    type: "time",
-    placeholder: "Entrez l'heure de l'évènement",
-    required: true,
-  },
-  {
-    name: "url",
-    label: "Url",
-    type: "text",
-    placeholder: "Entrez l'url de l'évènement",
-    required: false,
-  },
-];
-
-const mainHeaders = [
-  { key: "title", label: "Titre de l'evenement", flexBasis: "25%" },
-  { key: "location", label: "lieu", flexBasis: "15%" },
-  { key: "date", label: "Date", flexBasis: "15%" },
-  { key: "time", label: "heure", flexBasis: "15%" },
-  { key: "actions", label: "Actions", flexBasis: "15%" },
-];
-
-const liveHeaders = [
-  { key: "title", label: "Titre de l'evenement", flexBasis: "40%" },
-  { key: "url", label: "Url", flexBasis: "30%" },
-  { key: "actions", label: "Actions", flexBasis: "15%" },
-];
+import { useTranslations } from "next-intl";
 
 const TABS_INACTIVE_COLOR = "#5A8FAC";
 const TABS_ACTIVE_COLOR = "#374151";
@@ -131,15 +34,14 @@ export interface EventLive {
   url: string | undefined;
   status?: boolean;
 }
+
 const parseToISODate = (dateStr?: string) => {
   if (!dateStr) return "";
 
-  // Si la date est déjà au format YYYY-MM-DD ou ISO
   if (dateStr.includes("-")) {
     return new Date(dateStr).toISOString();
   }
 
-  // Si la date est au format "18/08/2026"
   const parts = dateStr.split("/");
   if (parts.length === 3) {
     const [day, month, year] = parts;
@@ -150,32 +52,26 @@ const parseToISODate = (dateStr?: string) => {
   return dateStr;
 };
 
-// Fonction spécifique pour remplir l'input HTML type="date" (YYYY-MM-DD)
 const formatToInputDate = (dateStr?: string) => {
   const isoStr = parseToISODate(dateStr);
   if (!isoStr) return "";
-  return isoStr.split("T")[0]; // Extrait "YYYY-MM-DD"
+  return isoStr.split("T")[0];
 };
+
 const formatDate = (dateStr?: string) => {
   if (!dateStr) return "";
   const date = new Date(dateStr);
 
-  // Format 18/08/2026
   return date.toLocaleDateString("fr-FR", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
   });
-
-  /* Si tu préfères le texte (ex: 18 août 2026) :
-  return date.toLocaleDateString("fr-FR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }); 
-  */
 };
+
 export default function EventPage() {
+  const t = useTranslations("EventPage");
+
   const [allEvents, setAllEvents] = useState<EventInterface[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -190,93 +86,154 @@ export default function EventPage() {
 
   const router = useRouter();
 
-  const pageContainerClasses = `
-        min-h-screen 
-        font-sans
-    `;
+  const EventFields: FormFieldConfig[] = useMemo(
+    () => [
+      {
+        name: "title",
+        label: t("fields.title"),
+        type: "text",
+        placeholder: t("fields.titlePlaceholder"),
+        required: true,
+      },
+      {
+        name: "location",
+        label: t("fields.location"),
+        type: "text",
+        placeholder: t("fields.locationPlaceholder"),
+        required: true,
+      },
+      {
+        name: "date",
+        label: t("fields.date"),
+        type: "date",
+        placeholder: t("fields.datePlaceholder"),
+        required: true,
+      },
+      {
+        name: "time",
+        label: t("fields.time"),
+        type: "time",
+        placeholder: t("fields.timePlaceholder"),
+        required: true,
+      },
+      {
+        name: "description",
+        label: t("fields.description"),
+        type: "description",
+        placeholder: t("fields.descriptionPlaceholder"),
+        required: false,
+      },
+    ],
+    [t],
+  );
+
+  const EventFieldsLive: FormFieldConfig[] = useMemo(
+    () => [
+      {
+        name: "title",
+        label: t("fields.title"),
+        type: "text",
+        placeholder: t("fields.titlePlaceholder"),
+        required: false,
+      },
+      {
+        name: "location",
+        label: t("fields.location"),
+        type: "text",
+        placeholder: t("fields.locationPlaceholder"),
+        required: true,
+      },
+      {
+        name: "date",
+        label: t("fields.date"),
+        type: "date",
+        placeholder: t("fields.datePlaceholder"),
+        required: false,
+      },
+      {
+        name: "description",
+        label: t("fields.description"),
+        type: "description",
+        placeholder: t("fields.descriptionPlaceholder"),
+        required: false,
+      },
+      {
+        name: "time",
+        label: t("fields.time"),
+        type: "time",
+        placeholder: t("fields.timePlaceholder"),
+        required: true,
+      },
+      {
+        name: "url",
+        label: t("fields.url"),
+        type: "text",
+        placeholder: t("fields.urlPlaceholder"),
+        required: false,
+      },
+    ],
+    [t],
+  );
+
+  const mainHeaders = useMemo(
+    () => [
+      { key: "title", label: t("headers.title"), flexBasis: "25%" },
+      { key: "location", label: t("headers.location"), flexBasis: "15%" },
+      { key: "date", label: t("headers.date"), flexBasis: "15%" },
+      { key: "time", label: t("headers.time"), flexBasis: "15%" },
+      { key: "actions", label: t("headers.actions"), flexBasis: "15%" },
+    ],
+    [t],
+  );
+
+  const liveHeaders = useMemo(
+    () => [
+      { key: "title", label: t("headers.title"), flexBasis: "40%" },
+      { key: "url", label: t("headers.url"), flexBasis: "30%" },
+      { key: "actions", label: t("headers.actions"), flexBasis: "15%" },
+    ],
+    [t],
+  );
+
+  const pageContainerClasses = `min-h-screen font-sans`;
 
   const headerClasses = `
-        flex 
-        flex-col 
-        md:flex-row 
-        justify-between 
-        items-start 
-        md:items-center 
-        mb-4 
-        gap-4 
-        md:gap-0
-        p-5 
-        md:p-10
+        flex flex-col md:flex-row justify-between items-start 
+        md:items-center mb-4 gap-4 md:gap-0 p-5 md:p-10
     `;
 
   const textClasses = `
-        m-0 
-        text-2xl 
-        md:text-3xl 
-        lg:text-4xl 
-       font-light
-        text-white
+        m-0 text-2xl md:text-3xl lg:text-4xl font-light text-white
     `;
 
   const subTextClasses = `
-        text-white 
-        text-sm 
-        md:text-base 
-        font-light
+        text-white text-sm md:text-base font-light
     `;
 
-  const contentContainerClasses = `
-        p-5 
-        md:p-10
-    `;
+  const contentContainerClasses = `p-5 md:p-10`;
 
   const searchAndTabsClasses = `
-        flex 
-        flex-col 
-        md:flex-row 
-        items-center 
-        gap-4 
-        md:gap-5 
-        my-5 
-        md:my-8 
-        justify-center 
-        md:justify-between
+        flex flex-col md:flex-row items-center gap-4 md:gap-5 
+        my-5 md:my-8 justify-center md:justify-between
     `;
 
-  const searchBarWrapperClasses = `
-        flex-grow 
-        w-full 
-        md:max-w-xl
-    `;
+  const searchBarWrapperClasses = `flex-grow w-full md:max-w-xl`;
 
   const tabsClasses = `
-        flex 
-        gap-0 
-        bg-[${TABS_INACTIVE_COLOR.replace("#", "")}] 
-        rounded-lg 
-        overflow-hidden 
-        p-1
+        flex gap-0 bg-[${TABS_INACTIVE_COLOR.replace("#", "")}] 
+        rounded-lg overflow-hidden p-1
     `;
 
   const tabButtonBaseClasses = `
-        py-2 
-        px-5 
-        border-none 
-        cursor-pointer 
-        text-sm 
-        md:text-base 
-        font-medium 
-        transition-all 
-        duration-200 
-        bg-transparent 
-        text-white 
-        rounded-md 
-        whitespace-nowrap
+        py-2 px-5 border-none cursor-pointer text-sm md:text-base 
+        font-medium transition-all duration-200 bg-transparent 
+        text-white rounded-md whitespace-nowrap
     `;
 
   const handleEvent = () => {
     setIsOpen(true);
   };
+
   const handleSubmitEvent = async (data: EventInterface) => {
     try {
       const newEvent = await CreateEvent(data);
@@ -299,13 +256,13 @@ export default function EventPage() {
           ...prevAll,
           formattedEvent as EventInterface,
         ]);
-        toast(true, false, "Évènement créé avec succès !");
+        toast(true, false, t("toastCreateSuccess"));
       } else {
-        toast(false, false, "Échec de la création de l'évènement");
+        toast(false, false, t("toastCreateError"));
       }
     } catch (error) {
       console.error("Erreur lors de la création de l'événement : ", error);
-      toast(false, false, "Échec de la création de l'évènement");
+      toast(false, false, t("toastCreateError"));
     }
   };
 
@@ -330,14 +287,12 @@ export default function EventPage() {
           url: updatedEvent.url || "",
         };
 
-        // Mise à jour de l'état global
         setAllEvents((prevAll) =>
           prevAll.map((e) =>
             e.id === updatedEvent.id ? (formattedEvent as EventInterface) : e,
           ),
         );
 
-        // Si l'événement est en live (status === true)
         if (updatedEvent.status) {
           setEventLive((prevLive) => {
             const exists = prevLive.find((e) => e.id === updatedEvent.id);
@@ -348,12 +303,10 @@ export default function EventPage() {
               : [...prevLive, formattedEvent as EventLive];
           });
 
-          // On le retire de la liste ordinaire
           setEvents((prevEvents) =>
             prevEvents.filter((e) => e.id !== updatedEvent.id),
           );
         } else {
-          // S'il n'est plus en live (status === false / URL retirée)
           setEvents((prevEvents) => {
             const exists = prevEvents.find((e) => e.id === updatedEvent.id);
             return exists
@@ -365,7 +318,6 @@ export default function EventPage() {
               : [...prevEvents, formattedEvent as EventInterface];
           });
 
-          // On le retire de la liste des lives
           setEventLive((prevLive) =>
             prevLive.filter((e) => e.id !== updatedEvent.id),
           );
@@ -373,13 +325,13 @@ export default function EventPage() {
 
         setEditEvent(false);
         setSelectedEvent(null);
-        toast(true, false, "Évènement mis à jour avec succès !");
+        toast(true, false, t("toastUpdateSuccess"));
       } else {
-        toast(false, false, "Échec de la mise à jour de l'évènement");
+        toast(false, false, t("toastUpdateError"));
       }
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'événement : ", error);
-      toast(false, false, "Échec de la mise à jour de l'évènement");
+      toast(false, false, t("toastUpdateError"));
     }
   };
 
@@ -449,13 +401,13 @@ export default function EventPage() {
         setAllEvents((prevAll) =>
           prevAll.filter((event) => event.id !== eventToDelete.id),
         );
-        toast(true, false, "Évènement supprimé avec succès !");
+        toast(true, false, t("toastDeleteSuccess"));
       } else {
-        toast(false, false, "Échec de la suppression de l'évènement");
+        toast(false, false, t("toastDeleteError"));
       }
     } catch (error) {
       console.error("Erreur lors de la suppression de l'événement : ", error);
-      toast(false, false, "Échec de la suppression de l'évènement");
+      toast(false, false, t("toastDeleteError"));
     } finally {
       setEventToDelete(null);
     }
@@ -464,9 +416,9 @@ export default function EventPage() {
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const events = await FetchEvents();
-      if (events) {
-        const liveEvents = events
+      const fetchedEvents = await FetchEvents();
+      if (fetchedEvents) {
+        const liveEvents = fetchedEvents
           .filter((event) => event.status)
           .map((event) => ({
             id: event.id,
@@ -475,7 +427,7 @@ export default function EventPage() {
             status: true,
           }));
 
-        const regularEvents = events
+        const regularEvents = fetchedEvents
           .filter((event) => !event.status)
           .map((event) => ({
             ...event,
@@ -483,7 +435,7 @@ export default function EventPage() {
             status: event.status,
           }));
 
-        const allFormattedEvents = events.map((event) => ({
+        const allFormattedEvents = fetchedEvents.map((event) => ({
           ...event,
           date: formatDate(event.date as string),
           status: event.status,
@@ -522,13 +474,11 @@ export default function EventPage() {
       />
       <div className={headerClasses}>
         <div>
-          <h1 className={textClasses}>Gestion des Évènements</h1>
-          <h3 className={subTextClasses}>
-            Ajouter, modifier et supprimer des évènements
-          </h3>
+          <h1 className={textClasses}>{t("title")}</h1>
+          <h3 className={subTextClasses}>{t("subtitle")}</h3>
         </div>
         <ButtonComponent
-          textButton="Ajouter un évènement"
+          textButton={t("addEvent")}
           size="large"
           onclick={handleEvent}
         />
@@ -538,7 +488,7 @@ export default function EventPage() {
         <div className={searchAndTabsClasses}>
           <div className={searchBarWrapperClasses}>
             <SearchBarComponent
-              placeholder="Rechercher un évènement...."
+              placeholder={t("searchPlaceholder")}
               inputValue={inputValue}
               setInputValue={setInputValue}
             />
@@ -552,14 +502,14 @@ export default function EventPage() {
                 router.push("/admin/dashboard/event");
               }}
             >
-              Liste
+              {t("tabList")}
             </button>
 
             <button
               className={`${tabButtonBaseClasses} ${viewMode === "calendar" ? `bg-[${TABS_ACTIVE_COLOR.replace("#", "")}] shadow-md text-white` : "bg-transparent text-white/90 hover:bg-white/10"}`}
               onClick={() => handleTabClick("calendar")}
             >
-              Calendrier
+              {t("tabCalendar")}
             </button>
           </div>
         </div>
@@ -575,7 +525,7 @@ export default function EventPage() {
             />
 
             <EventDataTable
-              tableTitle="Evènements en direct"
+              tableTitle={t("liveEventsTitle")}
               data={filteredLiveEvents}
               columnHeaders={liveHeaders}
               handleDeleteEvent={handleDeleteEvent}
@@ -590,8 +540,8 @@ export default function EventPage() {
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onSubmit={handleSubmitEvent}
-        titleComponent="Ajouter un évènement"
-        buttonTitle="Ajouter"
+        titleComponent={t("modalAddTitle")}
+        buttonTitle={t("modalAddButton")}
         fields={EventFields}
         initialData={initialData}
       />
@@ -601,8 +551,8 @@ export default function EventPage() {
         isOpen={editEvent}
         onClose={() => setEditEvent(false)}
         onSubmit={handleSubmitEditEvent}
-        titleComponent="Modifier un évènement"
-        buttonTitle="Modifier"
+        titleComponent={t("modalEditTitle")}
+        buttonTitle={t("modalEditButton")}
         fields={EventFieldsLive}
         initialData={initialDataLive}
       />
@@ -611,7 +561,7 @@ export default function EventPage() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={confirmDeleteEvent}
-        title="Supprimer cet évènement ?"
+        title={t("confirmDeleteTitle")}
       />
     </div>
   );

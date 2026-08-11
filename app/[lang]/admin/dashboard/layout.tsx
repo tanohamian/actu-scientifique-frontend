@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import SidebarComponent from "@app/components/sidebar";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { IUserInfo } from "../../interfaces";
 
 export default function AdminLayout({
@@ -10,6 +11,7 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const t = useTranslations("AdminLayout");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(1200);
   const [userInfo, setUserInfo] = useState<IUserInfo>({
@@ -163,10 +165,10 @@ export default function AdminLayout({
           <button
             onClick={() => setIsMobileMenuOpen(true)}
             style={menuButtonStyle}
-            aria-label="Ouvrir le menu"
+            aria-label={t("openMenu")}
           >
             <Menu size={24} />
-            <span>Menu</span>
+            <span>{t("menu")}</span>
           </button>
         </header>
 

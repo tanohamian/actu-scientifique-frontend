@@ -1,4 +1,5 @@
 "use client";
+
 import ButtonComponent from "@components/button";
 import React, { useState, useEffect, useMemo } from "react";
 import { X, ChevronDown, Upload } from "lucide-react";
@@ -6,6 +7,7 @@ import { Rubriques } from "../enum/enums";
 import { Product } from "../interfaces";
 import dynamic from "next/dynamic";
 import MediaPreview from "./MediaPreview";
+import { useTranslations } from "next-intl";
 
 const EditorText = dynamic(() => import("@components/titap"), { ssr: false });
 
@@ -78,12 +80,6 @@ export const uploadIcon: React.CSSProperties = {
   marginBottom: "10px",
 };
 
-/**
- *
- * @param {AddElementModalProps} param
- * @returns
- */
-
 const getYouTubeEmbedUrl = (url: string) => {
   if (!url) return null;
   const regExp =
@@ -95,6 +91,7 @@ const getYouTubeEmbedUrl = (url: string) => {
 };
 
 export default function AddElementModal(props: AddElementModalProps) {
+  const t = useTranslations("AddElementModal");
   const [imageUrl, setImageUrl] = useState<string>(() => {
     return (
       (props.initialData?.illustrationUrl as string) ||
@@ -102,6 +99,7 @@ export default function AddElementModal(props: AddElementModalProps) {
       ""
     );
   });
+
   const initialFormData = useMemo(() => {
     const data = props.fields.reduce((acc, field) => {
       acc[field.name] = props.initialData![field.name] ?? "";
@@ -115,35 +113,9 @@ export default function AddElementModal(props: AddElementModalProps) {
     return data;
   }, [props.fields, props.initialData, props.id]);
 
-  /*useEffect(() => {
-    const updateImage = () => {
-      if (props.initialData?.illustrationUrl) {
-        setImageUrl(props.initialData.illustrationUrl as string);
-      }
-    };
-    updateImage();
-  }, [props.initialData?.illustrationUrl]);*/
-
-  /*useEffect(() => {
-  const source =
-    (props.initialData?.illustrationUrl as string) ||
-    (props.initialData?.url as string) ||
-    "";
-  if (source) {
-    setImageUrl(source);
-  }
-}, [props.initialData?.illustrationUrl, props.initialData?.url]);*/
-
-  //const [isImage, setIsImage] = useState(false);
   const [formData, setFormData] = useState<InitialDataType>(
     () => initialFormData,
   );
-  /*useEffect(() => {
-    const set = async () => {
-      setFormData(initialFormData);
-    };
-    set();
-  }, [initialFormData, props.isOpen]);*/
 
   useEffect(() => {
     if (props.isOpen) {
@@ -204,7 +176,7 @@ export default function AddElementModal(props: AddElementModalProps) {
                 required={field.required}
               >
                 <option value="" disabled className="text-white/50">
-                  Sélectionner {field.label.toLowerCase()}
+                  {t("selectPlaceholder", { label: field.label.toLowerCase() })}
                 </option>
                 {field.options?.map((option) => (
                   <option key={option.label} value={option.value}>
@@ -255,9 +227,7 @@ export default function AddElementModal(props: AddElementModalProps) {
               <div className="flex flex-col items-center justify-center bg-[#00283C99] rounded-lg p-6 cursor-pointer border-2 border-dashed border-white/20 hover:border-white/40 transition">
                 <Upload size={30} style={uploadIcon} />
                 <div style={uploadText}>
-                  {imageUrl
-                    ? "Changer le fichier média (uploader un nouveau)"
-                    : "Cliquez pour uploader un fichier (Vidéo, Audio, Image)"}
+                  {imageUrl ? t("uploadChangeMedia") : t("uploadDefaultMedia")}
                 </div>
               </div>
             </label>
@@ -293,7 +263,6 @@ export default function AddElementModal(props: AddElementModalProps) {
                 handleChange(field.name, e.target.value, field.type)
               }
               required={field.required}
-              lang="fr-FR"
             />
           </div>
         );
@@ -310,7 +279,6 @@ export default function AddElementModal(props: AddElementModalProps) {
                 handleChange(field.name, e.target.value, field.type)
               }
               required={field.required}
-              lang="fr-FR"
             />
           </div>
         );
@@ -326,7 +294,7 @@ export default function AddElementModal(props: AddElementModalProps) {
         );
       case "url": {
         const value = (formData[field.name] as string) || "";
-        const youtubeEmbedUrl = getYouTubeEmbedUrl(value); // Détection YouTube
+        const youtubeEmbedUrl = getYouTubeEmbedUrl(value);
 
         return (
           <div key={field.name} className={containerClasses}>
@@ -409,7 +377,7 @@ export default function AddElementModal(props: AddElementModalProps) {
           <button
             className={closeButtonClasses}
             onClick={props.onClose}
-            aria-label="Fermer"
+            aria-label={t("close")}
           >
             <X size={24} />
           </button>
@@ -419,7 +387,7 @@ export default function AddElementModal(props: AddElementModalProps) {
           {props.fields.map((field) => renderField(field))}
           {props.isLoading ? (
             <div className="mt-4 flex justify-center">
-              <ButtonComponent textButton="Chargement..." size="medium" />
+              <ButtonComponent textButton={t("loading")} size="medium" />
             </div>
           ) : (
             <div className="mt-4 flex justify-center">

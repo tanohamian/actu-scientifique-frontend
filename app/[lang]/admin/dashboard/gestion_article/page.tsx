@@ -2,7 +2,7 @@
 
 import SearchBarComponent from "@app/components/searchBar";
 import DataTable, { ElementType } from "@app/components/eventDataTable";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import AddElementModal, {
   FormFieldConfig,
   InitialDataType,
@@ -19,108 +19,157 @@ import { Rubriques } from "@app/enum/enums";
 import LoadingComponent from "@app/components/loadingComponent";
 import { Article, DbArticle, IUpdateArticle, Product } from "@app/interfaces";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 
 const EditorText = dynamic(() => import("@app/components/editor"), {
   ssr: false,
 });
 
-const ArticleFields: FormFieldConfig[] = [
-  {
-    name: "title",
-    label: "Titre de l'article",
-    placeholder: "Entrez le titre de l'article",
-    required: true,
-  },
-  { name: "content", label: "Contenu", type: "description", required: true },
-  {
-    name: "file",
-    label: "Image",
-    placeholder: "Ajoutez une illustration",
-    type: "file",
-  },
-  {
-    name: "rubrique",
-    label: "Rubrique",
-    type: "select",
-    options: [
-      { label: "Une seule santé", value: Rubriques.ONE_HEALTH },
-      { label: "Technologie", value: Rubriques.TECHNOLOGY },
-      { label: "Éco-humanité", value: Rubriques.ECO_HUMANITY },
-      { label: "Portrait et découvertes", value: Rubriques.PORT_DISCOVERY },
-    ],
-    required: true,
-  },
-  {
-    name: "une",
-    label: "Mettre à la une",
-    type: "select",
-    options: [
-      { label: "Oui", value: 1 },
-      { label: "Non", value: 0 },
-    ],
-  },
-];
-
-const articleUpdateFields: FormFieldConfig[] = [
-  {
-    name: "title",
-    label: "Titre de l'article",
-    placeholder: "Entrez le titre de l'article",
-  },
-  { name: "content", label: "Contenu", type: "description" },
-  {
-    name: "file",
-    label: "Image",
-    placeholder: "Ajoutez une illustration",
-    type: "file",
-  },
-  {
-    name: "rubrique",
-    label: "Rubrique",
-    type: "select",
-    options: [
-      { label: "Une seule santé", value: Rubriques.ONE_HEALTH },
-      { label: "Technologie", value: Rubriques.TECHNOLOGY },
-      { label: "Éco-humanité", value: Rubriques.ECO_HUMANITY },
-      { label: "Portrait et découvertes", value: Rubriques.PORT_DISCOVERY },
-    ],
-  },
-  {
-    name: "une",
-    label: "Mettre à la une",
-    type: "select",
-    options: [
-      { label: "Oui", value: 1 },
-      { label: "Non", value: 0 },
-    ],
-  },
-];
-
-const mainHeaders = [
-  { key: "title", label: "Titre", flexBasis: "38%" },
-  { key: "rubrique", label: "Rubrique", flexBasis: "20%" },
-  { key: "createdAt", label: "Date de publication", flexBasis: "25%" },
-  { key: "actions", label: "Actions", flexBasis: "15%" },
-];
-
-//const TABS_INACTIVE_COLOR = '#5A8FAC';
-
 export default function ArticlePage() {
+  const t = useTranslations("ArticlePage");
+
+  const articleFields: FormFieldConfig[] = useMemo(
+    () => [
+      {
+        name: "title",
+        label: t("fields.title"),
+        placeholder: t("fields.titlePlaceholder"),
+        required: true,
+      },
+      {
+        name: "content",
+        label: t("fields.content"),
+        type: "description",
+        required: true,
+      },
+      {
+        name: "language",
+        label: t("fields.language"),
+        type: "select",
+        options: [
+          { label: t("fields.languageOptions.french"), value: "french" },
+          { label: t("fields.languageOptions.english"), value: "english" },
+        ],
+      },
+      {
+        name: "file",
+        label: t("fields.image"),
+        placeholder: t("fields.imagePlaceholder"),
+        type: "file",
+      },
+      {
+        name: "rubrique",
+        label: t("fields.rubrique"),
+        type: "select",
+        options: [
+          {
+            label: t("fields.rubriqueOptions.oneHealth"),
+            value: Rubriques.ONE_HEALTH,
+          },
+          {
+            label: t("fields.rubriqueOptions.technology"),
+            value: Rubriques.TECHNOLOGY,
+          },
+          {
+            label: t("fields.rubriqueOptions.ecoHumanity"),
+            value: Rubriques.ECO_HUMANITY,
+          },
+          {
+            label: t("fields.rubriqueOptions.portDiscovery"),
+            value: Rubriques.PORT_DISCOVERY,
+          },
+        ],
+        required: true,
+      },
+      {
+        name: "une",
+        label: t("fields.featured"),
+        type: "select",
+        options: [
+          { label: t("fields.featuredOptions.yes"), value: 1 },
+          { label: t("fields.featuredOptions.no"), value: 0 },
+        ],
+      },
+    ],
+    [t],
+  );
+
+  const articleUpdateFields: FormFieldConfig[] = useMemo(
+    () => [
+      {
+        name: "title",
+        label: t("fields.title"),
+        placeholder: t("fields.titlePlaceholder"),
+      },
+      { name: "content", label: t("fields.content"), type: "description" },
+      {
+        name: "file",
+        label: t("fields.image"),
+        placeholder: t("fields.imagePlaceholder"),
+        type: "file",
+      },
+      {
+        name: "language",
+        label: t("fields.language"),
+        type: "select",
+        options: [
+          { label: t("fields.languageOptions.french"), value: "french" },
+          { label: t("fields.languageOptions.english"), value: "english" },
+        ],
+      },
+      {
+        name: "rubrique",
+        label: t("fields.rubrique"),
+        type: "select",
+        options: [
+          {
+            label: t("fields.rubriqueOptions.oneHealth"),
+            value: Rubriques.ONE_HEALTH,
+          },
+          {
+            label: t("fields.rubriqueOptions.technology"),
+            value: Rubriques.TECHNOLOGY,
+          },
+          {
+            label: t("fields.rubriqueOptions.ecoHumanity"),
+            value: Rubriques.ECO_HUMANITY,
+          },
+          {
+            label: t("fields.rubriqueOptions.portDiscovery"),
+            value: Rubriques.PORT_DISCOVERY,
+          },
+        ],
+      },
+      {
+        name: "une",
+        label: t("fields.featured"),
+        type: "select",
+        options: [
+          { label: t("fields.featuredOptions.yes"), value: 1 },
+          { label: t("fields.featuredOptions.no"), value: 0 },
+        ],
+      },
+    ],
+    [t],
+  );
+
+  const mainHeaders = useMemo(
+    () => [
+      { key: "title", label: t("headers.title"), flexBasis: "38%" },
+      { key: "rubrique", label: t("headers.rubrique"), flexBasis: "20%" },
+      { key: "createdAt", label: t("headers.publishedAt"), flexBasis: "25%" },
+      { key: "actions", label: t("headers.actions"), flexBasis: "15%" },
+    ],
+    [t],
+  );
+
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [editArticle, setEditArticle] = useState(false);
-  //const [selectedFilter, setSelectedFilter] = useState("title");
 
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [articleToDelete, setArticleToDelete] = useState<Article | null>(null);
-  /*const [filters] = useState<IFilter[]>(
-    mainHeaders
-      .filter((m) => m.key !== "actions")
-      .map((header) => {
-        return { value: header.key, label: header.label };
-      }),
-  );*/
 
   const [articles, setArticles] = useState<DbArticle[]>([]);
 
@@ -148,7 +197,7 @@ export default function ArticlePage() {
         text-2xl 
         md:text-3xl 
         lg:text-4xl 
-       font-light
+        font-light
         text-white
     `;
 
@@ -192,10 +241,10 @@ export default function ArticlePage() {
         mt-8 
         lg:mt-0 
     `;
-  /***fonction pour reuperer l'article crée */
+
   const handleSubmitArticle = (newArticle?: DbArticle) => {
     if (!newArticle) {
-      alert("Aucun article à ajouter");
+      alert(t("toasts.noArticle"));
       return;
     }
     newArticle.createdAt = newArticle.createdAt.toLocaleString("fr-FR", {
@@ -209,7 +258,6 @@ export default function ArticlePage() {
     setSelectedArticle(null);
     setEditArticle(false);
   };
-  /***valeur par defaut dans le formulaire d'ajout d'article */
 
   const emptyData: InitialDataType = {
     title: "",
@@ -224,19 +272,18 @@ export default function ArticlePage() {
     rubrique: "",
     une: false,
   };
-  /***fonction pour selectionne un article à modifier et ouvrir le modal de modification */
+
   const handleEditArticle = async (item: ElementType) => {
     console.log("item article : ", item);
     setSelectedArticle(item as Article);
     setEditArticle(true);
   };
-  /***focntion pour demander confirmation avant de supprimer un article */
+
   const handleDeleteArticle = (item: ElementType) => {
     setArticleToDelete(item as Article);
     setIsDeleteModalOpen(true);
   };
 
-  /***fonction appelée une fois la suppression confirmée dans la modale */
   const confirmDeleteArticle = async () => {
     if (!articleToDelete) return;
     setIsDeleteModalOpen(false);
@@ -247,7 +294,7 @@ export default function ArticlePage() {
     toast(
       res,
       false,
-      res ? "Supprimé avec succès !" : "Echec de la suppresion",
+      res ? t("toasts.deleteSuccess") : t("toasts.deleteError"),
     );
     setArticleToDelete(null);
   };
@@ -262,7 +309,7 @@ export default function ArticlePage() {
         createdAt: (selectedArticle.createdAt as string) || "",
       }
     : null;
-  /***fonction pour modifier un article déja crée */
+
   const handleSubmitEditArticle = async (data: InitialDataType | Product) => {
     setIsLoading(true);
     try {
@@ -284,10 +331,10 @@ export default function ArticlePage() {
       setSelectedArticle(null);
       setEditArticle(false);
 
-      toast(true, false, "Article mis à jour !");
+      toast(true, false, t("toasts.updateSuccess"));
     } catch (error) {
       console.log("❌ Erreur:", error);
-      toast(false, false, "Échec de l'upload de l'article");
+      toast(false, false, t("toasts.updateError"));
     } finally {
       setIsLoading(false);
     }
@@ -317,7 +364,6 @@ export default function ArticlePage() {
     fetchArtcicles();
   }, []);
 
-  /*** Filtrer les articles */
   const filteredArticles = articles.filter((article) => {
     const search = inputValue.trim().toLowerCase();
 
@@ -327,9 +373,9 @@ export default function ArticlePage() {
       article.title?.toLowerCase().includes(search) ||
       article.rubrique?.toLowerCase().includes(search) ||
       article.content?.toLowerCase().includes(search)
-      //article.createdAt?.includes(search)
     );
   });
+
   return (
     <div className={pageContainerClasses}>
       <LoadingComponent
@@ -338,10 +384,8 @@ export default function ArticlePage() {
       />
       <div className={headerClasses}>
         <div>
-          <h1 className={textClasses}>Gestion des Articles</h1>
-          <h3 className={subTextClasses}>
-            Gérer les articles depuis cette interface
-          </h3>
+          <h1 className={textClasses}>{t("header.title")}</h1>
+          <h3 className={subTextClasses}>{t("header.subtitle")}</h3>
         </div>
       </div>
 
@@ -349,12 +393,11 @@ export default function ArticlePage() {
         <div className={searchAndTabsClasses}>
           <div className={searchBarWrapperClasses}>
             <SearchBarComponent
-              placeholder="Rechercher un article...."
+              placeholder={t("search.placeholder")}
               inputValue={inputValue}
               setInputValue={setInputValue}
             />
           </div>
-          {/*<Filter filters={filters} onFilterChange={setSelectedFilter} />*/}
         </div>
         <article className="flex flex-col items-start lg:flex-row gap-8 h-fit">
           <DataTable
@@ -369,7 +412,7 @@ export default function ArticlePage() {
             <FormComponent
               isArticle={true}
               initialArticleData={emptyData}
-              fields={ArticleFields}
+              fields={articleFields}
               onSuccess={handleSubmitArticle}
             />
           </article>
@@ -383,8 +426,8 @@ export default function ArticlePage() {
           setEditArticle(false);
         }}
         onSubmit={handleSubmitEditArticle}
-        titleComponent="Modifier un article"
-        buttonTitle="Modifier"
+        titleComponent={t("modals.editTitle")}
+        buttonTitle={t("modals.editSubmit")}
         fields={articleUpdateFields}
         initialData={editInitialData ?? emptyData}
         id={selectedArticle?.id}
@@ -394,7 +437,7 @@ export default function ArticlePage() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={confirmDeleteArticle}
-        title="Supprimer cet article ?"
+        title={t("modals.deleteTitle")}
       />
     </div>
   );

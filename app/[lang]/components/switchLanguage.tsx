@@ -1,37 +1,11 @@
 "use client";
-
-import { useSyncExternalStore, useTransition } from "react";
+import { useTransition } from "react";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { styled } from "@mui/material/styles";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import { env } from "../config/env";
-
-/**Hook pour détecter si le composant est chargé sur le client sans effet secondaire*/
-const subscribe = () => () => {};
-function useIsClient() {
-  return useSyncExternalStore(
-    subscribe,
-    () => true, // Valeur côté client
-    () => false, // Valeur côté serveur (SSR)
-  );
-}
-
-//**Fonction de vérification de la route Admin */
-const shouldHideSwitch = (pathname: string): boolean => {
-  if (typeof window === "undefined") return false;
-
-  const hostname = window.location.hostname;
-
-  if (env.devMode) {
-    const isAdminPath = /^\/[a-z]{2}\/admin(\/.*)?$/i.test(pathname);
-    return hostname === "localhost" && isAdminPath;
-  } else {
-    return hostname.startsWith("admin.");
-  }
-};
 
 const MaterialUISwitch = styled(Switch)(() => ({
   width: 62,
@@ -81,19 +55,12 @@ const MaterialUISwitch = styled(Switch)(() => ({
 }));
 
 export default function LanguageSwitcher() {
-  const isClient = useIsClient();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
 
   const isEnglish = locale === "en";
-
-  if (!isClient) return null;
-
-  if (shouldHideSwitch(pathname)) {
-    return null;
-  }
 
   const handleLanguageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextLocale = event.target.checked ? "en" : "fr";
