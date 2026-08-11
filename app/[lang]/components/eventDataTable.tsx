@@ -16,6 +16,7 @@ export interface TableData {
   date?: string;
   time?: string;
   url?: string;
+  description?: string;
 }
 
 export interface EventInterface {
@@ -78,13 +79,7 @@ export default function DataTable({
   isMedia = false,
 }: EventDataTableProps) {
   return (
-    <div
-      className={
-        "bg-[#50789B] p-5 rounded-lg mt-5 shadow-xl font-sans " + isMedia
-          ? "w-full bg-[#50789B] p-5 rounded-lg mt-5 shadow-xl font-sans "
-          : "w-200"
-      }
-    >
+    <div className="w-full bg-[#50789B] p-5 rounded-lg mt-5 shadow-xl font-sans">
       <h2 className="text-white text-xl mb-5 font-bold">{tableTitle}</h2>
 
       {/* En-tête (Desktop) */}

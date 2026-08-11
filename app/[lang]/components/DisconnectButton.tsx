@@ -1,9 +1,20 @@
+"use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import IconComponent from "./Icons";
+import { useAuth } from "../context/authContext";
 
     const iconSize = 'w-5 h-5';
 
 export const DisconnectButton : React.FC = () => {
+        const router = useRouter();
+        const { logout } = useAuth();
+
+        const handleLogout = async () => {
+            await logout();
+            router.push("/admin");
+        };
+
         const buttonClasses = `
             flex items-center p-3 w-full rounded-lg transition-colors duration-150
             bg-transparent border-none text-white cursor-pointer
@@ -16,6 +27,7 @@ export const DisconnectButton : React.FC = () => {
         return (
             <button
                 className={buttonClasses}
+                onClick={handleLogout}
             >
                 <span className={iconWrapperClasses}>
                     <IconComponent name='LogOut' className={`text-white ${iconSize}`} />

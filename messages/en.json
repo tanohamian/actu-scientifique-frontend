@@ -10,23 +10,23 @@
     "opportunities": "Opportunities",
     "scholarships": "Scholarships",
     "trainings": "Trainings",
-    "academy":"Science Journalism Academy",
+    "academy": "Science Journalism Academy",
     "shop": "Shop",
     "about": "About",
     "unknown": "Unknown"
   },
-  "Subscription" : {
+  "Subscription": {
     "h1": "Subscribe to scientific news",
     "p1": "Exclusive access to news on science in Africa",
     "store": "Shop"
   },
-  
+
   "Home": {
     "welcome": "Welcome to our scientific news platform!",
     "description": "Deciphering science, informing the public",
     "subscribe": "Subscribe",
-    "spotlight" : "Spotlight",
-    "store" : "Shop",
+    "spotlight": "Spotlight",
+    "store": "Shop",
     "searchPlaceholder": "Search for a topic",
     "Ad": "Advertisement"
   },
@@ -43,7 +43,7 @@
   "Auth": {
     "login": "Sign In",
     "logout": "Sign out",
-    "register" : "Sign Up"
+    "register": "Sign Up"
   },
   "Shop": {
     "h1": "Discover our products",
@@ -53,7 +53,7 @@
   },
   "Discovery": {
     "portraits": "Portraits &",
-    "discovery" : "Discoveries",
+    "discovery": "Discoveries",
     "p1": "Discoveries of the week",
     "searchPlaceholder": "Search for an item",
     "notFound": "No portrait found."
@@ -73,11 +73,11 @@
   },
   "Opportunities": {
     "academy": "Science Journalism Academy",
-    "scholarship" : "Scholarships",
+    "scholarship": "Scholarships",
     "training": "Trainings"
   },
   "SJA": {
-   "h1": "Science Journalism Academy",
+    "h1": "Science Journalism Academy",
     "subtitle": "Training the voices of African science",
     "partners": "Partners",
     "programme": "Programme",
@@ -118,12 +118,12 @@
   },
   "ID": {
     "loading": "Loading...",
-    "noContent" : "Content not found",
-    "back" : "Back",
+    "noContent": "Content not found",
+    "back": "Back",
     "noDescription": "No description available.",
-    "learnMore":"Want to learn more ?",
+    "learnMore": "Want to learn more ?",
     "unregisteredMessage": "The rest of this content is reserved for members of the ActuScientifique community.",
-    "signIn" : "Sign in to access the full content"
+    "signIn": "Sign in to access the full content"
   },
   "About": {
     "h1": "About ",
@@ -168,5 +168,640 @@
     "charter": "Editorial and Commercial Charter",
     "terms": "Terms of Use",
     "rights": "© 2026 - All rights reserved"
+  },
+  "AdminSidebar": {
+    "dashboard": "Dashboard",
+    "analytics": "Analytics",
+    "articles": "Article Management",
+    "medias": "Media (Videos, Podcasts)",
+    "opportunities": "Opportunities",
+    "newsletters": "Newsletters",
+    "shop": "Shop",
+    "users": "Users",
+    "agenda": "Schedule",
+    "advertising": "Advertising",
+    "closeMenu": "Close menu",
+    "roles": {
+      "ROLE_ADMIN": "Administrator",
+      "ROLE_EDITOR": "Editor",
+      "ROLE_VIEWER": "Viewer"
+    }
+  },
+  "AdminLayout": {
+    "menu": "Menu",
+    "openMenu": "Open menu",
+    "seeSite": "Visit site"
+  },
+  "AdminDashboard": {
+    "title": "Dashboard",
+    "subtitle": "Get a global overview of the application",
+    "cards": {
+      "articles": "Articles",
+      "dailyVisitors": "Daily visits",
+      "products": "Products",
+      "subscribers": "Subscribers"
+    },
+    "sections": {
+      "latestArticles": "Latest published content",
+      "latestEvents": "Latest completed events",
+      "scholarshipsAndTraining": "Scholarships and trainings"
+    }
+  },
+  "Connexion": {
+    "title": "Login",
+    "subtitle": "Access your dashboard",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "example@email.com",
+    "passwordLabel": "Password",
+    "submitButton": "Sign in",
+    "submittingButton": "Signing in...",
+    "forgotPassword": "Forgot password?",
+    "unauthorizedError": "You do not have access to this page",
+    "defaultError": "Login error"
+  },
+  "ConfirmModal": {
+    "cancel": "Cancel",
+    "confirm": "Delete"
+  },
+  "AddElementModal": {
+    "selectPlaceholder": "Select {label}",
+    "uploadChangeMedia": "Change media file (upload new one)",
+    "uploadDefaultMedia": "Click to upload a file (Video, Audio, Image)",
+    "loading": "Loading...",
+    "close": "Close"
+  },
+  "EventPage": {
+    "title": "Event Management",
+    "subtitle": "Add, edit, and delete events",
+    "addEvent": "Add an Event",
+    "searchPlaceholder": "Search for an event...",
+    "tabList": "List",
+    "tabCalendar": "Calendar",
+    "liveEventsTitle": "Live Events",
+    "modalAddTitle": "Add an Event",
+    "modalAddButton": "Add",
+    "modalEditTitle": "Edit Event",
+    "modalEditButton": "Update",
+    "confirmDeleteTitle": "Delete this event?",
+    "toastCreateSuccess": "Event created successfully!",
+    "toastCreateError": "Failed to create event",
+    "toastUpdateSuccess": "Event updated successfully!",
+    "toastUpdateError": "Failed to update event",
+    "toastDeleteSuccess": "Event deleted successfully!",
+    "toastDeleteError": "Failed to delete event",
+    "fields": {
+      "title": "Event Title",
+      "titlePlaceholder": "Enter the event title",
+      "location": "Location",
+      "locationPlaceholder": "Enter the event location",
+      "date": "Date",
+      "datePlaceholder": "Enter the event date",
+      "time": "Time",
+      "timePlaceholder": "Enter the event time",
+      "description": "Description",
+      "descriptionPlaceholder": "Enter the event description",
+      "url": "Url",
+      "urlPlaceholder": "Enter the event URL"
+    },
+    "headers": {
+      "title": "Event Title",
+      "location": "Location",
+      "date": "Date",
+      "time": "Time",
+      "actions": "Actions",
+      "url": "Url"
+    }
+  },
+  "ContentManagementPage": {
+    "title": "Content Management",
+    "subtitle": "Manage scholarships, training programs, and reports"
+  },
+
+  "SwitchSection": {
+    "tabs": {
+      "scholarships": "Scholarships",
+      "trainings": "Training Programs"
+    },
+    "titles": {
+      "addScholarship": "Add a scholarship",
+      "editScholarship": "Edit scholarship",
+      "addTraining": "Add a training program",
+      "editTraining": "Edit training program",
+      "listScholarships": "List of Scholarships",
+      "listTrainings": "List of Training Programs"
+    },
+    "labels": {
+      "title": "Title",
+      "trainingType": "Training type",
+      "infoToProvide": "Information to provide",
+      "trainingLink": "Training link",
+      "link": "Link",
+      "amount": "Amount",
+      "description": "Description",
+      "document": "Document",
+      "date": "Date"
+    },
+    "placeholders": {
+      "title": "Enter the title",
+      "scholarshipUrl": "Enter the link to the scholarship and details",
+      "scholarshipAmount": "Enter the scholarship amount (FCFA)",
+      "trainingUrl": "YouTube link or website"
+    },
+    "options": {
+      "classic": "Classic",
+      "academy": "Science Journalism Academy"
+    },
+    "documentBox": {
+      "clickToUpload": "Click to upload a document",
+      "supportedFormats": "PDF, DOC, DOCX, TXT",
+      "clickToChange": "Click to change",
+      "removeFile": "Remove file"
+    },
+    "buttons": {
+      "save": "Save",
+      "update": "Update"
+    },
+    "headers": {
+      "title": "Title",
+      "type": "Type",
+      "date": "Date",
+      "actions": "Actions"
+    },
+    "messages": {
+      "confirmDelete": "Confirm deletion?",
+      "deletedSuccess": "Item deleted!",
+      "deleteError": "Error during deletion",
+      "fillTitleAndDesc": "Please fill in the title and description",
+      "updatedSuccess": "Updated!",
+      "publishedSuccess": "Published!",
+      "operationFailed": "Operation failed",
+      "noData": "No data found."
+    }
+  },
+  "FormComponent": {
+    "titles": {
+      "edit": "Edit",
+      "addArticle": "Add an Article",
+      "newNewsletter": "New Newsletter"
+    },
+    "labels": {
+      "newsletterTitle": "Newsletter Title",
+      "content": "Content",
+      "rubrique": "Category",
+      "selectPlaceholder": "Select {label}",
+      "uploadImage": "click to upload an image"
+    },
+    "buttons": {
+      "saveChanges": "Save changes",
+      "publish": "Publish",
+      "saving": "Saving...",
+      "publishing": "Publishing..."
+    },
+    "messages": {
+      "articleAdded": "Article Added",
+      "published": "Published!",
+      "updated": "Updated!",
+      "operationFailed": "Operation failed"
+    }
+  },
+  "ArticleClientPage": {
+    "header": {
+      "title": "Article Management",
+      "subtitle": "Manage podcasts and videos from this interface",
+      "addButton": "Add an article"
+    },
+    "search": {
+      "placeholder": "Search media..."
+    },
+    "fields": {
+      "title": "Article Title",
+      "titlePlaceholder": "Enter the article title",
+      "content": "Content",
+      "rubrique": "Category",
+      "rubriqueOptions": {
+        "tech": "Tech",
+        "oneHealth": "One Health",
+        "ecoHumanity": "Eco-humanity"
+      }
+    },
+    "headers": {
+      "title": "Title",
+      "type": "Type",
+      "category": "Category",
+      "publishedAt": "Publication Date",
+      "actions": "Actions"
+    },
+    "modals": {
+      "addTitle": "Add an Article",
+      "addSubmit": "Add",
+      "editTitle": "Edit media",
+      "editSubmit": "Edit"
+    }
+  },
+  "ArticlePage": {
+    "header": {
+      "title": "Articles Management",
+      "subtitle": "Manage articles from this interface"
+    },
+    "search": {
+      "placeholder": "Search an article..."
+    },
+    "fields": {
+      "title": "Article Title",
+      "titlePlaceholder": "Enter article title",
+      "content": "Content",
+      "language": "Language",
+      "languageOptions": {
+        "french": "French",
+        "english": "English"
+      },
+      "image": "Image",
+      "imagePlaceholder": "Add an illustration",
+      "rubrique": "Category",
+      "rubriqueOptions": {
+        "oneHealth": "One Health",
+        "technology": "Technology",
+        "ecoHumanity": "Eco-humanity",
+        "portDiscovery": "Portraits & Discoveries"
+      },
+      "featured": "Feature this article",
+      "featuredOptions": {
+        "yes": "Yes",
+        "no": "No"
+      }
+    },
+    "headers": {
+      "title": "Title",
+      "rubrique": "Category",
+      "publishedAt": "Publication Date",
+      "actions": "Actions"
+    },
+    "modals": {
+      "editTitle": "Edit Article",
+      "editSubmit": "Save changes",
+      "deleteTitle": "Delete this article?"
+    },
+    "toasts": {
+      "noArticle": "No article to add",
+      "deleteSuccess": "Deleted successfully!",
+      "deleteError": "Failed to delete",
+      "updateSuccess": "Article updated!",
+      "updateError": "Failed to upload article"
+    }
+  },
+  "MediaPage": {
+    "header": {
+      "title": "Media Management",
+      "subtitle": "Manage podcasts and videos from this interface",
+      "addButton": "Add media"
+    },
+    "search": {
+      "placeholder": "Search media..."
+    },
+    "fields": {
+      "title": "Media Title",
+      "titlePlaceholder": "Enter media title",
+      "description": "Description",
+      "descriptionPlaceholder": "Enter a description...",
+      "language": "Language",
+      "languageOptions": {
+        "french": "French",
+        "english": "English"
+      },
+      "type": "Media Type",
+      "typeOptions": {
+        "url": "URL",
+        "file": "File (Podcast/Video)",
+        "fileEdit": "Media (video, file, podcast)"
+      },
+      "url": "Media URL",
+      "urlPlaceholder": "https://example.com/media",
+      "file": "File",
+      "rubrique": "Category",
+      "rubriqueOptions": {
+        "oneHealth": "One Health",
+        "technology": "Technology",
+        "ecoHumanity": "Eco-humanity",
+        "portDiscovery": "Portraits & Discoveries"
+      },
+      "featured": "Feature this media",
+      "featuredOptions": {
+        "yes": "Yes",
+        "no": "No"
+      }
+    },
+    "headers": {
+      "title": "Title",
+      "type": "Type",
+      "rubrique": "Category",
+      "url": "URL",
+      "publishedAt": "Publication Date",
+      "actions": "Actions"
+    },
+    "modals": {
+      "addTitle": "Add Media",
+      "addSubmit": "Add",
+      "editTitle": "Edit Media",
+      "editSubmit": "Save changes",
+      "deleteTitle": "Delete this media?"
+    },
+    "toasts": {
+      "addSuccess": "Media added!",
+      "addError": "Failed to upload media",
+      "updateSuccess": "Media updated!",
+      "updateError": "Failed to update media",
+      "deleteSuccess": "Media deleted!",
+      "deleteError": "Failed to delete media"
+    }
+  },
+  "Affichage": {
+    "rubriques": {
+      "oneHealth": "One Health",
+      "technology": "Technology",
+      "ecoHumanity": "Eco-humanity",
+      "portDiscovery": "Portraits & Discoveries"
+    },
+    "search": {
+      "placeholder": "Search by title....."
+    },
+    "headers": {
+      "articleTitle": "Article Title",
+      "title": "Title",
+      "rubrique": "Category",
+      "content": "Content (Preview)",
+      "publishedAt": "Publication Date",
+      "actions": "Actions"
+    },
+    "modals": {
+      "deleteTitle": "Delete this item?"
+    },
+    "toasts": {
+      "deleteSuccess": "Successfully deleted!",
+      "deleteError": "Error deleting item"
+    }
+  },
+  "ComponenteFormulaire": {
+    "title": {
+      "edit": "Edit",
+      "addArticle": "Add an Article",
+      "addNewsletter": "New Newsletter"
+    },
+    "labels": {
+      "articleTitle": "Article Title",
+      "newsletterTitle": "Newsletter Title",
+      "content": "Content",
+      "rubrique": "Category"
+    },
+    "options": {
+      "selectRubrique": "Select a category",
+      "oneHealth": "One Health",
+      "technology": "Technology",
+      "ecoHumanity": "Eco-humanity",
+      "portDiscovery": "Portraits & Discoveries"
+    },
+    "buttons": {
+      "save": "Save changes",
+      "publish": "Publish"
+    },
+    "toasts": {
+      "fillAllFields": "Please fill in all fields.",
+      "updateSuccess": "Newsletter updated!",
+      "createSuccess": "Newsletter created!",
+      "genericError": "An error occurred while submitting the form. Please try again."
+    }
+  },
+  "NewsletterPage": {
+    "title": "Newsletter Management"
+  },
+  "StatGlobal": {
+    "orders": "Orders",
+    "validatedPayments": "Validated Payments",
+    "revenue": "Revenue",
+    "currency": "{amount} XOF"
+  },
+  "ProduitsTable": {
+    "title": "Products",
+    "categories": {
+      "books": "books",
+      "clothes": "clothes",
+      "technology_objects": "tech items"
+    },
+    "columns": {
+      "name": "Products",
+      "categories": "Categories",
+      "price": "Price",
+      "stock": "Stock"
+    },
+    "fields": {
+      "name": {
+        "label": "Product name",
+        "placeholder": "Enter product name"
+      },
+      "preview_image": {
+        "label": "Image",
+        "placeholder": "Upload image"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Enter description"
+      },
+      "categories": {
+        "label": "Category"
+      },
+      "price": {
+        "label": "Price",
+        "placeholder": "Enter price"
+      },
+      "stock": {
+        "label": "Stock",
+        "placeholder": "Enter stock quantity"
+      }
+    },
+    "modals": {
+      "deleteTitle": "Delete this product?"
+    },
+    "toasts": {
+      "deleteSuccess": "Product deleted successfully",
+      "deleteError": "Failed to delete product",
+      "editSuccess": "Product updated successfully",
+      "editError": "Failed to update product"
+    }
+  },
+  "AffichageTableau": {
+    "searchPlaceholder": "Search...........",
+    "sortBy": "Sort by",
+    "actions": "Actions",
+    "editModal": {
+      "title": "Edit Information",
+      "button": "Edit"
+    },
+    "altPreview": "preview"
+  },
+  "CommandesTable": {
+    "title": "Orders",
+    "status": {
+      "CREATED": "Created",
+      "DELIVERED": "Delivered",
+      "CANCELED": "Canceled"
+    },
+    "columns": {
+      "name": "Products",
+      "category": "Category",
+      "status": "Status",
+      "totalAmount": "Price",
+      "quantity": "Quantity"
+    },
+    "fields": {
+      "status": "Status"
+    },
+    "toasts": {
+      "updateSuccess": "Order status updated successfully!",
+      "updateError": "Failed to update order status"
+    }
+  },
+  "TransactionsTable": {
+    "title": "Transactions",
+    "columns": {
+      "id": "Transactions",
+      "produit": "Product",
+      "modeDePaiement": "Payment Method",
+      "prix": "Price",
+      "acheterPar": "Purchased By"
+    }
+  },
+  "ComponentFormProd": {
+    "title": "Add a product",
+    "labels": {
+      "productName": "Product Name",
+      "image": "Image",
+      "description": "Description",
+      "category": "Category",
+      "price": "Price",
+      "stock": "Stock"
+    },
+    "placeholders": {
+      "productName": "t-shirt",
+      "uploadImage": "click to upload an image"
+    },
+    "categories": {
+      "books": "Books",
+      "clothes": "Clothes",
+      "technology_objects": "Tech Objects"
+    },
+    "publishButton": "Publish",
+    "toasts": {
+      "success": "Product added successfully",
+      "error": "Error adding product"
+    }
+  },
+  "DashboardPage": {
+    "title": "Product and Order Management",
+    "subtitle": "Manage products and track orders in real time",
+    "sections": {
+      "products": "Products",
+      "orders": "Orders",
+      "transactions": "Transactions"
+    }
+  },
+  "UsersPage": {
+    "title": "User Management",
+    "addButton": "Add User",
+    "searchPlaceholder": "Search by name or email.....",
+    "noUsersFound": "No users found",
+    "table": {
+      "names": "Names",
+      "email": "Email",
+      "role": "Role",
+      "actions": "Actions"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "modals": {
+      "addUser": {
+        "title": "Add User",
+        "submitButton": "Register"
+      },
+      "editUser": {
+        "title": "Edit Information",
+        "submitButton": "Update"
+      },
+      "deleteConfirm": {
+        "title": "Delete this user?"
+      }
+    },
+    "fields": {
+      "username": {
+        "label": "Username",
+        "placeholder": "Enter username"
+      },
+      "firstName": {
+        "label": "First Name",
+        "placeholder": "Enter first name"
+      },
+      "lastName": {
+        "label": "Last Name",
+        "placeholder": "Enter last name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter email"
+      },
+      "role": {
+        "label": "Role",
+        "options": {
+          "admin": "Administrator",
+          "user": "User"
+        }
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Enter password"
+      }
+    },
+    "toasts": {
+      "addSuccess": "User added successfully!",
+      "addError": "Failed to add user",
+      "updateSuccess": "Role updated successfully!",
+      "updateError": "Failed to update role",
+      "deleteSuccess": "User deleted successfully!",
+      "deleteError": "Failed to delete user"
+    }
+  },
+  "Dashboard": {
+    "title": "Statistics",
+    "subtitle": "Overview of traffic on the application",
+    "overviewDefault": "You will see an overview of everything happening on the app here",
+    "errors": {
+      "fetchStats": "Error while retrieving statistics:"
+    },
+    "cards": {
+      "oneHealth": "One Health",
+      "tech": "Technology",
+      "ecoHumanity": "Eco-Humanity",
+      "portraits": "Portraits & Discoveries",
+      "agenda": "Agenda",
+      "about": "About",
+      "scholarships": "Scholarships",
+      "trainings": "Trainings",
+      "academy": "Science Academy",
+      "shop": "Shop",
+      "home": "Dashboard"
+    }
+  },
+  "AnalyticsCard": {
+    "tooltip": {
+      "message": "Statistics for endpoint {endpoint}"
+    },
+    "boundaries": {
+      "sevenDays": "Last 7 days",
+      "thirtyDays": "Last 30 days",
+      "ninetyDays": "Last 90 days",
+      "year": "1 year"
+    },
+    "errors": {
+      "fetchError": "Error while fetching analytics data:"
+    }
   }
 }

@@ -10,12 +10,12 @@
     "opportunities": "Opportunités",
     "scholarships": "Bourses",
     "trainings": "Formations",
-    "academy":"Science Journalism Academy",
+    "academy": "Science Journalism Academy",
     "about": "À propos",
     "shop": "Boutique",
     "unknown": "Inconnu"
   },
-  "Subscription" : {
+  "Subscription": {
     "h1": "S'abonner à l'actualité scientifique",
     "p1": "Accès exclusive à l'actualité sur la science en Afrique",
     "store": "Boutique"
@@ -28,7 +28,7 @@
   },
   "Discovery": {
     "portraits": "Portraits &",
-    "discovery" : "Découvertes",
+    "discovery": "Découvertes",
     "p1": "Découvertes de la semaine",
     "searchPlaceholder": "Rechercher un article",
     "notFound": "Aucun portrait trouvé.",
@@ -38,8 +38,8 @@
     "welcome": "Bienvenue sur notre plateforme d'actualité scientifique !",
     "description": "Décrypter la science, informer le public",
     "subscribe": "S'abonner",
-    "spotlight" : "À la une",
-    "store" : "Boutique",
+    "spotlight": "À la une",
+    "store": "Boutique",
     "searchPlaceholder": "Rechercher un sujet",
     "Ad": "Publicité"
   },
@@ -57,9 +57,9 @@
     "h1": "Agenda",
     "p1": "Découvrez les événements scientifiques à venir en Afrique",
     "subscribe": "S'abonner",
-    "place" : "Lieu",
-    "hour" : "Heure",
-    "live" : "En direct",
+    "place": "Lieu",
+    "hour": "Heure",
+    "live": "En direct",
     "liveNow": "LIVE MAINTENANT",
     "joinLive": "REJOINDRE LE DIRECT",
     "noLive": "Aucun direct pour le moment.",
@@ -68,11 +68,11 @@
   },
   "Opportunities": {
     "academy": "Science Journalism Academy",
-    "scholarship" : "Bourses",
+    "scholarship": "Bourses",
     "training": "Formations"
   },
   "SJA": {
-  "h1": "Science Journalism Academy",
+    "h1": "Science Journalism Academy",
     "subtitle": "Former les voix de la science africaine",
     "partners": "Partenaires",
     "programme": "Programme",
@@ -113,20 +113,20 @@
   },
   "ID": {
     "loading": "Chargement...",
-    "noContent" : "Contenu non trouvé",
-    "back" : "Retour",
+    "noContent": "Contenu non trouvé",
+    "back": "Retour",
     "noDescription": "Aucune description disponible.",
-    "learnMore":"Souhaitez-vous en savoir plus ?",
+    "learnMore": "Souhaitez-vous en savoir plus ?",
     "unregisteredMessage": "La suite de ce contenu est réservée aux membres de la communauté ActuScientifique.",
-    "signIn" : "Connectez-vous pour accéder au contenu complet"
+    "signIn": "Connectez-vous pour accéder au contenu complet"
   },
-  "About" : {
+  "About": {
     "h1": "À propos d'",
     "span0": "ActuScientifique",
     "span1": "est un média africain de",
     "span2": "journalisme scientifique",
     "p1": "dont la vocation est de rendre la science accessible au plus grand nombre. Le projet est né d'un constat simple : en Afrique, une grande partie des informations scientifiques reste difficilement accessible au grand public, alors même qu'elles sont essentielles pour comprendre le monde, faire des choix éclairés et améliorer durablement le bien-être des populations.",
-    "reading" : "Lire notre charte éditoriale et commerciale →",
+    "reading": "Lire notre charte éditoriale et commerciale →",
     "engagement": "Notre engagement",
     "eVerb": "s'engage à",
     "eSpan1": "transformer les résultats de la recherche scientifique en informations claires, fiables et compréhensibles",
@@ -138,10 +138,10 @@
     "aText": "Contribuer à l'émergence d'une culture scientifique forte en Afrique, capable de lutter contre la désinformation et de favoriser des décisions fondées sur des preuves.",
     "activities": "Ce que nous faisons",
     "activitiesText": "Vulgarisation,Décryptage,Mise en lumière",
-    "editorial" : "Notre approche éditoriale",
+    "editorial": "Notre approche éditoriale",
     "eTexts": "Fiabilité et vérification,Clarté et pédagogie,Contextualisation,Indépendance,Éthique",
     "why": "Pourquoi",
-    "reasonP1" : "Parce que la science ne doit pas rester confinée aux laboratoires. ",
+    "reasonP1": "Parce que la science ne doit pas rester confinée aux laboratoires. ",
     "reasonSpan": "Elle doit être comprise, appropriée et utilisée par tous.",
     "reasonP2": "En rapprochant la science des citoyens, nous contribuons à bâtir des sociétés africaines mieux informées et capables de relever les défis contemporains.",
     "motto": "Journalisme Scientifique • Éthique • Indépendant"
@@ -149,7 +149,7 @@
   "Auth": {
     "login": "Connexion",
     "logout": "Déconnexion",
-    "register" : "S'inscrire"
+    "register": "S'inscrire"
   },
   "Hero": {
     "title": "Décrypter la science,\ninformer le public",
@@ -168,5 +168,639 @@
     "charter": "Charte éditoriale et commerciale",
     "terms": "Conditions d'utilisation",
     "rights": "© 2026 - Tous droits réservés"
+  },
+  "AdminSidebar": {
+    "dashboard": "Tableau de bord",
+    "analytics": "Statistiques",
+    "articles": "Gestion des articles",
+    "medias": "Médias (Vidéos, Podcasts)",
+    "opportunities": "Opportunités",
+    "newsletters": "Newsletters",
+    "shop": "Boutique",
+    "users": "Utilisateurs",
+    "agenda": "Agenda",
+    "advertising": "Publicité",
+    "closeMenu": "Fermer le menu",
+    "roles": {
+      "ROLE_ADMIN": "Administrateur",
+      "ROLE_EDITOR": "Éditeur",
+      "ROLE_VIEWER": "Lecteur"
+    }
+  },
+  "AdminLayout": {
+    "menu": "Menu",
+    "openMenu": "Ouvrir le menu",
+    "seeSite": "Voir le site"
+  },
+  "AdminDashboard": {
+    "title": "Tableau de bord",
+    "subtitle": "Avoir une vision globale de l'application",
+    "cards": {
+      "articles": "Articles",
+      "dailyVisitors": "Visites par jour",
+      "products": "Produits",
+      "subscribers": "Abonnés"
+    },
+    "sections": {
+      "latestArticles": "Derniers contenus publiés",
+      "latestEvents": "Derniers évènements réalisés",
+      "scholarshipsAndTraining": "Bourses et formations"
+    }
+  },
+  "Connexion": {
+    "title": "Connexion",
+    "subtitle": "Accédez à votre tableau de bord",
+    "emailLabel": "Adresse e-mail",
+    "emailPlaceholder": "exemple@email.com",
+    "passwordLabel": "Mot de passe",
+    "submitButton": "Se connecter",
+    "submittingButton": "Connexion en cours...",
+    "forgotPassword": "Mot de passe oublié ?",
+    "unauthorizedError": "Vous n'avez pas les droits pour accéder à cette page",
+    "defaultError": "Erreur de connexion"
+  },
+  "ConfirmModal": {
+    "cancel": "Annuler",
+    "confirm": "Supprimer"
+  },
+  "AddElementModal": {
+    "selectPlaceholder": "Sélectionner {label}",
+    "uploadChangeMedia": "Changer le fichier média (uploader un nouveau)",
+    "uploadDefaultMedia": "Cliquez pour uploader un fichier (Vidéo, Audio, Image)",
+    "loading": "Chargement...",
+    "close": "Fermer"
+  },
+  "EventPage": {
+    "title": "Gestion des Évènements",
+    "subtitle": "Ajouter, modifier et supprimer des évènements",
+    "addEvent": "Ajouter un évènement",
+    "searchPlaceholder": "Rechercher un évènement....",
+    "tabList": "Liste",
+    "tabCalendar": "Calendrier",
+    "liveEventsTitle": "Evènements en direct",
+    "modalAddTitle": "Ajouter un évènement",
+    "modalAddButton": "Ajouter",
+    "modalEditTitle": "Modifier un évènement",
+    "modalEditButton": "Modifier",
+    "confirmDeleteTitle": "Supprimer cet évènement ?",
+    "toastCreateSuccess": "Évènement créé avec succès !",
+    "toastCreateError": "Échec de la création de l'évènement",
+    "toastUpdateSuccess": "Évènement mis à jour avec succès !",
+    "toastUpdateError": "Échec de la mise à jour de l'évènement",
+    "toastDeleteSuccess": "Évènement supprimé avec succès !",
+    "toastDeleteError": "Échec de la suppression de l'évènement",
+    "fields": {
+      "title": "Titre de l'évènement",
+      "titlePlaceholder": "Entrez le titre de l'évènement",
+      "location": "Lieu",
+      "locationPlaceholder": "Entrez le lieu de l'évènement",
+      "date": "Date",
+      "datePlaceholder": "Entrez la date de l'évènement",
+      "time": "Heure",
+      "timePlaceholder": "Entrez l'heure de l'évènement",
+      "description": "Description",
+      "descriptionPlaceholder": "Entrez la description de l'évènement",
+      "url": "Url",
+      "urlPlaceholder": "Entrez l'url de l'évènement"
+    },
+    "headers": {
+      "title": "Titre de l'evenement",
+      "location": "lieu",
+      "date": "Date",
+      "time": "heure",
+      "actions": "Actions",
+      "url": "Url"
+    }
+  },
+  "ContentManagementPage": {
+    "title": "Gestion de contenu",
+    "subtitle": "Gérer les bourses, les formations et les Reportages"
+  },
+  "SwitchSection": {
+    "tabs": {
+      "scholarships": "Bourses",
+      "trainings": "Formations"
+    },
+    "titles": {
+      "addScholarship": "Ajouter une bourse",
+      "editScholarship": "Modifier une bourse",
+      "addTraining": "Ajouter une formation",
+      "editTraining": "Modifier une formation",
+      "listScholarships": "Liste des Bourses",
+      "listTrainings": "Liste des Formations"
+    },
+    "labels": {
+      "title": "Titre",
+      "trainingType": "Type de formation",
+      "infoToProvide": "Information à fournir",
+      "trainingLink": "Lien de la formation",
+      "link": "Lien",
+      "amount": "Montant",
+      "description": "Description",
+      "document": "Document",
+      "date": "Date"
+    },
+    "placeholders": {
+      "title": "Entrez le titre",
+      "scholarshipUrl": "Entrez le lien vers la bourse et ses informations",
+      "scholarshipAmount": "Entrez le montant de la bourse (FCFA)",
+      "trainingUrl": "Lien YouTube ou site web"
+    },
+    "options": {
+      "classic": "Classique",
+      "academy": "Science Journalism Academy"
+    },
+    "documentBox": {
+      "clickToUpload": "Cliquez pour uploader un document",
+      "supportedFormats": "PDF, DOC, DOCX, TXT",
+      "clickToChange": "Cliquez pour changer",
+      "removeFile": "Retirer le fichier"
+    },
+    "buttons": {
+      "save": "Enregistrer",
+      "update": "Mettre à jour"
+    },
+    "headers": {
+      "title": "Titre",
+      "type": "Type",
+      "date": "Date",
+      "actions": "Actions"
+    },
+    "messages": {
+      "confirmDelete": "Confirmer la suppression ?",
+      "deletedSuccess": "Élément supprimé !",
+      "deleteError": "Erreur lors de la suppression",
+      "fillTitleAndDesc": "Veuillez remplir le titre et la description",
+      "updatedSuccess": "Mis à Jour !",
+      "publishedSuccess": "Publié !",
+      "operationFailed": "Opération échouée",
+      "noData": "Aucune donnée trouvée."
+    }
+  },
+  "FormComponent": {
+    "titles": {
+      "edit": "Modifier",
+      "addArticle": "Ajouter un Article",
+      "newNewsletter": "Nouvelle NewsLetter"
+    },
+    "labels": {
+      "newsletterTitle": "Titre de la NewsLetter",
+      "content": "Contenu",
+      "rubrique": "Rubrique",
+      "selectPlaceholder": "Sélectionner {label}",
+      "uploadImage": "cliquez pour uploader une image"
+    },
+    "buttons": {
+      "saveChanges": "Enregistrer les modifications",
+      "publish": "Publier",
+      "saving": "Enregistrement en cours...",
+      "publishing": "Publication en cours..."
+    },
+    "messages": {
+      "articleAdded": "Article Ajouté",
+      "published": "Publié!",
+      "updated": "Mis à Jour !",
+      "operationFailed": "Opération échouée"
+    }
+  },
+  "ArticleClientPage": {
+    "header": {
+      "title": "Gestion des Articles",
+      "subtitle": "Gérer les podcasts et les vidéos depuis cette interface",
+      "addButton": "Ajouter un article"
+    },
+    "search": {
+      "placeholder": "Rechercher un média..."
+    },
+    "fields": {
+      "title": "Titre de l'article",
+      "titlePlaceholder": "Entrez le titre de l'article",
+      "content": "Contenu",
+      "rubrique": "Rubrique",
+      "rubriqueOptions": {
+        "tech": "Tech",
+        "oneHealth": "Une seule santé",
+        "ecoHumanity": "Éco-humanité"
+      }
+    },
+    "headers": {
+      "title": "Titre",
+      "type": "Type",
+      "category": "Catégorie",
+      "publishedAt": "Date de publication",
+      "actions": "Actions"
+    },
+    "modals": {
+      "addTitle": "Ajouter un Article",
+      "addSubmit": "Ajouter",
+      "editTitle": "Modifier un média",
+      "editSubmit": "Modifier"
+    }
+  },
+  "ArticlePage": {
+    "header": {
+      "title": "Gestion des Articles",
+      "subtitle": "Gérer les articles depuis cette interface"
+    },
+    "search": {
+      "placeholder": "Rechercher un article..."
+    },
+    "fields": {
+      "title": "Titre de l'article",
+      "titlePlaceholder": "Entrez le titre de l'article",
+      "content": "Contenu",
+      "language": "Langue",
+      "languageOptions": {
+        "french": "Français",
+        "english": "Anglais"
+      },
+      "image": "Image",
+      "imagePlaceholder": "Ajoutez une illustration",
+      "rubrique": "Rubrique",
+      "rubriqueOptions": {
+        "oneHealth": "Une seule santé",
+        "technology": "Technologie",
+        "ecoHumanity": "Éco-humanité",
+        "portDiscovery": "Portrait et découvertes"
+      },
+      "featured": "Mettre à la une",
+      "featuredOptions": {
+        "yes": "Oui",
+        "no": "Non"
+      }
+    },
+    "headers": {
+      "title": "Titre",
+      "rubrique": "Rubrique",
+      "publishedAt": "Date de publication",
+      "actions": "Actions"
+    },
+    "modals": {
+      "editTitle": "Modifier un article",
+      "editSubmit": "Modifier",
+      "deleteTitle": "Supprimer cet article ?"
+    },
+    "toasts": {
+      "noArticle": "Aucun article à ajouter",
+      "deleteSuccess": "Supprimé avec succès !",
+      "deleteError": "Échec de la suppression",
+      "updateSuccess": "Article mis à jour !",
+      "updateError": "Échec de l'upload de l'article"
+    }
+  },
+  "MediaPage": {
+    "header": {
+      "title": "Gestion des Médias",
+      "subtitle": "Gérer les podcasts et les vidéos depuis cette interface",
+      "addButton": "Ajouter un média"
+    },
+    "search": {
+      "placeholder": "Rechercher un média..."
+    },
+    "fields": {
+      "title": "Titre du média",
+      "titlePlaceholder": "Entrez le titre du média",
+      "description": "Description",
+      "descriptionPlaceholder": "Entrez une description...",
+      "language": "Langue",
+      "languageOptions": {
+        "french": "Français",
+        "english": "Anglais"
+      },
+      "type": "Type de média",
+      "typeOptions": {
+        "url": "URL",
+        "file": "Fichier (Podcast/Vidéo)",
+        "fileEdit": "Média (vidéo, fichier, podcast)"
+      },
+      "url": "URL du média",
+      "urlPlaceholder": "https://exemple.com/media",
+      "file": "Fichier",
+      "rubrique": "Rubrique",
+      "rubriqueOptions": {
+        "oneHealth": "Une seule santé",
+        "technology": "Technologie",
+        "ecoHumanity": "Éco-humanité",
+        "portDiscovery": "Portrait et découvertes"
+      },
+      "featured": "Mettre à la une",
+      "featuredOptions": {
+        "yes": "Oui",
+        "no": "Non"
+      }
+    },
+    "headers": {
+      "title": "Titre",
+      "type": "Type",
+      "rubrique": "Rubrique",
+      "url": "URL",
+      "publishedAt": "Date de publication",
+      "actions": "Actions"
+    },
+    "modals": {
+      "addTitle": "Ajouter un Média",
+      "addSubmit": "Ajouter",
+      "editTitle": "Modifier un média",
+      "editSubmit": "Modifier",
+      "deleteTitle": "Supprimer ce média ?"
+    },
+    "toasts": {
+      "addSuccess": "Média ajouté !",
+      "addError": "Échec de l'upload du média",
+      "updateSuccess": "Média mis à jour !",
+      "updateError": "Échec de la mise à jour du média",
+      "deleteSuccess": "Média supprimé !",
+      "deleteError": "Échec de la suppression du média"
+    }
+  },
+  "Affichage": {
+    "rubriques": {
+      "oneHealth": "Une seule santé",
+      "technology": "Technologie",
+      "ecoHumanity": "Éco-humanité",
+      "portDiscovery": "Portrait et découvertes"
+    },
+    "search": {
+      "placeholder": "Rechercher par titre....."
+    },
+    "headers": {
+      "articleTitle": "Titre de l'Article",
+      "title": "Titre",
+      "rubrique": "Rubrique",
+      "content": "Contenu (Début)",
+      "publishedAt": "Date de Publication",
+      "actions": "Actions"
+    },
+    "modals": {
+      "deleteTitle": "Supprimer cet élément ?"
+    },
+    "toasts": {
+      "deleteSuccess": "Supprimé avec succès !",
+      "deleteError": "Erreur lors de la suppression"
+    }
+  },
+  "ComponenteFormulaire": {
+    "title": {
+      "edit": "Modifier",
+      "addArticle": "Ajouter un Article",
+      "addNewsletter": "Nouvelle NewsLetter"
+    },
+    "labels": {
+      "articleTitle": "Titre de l'article",
+      "newsletterTitle": "Titre de la NewsLetter",
+      "content": "Contenu",
+      "rubrique": "Rubrique"
+    },
+    "options": {
+      "selectRubrique": "Sélectionnez une rubrique",
+      "oneHealth": "Une seule santé",
+      "technology": "Technologie",
+      "ecoHumanity": "Éco-humanité",
+      "portDiscovery": "Portrait et découvertes"
+    },
+    "buttons": {
+      "save": "Enregistrer les modifications",
+      "publish": "Publier"
+    },
+    "toasts": {
+      "fillAllFields": "Veuillez remplir tous les champs.",
+      "updateSuccess": "Newsletter mise à jour !",
+      "createSuccess": "Newsletter créée !",
+      "genericError": "Une erreur est survenue lors de la soumission du formulaire. Veuillez réessayer."
+    }
+  },
+  "NewsletterPage": {
+    "title": "Gestion des Newsletters"
+  },
+  "StatGlobal": {
+    "orders": "Commandes",
+    "validatedPayments": "Paiements validés",
+    "revenue": "Revenu",
+    "currency": "{amount} FCFA"
+  },
+  "ProduitsTable": {
+    "title": "Produits",
+    "categories": {
+      "books": "livres",
+      "clothes": "vêtements",
+      "technology_objects": "objets tech"
+    },
+    "columns": {
+      "name": "Produits",
+      "categories": "Catégories",
+      "price": "Prix",
+      "stock": "Stock"
+    },
+    "fields": {
+      "name": {
+        "label": "Nom du produit",
+        "placeholder": "Entrez votre nom du produit"
+      },
+      "preview_image": {
+        "label": "Image",
+        "placeholder": "Entrez votre image"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Entrez votre description"
+      },
+      "categories": {
+        "label": "Catégorie"
+      },
+      "price": {
+        "label": "Prix",
+        "placeholder": "Entrez votre prix"
+      },
+      "stock": {
+        "label": "Stock",
+        "placeholder": "Entrez votre stock"
+      }
+    },
+    "modals": {
+      "deleteTitle": "Supprimer ce produit ?"
+    },
+    "toasts": {
+      "deleteSuccess": "Produit supprimé avec succès",
+      "deleteError": "Échec de la suppression du produit",
+      "editSuccess": "Produit modifié avec succès",
+      "editError": "Échec de la modification du produit"
+    }
+  },
+  "AffichageTableau": {
+    "searchPlaceholder": "Rechercher...........",
+    "sortBy": "Trier par",
+    "actions": "Actions",
+    "editModal": {
+      "title": "Modifier Informations",
+      "button": "Modifier"
+    },
+    "altPreview": "aperçu"
+  },
+  "CommandesTable": {
+    "title": "Commandes",
+    "status": {
+      "CREATED": "Créé",
+      "DELIVERED": "Livré",
+      "CANCELED": "Annulé"
+    },
+    "columns": {
+      "name": "Produits",
+      "category": "Catégorie",
+      "status": "Statut",
+      "totalAmount": "Prix",
+      "quantity": "Quantité"
+    },
+    "fields": {
+      "status": "Statut"
+    },
+    "toasts": {
+      "updateSuccess": "Statut de la commande mis à jour !",
+      "updateError": "Échec de la mise à jour de la commande"
+    }
+  },
+  "TransactionsTable": {
+    "title": "Transactions",
+    "columns": {
+      "id": "Transactions",
+      "produit": "Produit",
+      "modeDePaiement": "Mode de paiement",
+      "prix": "Prix",
+      "acheterPar": "Acheter par"
+    }
+  },
+  "ComponentFormProd": {
+    "title": "Ajouter un produit",
+    "labels": {
+      "productName": "Nom du produit",
+      "image": "Image",
+      "description": "Description",
+      "category": "Catégorie",
+      "price": "Prix",
+      "stock": "Stock"
+    },
+    "placeholders": {
+      "productName": "t-shirt",
+      "uploadImage": "cliquez pour uploader une image"
+    },
+    "categories": {
+      "books": "Livres",
+      "clothes": "Vêtements",
+      "technology_objects": "Objets Tech"
+    },
+    "publishButton": "Publier",
+    "toasts": {
+      "success": "Produit ajouté avec succès",
+      "error": "Erreur lors de l'ajout du produit"
+    }
+  },
+  "DashboardPage": {
+    "title": "Gestion des produits et commandes",
+    "subtitle": "Gérer les produits et suivez les commandes en temps réel",
+    "sections": {
+      "products": "Produits",
+      "orders": "Commandes",
+      "transactions": "Transactions"
+    }
+  },
+  "UsersPage": {
+    "title": "Gestion des utilisateurs",
+    "addButton": "Ajouter un utilisateur",
+    "searchPlaceholder": "Rechercher par nom ou email.....",
+    "noUsersFound": "Aucun utilisateur trouvé",
+    "table": {
+      "names": "Noms",
+      "email": "Email",
+      "role": "Rôle",
+      "actions": "Actions"
+    },
+    "actions": {
+      "edit": "Éditer",
+      "delete": "Supprimer"
+    },
+    "modals": {
+      "addUser": {
+        "title": "Ajout utilisateur",
+        "submitButton": "Inscrire"
+      },
+      "editUser": {
+        "title": "Modifier Informations",
+        "submitButton": "Modifier"
+      },
+      "deleteConfirm": {
+        "title": "Supprimer cet utilisateur ?"
+      }
+    },
+    "fields": {
+      "username": {
+        "label": "Username",
+        "placeholder": "Entrez votre nom d'utilisateur"
+      },
+      "firstName": {
+        "label": "Nom",
+        "placeholder": "Entrez votre nom"
+      },
+      "lastName": {
+        "label": "Prénoms",
+        "placeholder": "Entrez vos prénoms"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Entrez l'email"
+      },
+      "role": {
+        "label": "Rôle",
+        "options": {
+          "admin": "Administrateur",
+          "user": "Utilisateur"
+        }
+      },
+      "password": {
+        "label": "Mot de passe",
+        "placeholder": "Entrez le mot de passe"
+      }
+    },
+    "toasts": {
+      "addSuccess": "Utilisateur ajouté avec succès !",
+      "addError": "Échec de l'ajout de l'utilisateur",
+      "updateSuccess": "Rôle mis à jour avec succès !",
+      "updateError": "Échec de la mise à jour du rôle",
+      "deleteSuccess": "Utilisateur supprimé avec succès !",
+      "deleteError": "Échec de la suppression de l'utilisateur"
+    }
+  },
+  "Dashboard": {
+    "title": "Statistiques",
+    "subtitle": "Avoir une vision du trafic sur l'application",
+    "overviewDefault": "Vous verrez ici un aperçu de tout ce qui se passe sur l'app",
+    "errors": {
+      "fetchStats": "Erreur lors de la récupération des statistiques :"
+    },
+    "cards": {
+      "oneHealth": "One Health",
+      "tech": "Technologie",
+      "ecoHumanity": "Éco-Humanité",
+      "portraits": "Portraits & Découvertes",
+      "agenda": "Agenda",
+      "about": "À propos",
+      "scholarships": "Bourses d'études",
+      "trainings": "Formations",
+      "academy": "Académie des sciences",
+      "shop": "Boutique",
+      "home": "Tableau de bord"
+    }
+  },
+  "AnalyticsCard": {
+    "tooltip": {
+      "message": "Statistiques pour l'endpoint {endpoint}"
+    },
+    "boundaries": {
+      "sevenDays": "7 derniers jours",
+      "thirtyDays": "30 derniers jours",
+      "ninetyDays": "90 derniers jours",
+      "year": "1 an"
+    },
+    "errors": {
+      "fetchError": "Erreur lors de la récupération des données analytics :"
+    }
   }
 }

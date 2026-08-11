@@ -1,5 +1,7 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import styles from "../../styles/Dashboard.module.scss";
 import DashboardCardContainer from "@app/components/dashboardCardsContainer";
 import { DashboardCardProps } from "@app/components/dashboardCards";
@@ -13,28 +15,36 @@ import { EventInterface } from "@app/components/eventDataTable";
 import LoadingComponent from "@app/components/loadingComponent";
 import IndexLineChart from "@app/components/IndexLineChart";
 import { FetchStats } from "@app/actions/StatManager";
-const today = (new Date()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+const today = new Date().toLocaleDateString("fr-FR", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+});
+
 export default function Page() {
+  const t = useTranslations("AdminDashboard");
   const [isLoading, setIsLoading] = useState(true);
   const [analytics, setAnalytics] = useState<{ date: string; count: number }[]>(
     [],
   );
+
   const [articles, setArticles] = useState<DashboardCardProps>({
-    label: "Articles",
+    label: t("cards.articles"),
     value: 0,
     route: "/gestion_article",
   });
   const [visitors, setVisitors] = useState<DashboardCardProps>({
-    label: "Visites par jour",
+    label: t("cards.dailyVisitors"),
     value: 36,
     route: "/analytics",
   });
   const [products, setProducts] = useState<DashboardCardProps>({
-    label: "Produits",
+    label: t("cards.products"),
     value: 0,
   });
   const [subscribers] = useState<DashboardCardProps>({
-    label: "Abonnés",
+    label: t("cards.subscribers"),
     value: 15,
     route: "/users",
   });
@@ -44,26 +54,25 @@ export default function Page() {
   const [scholarshipsAndTraining, setScholarshipsAndTraining] = useState<
     ListItem[]
   >([]);
-  //const [reportages, setReportages] = useState<ListItem[]>([])
 
   useEffect(() => {
     async function update() {
-      console.log("1. articles.route = ", articles.route);
       setVisitors({
-        label: "Visites par jour",
+        label: t("cards.dailyVisitors"),
         route: "/analytics",
         value: (await FetchStats()).count,
       });
       setArticles({
-        label: "Articles",
+        label: t("cards.articles"),
         route: "/gestion_article",
         value: (await FetchArticles()).length,
       });
       setProducts({
-        label: "Produits",
+        label: t("cards.products"),
         route: "/produit_commandes",
         value: (await FetchProducts())?.length as number,
       });
+
       const rowAnalytics = (await FetchStats()).data;
       const grouped = rowAnalytics.reduce(
         (acc: Record<string, number>, current) => {
@@ -79,9 +88,10 @@ export default function Page() {
         count,
       }));
       setAnalytics(analyticsPerDate);
-      console.log({ analyticsPerDate });
+
       setRealizedEvents((await FetchEvents()) as EventInterface[]);
       setPublishedContent((await FetchArticles()).slice(0, 4));
+
       const formations = await FetchFormations();
       const bourses = await FetchBourses();
       setScholarshipsAndTraining([
@@ -89,24 +99,24 @@ export default function Page() {
         ...bourses.slice(0, 2),
       ]);
       setIsLoading(false);
-      console.log("2. articles.route = ", articles.route);
     }
     update();
-  }, [articles.route]);
+  }, [t]);
+
   const textClasses = `
-        m-0 
-        text-2xl 
-        md:text-3xl 
-        lg:text-4xl 
-        font-light
-        text-white
-    `;
+    m-0 
+    text-2xl 
+    md:text-3xl 
+    lg:text-4xl 
+    font-light
+    text-white
+  `;
   const subTextClasses = `
-        text-white 
-        text-sm 
-        md:text-base 
-        font-light
-    `;
+    text-white 
+    text-sm 
+    md:text-base 
+    font-light
+  `;
 
   return (
     <main style={{ padding: "20px" }}>
@@ -114,16 +124,14 @@ export default function Page() {
         isOpen={isLoading}
         onClose={() => setIsLoading(false)}
       />
-      <h1 className={textClasses}>Dashboard</h1>
-      <h3 className={subTextClasses}>
-        {"Avoir une vision globale de l'application"}
-      </h3>
+      <h1 className={textClasses}>{t("title")}</h1>
+      <h3 className={subTextClasses}>{t("subtitle")}</h3>
 
       <DashboardCardContainer
-        subscribers={subscribers}
-        articles={articles}
-        visitors={visitors}
-        products={products}
+        subscribers={{ ...subscribers, label: t("cards.subscribers") }}
+        articles={{ ...articles, label: t("cards.articles") }}
+        visitors={{ ...visitors, label: t("cards.dailyVisitors") }}
+        products={{ ...products, label: t("cards.products") }}
       />
 
       <section className={styles.tendance}>
@@ -133,15 +141,15 @@ export default function Page() {
       {/* Grille 2x2 des Publications Cards */}
       <section className={styles["publication-grid"]}>
         <PublicationCard
-          cardTitle="Derniers contenus publiés"
+          cardTitle={t("sections.latestArticles")}
           items={publishedContent}
         />
         <PublicationCard
-          cardTitle="Derniers évènements réalisés"
+          cardTitle={t("sections.latestEvents")}
           items={realizedEvents}
         />
         <PublicationCard
-          cardTitle="Bourses et formations"
+          cardTitle={t("sections.scholarshipsAndTraining")}
           items={scholarshipsAndTraining}
         />
       </section>

@@ -1,13 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React from "react";
-
-import { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { Upload } from "lucide-react";
 import { Product } from "@app/interfaces";
 import { toast } from "@app/components/FormComponent";
 import dynamic from "next/dynamic";
 import { AddProduct } from "@/app/[lang]/actions/ProductsManager";
+import { useTranslations } from "next-intl";
 
 const EditorText = dynamic(() => import("@app/components/titap"), {
   ssr: false,
@@ -22,14 +21,101 @@ export interface Categories {
   label: string;
 }
 
+const styles = {
+  formTitle: {
+    color: "white",
+    fontSize: "20px",
+    fontWeight: "bold",
+    marginBottom: "25px",
+  } as React.CSSProperties,
+  publishButton: {
+    backgroundColor: "#E65A46",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    padding: "14px 30px",
+    fontSize: "16px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    width: "100%",
+    marginTop: "10px",
+    transition: "background-color 0.3s",
+  } as React.CSSProperties,
+  select: {
+    backgroundColor: "rgba(0, 40, 60, 0.6)",
+    border: "1px solid rgba(255, 255, 255, 0.2)",
+    borderRadius: "8px",
+    padding: "12px 15px",
+    paddingRight: "40px",
+    color: "white",
+    fontSize: "14px",
+    outline: "none",
+    width: "100%",
+    cursor: "pointer",
+    zIndex: 1,
+    height: "45px",
+  } as React.CSSProperties,
+  selectWrapper: {
+    position: "relative",
+  } as React.CSSProperties,
+  formGroup: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    marginBottom: "20px",
+  } as React.CSSProperties,
+  label: {
+    color: "white",
+    fontSize: "14px",
+    fontWeight: "500",
+  } as React.CSSProperties,
+  input: {
+    backgroundColor: "rgba(0, 40, 60, 0.6)",
+    border: "1px solid rgba(255, 255, 255, 0.2)",
+    borderRadius: "8px",
+    padding: "12px 15px",
+    color: "white",
+    fontSize: "14px",
+    outline: "none",
+    width: "80%",
+  } as React.CSSProperties,
+  imageUploadArea: {
+    backgroundColor: "rgba(0, 40, 60, 0.6)",
+    border: "2px dashed rgba(255, 255, 255, 0.3)",
+    borderRadius: "8px",
+    padding: "40px 20px",
+    cursor: "pointer",
+    position: "relative",
+    overflow: "hidden",
+  } as React.CSSProperties,
+  uploadIcon: {
+    color: "rgba(255, 255, 255, 0.6)",
+    marginBottom: "10px",
+  } as React.CSSProperties,
+  uploadText: {
+    color: "rgba(255, 255, 255, 0.7)",
+    fontSize: "14px",
+  } as React.CSSProperties,
+  formRow: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "15px",
+  } as React.CSSProperties,
+};
+
 export default function ComponentFormProd({
   setProducts,
 }: ComponentFormProdProps) {
-  const categories: Categories[] = [
-    { id: "books", label: "Livres" },
-    { id: "clothes", label: "Vêtements" },
-    { id: "technology_objects", label: "Objets Tech" },
-  ];
+  const t = useTranslations("ComponentFormProd");
+
+  const categories: Categories[] = useMemo(
+    () => [
+      { id: "books", label: t("categories.books") },
+      { id: "clothes", label: t("categories.clothes") },
+      { id: "technology_objects", label: t("categories.technology_objects") },
+    ],
+    [t],
+  );
 
   const [nomProduit, setNomProduit] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -51,9 +137,8 @@ export default function ComponentFormProd({
     }
   };
 
-  const handlePublish = async () => {
+  const handlePublish = useCallback(async () => {
     try {
-      console.log("Catégorie avant envoi:", categorie);
       const product = new FormData();
       product.append("name", nomProduit);
       product.append("description", description);
@@ -69,152 +154,49 @@ export default function ComponentFormProd({
         setProducts((prevProducts) => [...prevProducts, response]);
         setNomProduit("");
         setDescription("");
-        setCategorie("");
+        setCategorie(categories[0].id);
         setPrix(0);
         setStock(0);
-        //setImageFile(null)
+        setImageFile(null);
         setImagePreview(null);
-        toast(true, false, "Produit ajouté avec succès");
+        toast(true, false, t("toasts.success"));
+      } else {
+        toast(false, false, t("toasts.error"));
       }
     } catch (error) {
-      console.log("erreur lors de l'ajout du produit : ", error);
-      toast(true, false, "Erreur lors de l'ajout du produit");
+      console.error("erreur lors de l'ajout du produit : ", error);
+      toast(false, false, t("toasts.error"));
     }
-  };
-
-  const formTitle: React.CSSProperties = {
-    color: "white",
-    fontSize: "20px",
-    fontWeight: "bold",
-    marginBottom: "25px",
-  };
-
-  const publishButton: React.CSSProperties = {
-    backgroundColor: "#E65A46",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    padding: "14px 30px",
-    fontSize: "16px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    width: "100%",
-    marginTop: "10px",
-    transition: "background-color 0.3s",
-  };
-
-  const select: React.CSSProperties = {
-    backgroundColor: "rgba(0, 40, 60, 0.6)",
-    border: "1px solid rgba(255, 255, 255, 0.2)",
-    borderRadius: "8px",
-    padding: "12px 15px",
-    paddingRight: "40px",
-    color: "white",
-    fontSize: "14px",
-    outline: "none",
-    width: "100%",
-    cursor: "pointer",
-    zIndex: 1,
-    height: "45px",
-    //appearance: 'none'
-  };
-
-  const selectIcon: React.CSSProperties = {
-    position: "absolute",
-    right: "15px",
-    top: "50%",
-    transform: "translateY(-50%)",
-    color: "white",
-    pointerEvents: "none",
-  };
-
-  const selectWrapper: React.CSSProperties = {
-    position: "relative",
-  };
-
-  const formGroup: React.CSSProperties = {
-    display: "flex",
-    flexDirection: "column",
-    gap: "8px",
-    marginBottom: "20px",
-  };
-
-  const label: React.CSSProperties = {
-    color: "white",
-    fontSize: "14px",
-    fontWeight: "500",
-  };
-
-  const input: React.CSSProperties = {
-    backgroundColor: "rgba(0, 40, 60, 0.6)",
-    border: "1px solid rgba(255, 255, 255, 0.2)",
-    borderRadius: "8px",
-    padding: "12px 15px",
-    color: "white",
-    fontSize: "14px",
-    outline: "none",
-    width: "80%",
-  };
-
-  const textarea: React.CSSProperties = {
-    backgroundColor: "rgba(0, 40, 60, 0.6)",
-    border: "1px solid rgba(255, 255, 255, 0.2)",
-    borderRadius: "8px",
-    padding: "12px 15px",
-    color: "white",
-    fontSize: "14px",
-    outline: "none",
-    minHeight: "100px",
-    resize: "vertical",
-    fontFamily: "Arial, sans-serif",
-  };
-
-  const imageUploadArea: React.CSSProperties = {
-    backgroundColor: "rgba(0, 40, 60, 0.6)",
-    border: "2px dashed rgba(255, 255, 255, 0.3)",
-    borderRadius: "8px",
-    padding: "40px 20px",
-    //textAlign: 'center',
-    //alignItems: 'center',
-    cursor: "pointer",
-    position: "relative",
-    overflow: "hidden",
-  };
-
-  const uploadIcon: React.CSSProperties = {
-    color: "rgba(255, 255, 255, 0.6)",
-    marginBottom: "10px",
-  };
-
-  const uploadText: React.CSSProperties = {
-    color: "rgba(255, 255, 255, 0.7)",
-    fontSize: "14px",
-  };
-
-  const formRow: React.CSSProperties = {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: "15px",
-  };
+  }, [
+    nomProduit,
+    description,
+    categorie,
+    prix,
+    stock,
+    imageFile,
+    setProducts,
+    categories,
+    t,
+  ]);
 
   return (
     <div>
-      <h2 style={formTitle}>Ajouter un produit</h2>
+      <h2 style={styles.formTitle}>{t("title")}</h2>
 
-      <div style={formGroup}>
-        <label style={label}>Nom du produit</label>
+      <div style={styles.formGroup}>
+        <label style={styles.label}>{t("labels.productName")}</label>
         <input
           type="text"
-          placeholder="t-shirt"
+          placeholder={t("placeholders.productName")}
           value={nomProduit}
           onChange={(e) => setNomProduit(e.target.value)}
-          style={input}
+          style={styles.input}
         />
       </div>
 
-      <div style={formGroup}>
-        <label style={label}>Image</label>
-        <label style={imageUploadArea}>
+      <div style={styles.formGroup}>
+        <label style={styles.label}>{t("labels.image")}</label>
+        <label style={styles.imageUploadArea}>
           <input
             type="file"
             accept="image/*"
@@ -229,31 +211,32 @@ export default function ComponentFormProd({
             />
           ) : (
             <div className="flex flex-col items-center justify-center">
-              <Upload size={40} style={uploadIcon} />
-              <div style={uploadText}>cliquez pour uploader une image</div>
+              <Upload size={40} style={styles.uploadIcon} />
+              <div style={styles.uploadText}>
+                {t("placeholders.uploadImage")}
+              </div>
             </div>
           )}
         </label>
       </div>
 
-      <div style={formGroup}>
-        <label style={label}>Description</label>
+      <div style={styles.formGroup}>
+        <label style={styles.label}>{t("labels.description")}</label>
         <EditorText
           content={description}
           onChange={(html) => setDescription(html)}
         />
       </div>
 
-      <div style={formGroup}>
-        <label style={label}>Catégorie</label>
-        <div style={selectWrapper}>
+      <div style={styles.formGroup}>
+        <label style={styles.label}>{t("labels.category")}</label>
+        <div style={styles.selectWrapper}>
           <select
             value={categorie}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-              console.log("Nouvelle catégorie sélectionnée :", e.target.value);
-              setCategorie(e.target.value);
-            }}
-            style={select}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setCategorie(e.target.value)
+            }
+            style={styles.select}
           >
             {categories.map((cat) => (
               <option
@@ -268,34 +251,34 @@ export default function ComponentFormProd({
         </div>
       </div>
 
-      <div style={formRow}>
-        <div style={formGroup}>
-          <label style={label}>Prix</label>
+      <div style={styles.formRow}>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>{t("labels.price")}</label>
           <input
-            type="text"
+            type="number"
             value={prix}
             onChange={(e) => setPrix(Number(e.target.value))}
-            style={input}
+            style={styles.input}
           />
         </div>
-        <div style={formGroup}>
-          <label style={label}>Stock</label>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>{t("labels.stock")}</label>
           <input
-            type="text"
+            type="number"
             value={stock}
             onChange={(e) => setStock(Number(e.target.value))}
-            style={input}
+            style={styles.input}
           />
         </div>
       </div>
 
       <button
-        style={publishButton}
+        style={styles.publishButton}
         onClick={handlePublish}
         onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#d54a36")}
         onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#E65A46")}
       >
-        Publier
+        {t("publishButton")}
       </button>
     </div>
   );

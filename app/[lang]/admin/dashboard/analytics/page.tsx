@@ -1,110 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useEffect, useState, useMemo, useCallback } from "react";
 import styles from "../../../styles/Dashboard.module.scss";
 import LoadingComponent from "@app/components/loadingComponent";
 import IndexLineChart from "@app/components/IndexLineChart";
 import { FetchStats } from "@app/actions/StatManager";
 import { env } from "@app/config/env";
 import AnalyticsCard from "@/app/[lang]/components/analyticsCard";
-import { getLocale } from "next-intl/server";
-import { useTranslations } from "next-intl";
-const today = (new Date()).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+import { useLocale, useTranslations } from "next-intl";
 
-export default function Page() {
-  let lang = 'fr';
-  //const today = new Date().toISOString();
-  /*const allowedPrefixes = [
-    "/one-health",
-    "/technology",
-    "/eco-humanity",
-    "/portrait-discovery",
-    "/agenda",
-    "/about",
-    "/opportunities/",
-    "/shop",
-  ];*/
-  const allowedPrefixes = [
-    { endpoint: "/one-health", key: "oneHealth" },
-    { endpoint: "/technology", key: "tech" },
-    { endpoint: "/eco-humanity", key: "ecoHumanity" },
-    { endpoint: "/portrait-discovery", key: "portraits" },
-    { endpoint: "/agenda", key: "agenda" },
-    { endpoint: "/about", key: "about" },
-    { endpoint: "/opportunities/scholarships", key: "scholarships" },
-    { endpoint: "/opportunities/training", key: "trainings" },
-    { endpoint: "/opportunities/science-academy", key: "academy" },
-    { endpoint: "/shop", key: "shop" },
-  ];
-  const [isLoading, setIsLoading] = useState(true);
-  const [tendance] = useState<string>(
-    "Vous verrez ici un aperçu de tout ce qui se passe sur l'app",
-  );
-  //const [analyticsPerEndpoint, setAnalyticsPerEndpoint] = useState<AnalyticsInterface[]>()
-
-  useEffect(() => {
-    async function update() {
-      const rowData = (await FetchStats()).data;
-      //lang = await getLocale() || "fr";
-      console.log({ rowData });
-      const dashboardPath = !env.devMode ? "/dashboard" : "/admin/dashboard";
-      allowedPrefixes.push({ endpoint: dashboardPath, key: "home" });
-
-      const rowAnalytics = rowData.filter((item) =>
-        allowedPrefixes.some((prefix) => item.endpoint.startsWith(prefix.endpoint)),
-      );
-      const grouped = rowAnalytics.reduce(
-        (acc: Record<string, Record<string, number>>, current) => {
-          const endpoint = current.endpoint;
-          const date = new Date(current.createdAt).toLocaleDateString("fr-FR");
-
-          if (!acc[endpoint]) {
-            acc[endpoint] = {};
-          }
-
-          acc[endpoint][date] = (acc[endpoint][date] || 0) + 1;
-
-          return acc;
-        },
-        {},
-      );
-      setIsLoading(false);
-    }
-    update();
-  }, []);
-  return (
-    <main style={{ padding: "20px" }}>
-      <LoadingComponent
-        isOpen={isLoading}
-        onClose={() => setIsLoading(false)}
-      />
-      <h1 className={textClasses}>Statistiques</h1>
-      <h3 className={subTextClasses}>
-        {"Avoir une vision du traffic sur l'application "}
-      </h3>
-
-      <IndexLineChart end={today} />
-
-      {/* Section aperçu (Tendance) */}
-      <section className={styles.tendance}>
-        <p>{tendance}</p>
-      </section>
-
-      <section
-        /*className={styles['publication-grid']}*/ className="grid grid-cols-1 md:grid-cols-2 gap-[30px] my-10 p-0"
-      >
-        {allowedPrefixes.map((item, key) => {
-          return (
-            <AnalyticsCard
-              key={key}
-              cardTitle={item.key}
-              endpoint={item.endpoint}
-            />
-          );
-        })}
-      </section>
-    </main>
-  );
-}
 const textClasses = `
   m-0 
   text-2xl 
@@ -113,9 +17,143 @@ const textClasses = `
   font-light
   text-white
 `;
+
 const subTextClasses = `
   text-white 
   text-sm 
   md:text-base 
   font-light
 `;
+
+type GroupedStats = Record<string, Record<string, number>>;
+
+export default function Page() {
+  const t = useTranslations("Dashboard");
+  const locale = useLocale();
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Formatage de la date du jour selon la locale actuelle
+  const today = useMemo(() => {
+    return new Date().toLocaleDateString(locale, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  }, [locale]);
+
+  const tendance = useMemo(() => {
+    return t("overviewDefault");
+  }, [t]);
+
+  const allowedPrefixes = useMemo(() => {
+    const dashboardPath = !env.devMode ? "/dashboard" : "/admin/dashboard";
+    return [
+      {
+        endpoint: "/one-health",
+        key: "oneHealth",
+        title: t("cards.oneHealth"),
+      },
+      { endpoint: "/technology", key: "tech", title: t("cards.tech") },
+      {
+        endpoint: "/eco-humanity",
+        key: "ecoHumanity",
+        title: t("cards.ecoHumanity"),
+      },
+      {
+        endpoint: "/portrait-discovery",
+        key: "portraits",
+        title: t("cards.portraits"),
+      },
+      { endpoint: "/agenda", key: "agenda", title: t("cards.agenda") },
+      { endpoint: "/about", key: "about", title: t("cards.about") },
+      {
+        endpoint: "/opportunities/scholarships",
+        key: "scholarships",
+        title: t("cards.scholarships"),
+      },
+      {
+        endpoint: "/opportunities/training",
+        key: "trainings",
+        title: t("cards.trainings"),
+      },
+      {
+        endpoint: "/opportunities/science-academy",
+        key: "academy",
+        title: t("cards.academy"),
+      },
+      { endpoint: "/shop", key: "shop", title: t("cards.shop") },
+      { endpoint: dashboardPath, key: "home", title: t("cards.home") },
+    ];
+  }, [t]);
+
+  const handleCloseLoading = useCallback(() => {
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    async function update() {
+      try {
+        const response = await FetchStats();
+        const rowData = response?.data || [];
+
+        const rowAnalytics = rowData.filter((item) =>
+          allowedPrefixes.some((prefix) =>
+            item.endpoint.startsWith(prefix.endpoint),
+          ),
+        );
+
+        const grouped = rowAnalytics.reduce<GroupedStats>((acc, current) => {
+          const endpoint = current.endpoint;
+
+          const dateObj =
+            typeof current.createdAt === "string"
+              ? new Date(current.createdAt)
+              : current.createdAt;
+
+          const date = dateObj.toLocaleDateString(locale);
+
+          if (!acc[endpoint]) {
+            acc[endpoint] = {};
+          }
+
+          acc[endpoint][date] = (acc[endpoint][date] || 0) + 1;
+
+          return acc;
+        }, {});
+
+        console.log({ grouped });
+      } catch (error) {
+        console.error(t("errors.fetchStats"), error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    update();
+  }, [allowedPrefixes, locale, t]);
+
+  return (
+    <main style={{ padding: "20px" }}>
+      <LoadingComponent isOpen={isLoading} onClose={handleCloseLoading} />
+      <h1 className={textClasses}>{t("title")}</h1>
+      <h3 className={subTextClasses}>{t("subtitle")}</h3>
+
+      <IndexLineChart end={today} />
+
+      <section className={styles.tendance}>
+        <p>{tendance}</p>
+      </section>
+
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-[30px] my-10 p-0">
+        {allowedPrefixes.map((item) => (
+          <AnalyticsCard
+            key={item.key}
+            cardTitle={item.title}
+            endpoint={item.endpoint}
+          />
+        ))}
+      </section>
+    </main>
+  );
+}

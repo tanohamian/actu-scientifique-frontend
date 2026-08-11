@@ -21,7 +21,7 @@
     "@google/genai": "^1.33.0",
     "@mui/icons-material": "^7.3.8",
     "@mui/material": "^7.3.8",
-    "@mui/styled-engine-sc": "^7.3.8",
+    "@mui/material-nextjs": "^9.1.1",
     "@recharts/devtools": "^0.0.8",
     "@tailwindcss/postcss": "^4.1.17",
     "@tinymce/tinymce-react": "^6.3.0",
@@ -51,7 +51,6 @@
     "react-is": "^18.3.1",
     "recharts": "^3.7.0",
     "sass": "^1.94.1",
-    "styled-components": "^6.3.11",
     "turbopack": "^0.0.1"
   },
   "devDependencies": {

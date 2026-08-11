@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { LoginUser } from "../actions/Auth";
 import { useRouter } from "next/navigation";
 import { env } from "../config/env";
+import { useTranslations } from "next-intl";
 
 export interface FormState {
   email: string;
@@ -18,6 +19,7 @@ export const Categories = {
 export type Categories = (typeof Categories)[keyof typeof Categories];
 
 export default function Connexion() {
+  const t = useTranslations("Connexion");
   const [formData, setFormData] = useState<FormState>({
     email: "",
     password: "",
@@ -32,9 +34,6 @@ export default function Connexion() {
       [field]: value,
     }));
   };
-  /*useEffect(()=>{
-        console.log({env})
-    })*/
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,35 +43,36 @@ export default function Connexion() {
     try {
       const response = await LoginUser(formData);
       localStorage.setItem("user", JSON.stringify(response.user));
-      if (response.role == "ROLE_ADMIN") {
+      if (response.role === "ROLE_ADMIN") {
         const dashboardRoute = env.devMode ? "/admin/dashboard" : "/dashboard";
         router.push(dashboardRoute);
       } else {
-        setMessage("Vous n'avez pas les droits pour acceder à cette page");
+        setMessage(t("unauthorizedError"));
       }
     } catch (err) {
       console.error("Erreur lors de la connexion : ", err);
-      setMessage(err instanceof Error ? err.message : "Erreur de connexion");
+      setMessage(err instanceof Error ? err.message : t("defaultError"));
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <div className={containerClasses}>
       <div className={formContainerClasses}>
-        <h1 className={titleClasses}>Connexion</h1>
-        <p className={subtitleClasses}>Accédez à votre tableau de bord</p>
+        <h1 className={titleClasses}>{t("title")}</h1>
+        <p className={subtitleClasses}>{t("subtitle")}</p>
 
         <form onSubmit={handleSubmit}>
           <div className={inputGroupClasses}>
             <label className={labelClasses} htmlFor="email">
-              Adresse e-mail
+              {t("emailLabel")}
             </label>
             <input
               id="email"
               type="email"
               name="email"
-              placeholder="exemple@email.com"
+              placeholder={t("emailPlaceholder")}
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
               className={inputClasses}
@@ -84,7 +84,7 @@ export default function Connexion() {
 
           <div className={inputGroupClasses}>
             <label className={labelClasses} htmlFor="password">
-              Mot de passe
+              {t("passwordLabel")}
             </label>
             <input
               id="password"
@@ -129,16 +129,16 @@ export default function Connexion() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                <span>Connexion en cours...</span>
+                <span>{t("submittingButton")}</span>
               </>
             ) : (
-              <span>Se connecter</span>
+              <span>{t("submitButton")}</span>
             )}
           </button>
         </form>
 
         <div className={linkContainerClasses}>
-          <span className={linkClasses}>Mot de passe oublié ?</span>
+          <span className={linkClasses}>{t("forgotPassword")}</span>
         </div>
       </div>
     </div>
@@ -146,93 +146,93 @@ export default function Connexion() {
 }
 
 const containerClasses = `
-        min-h-screen 
-        flex 
-        justify-center 
-        items-center 
-        bg-gradient-to-br 
-        from-[#588DA9] 
-        to-[#4a7390] 
-        font-sans 
-        p-5 
-        md:p-0
-    `;
+  min-h-screen 
+  flex 
+  justify-center 
+  items-center 
+  bg-gradient-to-br 
+  from-[#588DA9] 
+  to-[#4a7390] 
+  font-sans 
+  p-5 
+  md:p-0
+`;
 
-  const formContainerClasses = `
-        bg-white 
-        rounded-xl 
-        shadow-2xl 
-        p-8 
-        md:p-12 
-        w-full 
-        max-w-md
-    `;
+const formContainerClasses = `
+  bg-white 
+  rounded-xl 
+  shadow-2xl 
+  p-8 
+  md:p-12 
+  w-full 
+  max-w-md
+`;
 
-  const titleClasses = `
-        text-[#588DA9] 
-        text-2xl 
-        md:text-3xl 
-        font-semibold 
-        mb-2 
-        text-center
-    `;
+const titleClasses = `
+  text-[#588DA9] 
+  text-2xl 
+  md:text-3xl 
+  font-semibold 
+  mb-2 
+  text-center
+`;
 
-  const subtitleClasses = `
-        text-gray-500 
-        text-xs 
-        md:text-sm 
-        mb-8 
-        text-center
-    `;
+const subtitleClasses = `
+  text-gray-500 
+  text-xs 
+  md:text-sm 
+  mb-8 
+  text-center
+`;
 
-  const inputClasses = `
-        w-full 
-        p-3 
-        md:p-4 
-        text-base 
-        border-2 
-        border-gray-200 
-        rounded-lg 
-        outline-none 
-        transition-all 
-        duration-300 
-        focus:border-[#588DA9]
-        disabled:bg-gray-100
-        disabled:cursor-not-allowed
-    `;
+const inputClasses = `
+  w-full 
+  p-3 
+  md:p-4 
+  text-base 
+  border-2 
+  border-gray-200 
+  rounded-lg 
+  outline-none 
+  transition-all 
+  duration-300 
+  focus:border-[#588DA9]
+  disabled:bg-gray-100
+  disabled:cursor-not-allowed
+`;
 
-  const buttonClasses = `
-        w-full 
-        p-3 
-        md:p-4 
-        bg-[#588DA9] 
-        text-white 
-        text-base 
-        font-semibold 
-        border-none 
-        rounded-lg 
-        cursor-pointer 
-        transition-all 
-        duration-300 
-        mt-3 
-        shadow-md 
-        hover:bg-[#4a7390]
-        disabled:bg-gray-400
-        disabled:cursor-not-allowed
-        flex
-        items-center
-        justify-center
-        gap-2
-    `;
+const buttonClasses = `
+  w-full 
+  p-3 
+  md:p-4 
+  bg-[#588DA9] 
+  text-white 
+  text-base 
+  font-semibold 
+  border-none 
+  rounded-lg 
+  cursor-pointer 
+  transition-all 
+  duration-300 
+  mt-3 
+  shadow-md 
+  hover:bg-[#4a7390]
+  disabled:bg-gray-400
+  disabled:cursor-not-allowed
+  flex
+  items-center
+  justify-center
+  gap-2
+`;
 
-  const inputGroupClasses = "mb-6";
-  const labelClasses = "block text-gray-700 text-sm font-medium mb-2";
-  const linkContainerClasses = "text-center mt-6";
-  const linkClasses = `
-        text-[#588DA9] 
-        text-sm 
-        font-medium 
-        cursor-pointer 
-        hover:underline 
-        transition-colors
-    `;
+const inputGroupClasses = "mb-6";
+const labelClasses = "block text-gray-700 text-sm font-medium mb-2";
+const linkContainerClasses = "text-center mt-6";
+const linkClasses = `
+  text-[#588DA9] 
+  text-sm 
+  font-medium 
+  cursor-pointer 
+  hover:underline 
+  transition-colors
+`;

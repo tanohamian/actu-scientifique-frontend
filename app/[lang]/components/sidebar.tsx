@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import IconComponent from "@components/Icons";
 import { env } from "../config/env";
 import { DisconnectButton } from "./DisconnectButton";
@@ -13,14 +14,8 @@ interface NavItems {
   path: string;
   icon: React.ReactElement;
 }
-export const ROLE_LABELS: Record<string, string> = {
-  ROLE_ADMIN: "Administrateur",
-  ROLE_EDITOR: "Éditeur",
-  ROLE_VIEWER: "Lecteur",
-} as const;
 
 const iconSize = "w-5 h-5";
-
 const ACTIVE_BG_COLOR = "bg-[#E65A46]";
 
 export default function SidebarComponent({
@@ -32,59 +27,60 @@ export default function SidebarComponent({
   isMobile: boolean;
   user: IUserInfo;
 }) {
+  const t = useTranslations("AdminSidebar");
   const pathname = usePathname();
-  console.log("user : ", user);
 
   const iconBaseProps = { className: `text-white ${iconSize}` };
   const basePath = !env.devMode ? "/dashboard" : "/admin/dashboard";
+
   const navItems: NavItems[] = [
     {
-      name: "Tableau de bord",
+      name: t("dashboard"),
       path: `${basePath}`,
       icon: <IconComponent name="ControlPanel" {...iconBaseProps} />,
     },
     {
-      name: "Statistiques",
+      name: t("analytics"),
       path: `${basePath}/analytics`,
       icon: <IconComponent name="Analytics" {...iconBaseProps} />,
     },
     {
-      name: "Gestion des articles",
+      name: t("articles"),
       path: `${basePath}/gestion_article`,
       icon: <IconComponent name="List" {...iconBaseProps} />,
     },
     {
-      name: "Medias (Vidéos,Podcasts)",
+      name: t("medias"),
       path: `${basePath}/medias`,
       icon: <IconComponent name="Video" {...iconBaseProps} />,
     },
     {
-      name: "Opportunités",
+      name: t("opportunities"),
       path: `${basePath}/formations_bourses`,
       icon: <IconComponent name="Feed" {...iconBaseProps} />,
     },
     {
-      name: "Newsletters",
+      name: t("newsletters"),
       path: `${basePath}/newsletters`,
       icon: <IconComponent name="Envelope" {...iconBaseProps} />,
     },
     {
-      name: "Boutiques",
+      name: t("shop"),
       path: `${basePath}/produit_commandes`,
       icon: <IconComponent name="Product" {...iconBaseProps} />,
     },
     {
-      name: "Utilisateurs",
+      name: t("users"),
       path: `${basePath}/users`,
       icon: <IconComponent name="UsersOnline" {...iconBaseProps} />,
     },
     {
-      name: "Agenda",
+      name: t("agenda"),
       path: `${basePath}/event`,
       icon: <IconComponent name="Schedule" {...iconBaseProps} />,
     },
     {
-      name: "Publicité",
+      name: t("advertising"),
       path: `${basePath}/advertising`,
       icon: <IconComponent name="PromoIcon" {...iconBaseProps} />,
     },
@@ -94,17 +90,19 @@ export default function SidebarComponent({
     const isActive = pathname === item.path;
 
     const baseClasses = `
-            flex items-center p-3 my-1 rounded-lg transition-colors duration-150
-            text-white focus:outline-none focus:ring-2 focus:ring-white/50
-        `;
+      flex items-center p-3 my-1 rounded-lg transition-colors duration-150
+      text-white focus:outline-none focus:ring-2 focus:ring-white/50
+    `;
 
     const inactiveHoverClasses = `
-            hover:bg-white/10 hover:shadow-lg
-        `;
+      hover:bg-white/10 hover:shadow-lg
+    `;
 
     const activeClasses = `${ACTIVE_BG_COLOR} shadow-xl`;
 
-    const linkClasses = `${baseClasses} ${isActive ? activeClasses : inactiveHoverClasses}`;
+    const linkClasses = `${baseClasses} ${
+      isActive ? activeClasses : inactiveHoverClasses
+    }`;
 
     const iconWrapperClasses =
       "mr-3 flex items-center justify-center w-6 h-6 flex-shrink-0";
@@ -130,30 +128,24 @@ export default function SidebarComponent({
   };
 
   const sidebarContainerClasses = `
-        w-64 // sidebarWidth: 256px
-        bg-[#50789B] 
-        text-white 
-        flex 
-        flex-col 
-        h-screen // height: 100vh
-        relative 
-        shadow-2xl
-    `;
+    w-64 bg-[#50789B] text-white flex flex-col h-screen relative shadow-2xl
+  `;
 
   const headerClasses =
     "p-4 flex items-center justify-between border-b border-white/20";
-
   const userInfoClasses = "flex items-center";
   const avatarCircleClasses =
     "rounded-full bg-[#3d6080] w-10 h-10 flex items-center justify-center mr-3 flex-shrink-0 text-xl font-bold";
   const avatarTextClasses = "text-sm font-light leading-tight font-sans";
-
   const closeButtonClasses =
     "bg-transparent border-none text-white cursor-pointer p-2 flex items-center hover:text-red-300 transition-colors duration-200";
-
   const navClasses = "flex-grow p-2 overflow-y-auto";
-
   const footerClasses = "p-4 border-t border-white/20";
+
+  // Récupération dynamique du libellé du rôle ou valeur par défaut
+  const userRoleLabel = t.has(`roles.${user.roles}`)
+    ? t(`roles.${user.roles}`)
+    : user.roles;
 
   return (
     <div className={sidebarContainerClasses}>
@@ -166,7 +158,7 @@ export default function SidebarComponent({
             </span>
           </div>
           <div className={avatarTextClasses}>
-            {ROLE_LABELS[user.roles]}
+            {userRoleLabel}
             <br />
             {user.first_name} {user.last_name}
           </div>
@@ -175,7 +167,7 @@ export default function SidebarComponent({
           <button
             onClick={onClose}
             className={closeButtonClasses}
-            aria-label="Fermer le menu"
+            aria-label={t("closeMenu")}
           >
             <X size={24} />
           </button>

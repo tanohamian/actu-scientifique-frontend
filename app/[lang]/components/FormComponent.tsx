@@ -17,6 +17,7 @@ import { Rubriques } from "../enum/enums";
 import { Article, DbArticle, Newsletter } from "../interfaces";
 import dynamic from "next/dynamic";
 import { AddArticle } from "../actions/ArticleManager";
+import { useTranslations } from "next-intl";
 
 const EditorText = dynamic(() => import("@app/components/titap"), {
   ssr: false,
@@ -26,9 +27,11 @@ export const toast = function (
   success: boolean,
   edit: boolean = false,
   message: string = "",
+  defaultSuccessMsg: string = "",
+  defaultErrorMsg: string = "",
 ) {
   return success
-    ? showToast.success(message ? message : edit ? "Publié!" : "Mis à Jour !", {
+    ? showToast.success(message ? message : defaultSuccessMsg, {
         duration: 4000,
         progress: true,
         position: "bottom-center",
@@ -36,7 +39,7 @@ export const toast = function (
         icon: "✅",
         sound: true,
       })
-    : showToast.error("Opération échouée", {
+    : showToast.error(defaultErrorMsg || "Opération échouée", {
         duration: 4000,
         progress: true,
         position: "bottom-center",
@@ -45,6 +48,7 @@ export const toast = function (
         sound: true,
       });
 };
+
 interface FormPropos {
   isArticle: boolean;
   fields?: FormFieldConfig[];
@@ -61,6 +65,7 @@ export default function FormComponent({
   fields,
   initialArticleData = {},
 }: FormPropos) {
+  const t = useTranslations("FormComponent");
   const rubriques = Object.values(Rubriques) as string[];
 
   const [isLoading, setIsLoading] = useState(false);
@@ -80,6 +85,7 @@ export default function FormComponent({
       return acc;
     }, {} as InitialDataType);
   }, [fields, initialArticleData]);
+
   const [articleFormData, setArticleFormData] =
     useState<InitialDataType>(initialFormData);
   const [imageUrl, setImageUrl] = useState<
@@ -156,19 +162,22 @@ export default function FormComponent({
         article.append("rubrique", articleFormData["rubrique"] as string);
         article.append("file", articleFormData["file"] as File);
         article.append("une", articleFormData["une"] as string);
-        console.log("Aperçu de l'article : ");
-        console.log(article);
 
         result = await AddArticle(article, false);
         if (result) {
-          toast(true, false, "Article Ajouté");
+          toast(
+            true,
+            false,
+            t("messages.articleAdded"),
+            t("messages.published"),
+            t("messages.operationFailed"),
+          );
           const newArticle = result;
           newArticle.createdAt = newArticle.createdAt.toLocaleString("fr-FR", {
             year: "numeric",
             month: "2-digit",
             day: "2-digit",
           });
-          console.log(result);
           setFormData({
             title: "",
             content: "",
@@ -176,7 +185,13 @@ export default function FormComponent({
           });
           onSuccess(newArticle);
         } else {
-          toast(false);
+          toast(
+            false,
+            false,
+            "",
+            t("messages.published"),
+            t("messages.operationFailed"),
+          );
         }
         return;
       }
@@ -188,8 +203,10 @@ export default function FormComponent({
       }
 
       if (result) {
-        toast(true, isEditing);
-        console.log(result);
+        const defaultMsg = isEditing
+          ? t("messages.updated")
+          : t("messages.published");
+        toast(true, isEditing, "", defaultMsg, t("messages.operationFailed"));
         setFormData({ title: "", content: "", rubrique: Rubriques.TECHNOLOGY });
         await onSuccess();
       }
@@ -269,7 +286,9 @@ export default function FormComponent({
                 required={field.required}
               >
                 <option value="" disabled className="text-white/50">
-                  Sélectionner {field.label.toLowerCase()}
+                  {t("labels.selectPlaceholder", {
+                    label: field.label.toLowerCase(),
+                  })}
                 </option>
                 {field.options?.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -319,7 +338,7 @@ export default function FormComponent({
               ) : (
                 <div className="flex flex-col items-center justify-center bg-[#00283C99] rounded-lg p-10 cursor-pointer">
                   <Upload size={40} style={uploadIcon} />
-                  <div style={uploadText}>cliquez pour uploader une image</div>
+                  <div style={uploadText}>{t("labels.uploadImage")}</div>
                 </div>
               )}
             </label>
@@ -386,22 +405,22 @@ export default function FormComponent({
         }}
       >
         {isEditing
-          ? "Modifier"
+          ? t("titles.edit")
           : isArticle
-            ? "Ajouter un Article"
-            : "Nouvelle NewsLetter"}
+            ? t("titles.addArticle")
+            : t("titles.newNewsletter")}
       </h2>
       {isArticle ? (
         <form onSubmit={handleSubmit}>
           {(fields as FormFieldConfig[]).map((field) => renderField(field))}
           <button type="submit" style={buttonStyle}>
-            {isEditing ? "Enregistrer les modifications" : "Publier"}
+            {isEditing ? t("buttons.saveChanges") : t("buttons.publish")}
           </button>
         </form>
       ) : (
         <form onSubmit={handleSubmit}>
           <div>
-            <label style={labelStyle}>{"Titre de la NewsLetter"}</label>
+            <label style={labelStyle}>{t("labels.newsletterTitle")}</label>
             <input
               type="text"
               id="titre"
@@ -413,7 +432,7 @@ export default function FormComponent({
             />
           </div>
           <div>
-            <label style={labelStyle}>Contenu</label>
+            <label style={labelStyle}>{t("labels.content")}</label>
             <textarea
               name="contenu"
               style={textareaStyle}
@@ -424,7 +443,7 @@ export default function FormComponent({
             />
           </div>
           <div>
-            <label style={labelStyle}>Rubrique</label>
+            <label style={labelStyle}>{t("labels.rubrique")}</label>
             <select
               name="categorie"
               style={selectStyle}
@@ -440,13 +459,11 @@ export default function FormComponent({
           </div>
           {isLoading ? (
             <button type="submit" style={buttonStyle}>
-              {isEditing
-                ? "Enregistrement en cours..."
-                : "Publication en cours..."}
+              {isEditing ? t("buttons.saving") : t("buttons.publishing")}
             </button>
           ) : (
             <button type="submit" style={buttonStyle}>
-              {isEditing ? "Enregistrer les modifications" : "Publier"}
+              {isEditing ? t("buttons.saveChanges") : t("buttons.publish")}
             </button>
           )}
         </form>

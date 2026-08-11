@@ -109,9 +109,9 @@ export default function Home() {
           {t("subscribe")}
         </button>
       </div>
-      <div className="w-[80%] mx-auto h-32 border-2 border-white mt-35 items-center justify-center flex text-white text-2xl md:text-3xl lg:text-4xl font-bold mb-5">
-        <div className="flex flex-col items-center gap-1">
-          <div className="w-[80%] mx-auto mt-35 mb-5 overflow-hidden">
+      <div className="w-[80%] mx-auto min-h-32 border-2 border-white mt-10 md:mt-16 lg:mt-20 items-center justify-center flex text-white text-2xl md:text-3xl lg:text-4xl font-bold mb-5">
+        <div className="flex flex-col items-center gap-1 w-full">
+          <div className="w-full overflow-hidden">
             <AdBanner dataAdSlot="1234567890" dataAdFormat="horizontal" />
           </div>
           {/*<span className="text-sm font-normal">728 x 90 ou 970 x 90</span>*/}
@@ -144,7 +144,7 @@ export default function Home() {
           </div>
 
           <div className="w-full lg:w-1/4">
-            <div className="flex flex-col bg-[#50789B] min-h-[400px] rounded-lg p-4 gap-4 sticky top-6">
+            <div className="flex flex-col bg-[#50789B] min-h-[400px] rounded-lg p-4 gap-4 lg:sticky lg:top-6">
               <h1 className="text-xl text-white">{t("store")}</h1>
               <button
                 className="bg-white/10 hover:bg-white/20 transition-all duration-200 rounded-lg p-4 flex  min-h-[300px] group relative overflow-hidden items-center justify-center"

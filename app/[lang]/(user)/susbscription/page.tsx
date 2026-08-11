@@ -32,7 +32,7 @@ export default function SusbscriptionPage() {
     return (
         <div className="flex flex-col">
             <div className=" py-12 px-4 flex flex-col gap-8 md:gap-4 lg:gap-8">
-                <h1 className="text-7xl font-bold w-25 text-white">{t('h1')}</h1>
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white">{t('h1')}</h1>
                 <p className="text-white text-3xl font-bold">{t('p1')}</p>
                 <button
                     className="bg-white/10 hover:bg-white/20 transition-all duration-200 rounded-lg p-4 flex items-center justify-center min-h-[120px] group w-[250px]"
