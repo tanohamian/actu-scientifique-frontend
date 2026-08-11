@@ -189,7 +189,8 @@
   },
   "AdminLayout": {
     "menu": "Menu",
-    "openMenu": "Ouvrir le menu"
+    "openMenu": "Ouvrir le menu",
+    "seeSite": "Voir le site"
   },
   "AdminDashboard": {
     "title": "Tableau de bord",

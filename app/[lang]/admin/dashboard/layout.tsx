@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import SidebarComponent from "@app/components/sidebar";
-import { Menu } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { Menu, ExternalLink } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
+import Link from "next/link";
 import { IUserInfo } from "../../interfaces";
 
 export default function AdminLayout({
@@ -12,6 +13,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const t = useTranslations("AdminLayout");
+  const locale = useLocale();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(1200);
   const [userInfo, setUserInfo] = useState<IUserInfo>({
@@ -100,6 +102,7 @@ export default function AdminLayout({
     backgroundColor: "#5A8FAC",
     minHeight: "100vh",
   };
+
   const mainStyle: React.CSSProperties = {
     marginLeft: isMobile ? "0" : `${SIDEBAR_WIDTH}px`,
     width: "100%",
@@ -127,6 +130,27 @@ export default function AdminLayout({
     fontSize: "1rem",
     fontWeight: "600",
     fontFamily: "sans-serif",
+  };
+
+  const topActionsContainerStyle: React.CSSProperties = {
+    display: "flex",
+    justifyContent: "flex-end",
+    padding: "1rem 1.5rem 0 1.5rem",
+  };
+
+  const seeSiteButtonStyle: React.CSSProperties = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "0.5rem",
+    backgroundColor: "#50789B",
+    color: "white",
+    padding: "0.5rem 1rem",
+    borderRadius: "0.5rem",
+    textDecoration: "none",
+    fontSize: "0.875rem",
+    fontWeight: "600",
+    marginRight: "10rem",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
   };
 
   const contentStyle: React.CSSProperties = {
@@ -171,6 +195,18 @@ export default function AdminLayout({
             <span>{t("menu")}</span>
           </button>
         </header>
+
+        <div style={topActionsContainerStyle}>
+          <Link
+            href={`/${locale}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={seeSiteButtonStyle}
+          >
+            <span>{t("seeSite")}</span>
+            <ExternalLink size={16} />
+          </Link>
+        </div>
 
         <div style={contentStyle}>{children}</div>
       </main>
