@@ -797,6 +797,7 @@
       "sevenDays": "7 derniers jours",
       "thirtyDays": "30 derniers jours",
       "ninetyDays": "90 derniers jours",
+      "sixMonths": "Les 6 derniers mois",
       "year": "1 an"
     },
     "errors": {

@@ -32,7 +32,8 @@ export async function FetchStats(paramsObject: FetchStatsParams = { endpoint: '/
       //revalidatePath('/admin/dashboard/gestion_article')
       return responseData as { count: number; data: Stat[] };
     }
-    let error = await response.json();
+    let text =  await response.text()
+    let error = await JSON.parse(text);
     console.log("Erreur lors de la récupération des statistiques : ", error);
     return { count: 0, data: [] };
   } catch (error) {
