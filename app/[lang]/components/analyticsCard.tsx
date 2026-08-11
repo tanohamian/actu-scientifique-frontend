@@ -63,7 +63,7 @@ const AnalyticsCard = ({ cardTitle, endpoint }: AnalyticsCardProps) => {
         <article className={styles.card}> 
             <Tooltip data={{ label: cardTitle, messageBubble: `Statistiques pour l'endpoint ${endpoint}`, route: endpoint }} />
             <ul className={styles['content-list']}>
-                <select className={styles['date-filter']} onChange={onFilterChange}>
+                <select className={styles['select']} onChange={onFilterChange}>
                             {analyticsBoundaries.map((boundary, index) => (
                                 <option key={index} value={boundary.value}>{boundary.label}</option>
                             ))}
