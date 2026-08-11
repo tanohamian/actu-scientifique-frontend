@@ -6,6 +6,7 @@ import { Menu, ExternalLink } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import { IUserInfo } from "../../interfaces";
+import { env } from "../../config/env";
 
 export default function AdminLayout({
   children,
@@ -198,7 +199,7 @@ export default function AdminLayout({
 
         <div style={topActionsContainerStyle}>
           <Link
-            href={`/${locale}`}
+            href={env.devMode ? `/${locale}` : `https://actuscientifique.com`}
             target="_blank"
             rel="noopener noreferrer"
             style={seeSiteButtonStyle}
