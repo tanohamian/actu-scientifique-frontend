@@ -137,7 +137,7 @@ export default function AnalyticsCard({
     <article className={styles.card}>
       <Tooltip data={tooltipData} />
       <ul className={styles["content-list"]}>
-        <select className={styles["date-filter"]} onChange={onFilterChange}>
+        <select className={styles["select"]} onChange={onFilterChange}>
           {analyticsBoundaries.map((boundary, index) => (
             <option key={boundary.value ?? index} value={boundary.value}>
               {boundary.label}

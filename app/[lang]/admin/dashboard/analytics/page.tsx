@@ -91,55 +91,16 @@ export default function Page() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => {
-    async function update() {
-      try {
-        const response = await FetchStats();
-        const rowData = response?.data || [];
-
-        const rowAnalytics = rowData.filter((item) =>
-          allowedPrefixes.some((prefix) =>
-            item.endpoint.startsWith(prefix.endpoint),
-          ),
-        );
-
-        const grouped = rowAnalytics.reduce<GroupedStats>((acc, current) => {
-          const endpoint = current.endpoint;
-
-          const dateObj =
-            typeof current.createdAt === "string"
-              ? new Date(current.createdAt)
-              : current.createdAt;
-
-          const date = dateObj.toLocaleDateString(locale);
-
-          if (!acc[endpoint]) {
-            acc[endpoint] = {};
-          }
-
-          acc[endpoint][date] = (acc[endpoint][date] || 0) + 1;
-
-          return acc;
-        }, {});
-
-        console.log({ grouped });
-      } catch (error) {
-        console.error(t("errors.fetchStats"), error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    update();
-  }, [allowedPrefixes, locale, t]);
-
   return (
     <main style={{ padding: "20px" }}>
       <LoadingComponent isOpen={isLoading} onClose={handleCloseLoading} />
       <h1 className={textClasses}>{t("title")}</h1>
       <h3 className={subTextClasses}>{t("subtitle")}</h3>
 
-      <IndexLineChart end={today} />
+      <AnalyticsCard
+        cardTitle={"Trafic global de l'application"}
+        endpoint={'/'}
+      />
 
       <section className={styles.tendance}>
         <p>{tendance}</p>
