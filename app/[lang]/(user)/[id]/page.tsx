@@ -14,7 +14,6 @@ export default function DetailsArticle() {
   const params = useParams();
   const router = useRouter();
   const articleId = params.id as string;
-  console.log("articleId : ", articleId);
 
   const { isLoggedIn, loading: authLoading } = useAuth();
 

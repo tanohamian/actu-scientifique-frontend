@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Product } from "@app/interfaces";
+import { InputsProps, Product } from "@app/interfaces";
 import { CreateOrder } from "@app/actions/Order";
 import { FetchProductById } from "@app/actions/ProductsManager";
 import { useEffect, useState } from "react";
@@ -9,7 +9,6 @@ import { useParams } from "next/navigation";
 import { ArticleDisplay } from "@/app/[lang]/components/viewElement";
 import LoginRegisterComponent from "@app/components/login_register_Component";
 import { useAuth } from "@/app/[lang]/context/authContext";
-import { InputsProps } from "../../layout";
 
 export default function DetailsProduct() {
   const params = useParams();

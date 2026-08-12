@@ -9,7 +9,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LoginRegisterComponent from "../components/login_register_Component";
 import { useAuth, AuthProvider } from "../context/authContext";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { FetchArticles } from "../actions/ArticleManager";
 import { FetchMedias } from "../actions/MediasManager";
 import { Rubriques } from "../enum/enums";
@@ -36,13 +36,6 @@ export interface NavItemsProps {
   subItems?: NavItemsProps[];
 }
 
-/*export const researchData = {
-  technology: "technology",
-  one_health: "one-health",
-  ecohumanity: "eco-humanity",
-  port_discovery: "portrait-discovery",
-};*/
-
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [inputValue, setInputValue] = useState("");
@@ -54,7 +47,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const locale = useLocale();
 
   const [searchLoading, setSearchLoading] = useState(false);
   const [focusedOnSearchBar, setFocusedOnSearchBar] = useState(true);
