@@ -23,7 +23,7 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={lang} translate="no">
+    <html lang={lang} translate="no" suppressHydrationWarning>
       <head>
         <link
           rel="icon"

@@ -1,19 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { FetchArticleById } from "@app/actions/ArticleManager";
-import { Article, DbMedia } from "@app/interfaces";
+import { Article, DbMedia, InputsProps } from "@app/interfaces";
 import { FetchMediaById } from "@app/actions/MediasManager";
 import LoginRegisterComponent from "@app/components/login_register_Component";
-import { InputsProps } from "../layout";
 import { ArticleDisplay } from "@app/components/viewElement";
 import { useTranslations } from "next-intl";
+import { useAuth } from "../../context/authContext";
 
 export default function DetailsArticle() {
   const params = useParams();
   const router = useRouter();
   const articleId = params.id as string;
+  console.log("articleId : ", articleId);
+
+  const { isLoggedIn, loading: authLoading } = useAuth();
 
   const [article, setArticle] = useState<Article | null>(null);
   const [media, setMedia] = useState<DbMedia | null>(null);
@@ -40,6 +43,7 @@ export default function DetailsArticle() {
       setInputValue: setPassword,
     },
   ];
+
   const inputsRegister: InputsProps[] = [
     {
       typeInput: "text",
@@ -72,36 +76,55 @@ export default function DetailsArticle() {
       setInputValue: setConfirmPassword,
     },
   ];
-  const t = useTranslations("ID");
-  useEffect(() => {
-    const loadContent = async () => {
-      if (!articleId) return;
-      setIsLoading(true);
-      try {
-        const [resArticle, resMedia] = await Promise.all([
-          FetchArticleById(articleId),
-          FetchMediaById(articleId),
-        ]);
 
-        if (resArticle) setArticle(resArticle);
-        if (resMedia) setMedia(resMedia);
-      } catch (error) {
-        console.error("Erreur lors du chargement du contenu:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadContent();
+  const t = useTranslations("ID");
+
+  const loadContent = useCallback(async () => {
+    if (!articleId) return;
+    setIsLoading(true);
+    try {
+      const [resArticle, resMedia] = await Promise.all([
+        FetchArticleById(articleId),
+        FetchMediaById(articleId),
+      ]);
+
+      if (resArticle) setArticle(resArticle);
+      if (resMedia) setMedia(resMedia);
+    } catch (error) {
+      console.error("Erreur lors du chargement du contenu:", error);
+    } finally {
+      setIsLoading(false);
+    }
   }, [articleId]);
 
-  const activeContent = article || media;
+  useEffect(() => {
+    loadContent();
+  }, [loadContent]);
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      setIsLoginOpen(false);
+      setIsRegisterOpen(false);
+    }
+  }, [isLoggedIn]);
+
+  const activeContent = article || media;
   const displayUrl = article ? article.illustrationUrl : media?.url;
   const isVideo =
     media?.type === "video" || displayUrl?.match(/\.(mp4|mkv|webm)$/i);
-  const textContent = article ? article.content : media?.description;
 
-  if (isLoading) {
+  // Récupération du texte brut / HTML initial
+  const rawTextContent = article ? article.content : media?.description;
+
+  // Troncation si l'utilisateur n'est pas connecté
+  const textContent =
+    !isLoggedIn && rawTextContent
+      ? rawTextContent.length > 200
+        ? `${rawTextContent.slice(0, 200)}...`
+        : rawTextContent
+      : rawTextContent;
+
+  if (isLoading || authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-white">
         {t("loading")}
@@ -178,7 +201,7 @@ export default function DetailsArticle() {
             )}
           </div>
 
-          {activeContent.withToken === false && (
+          {!isLoggedIn && (
             <div className="mt-10 p-8 rounded-2xl bg-linear-to-t from-blue-900/40 to-transparent border-t border-blue-500/30 text-center">
               <h3 className="text-xl font-bold text-white mb-2">
                 {t("learnMore")}
@@ -194,6 +217,7 @@ export default function DetailsArticle() {
           )}
         </article>
       </div>
+
       {isLoginOpen && (
         <LoginRegisterComponent
           type="login"
@@ -206,6 +230,7 @@ export default function DetailsArticle() {
           }}
         />
       )}
+
       {isRegisterOpen && (
         <LoginRegisterComponent
           type="register"

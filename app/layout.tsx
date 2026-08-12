@@ -1,4 +1,4 @@
-import './globals.css'
+import "./globals.css";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 
 export default function RootLayout({
@@ -6,5 +6,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children; // On passe juste le relais au layout suivant
+  return (
+    <html>
+      <body>{children}</body>
+    </html>
+  );
 }

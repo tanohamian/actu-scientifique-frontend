@@ -63,7 +63,7 @@ export async function LoginUser(formData: FormState) {
     if (setCookieHeader) {
       const token = setCookieHeader.split(";")[0].split("=")[1];
       const user = jwtDecode(token);
-      console.log("user : ", user);
+      //console.log("user : ", user);
       responseJson.user = user;
       const cookieStore = await cookies();
       cookieStore.set("authToken", token, {
