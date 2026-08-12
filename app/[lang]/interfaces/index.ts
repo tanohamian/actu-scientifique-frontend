@@ -138,3 +138,10 @@ export interface IUserInfo {
   last_name: string;
   roles: string;
 }
+
+export interface InputsProps {
+  typeInput: string;
+  placeholderInput: string;
+  inputValue: string;
+  setInputValue: (value: string) => void;
+}
