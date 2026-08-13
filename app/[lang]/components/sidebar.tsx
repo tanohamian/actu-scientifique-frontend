@@ -8,6 +8,7 @@ import IconComponent from "@components/Icons";
 import { env } from "../config/env";
 import { DisconnectButton } from "./DisconnectButton";
 import { IUserInfo } from "../interfaces";
+
 interface NavItems {
   name: string;
   path: string;
@@ -40,53 +41,59 @@ export default function SidebarComponent({
     },
     {
       name: t("analytics"),
-      path: env.devMode ? `/${locale}${basePath}/analytics` : `${basePath}`,
+      path: env.devMode
+        ? `/${locale}${basePath}/analytics`
+        : `${basePath}/analytics`,
       icon: <IconComponent name="Analytics" {...iconBaseProps} />,
     },
     {
       name: t("articles"),
       path: env.devMode
         ? `/${locale}${basePath}/gestion_article`
-        : `${basePath}`,
+        : `${basePath}/gestion_article`,
       icon: <IconComponent name="List" {...iconBaseProps} />,
     },
     {
       name: t("medias"),
-      path: env.devMode ? `/${locale}${basePath}/medias` : `${basePath}`,
+      path: env.devMode ? `/${locale}${basePath}/medias` : `${basePath}/medias`,
       icon: <IconComponent name="Video" {...iconBaseProps} />,
     },
     {
       name: t("opportunities"),
       path: env.devMode
         ? `/${locale}${basePath}/formations_bourses`
-        : `${basePath}`,
+        : `${basePath}/formations_bourses`,
       icon: <IconComponent name="Feed" {...iconBaseProps} />,
     },
     {
       name: t("newsletters"),
-      path: env.devMode ? `/${locale}${basePath}/newsletters` : `${basePath}`,
+      path: env.devMode
+        ? `/${locale}${basePath}/newsletters`
+        : `${basePath}/newsletters`,
       icon: <IconComponent name="Envelope" {...iconBaseProps} />,
     },
     {
       name: t("shop"),
       path: env.devMode
         ? `/${locale}${basePath}/produit_commandes`
-        : `${basePath}`,
+        : `${basePath}/produit_commandes`,
       icon: <IconComponent name="Product" {...iconBaseProps} />,
     },
     {
       name: t("users"),
-      path: env.devMode ? `/${locale}${basePath}/users` : `${basePath}`,
+      path: env.devMode ? `/${locale}${basePath}/users` : `${basePath}/users`,
       icon: <IconComponent name="UsersOnline" {...iconBaseProps} />,
     },
     {
       name: t("agenda"),
-      path: env.devMode ? `/${locale}${basePath}/event` : `${basePath}`,
+      path: env.devMode ? `/${locale}${basePath}/event` : `${basePath}/event`,
       icon: <IconComponent name="Schedule" {...iconBaseProps} />,
     },
     {
       name: t("advertising"),
-      path: env.devMode ? `/${locale}${basePath}/advertising` : `${basePath}`,
+      path: env.devMode
+        ? `/${locale}${basePath}/advertising`
+        : `${basePath}/advertising`,
       icon: <IconComponent name="PromoIcon" {...iconBaseProps} />,
     },
   ];
