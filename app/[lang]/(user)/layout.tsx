@@ -9,7 +9,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LoginRegisterComponent from "../components/login_register_Component";
 import { useAuth, AuthProvider } from "../context/authContext";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { FetchArticles } from "../actions/ArticleManager";
 import { FetchMedias } from "../actions/MediasManager";
 import { Rubriques } from "../enum/enums";
@@ -55,25 +55,31 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const menuRef = useRef<HTMLDivElement>(null);
   const iconBaseProps = { className: `text-white ${iconSize}` };
   const footerElement = "flex flex-row items-center";
-
+  const locale = useLocale();
   const t = useTranslations("Navigation");
   const bottomT = useTranslations("Bottom");
   const oppT = useTranslations("Opportunities");
   const authT = useTranslations("Auth");
   const navItems: NavItemsProps[] = [
-    { label: t("home"), href: "/" },
-    { label: t("oneHealth"), href: "/one-health" },
-    { label: t("tech"), href: "/technology" },
-    { label: t("ecoHumanity"), href: "/eco-humanity" },
-    { label: t("portraits"), href: "/portrait-discovery" },
-    { label: t("agenda"), href: "/agenda" },
+    { label: t("home"), href: `/${locale}` },
+    { label: t("oneHealth"), href: `/${locale}/one-health` },
+    { label: t("tech"), href: `/${locale}/technology` },
+    { label: t("ecoHumanity"), href: `/${locale}/eco-humanity` },
+    { label: t("portraits"), href: `/${locale}/portrait-discovery` },
+    { label: t("agenda"), href: `/${locale}/agenda` },
     {
       label: t("opportunities"),
-      href: "/opportunities/science-academy",
+      href: `/${locale}/opportunities/science-academy`,
       subItems: [
-        { label: oppT("academy"), href: "/opportunities/science-academy" },
-        { label: oppT("scholarship"), href: "/opportunities/scholarships" },
-        { label: oppT("training"), href: "/opportunities/training" },
+        {
+          label: oppT("academy"),
+          href: `/${locale}/opportunities/science-academy`,
+        },
+        {
+          label: oppT("scholarship"),
+          href: `/${locale}/opportunities/scholarships`,
+        },
+        { label: oppT("training"), href: `/${locale}/opportunities/training` },
       ],
     },
     { label: t("about"), href: "/about" },
@@ -351,6 +357,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 item.label === "Opportunités";
               const isSimpleActive = pathname === item.href;
               const isActive = isParentActive || isSimpleActive;
+              console.log("isActive : ", isActive);
+              console.log("pathname : ", pathname);
 
               if (item.subItems) {
                 return (

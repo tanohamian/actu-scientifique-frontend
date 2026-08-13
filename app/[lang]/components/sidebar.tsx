@@ -3,7 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import IconComponent from "@components/Icons";
 import { env } from "../config/env";
 import { DisconnectButton } from "./DisconnectButton";
@@ -32,62 +32,64 @@ export default function SidebarComponent({
 
   const iconBaseProps = { className: `text-white ${iconSize}` };
   const basePath = !env.devMode ? "/dashboard" : "/admin/dashboard";
-
+  const locale = useLocale();
   const navItems: NavItems[] = [
     {
       name: t("dashboard"),
-      path: `${basePath}`,
+      path: `/${locale}${basePath}`,
       icon: <IconComponent name="ControlPanel" {...iconBaseProps} />,
     },
     {
       name: t("analytics"),
-      path: `${basePath}/analytics`,
+      path: `/${locale}${basePath}/analytics`,
       icon: <IconComponent name="Analytics" {...iconBaseProps} />,
     },
     {
       name: t("articles"),
-      path: `${basePath}/gestion_article`,
+      path: `/${locale}${basePath}/gestion_article`,
       icon: <IconComponent name="List" {...iconBaseProps} />,
     },
     {
       name: t("medias"),
-      path: `${basePath}/medias`,
+      path: `/${locale}${basePath}/medias`,
       icon: <IconComponent name="Video" {...iconBaseProps} />,
     },
     {
       name: t("opportunities"),
-      path: `${basePath}/formations_bourses`,
+      path: `/${locale}${basePath}/formations_bourses`,
       icon: <IconComponent name="Feed" {...iconBaseProps} />,
     },
     {
       name: t("newsletters"),
-      path: `${basePath}/newsletters`,
+      path: `/${locale}${basePath}/newsletters`,
       icon: <IconComponent name="Envelope" {...iconBaseProps} />,
     },
     {
       name: t("shop"),
-      path: `${basePath}/produit_commandes`,
+      path: `/${locale}${basePath}/produit_commandes`,
       icon: <IconComponent name="Product" {...iconBaseProps} />,
     },
     {
       name: t("users"),
-      path: `${basePath}/users`,
+      path: `/${locale}${basePath}/users`,
       icon: <IconComponent name="UsersOnline" {...iconBaseProps} />,
     },
     {
       name: t("agenda"),
-      path: `${basePath}/event`,
+      path: `/${locale}${basePath}/event`,
       icon: <IconComponent name="Schedule" {...iconBaseProps} />,
     },
     {
       name: t("advertising"),
-      path: `${basePath}/advertising`,
+      path: `/${locale}${basePath}/advertising`,
       icon: <IconComponent name="PromoIcon" {...iconBaseProps} />,
     },
   ];
 
   const NavLinkItem = ({ item }: { item: NavItems }) => {
+    console.log("pathname : ", pathname);
     const isActive = pathname === item.path;
+    console.log("item.path : ", item.path);
 
     const baseClasses = `
       flex items-center p-3 my-1 rounded-lg transition-colors duration-150
