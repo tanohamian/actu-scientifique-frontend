@@ -89,13 +89,13 @@ export default function SidebarComponent({
       path: env.devMode ? `/${locale}${basePath}/event` : `${basePath}/event`,
       icon: <IconComponent name="Schedule" {...iconBaseProps} />,
     },
-    {
+    /*
       name: t("advertising"),
       path: env.devMode
         ? `/${locale}${basePath}/advertising`
         : `${basePath}/advertising`,
       icon: <IconComponent name="PromoIcon" {...iconBaseProps} />,
-    },
+    */
   ];
 
   const NavLinkItem = ({ item }: { item: NavItems }) => {
