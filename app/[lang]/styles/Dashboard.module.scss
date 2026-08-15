@@ -109,4 +109,32 @@
             }
         }
     }
+    & .select {
+        appearance: base-select;
+        background-color: #50789b94;            
+        transition: all 0.2ms ease;
+        &:hover{
+            background-color: #50789bfd ;
+        }
+
+        &:focus{
+            outline: solid 1px #3b5974;
+        }
+        border-radius: 5px;
+        padding: 10px;
+        &::picker(select) {
+            appearance: base-select;
+            color: white;
+            border: transparent 1px #334d64;
+            font-weight: 700;
+            border-radius: 8px;
+            background-color: #3b5974;
+        }
+        & option{
+            padding: 8px;
+            &:hover{
+                background-color: #50789bff;
+            }
+        }
+    }
 }

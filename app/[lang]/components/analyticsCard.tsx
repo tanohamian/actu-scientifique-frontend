@@ -51,6 +51,7 @@ export default function AnalyticsCard({
       let translationKey = "sevenDays";
       if (boundary.value === 30) translationKey = "thirtyDays";
       else if (boundary.value === 90) translationKey = "ninetyDays";
+      else if (boundary.value === 180) translationKey = "sixMonths"
       else if (boundary.value === 365) translationKey = "year";
 
       const translatedLabel = t.has(`boundaries.${translationKey}`)
@@ -136,7 +137,7 @@ export default function AnalyticsCard({
     <article className={styles.card}>
       <Tooltip data={tooltipData} />
       <ul className={styles["content-list"]}>
-        <select className={styles["date-filter"]} onChange={onFilterChange}>
+        <select className={styles["select"]} onChange={onFilterChange}>
           {analyticsBoundaries.map((boundary, index) => (
             <option key={boundary.value ?? index} value={boundary.value}>
               {boundary.label}
