@@ -13,6 +13,7 @@ import TableHeader from "@tiptap/extension-table-header";
 import { TextStyle } from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
+import { FontSize } from "@/app/extensions/fontSize";
 import {
   Bold,
   Italic,
@@ -37,7 +38,7 @@ import {
   Minus,
   Highlighter,
 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface TiptapProps {
   content?: string;
@@ -111,6 +112,7 @@ const Tiptap = ({
       Highlight.configure({
         multicolor: true,
       }),
+      FontSize,
     ],
     content,
     editorProps: {
@@ -125,6 +127,13 @@ const Tiptap = ({
       }
     },
   });
+
+  useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content, { emitUpdate: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content, editor]);
 
   const setLink = useCallback(() => {
     if (linkUrl && editor) {
@@ -319,6 +328,30 @@ const Tiptap = ({
           >
             <Highlighter className="w-4 h-4" />
           </ToolbarButton>
+        </div>
+        <div className="flex items-center gap-1">
+          <select
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === "default") {
+                editor.chain().focus().unsetFontSize().run();
+              } else {
+                editor.chain().focus().setFontSize(value).run();
+              }
+            }}
+            value={editor.getAttributes("textStyle").fontSize || "default"}
+            className="text-sm border border-gray-300 rounded px-2 py-1 bg-white"
+            title="Taille du texte"
+          >
+            <option value="default">Normal</option>
+            <option value="12">12</option>
+            <option value="14">14</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+            <option value="24">24</option>
+            <option value="32">32</option>
+            <option value="48">48</option>
+          </select>
         </div>
 
         <div className="w-px h-6 bg-gray-300 mx-1" />

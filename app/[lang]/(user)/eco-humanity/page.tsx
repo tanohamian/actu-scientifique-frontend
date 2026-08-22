@@ -22,12 +22,13 @@ export default function Ecohumanity() {
   const itemsPerPage = 12;
 
   const loadContent = useCallback(async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const [articlesData, mediasData] = await Promise.all([
         FetchArticles(),
         FetchMedias(),
       ]);
+      console.log("articlesData : ", articlesData);
 
       const filteredArticles = articlesData.filter(
         (a) => a.rubrique === Rubriques.ECO_HUMANITY,
@@ -43,6 +44,8 @@ export default function Ecohumanity() {
       setIsLoading(false);
     }
   }, []);
+
+  console.log("articles : ", articles);
 
   useEffect(() => {
     if (!authLoading) {
