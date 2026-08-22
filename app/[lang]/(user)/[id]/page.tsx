@@ -112,15 +112,22 @@ export default function DetailsArticle() {
   const isVideo =
     media?.type === "video" || displayUrl?.match(/\.(mp4|mkv|webm)$/i);
 
-  // Récupération du texte brut / HTML initial
-  const rawTextContent = article ? article.content : media?.description;
+  const rawTextContent = article?.content || media?.description;
 
+  const getTruncatedHtml = (html: string, limit: number) => {
+    const tmp =
+      typeof window !== "undefined" ? document.createElement("DIV") : null;
+    if (!tmp) return html.slice(0, limit);
+    tmp.innerHTML = html;
+    const plainText = tmp.textContent || tmp.innerText || "";
+
+    if (plainText.length <= limit) return html;
+    return `<p>${plainText.slice(0, limit)}...</p>`;
+  };
   // Troncation si l'utilisateur n'est pas connecté
   const textContent =
     !isLoggedIn && rawTextContent
-      ? rawTextContent.length > 200
-        ? `${rawTextContent.slice(0, 200)}...`
-        : rawTextContent
+      ? getTruncatedHtml(rawTextContent, 200)
       : rawTextContent;
 
   if (isLoading || authLoading) {
@@ -194,7 +201,7 @@ export default function DetailsArticle() {
         <article className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 md:p-10 rounded-3xl shadow-inner relative">
           <div className="text-gray-200 text-lg md:text-xl leading-relaxed space-y-6">
             {textContent ? (
-              ArticleDisplay({ htmlContent: textContent })
+              <ArticleDisplay htmlContent={textContent} />
             ) : (
               <p className="italic text-white">{t("noDescription")}</p>
             )}

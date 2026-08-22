@@ -23,8 +23,8 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={lang} translate="no" suppressHydrationWarning>
-      <head>
+    <div lang={lang} translate="no" suppressHydrationWarning>
+      <div>
         <link
           rel="icon"
           type="image/png"
@@ -35,8 +35,8 @@ export default async function RootLayout({
           {lang === "fr" ? "L'actualité scientifique" : "Science news"}
         </title>
         <meta name="google-adsense-account" content="ca-pub-7800085793195104" />
-      </head>
-      <body>
+      </div>
+      <div>
         <AppRouterCacheProvider options={{ key: "mui" }}>
           <NextIntlClientProvider messages={messages} locale={lang}>
             <section
@@ -52,7 +52,7 @@ export default async function RootLayout({
             {children}
           </NextIntlClientProvider>
         </AppRouterCacheProvider>
-      </body>
-    </html>
+      </div>
+    </div>
   );
 }

@@ -243,6 +243,7 @@ export default function ArticlePage() {
     `;
 
   const handleSubmitArticle = (newArticle?: DbArticle) => {
+    console.log("newArticle : ", newArticle);
     if (!newArticle) {
       alert(t("toasts.noArticle"));
       return;
