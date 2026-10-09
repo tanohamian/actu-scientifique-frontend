@@ -267,6 +267,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               <IconComponent name="WhatsAppIcon" {...iconBaseProps} />
               <IconComponent name="YouTubeIcon" {...iconBaseProps} />
               <IconComponent name="LinkedIn" {...iconBaseProps} />
+              <IconComponent name="TwitterIcon" {...iconBaseProps} />
+              <IconComponent name="TikTok" {...iconBaseProps} />
             </div>
 
             {loading ? (

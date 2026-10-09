@@ -4,8 +4,8 @@
     "oneHealth": "Une seule santé",
     "tech": "Tech",
     "technology": "Technologie",
-    "ecoHumanity": "Eco-humanité",
-    "portraits": "Portraits & découvertes",
+    "ecoHumanity": "Éco-humanité",
+    "portraits": "Découvertes",
     "agenda": "Agenda",
     "opportunities": "Opportunités",
     "scholarships": "Bourses",
@@ -161,7 +161,7 @@
     "shop": "Boutique"
   },
   "Bottom": {
-    "contact": "Contact & Localisation",
+    "contact": "Contact & localisation",
     "privacy": "Politique de confidentialité",
     "partners": "Partenaires",
     "mission": "Notre mission",
