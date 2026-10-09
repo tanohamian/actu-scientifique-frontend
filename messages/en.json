@@ -5,7 +5,7 @@
     "tech": "Tech",
     "technology": "Technology",
     "ecoHumanity": "Eco-humanity",
-    "portraits": "Portraits & discoveries",
+    "portraits": "Discoveries",
     "agenda": "Agenda",
     "opportunities": "Opportunities",
     "scholarships": "Scholarships",
@@ -161,7 +161,7 @@
     "shop": "Shop"
   },
   "Bottom": {
-    "contact": "Contact & Location",
+    "contact": "Contact & location",
     "privacy": "Privacy Policy",
     "partners": "Partners",
     "mission": "Our Mission",
